@@ -9,11 +9,6 @@
 void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
 }
 
 /**
@@ -23,10 +18,17 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	lv_init();
+	lv_obj_t * slider1 = lv_slider_create(lv_scr_act(), NULL);
+	lv_obj_set_x(slider1, 30);
+	lv_obj_set_y(slider1, 30);
+	lv_obj_set_size(slider1, 200, 50);
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	lv_slider_set_value(slider1, 70);
+
+	pros::delay(5000);
+
+	lv_obj_del(slider1);
 }
 
 /**
@@ -79,9 +81,6 @@ void opcontrol() {
 	pros::Motor right_mtr(2);
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_Y);
 

@@ -62,6 +62,7 @@
 
 #ifdef __cplusplus
 #include "pros/adi.hpp"
+#include "pros/apix.h"
 #include "pros/distance.hpp"
 #include "pros/imu.hpp"
 #include "pros/llemu.hpp"
