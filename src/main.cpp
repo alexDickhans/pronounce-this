@@ -1,5 +1,7 @@
 #include "main.h"
 
+autonSelector* autonomousSel;
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -18,17 +20,8 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	lv_init();
-	lv_obj_t * slider1 = lv_slider_create(lv_scr_act(), NULL);
-	lv_obj_set_x(slider1, 30);
-	lv_obj_set_y(slider1, 30);
-	lv_obj_set_size(slider1, 200, 50);
+	autonomousSel = new autonSelector();
 
-	lv_slider_set_value(slider1, 70);
-
-	pros::delay(5000);
-
-	lv_obj_del(slider1);
 }
 
 /**

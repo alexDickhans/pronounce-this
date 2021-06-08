@@ -77,6 +77,8 @@ private:
 
     void draw();
 
+    void addCallbacks();
+
 public:
     /**
      * Create an auton selector without autons configured.
@@ -85,10 +87,11 @@ public:
 
     /**
      * Create an auton selector with all the auton functions already declared
+     * ! <br> Not implemented yet 
      * 
      * @param functionMap The map of different ports.
      */
-    autonSelector(autonFunction functionMap[AUTON_SIDE_COUNT][AUTON_POSITION_COUNT]);
+    autonSelector(autonFunction* functionMap[AUTON_SIDE_COUNT][AUTON_POSITION_COUNT]) {}
     
     /**
      * Run the user configuration with rendering.
