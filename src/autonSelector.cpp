@@ -1,4 +1,3 @@
-
 #include "autonSelector.hpp"
 
 int nullAutonSelector() {
@@ -9,25 +8,30 @@ autonSelector::autonSelector() {
     // Nothing
 }
 
-autonSelector::autonSelector(const char* textMap[11]) {
+autonSelector::autonSelector(char* inTextMap[11]) {
     for (int i = 0; i < 11; i ++) {
-        this->textMap[i] = textMap[i];
+        textMap[i] = inTextMap[i];
     }
 }
 
-
+autonSelector::autonSelector(char* inTextMap[11], lv_obj_t* buttonMapRegion) {
+    for (int i = 0; i < 11; i ++) {
+        textMap[i] = inTextMap[i];
+    }
+    this->buttonMapRegion = buttonMapRegion;
+}
 
 int autonSelector::choose() {
 
     // Wait until button is pressed.
-    this->finnished = false;
+    guiFinnished = false;
 
     // Draw the items
     this->draw();
     this->addCallbacks();
 
     // Wait until finnished.
-    while (!finnished) {
+    while (!guiFinnished) {
         pros::delay(20);
     }
 
@@ -50,8 +54,10 @@ void autonSelector::del() {
 }
 
 void autonSelector::draw() {
-    buttonMap = lv_btnm_create(lv_scr_act(), NULL);
+    buttonMap = lv_btnm_create(buttonMapRegion, NULL);
     lv_btnm_set_map(buttonMap, textMap);
+    lv_obj_set_size(buttonMap, lv_obj_get_width(buttonMapRegion),
+      lv_obj_get_height(buttonMapRegion));
 }
 
 void autonSelector::addCallbacks() {

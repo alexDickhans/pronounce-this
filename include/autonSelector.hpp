@@ -6,11 +6,15 @@ typedef int (*autonFunction)();
 
 int nullAutonFunc();
 
-// Enums to make managing position easier.
-
-
 #define AUTON_SIDE_COUNT 3
 #define AUTON_POSITION_COUNT 4
+
+
+// Current User Selection, Static for the moment 
+// Because it needed a static function call
+static int userSelection;
+static const char *textMap[11];
+static bool guiFinnished;
 
 /**
  * A graphical interface for selecting a auton. Uses LVGL, so make sure that is included.
@@ -18,13 +22,10 @@ int nullAutonFunc();
 class autonSelector
 {
 private:
-    // Current User Selection, Static for the moment 
-    // Because it needed a static function call
-    static int userSelection;
 
     // The function map, used for graphical and execution.
     autonFunction functionMap[11];
-    static const char *textMap[11];
+    
 
     /*
     LVGL Widgets
@@ -35,8 +36,6 @@ private:
 
     // How big the buttons are
     lv_obj_t* buttonMapRegion;
-
-    bool finnished = true;
 
     /**
      * Delete all objects, clear up screen and memory
@@ -56,7 +55,7 @@ public:
     /**
      * Create an auton selector without autons configured.
      */
-    autonSelector(const char* textMap[]);
+    autonSelector(char* textMap[]);
 
     /**
      * Create an auton selector with all the auton functions already declared
@@ -64,7 +63,7 @@ public:
      * 
      * @param textMap The map of different text.
      */
-    autonSelector(const char* textMap[], lv_obj_t* buttonMapRegion);
+    autonSelector(char* textMap[], lv_obj_t* buttonMapRegion);
     
     /**
      * Run the user configuration with rendering.
@@ -82,7 +81,7 @@ public:
      * Function to handle button presses
      */
     void buttonPressed(int position) {
-        this->userSelection = position;
+        userSelection = position;
     }
 
     /**
@@ -101,7 +100,7 @@ public:
      * @param position Position to change to
      */
     void setSelection(int position) {
-        this->userSelection = position;
+        userSelection = position;
     }
 
     /**
@@ -122,7 +121,9 @@ public:
                 userSelection = i;
                 break;
             }
-        } 
+        }
+
+        guiFinnished = true;
 
         return LV_RES_OK;
     }

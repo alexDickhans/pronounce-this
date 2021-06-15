@@ -2,6 +2,7 @@
 
 autonSelector* autonomousSel;
 
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -20,8 +21,31 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	autonomousSel = new autonSelector();
+	lv_init();
 
+	// Create a button descriptor string array w/ no repeat "\224"
+  	static char * btnm_map[] = { "Top Left", "Top Right", "\n",
+  									 "Misc Left", "Misc Right", "\n",
+                                     "Bottom Left", "Bottom Left", "\n",
+									 		"Skills", ""};
+
+	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
+
+	// Set functions
+	autonomousSel->setFunction(0, topLeft);
+	autonomousSel->setFunction(1, topRight);
+	
+	autonomousSel->setFunction(3, miscLeft);
+	autonomousSel->setFunction(4, miscRight);
+
+	autonomousSel->setFunction(6, bottomLeft);
+	autonomousSel->setFunction(7, bottomRight);
+
+	autonomousSel->setFunction(9, skills);
+
+	// Choose auton
+	autonomousSel->choose();
+	autonomousSel->runSelection();
 }
 
 /**
@@ -53,7 +77,8 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
