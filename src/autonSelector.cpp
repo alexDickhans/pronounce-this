@@ -1,11 +1,23 @@
 
 #include "autonSelector.hpp"
 
+int nullAutonSelector() {
+    return 0;
+}
+
 autonSelector::autonSelector() {
     // Nothing
 }
 
-selection autonSelector::choose() {
+autonSelector::autonSelector(const char* textMap[11]) {
+    for (int i = 0; i < 11; i ++) {
+        this->textMap[i] = textMap[i];
+    }
+}
+
+
+
+int autonSelector::choose() {
 
     // Wait until button is pressed.
     this->finnished = false;
@@ -26,33 +38,22 @@ selection autonSelector::choose() {
 }
 
 int autonSelector::runSelection() {
-    return this->functionMap[userSelection.side][userSelection.position]();
+    return this->functionMap[userSelection]();
+}
+
+void autonSelector::setFunction(int position, autonFunction function) {
+    this->functionMap[position] = function;
 }
 
 void autonSelector::del() {
-    lv_obj_del(tabView);
-    
-    lv_obj_del(skillsTab);
-    lv_obj_del(blueTab);
-    lv_obj_del(redTab);
-
-    lv_obj_del(topButton);
-    lv_obj_del(midButton);
-    lv_obj_del(bottomButton);
-    lv_obj_del(miscButton);
-
-    lv_obj_del(finnishedButton);
+    lv_obj_del(buttonMap);
 }
 
 void autonSelector::draw() {
-    tabView = lv_tabview_create(lv_scr_act(), NULL);
-
-    skillsTab = lv_tabview_add_tab(tabView, "Skills");
-    blueTab = lv_tabview_add_tab(tabView, "Blue");
-    redTab = lv_tabview_add_tab(tabView, "Red");
-
+    buttonMap = lv_btnm_create(lv_scr_act(), NULL);
+    lv_btnm_set_map(buttonMap, textMap);
 }
 
 void autonSelector::addCallbacks() {
-    
+    lv_btnm_set_action(buttonMap, pressHandler);
 }

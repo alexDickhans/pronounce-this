@@ -2,34 +2,12 @@
 
 #include "api.h"
 
-/**
- * Just returns 0, just to have a function for the functionMap.
- */
-int nullAutonFunc() { return 0; }
-
 typedef int (*autonFunction)();
 
+int nullAutonFunc();
+
 // Enums to make managing position easier.
-enum sides
-{
-    Skills = 0,
-    Red = 1,
-    Blue = 2
-};
 
-enum positions
-{
-    Top = 0,
-    Middle = 1,
-    Bottom = 2,
-    Misc = 3
-};
-
-struct selection
-{
-    sides side = Skills;
-    positions position = Middle;
-};
 
 #define AUTON_SIDE_COUNT 3
 #define AUTON_POSITION_COUNT 4
@@ -40,33 +18,23 @@ struct selection
 class autonSelector
 {
 private:
-    // Current User Selection
-    selection userSelection;
+    // Current User Selection, Static for the moment 
+    // Because it needed a static function call
+    static int userSelection;
 
     // The function map, used for graphical and execution.
-    autonFunction functionMap[AUTON_SIDE_COUNT][AUTON_POSITION_COUNT];
+    autonFunction functionMap[11];
+    static const char *textMap[11];
 
     /*
     LVGL Widgets
     */
 
-    // Pointer to tab view
-    lv_obj_t* tabView;
+    // Pointer to Button Grid
+    lv_obj_t* buttonMap;
 
-    // Tabs
-    lv_obj_t* skillsTab;
-    lv_obj_t* blueTab;
-    lv_obj_t* redTab;
-
-    // Buttons
-    // Kinda jank solution, but if you don't make them switch with the tabs then you can make only 3 buttons and save ram.
-    lv_obj_t* topButton;
-    lv_obj_t* midButton;
-    lv_obj_t* bottomButton;
-    lv_obj_t* miscButton;
-
-    // Button visible on all tabs
-    lv_obj_t* finnishedButton;
+    // How big the buttons are
+    lv_obj_t* buttonMapRegion;
 
     bool finnished = true;
 
@@ -86,19 +54,24 @@ public:
     autonSelector();
 
     /**
+     * Create an auton selector without autons configured.
+     */
+    autonSelector(const char* textMap[]);
+
+    /**
      * Create an auton selector with all the auton functions already declared
      * ! <br> Not implemented yet 
      * 
-     * @param functionMap The map of different ports.
+     * @param textMap The map of different text.
      */
-    autonSelector(autonFunction* functionMap[AUTON_SIDE_COUNT][AUTON_POSITION_COUNT]) {}
+    autonSelector(const char* textMap[], lv_obj_t* buttonMapRegion);
     
     /**
      * Run the user configuration with rendering.
      * 
      * @return The selected auton
      */
-    selection choose();
+    int choose();
 
     /**
      * Run the user selection
@@ -108,24 +81,8 @@ public:
     /**
      * Function to handle button presses
      */
-    void buttonPressed(positions position) {
-        this->userSelection.position = position;
-    }
-    
-    void topPressed() {
-        buttonPressed(positions::Top);
-    }
-
-    void middlePressed() {
-        buttonPressed(positions::Middle);
-    }
-
-    void bottomPressed() {
-        buttonPressed(positions::Bottom);
-    }
-
-    void miscPressed() {
-        buttonPressed(positions::Misc);
+    void buttonPressed(int position) {
+        this->userSelection = position;
     }
 
     /**
@@ -135,7 +92,7 @@ public:
      * @param position The position the robot is on
      * @param function The Function to replace it with
      */
-    void setFunction(sides side, positions position, autonFunction function);
+    void setFunction(int position, autonFunction function);
 
     /**
      * Set the user selection
@@ -143,9 +100,8 @@ public:
      * @param side Side to change to
      * @param position Position to change to
      */
-    void setSelection(sides side, positions poisition) {
-        this->userSelection.side = side;
-        this->userSelection.position = poisition;
+    void setSelection(int position) {
+        this->userSelection = position;
     }
 
     /**
@@ -153,5 +109,21 @@ public:
      * 
      * @return A struct containing both objects.
      */
-    selection getSelection() { return userSelection; }
+    int getSelection() { return userSelection; }
+
+    /**
+     * Temporary static solution, changes the userSelection
+     * 
+     */
+    static lv_res_t pressHandler(lv_obj_t *btnm, const char *txt) {
+
+        for (int i = 0; i < 11; i ++) {
+            if (strcmp(txt, textMap[i]) == 0) {
+                userSelection = i;
+                break;
+            }
+        } 
+
+        return LV_RES_OK;
+    }
 };
