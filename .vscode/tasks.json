@@ -28,6 +28,48 @@
                 "showReuseMessage": true,
                 "clear": false
             }
+        },
+        {
+            "label": "Build and Upload Project",
+            "type": "shell",
+            "command": "pros mu",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Run and Upload Project",
+            "type": "shell",
+            "command": "prosv5 upload --execute",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Build, Upload and Run Project",
+            "type": "shell",
+            "command": "prosv5 build && prosv5 upload --execute",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
         }
     ]
 }
