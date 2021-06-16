@@ -116,6 +116,7 @@ void opcontrol() {
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
+	// Driver Control Loop
 	while (true) {
 		int leftX = pow(master.get_analog(ANALOG_LEFT_X), 3) * 0.00009;
 		int leftY = pow(master.get_analog(ANALOG_LEFT_Y), 3) * 0.00009;
