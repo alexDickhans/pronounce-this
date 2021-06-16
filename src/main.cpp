@@ -2,16 +2,23 @@
 
 autonSelector* autonomousSel;
 
+pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
+pros::Motor frontLeftMotor(1);
+pros::Motor frontRightMotor(3, true);
+pros::Motor backLeftMotor(2);
+pros::Motor backRightMotor(4, true);
+
+pros::Imu imu(5);
+
+bool relativeMovement = true;
+
+#define ROLL_AUTHORITY 1.0
+
+void initSensors() {
+	while (imu.is_calibrating()) {
+		pros::delay(20);
+	}
 }
 
 /**
@@ -22,6 +29,8 @@ void on_center_button() {
  */
 void initialize() {
 	lv_init();
+
+	initSensors();
 
 	// Create a button descriptor string array w/ no repeat "\224"
   	static char * btnm_map[] = { "Top Left", "Top Right", "\n",
@@ -43,9 +52,13 @@ void initialize() {
 
 	autonomousSel->setFunction(9, skills);
 
-	// Choose auton
-	autonomousSel->choose();
-	autonomousSel->runSelection();
+	
+
+	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	
 }
 
 /**
@@ -78,6 +91,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	autonomousSel->runSelection();
 }
 
 /**
@@ -94,16 +108,54 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
+	if (!pros::competition::is_connected()) {
+		// Choose auton
+		//autonomousSel->choose();
+	}
+
+
+	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
 	while (true) {
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
+		int leftX = master.get_analog(ANALOG_LEFT_X); //pow(master.get_analog(ANALOG_LEFT_X), 2) * 0.009;
+		int leftY = master.get_analog(ANALOG_LEFT_Y); //pow(master.get_analog(ANALOG_LEFT_Y), 2) * 0.009;
+		int roll = master.get_analog(ANALOG_RIGHT_X) * ROLL_AUTHORITY;
 
-		left_mtr = left;
-		right_mtr = right;
+		// Calculate the controller vector + mixing
+		double magnitude = sqrt(pow(leftX, 2) + pow(leftY, 2));
+		double leftJoystickAngle = (atan2(leftY, leftX) * 180/PI);
+		double angle = std::fmod(leftJoystickAngle + imu.get_rotation(), 360.0);
+
+		// Create a switch between relative movement on and off
+		double computedX;
+		double computedY;
+
+		if (relativeMovement) {
+			computedX = magnitude * cos(angle * PI/180);
+			computedY = magnitude * sin(angle * PI/180);
+		} else {
+			computedX = leftX;
+			computedY = leftY;
+		}
+		
+		// Send parameters to motors
+		frontLeftMotor.move(computedY + computedX + roll);
+		frontRightMotor.move(computedY - computedX - roll);
+		backLeftMotor.move(computedY - computedX + roll);
+		backRightMotor.move(computedY + computedX - roll);
+
+		// Used for testing how well the inertial sensor will keep orientation
+		lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
+
+		// Buttons
+		if (master.get_digital(DIGITAL_Y)) {
+			relativeMovement = !relativeMovement;
+		}
+
+		if (master.get_digital(DIGITAL_X)) {
+			imu.reset();
+		}
+
 		pros::delay(20);
 	}
 }
