@@ -113,12 +113,12 @@ void opcontrol() {
 		//autonomousSel->choose();
 	}
 
-
+	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
 	while (true) {
-		int leftX = master.get_analog(ANALOG_LEFT_X); //pow(master.get_analog(ANALOG_LEFT_X), 2) * 0.009;
-		int leftY = master.get_analog(ANALOG_LEFT_Y); //pow(master.get_analog(ANALOG_LEFT_Y), 2) * 0.009;
+		int leftX = pow(master.get_analog(ANALOG_LEFT_X), 3) * 0.00009;
+		int leftY = pow(master.get_analog(ANALOG_LEFT_Y), 3) * 0.00009;
 		int roll = master.get_analog(ANALOG_RIGHT_X) * ROLL_AUTHORITY;
 
 		// Calculate the controller vector + mixing
@@ -156,6 +156,7 @@ void opcontrol() {
 			imu.reset();
 		}
 
+		// Prevent wasted resources
 		pros::delay(20);
 	}
 }
