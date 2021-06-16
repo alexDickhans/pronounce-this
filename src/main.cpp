@@ -30,7 +30,38 @@ void initSensors() {
 void initialize() {
 	lv_init();
 
-	initSensors();
+	initSensors();	
+
+	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	
+}
+
+/**
+ * Runs while the robot is in the disabled state of Field Management System or
+ * the VEX Competition Switch, following either autonomous or opcontrol. When
+ * the robot is enabled, this task will exit.
+ */
+void disabled() {
+
+	while (true) {
+		// Nothing right now, other than a little display
+	}
+
+}
+
+/**
+ * Runs after initialize(), and before autonomous when connected to the Field
+ * Management System or the VEX Competition Switch. This is intended for
+ * competition-specific initialization routines, such as an autonomous selector
+ * on the LCD.
+ *
+ * This task will exit when the robot is enabled and autonomous or opcontrol
+ * starts.
+ */
+void competition_initialize() {
 
 	// Create a button descriptor string array w/ no repeat "\224"
   	static char * btnm_map[] = { "Top Left", "Top Right", "\n",
@@ -52,32 +83,7 @@ void initialize() {
 
 	autonomousSel->setFunction(9, skills);
 
-	
-
-	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	
 }
-
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
-void disabled() {}
-
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
-void competition_initialize() {}
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -91,7 +97,10 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	// This calls the user selection, all the functions prototypes are in 
+	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	autonomousSel->runSelection();
+
 }
 
 /**
@@ -113,8 +122,13 @@ void opcontrol() {
 		//autonomousSel->choose();
 	}
 
+	// Delete all items on screen
+	lv_obj_clean(lv_scr_act());
+
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
+
+	//
 
 	// Driver Control Loop
 	while (true) {
@@ -131,7 +145,8 @@ void opcontrol() {
 		double computedX;
 		double computedY;
 
-		if (relativeMovement) {
+		// Use a switch
+		if (relativeMovement || imu.is_calibrating()) {
 			computedX = magnitude * cos(angle * PI/180);
 			computedY = magnitude * sin(angle * PI/180);
 		} else {
