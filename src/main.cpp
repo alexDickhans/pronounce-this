@@ -21,6 +21,7 @@ bool relativeMovement = true;
 
 
 #define ROLL_AUTHORITY 1.0
+#define STOP_ROLL_IF_CALIBRATING true
 
 #define DRIFT_MIN 3
 
@@ -42,7 +43,11 @@ void initSensors() {
  * Initialize all motors
  */
 void initMotors() {
-	
+	// Motor brake modes
+	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 /** 
@@ -62,21 +67,14 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 }
 
 /**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
+ * Runs when the robot starts up
  */
 void initialize() {
 	lv_init();
 
-	initSensors();	
-
-	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	
+	// Initialize functions
+	initSensors();
+	initMotors();
 }
 
 /**
@@ -99,13 +97,7 @@ void disabled() {
 }
 
 /**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
+ * Starts when connected to the field
  */
 void competition_initialize() {
 
@@ -135,15 +127,7 @@ void competition_initialize() {
 }
 
 /**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
+ * Runs during the autonomous. NO user control
  */
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
@@ -153,17 +137,7 @@ void autonomous() {
 }
 
 /**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
+ * Runs during operator/teleop control
  */
 void opcontrol() {
 	if (!pros::competition::is_connected()) {
@@ -183,19 +157,21 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 		// Filter input
-		int leftX = pow(master.get_analog(ANALOG_LEFT_X), 3) * 0.00009;
-		int leftY = pow(master.get_analog(ANALOG_LEFT_Y), 3) * 0.00009;
-		int roll = master.get_analog(ANALOG_RIGHT_X) * ROLL_AUTHORITY;
+		int leftX = filterAxis(master, ANALOG_LEFT_X);
+		int leftY = filterAxis(master, ANALOG_LEFT_Y);
+		int roll = STOP_ROLL_IF_CALIBRATING ? 0 : filterAxis(master, ANALOG_RIGHT_X) * ROLL_AUTHORITY;
 
 		// Calculate the controller vector + mixing
-		double magnitude = sqrt(pow(leftX, 2) + pow(leftY, 2));
-		double leftJoystickAngle = (atan2(leftY, leftX) * 180/PI);
-		double angle = std::fmod(leftJoystickAngle + imu.get_rotation(), 360.0);
+		double magnitude = sqrt(pow(leftX, 2) + pow(leftY, 2)); // √leftX^2 + leftY^2
+		double leftJoystickAngle = atan2(leftY, leftX) * 180/PI; // atan(leftY, leftX) * 180/PI
+		double angle = std::fmod(leftJoystickAngle + imu.get_rotation(), 360.0); 
+		// leftJoystickAngle + imu.get_rotation() % 360.0
 
 		// Create a switch between relative movement on and off
 		double computedX;
 		double computedY;
 
+		// Used to hold degrees while calibrating
 		if (!imu.is_calibrating()) {
 			degrees = imu.get_rotation();
 		}
@@ -224,7 +200,6 @@ void opcontrol() {
 		if (master.get_digital(DIGITAL_Y)) {
 			relativeMovement = !relativeMovement;
 		}
-
 		if (master.get_digital(DIGITAL_X)) {
 			imu.reset();
 		}
