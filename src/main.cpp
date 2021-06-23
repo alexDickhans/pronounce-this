@@ -4,7 +4,7 @@
 autonSelector* autonomousSel;
 
 // Controllers
-pros::Controller master(pros::E_CONTROLLER_MASTER);
+Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 
 // Motors
 
@@ -14,11 +14,12 @@ pros::Motor frontRightMotor(3, true);
 pros::Motor backLeftMotor(2);
 pros::Motor backRightMotor(4, true);
 
+
 // Inertial Measurement Unit
 pros::Imu imu(5);
+Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
-bool relativeMovement = true;
-
+bool relativeMovement = false;
 
 #define ROLL_AUTHORITY 1.0
 #define STOP_ROLL_IF_CALIBRATING true
@@ -29,9 +30,9 @@ bool relativeMovement = true;
  * Initialize all sensors
  */
 void initSensors() {
-	
+
 	// Calibrate only if it is not being calibrated.
-	if(!imu.is_calibrating()) imu.reset();
+	if (!imu.is_calibrating()) imu.reset();
 
 	// Wait until IMU is calibrated
 	while (imu.is_calibrating()) {
@@ -50,14 +51,14 @@ void initMotors() {
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
-/** 
+/**
  * Filter and apply the quadratic function.
  */
 double filterAxis(pros::Controller controller, pros::controller_analog_e_t controllerAxis) {
 	// Remove drift
 	double controllerValue = controller.get_analog(controllerAxis);
 	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
-	
+
 	// Apply quadratic function 
 	// f(x) = controllerFilter ^ 3 * 0.00009
 	double quadraticFilter = pow(controllerFilter, 3) * 0.00009;
@@ -66,15 +67,27 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 	return quadraticFilter;
 }
 
+pros::task_fn_t renderThread() {
+	master.renderFunc();
+}
+
+void initController() {
+	master.setDrivetrain(&drivetrain);
+	pros::Task task(renderThread);
+}
+
 /**
  * Runs when the robot starts up
  */
 void initialize() {
+
 	lv_init();
 
 	// Initialize functions
 	initSensors();
 	initMotors();
+
+	initController();
 }
 
 /**
@@ -102,17 +115,17 @@ void disabled() {
 void competition_initialize() {
 
 	// Create a button descriptor string array w/ no repeat "\224"
-  	static char * btnm_map[] = { "Top Left", "Top Right", "\n",
-  									 "Misc Left", "Misc Right", "\n",
-                                     "Bottom Left", "Bottom Left", "\n",
-									 		"Skills", ""};
+	static char* btnm_map[] = { "Top Left", "Top Right", "\n",
+									 "Misc Left", "Misc Right", "\n",
+									 "Bottom Left", "Bottom Left", "\n",
+											"Skills", "" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
 
 	// Set functions
 	autonomousSel->setFunction(0, topLeft);
 	autonomousSel->setFunction(1, topRight);
-	
+
 	autonomousSel->setFunction(3, miscLeft);
 	autonomousSel->setFunction(4, miscRight);
 
@@ -124,6 +137,8 @@ void competition_initialize() {
 	// Show GUI
 	autonomousSel->choose();
 
+
+
 }
 
 /**
@@ -132,7 +147,7 @@ void competition_initialize() {
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	autonomousSel->runSelection();
+	//autonomousSel->runSelection();
 
 }
 
@@ -157,15 +172,14 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 		// Filter input
-		int leftX = filterAxis(master, ANALOG_LEFT_X);
-		int leftY = filterAxis(master, ANALOG_LEFT_Y);
-		int roll = STOP_ROLL_IF_CALIBRATING ? 0 : filterAxis(master, ANALOG_RIGHT_X) * ROLL_AUTHORITY;
+		int leftX = master.get_analog(ANALOG_LEFT_X);
+		int leftY = master.get_analog(ANALOG_LEFT_Y);
+		int roll = STOP_ROLL_IF_CALIBRATING && imu.is_calibrating() ? 0 : filterAxis(master, ANALOG_RIGHT_X) * ROLL_AUTHORITY;
 
 		// Calculate the controller vector + mixing
-		double magnitude = sqrt(pow(leftX, 2) + pow(leftY, 2)); // √leftX^2 + leftY^2
-		double leftJoystickAngle = atan2(leftY, leftX) * 180/PI; // atan(leftY, leftX) * 180/PI
-		double angle = std::fmod(leftJoystickAngle + imu.get_rotation(), 360.0); 
-		// leftJoystickAngle + imu.get_rotation() % 360.0
+		double magnitude = pow(master.getMagnitude(PRONOUNCE_CONTROLLER_LEFT), 2) * 0.009;
+		double leftJoystickAngle = master.getTheta(PRONOUNCE_CONTROLLER_RIGHT);
+		double angle = leftJoystickAngle + toRadians(imu.get_rotation());
 
 		// Create a switch between relative movement on and off
 		double computedX;
@@ -179,14 +193,15 @@ void opcontrol() {
 		// Use a switch
 		// I was debating weather to switch modes based on the status of the imu, but I thought 
 		// it would be a much more usable experience if the robot did not automatically switch modes.
-		if (relativeMovement/* || imu.is_calibrating()*/) { 
-			computedX = magnitude * cos(angle * PI/180);
-			computedY = magnitude * sin(angle * PI/180);
-		} else {
+		if (relativeMovement/* || imu.is_calibrating()*/) {
+			computedX = magnitude * cos(angle);
+			computedY = magnitude * sin(angle);
+		}
+		else {
 			computedX = leftX;
 			computedY = leftY;
 		}
-		
+
 		// Send parameters to motors
 		frontLeftMotor.move(computedY + computedX + roll);
 		frontRightMotor.move(computedY - computedX - roll);

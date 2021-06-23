@@ -48,6 +48,11 @@
  */
 #include "autonSelector.hpp"
 #include "autonRoutines.hpp"
+#include "chassis/drivetrain.hpp"
+#include "chassis/omniDrivetrain.hpp"
+#include "chassis/xdrive.hpp"
+#include "controller.hpp"
+#include "utils/utils.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -59,7 +64,8 @@
  */
 // using namespace pros;
 // using namespace pros::literals;
-// using namespace okapi;
+using namespace okapi;
+using namespace Pronounce;
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure
