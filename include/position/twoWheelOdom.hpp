@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api.h"
+#include "odomWheel.hpp"
 
 namespace Pronounce
 {
@@ -8,25 +9,16 @@ namespace Pronounce
     {
 
     private:
-        pros::Rotation* forward;
-        pros::Rotation* horizontal;
+        OdomWheel* forward;
+        OdomWheel* horizontal;
 
         pros::Imu* imu;
+
+        double offset;
     public:
-        TwoWheelOdom(pros::Rotation* forward, pros::Rotation* horizontal, pros::Imu* imu);
+        TwoWheelOdom(OdomWheel* forward, OdomWheel* horizontal, pros::Imu* imu);
+        TwoWheelOdom(OdomWheel* forward, OdomWheel* horizontal, pros::Imu* imu, double offset);
         ~TwoWheelOdom();
     };
-    
-    TwoWheelOdom::TwoWheelOdom(pros::Rotation* forward, pros::Rotation* horizontal, pros::Imu* imu) {
-        this->forward = forward;
-        this->horizontal = horizontal;
-        this->imu = imu;
-
-    }
-    
-    TwoWheelOdom::~TwoWheelOdom()
-    {
-    }
-    
 } // namespace Pronounce
 

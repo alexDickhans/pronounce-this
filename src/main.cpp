@@ -1,7 +1,7 @@
 #include "main.h"
 
 // Auton Selector object
-autonSelector* autonomousSel;
+autonSelector* autonomousSel = nullptr;
 
 // Controllers
 Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
@@ -9,11 +9,10 @@ Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(1);
+pros::Motor frontLeftMotor(10);
 pros::Motor frontRightMotor(3, true);
 pros::Motor backLeftMotor(2);
 pros::Motor backRightMotor(4, true);
-
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
@@ -52,68 +51,17 @@ void initMotors() {
 }
 
 /**
- * Filter and apply the quadratic function.
+ * Initialize the controller
  */
-double filterAxis(pros::Controller controller, pros::controller_analog_e_t controllerAxis) {
-	// Remove drift
-	double controllerValue = controller.get_analog(controllerAxis);
-	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
-
-	// Apply quadratic function 
-	// f(x) = controllerFilter ^ 3 * 0.00009
-	double quadraticFilter = pow(controllerFilter, 3) * 0.00009;
-
-	// Return solution
-	return quadraticFilter;
-}
-
-pros::task_fn_t renderThread() {
-	master.renderFunc();
-}
-
 void initController() {
 	master.setDrivetrain(&drivetrain);
 	pros::Task task(renderThread);
 }
 
 /**
- * Runs when the robot starts up
+ * Initialize the Auton Selector
  */
-void initialize() {
-
-	lv_init();
-
-	// Initialize functions
-	initSensors();
-	initMotors();
-
-	initController();
-}
-
-/**
- * Runs while the robot is disabled i.e. before and after match, between auton
- * and teleop period
- */
-void disabled() {
-
-	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
-	lv_label_set_text(disabledLabel, "Robot Disabled.");
-
-	while (true) {
-		// Nothing right now, other than a little display to show that the robot
-		// is disabled.
-
-		pros::delay(200);
-	}
-
-}
-
-/**
- * Starts when connected to the field
- */
-void competition_initialize() {
-
+void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
 	static char* btnm_map[] = { "Top Left", "Top Right", "\n",
 									 "Misc Left", "Misc Right", "\n",
@@ -133,11 +81,75 @@ void competition_initialize() {
 	autonomousSel->setFunction(7, bottomRight);
 
 	autonomousSel->setFunction(9, skills);
+}
+
+
+/**
+ * Filter and apply the quadratic function.
+ */
+double filterAxis(pros::Controller controller, pros::controller_analog_e_t controllerAxis) {
+	// Remove drift
+	double controllerValue = controller.get_analog(controllerAxis);
+	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
+
+	// Apply quadratic function 
+	// f(x) = controllerFilter ^ 3 * 0.00009
+	double quadraticFilter = pow(controllerFilter, 3) * 0.00009;
+
+	// Return solution
+	return quadraticFilter;
+}
+
+/** 
+ * Render thread to update items on the controller
+ */
+pros::task_fn_t renderThread() {
+	master.renderFunc();
+}
+
+
+/**
+ * Runs when the robot starts up
+ */
+void initialize() {
+
+	lv_init();
+
+	// Initialize functions
+	initSensors();
+	initMotors();
+	initController();
+	initSelector();
+	
+}
+
+/**
+ * Runs while the robot is disabled i.e. before and after match, between auton
+ * and teleop period
+ */
+void disabled() {
+
+	// Create a label
+	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
+	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
+	lv_label_set_text(disabledLabel, "Robot Disabled.");
+
+	while (true) {
+		// Nothing right now, other than a little display to show that the robot
+		// is disabled.
+
+		pros::delay(200);
+	}
+
+}
+
+/**
+ * Starts when connected to the field
+ */
+void competition_initialize() {
 
 	// Show GUI
 	autonomousSel->choose();
-
-
 
 }
 
@@ -147,7 +159,7 @@ void competition_initialize() {
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	//autonomousSel->runSelection();
+	autonomousSel->runSelection();
 
 }
 
