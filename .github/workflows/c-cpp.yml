@@ -15,4 +15,4 @@ jobs:
     - name: Download PROS
       run: python3 -m pip install --user pros-cli
     - name: Build PROS
-      run: pros mak
+      run: pros make
