@@ -8,7 +8,7 @@
 
 # PROS
 bin/
-# .vscode/ Used for build and compile commands
+.vscode/
 compile_commands.json
 temp.log
 temp.errors
