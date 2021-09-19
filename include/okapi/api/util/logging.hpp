@@ -78,7 +78,7 @@ class Logger {
               "%ld (%s) DEBUG: %s\n",
               static_cast<long>(timer->millis().convert(millisecond)),
               CrossplatformThread::getName().c_str(),
-              ilazyMessage().c_str());
+              ilazyMessage.c_str());
     }
   }
 

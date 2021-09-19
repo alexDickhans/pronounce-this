@@ -52,7 +52,7 @@ namespace Pronounce {
         void renderDisabled();
         void renderDriver();
 
-        pros::task_fn_t renderFunc();
+        void renderFunc();
 
         void startRenderThread();
 

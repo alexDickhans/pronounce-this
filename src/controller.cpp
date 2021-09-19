@@ -72,7 +72,7 @@ namespace Pronounce {
         lastState = pros::competition::get_status();
     }
 
-    pros::task_fn_t Controller::renderFunc() {
+    void Controller::renderFunc() {
         while (this->continueRendering) {
             this->render();
 

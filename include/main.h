@@ -53,6 +53,7 @@
 #include "chassis/xdrive.hpp"
 #include "controller.hpp"
 #include "utils/utils.hpp"
+#include "vision/tippingVision.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -65,7 +66,8 @@
 // using namespace pros;
 // using namespace pros::literals;
 using namespace okapi;
-using namespace Pronounce;
+using namespace Pronounce; // General Lib
+using namespace PronounceTiP; // TiP Exclusive libs
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure

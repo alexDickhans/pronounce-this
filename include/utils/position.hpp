@@ -1,12 +1,10 @@
 #pragma once
 
-namespace Pronounce
-{
+namespace Pronounce {
     /**
      * A class to keep track of position on the field
      */
-    class Position
-    {
+    class Position {
     private:
         double X, Y, theta;
     public:
