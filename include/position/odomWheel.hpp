@@ -12,6 +12,7 @@ namespace Pronounce {
     {
     private:
         double mmPosition = 0;
+        double lastPosition = 0;
     public:
         /**
          * Get the mm at the current moment
@@ -24,6 +25,12 @@ namespace Pronounce {
          */
         void setMM(double mmPosition) {
             this->mmPosition = mmPosition;
+        }
+
+        double getChange() {
+            double difference = this->getMM() - this->lastPosition;
+            this->lastPosition = this->getMM();
+            return difference;
         }
 
         void update();
