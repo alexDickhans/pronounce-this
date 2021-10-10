@@ -54,6 +54,8 @@
 #include "controller.hpp"
 #include "utils/utils.hpp"
 #include "vision/tippingVision.hpp"
+#include "position/tankOdom.hpp"
+#include "position/motorOdom.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

@@ -14,6 +14,7 @@ namespace Pronounce {
         double mmPosition = 0;
         double lastPosition = 0;
     public:
+
         /**
          * Get the mm at the current moment
          */

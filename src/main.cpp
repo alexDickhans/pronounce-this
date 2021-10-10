@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 // Auton Selector object
 autonSelector* autonomousSel = nullptr;
 
@@ -12,14 +13,19 @@ PronounceTiP::Vision vision(9);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(10);
-pros::Motor frontRightMotor(3, true);
-pros::Motor backLeftMotor(2);
+pros::Motor frontLeftMotor(1);
+pros::Motor frontRightMotor(2, true);
+pros::Motor backLeftMotor(3);
 pros::Motor backRightMotor(4, true);
+
+Pronounce::MotorOdom backLeftOdom(&backLeftMotor, 100);
+Pronounce::MotorOdom backRightOdom(&backRightMotor, 100);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
+
+TankOdom tankOdom(&backLeftOdom, &backRightOdom, &imu);
 
 bool relativeMovement = false;
 
@@ -159,7 +165,7 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
-	initVision();
+	// initVision();
 
 	pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
 }
@@ -239,6 +245,15 @@ void opcontrol() {
 		double computedX;
 		double computedY;
 
+		tankOdom.update();
+
+		tankOdom.getPosition();
+
+		lv_obj_t* positionLabel1 = lv_label_create(lv_scr_act(), NULL);
+		lv_obj_align(positionLabel1, NULL, LV_ALIGN_CENTER, 0, 0);
+		lv_label_set_text(positionLabel1, strcat("X: ", std::to_string(tankOdom.getPosition().getX()).c_str()));
+		lv_label_set_text(positionLabel1, strcat("Y: ", std::to_string(tankOdom.getPosition().getY()).c_str()));
+
 		// Used to hold degrees while calibrating
 		if (!imu.is_calibrating()) {
 			degrees = imu.get_rotation();
@@ -257,10 +272,10 @@ void opcontrol() {
 		}
 
 		// Send parameters to motors
-		frontLeftMotor.move(computedY + computedX + roll);
-		frontRightMotor.move(computedY - computedX - roll);
-		backLeftMotor.move(computedY - computedX + roll);
-		backRightMotor.move(computedY + computedX - roll);
+		frontLeftMotor.move(master.get_analog(ANALOG_LEFT_Y));
+		frontRightMotor.move(master.get_analog(ANALOG_LEFT_Y));
+		backLeftMotor.move(master.get_analog(ANALOG_RIGHT_Y));
+		backRightMotor.move(master.get_analog(ANALOG_RIGHT_Y));
 
 		// Used for testing how well the inertial sensor will keep orientation
 		lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
