@@ -12,9 +12,9 @@ PronounceTiP::Vision vision(9);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(10);
-pros::Motor frontRightMotor(3, true);
-pros::Motor backLeftMotor(2);
+pros::Motor frontLeftMotor(1);
+pros::Motor frontRightMotor(2, true);
+pros::Motor backLeftMotor(3);
 pros::Motor backRightMotor(4, true);
 
 // Inertial Measurement Unit
@@ -22,6 +22,7 @@ pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 bool relativeMovement = false;
+bool driveOdomEnabled = true;
 
 #define ROLL_AUTHORITY 1.0
 #define STOP_ROLL_IF_CALIBRATING true
@@ -226,41 +227,21 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 		// Filter input
-		int leftX = master.get_analog(ANALOG_LEFT_X);
-		int leftY = master.get_analog(ANALOG_LEFT_Y);
-		int roll = STOP_ROLL_IF_CALIBRATING && imu.is_calibrating() ? 0 : filterAxis(master, ANALOG_RIGHT_X) * ROLL_AUTHORITY;
+		double leftY = master.get_analog(ANALOG_LEFT_Y) / 127.0;
+		double rightY = master.get_analog(ANALOG_RIGHT_Y) / 127.0;
 
-		// Calculate the controller vector + mixing
-		double magnitude = pow(master.getMagnitude(PRONOUNCE_CONTROLLER_LEFT), 2) * 0.009;
-		double leftJoystickAngle = master.getTheta(PRONOUNCE_CONTROLLER_RIGHT);
-		double angle = leftJoystickAngle + toRadians(imu.get_rotation());
-
-		// Create a switch between relative movement on and off
-		double computedX;
-		double computedY;
-
-		// Used to hold degrees while calibrating
-		if (!imu.is_calibrating()) {
-			degrees = imu.get_rotation();
-		}
-
-		// Use a switch
-		// I was debating weather to switch modes based on the status of the imu, but I thought 
-		// it would be a much more usable experience if the robot did not automatically switch modes.
-		if (relativeMovement/* || imu.is_calibrating()*/) {
-			computedX = magnitude * cos(angle);
-			computedY = magnitude * sin(angle);
-		}
-		else {
-			computedX = leftX;
-			computedY = leftY;
-		}
+		int leftWheelMag = pow(leftY, 3) * 127;
+		int rightWheelMag = pow(rightY, 3) * 127;
 
 		// Send parameters to motors
-		frontLeftMotor.move(computedY + computedX + roll);
-		frontRightMotor.move(computedY - computedX - roll);
-		backLeftMotor.move(computedY - computedX + roll);
-		backRightMotor.move(computedY + computedX - roll);
+		frontLeftMotor.move(leftWheelMag);
+		backLeftMotor.move(leftWheelMag); 
+		frontRightMotor.move(rightWheelMag);
+		backRightMotor.move(rightWheelMag);
+
+		if (driveOdomEnabled) {
+			
+		}
 
 		// Used for testing how well the inertial sensor will keep orientation
 		lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
