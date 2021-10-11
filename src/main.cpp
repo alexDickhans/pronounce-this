@@ -25,7 +25,6 @@ bool relativeMovement = false;
 bool driveOdomEnabled = true;
 
 #define ROLL_AUTHORITY 1.0
-#define STOP_ROLL_IF_CALIBRATING true
 
 #define DRIFT_MIN 3
 
@@ -72,11 +71,11 @@ void initController() {
 void initVision() {
 	vision = PronounceTiP::Vision(9);
 	vision.clear_led();
-	vision.set_wifi_mode(0);	
+	vision.set_wifi_mode(0);
 
 	pros::vision_signature_s_t BLUE_RING =
 		pros::Vision::signature_from_utility(1, -2899, -1681, -2290, 8489, 12763, 10626, 3.000, 0);
-	
+
 	pros::vision_signature_s_t YELLOW_GOAL =
 		pros::Vision::signature_from_utility(2, -8245, -5707, -6976, -7199, -3865, -5532, 3.000, 0);
 
@@ -210,19 +209,12 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-	if (!pros::competition::is_connected()) {
-		// Choose auton
-		// autonomousSel->choose();
-	}
 
 	// Delete all items on screen
 	lv_obj_clean(lv_scr_act());
 
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-
-	// Variable to hold imu data during reset
-	double degrees = 0;
 
 	// Driver Control Loop
 	while (true) {
@@ -235,26 +227,21 @@ void opcontrol() {
 
 		// Send parameters to motors
 		frontLeftMotor.move(leftWheelMag);
-		backLeftMotor.move(leftWheelMag); 
+		backLeftMotor.move(leftWheelMag);
 		frontRightMotor.move(rightWheelMag);
 		backRightMotor.move(rightWheelMag);
 
 		if (driveOdomEnabled) {
-			
+
+			// Used for testing how well the inertial sensor will keep orientation
+			lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
 		}
 
-		// Used for testing how well the inertial sensor will keep orientation
-		lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
 
 		// Buttons
-		if (master.get_digital(DIGITAL_Y)) {
-			relativeMovement = !relativeMovement;
-		}
-		if (master.get_digital(DIGITAL_X)) {
-			imu.reset();
-		}
+
 
 		// Prevent wasted resources
-		pros::delay(50);
+		pros::delay(20);
 	}
 }
