@@ -14,15 +14,15 @@ PronounceTiP::Vision vision(9);
 // Drive Motors
 pros::Motor frontLeftMotor(1);
 pros::Motor frontRightMotor(2, true);
-pros::Motor backLeftMotor(3);
-pros::Motor backRightMotor(4, true);
+pros::Motor backLeftMotor(9);
+pros::Motor backRightMotor(10, true);
 
 // Intake
-pros::Motor intakeMotor(21);
+pros::Motor intakeMotor(8);
 
 // Flippers
-pros::Motor frontFlipperMotor(20);
-pros::Motor rearFlipperMotor(19);
+pros::Motor frontFlipperMotor(3);
+pros::Motor rearFlipperMotor(7);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
