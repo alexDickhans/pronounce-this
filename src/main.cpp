@@ -26,7 +26,7 @@ bool driveOdomEnabled = true;
 
 #define ROLL_AUTHORITY 1.0
 
-#define DRIFT_MIN 3
+#define DRIFT_MIN 7.0
 
 /**
  * Render thread to update items on the controller
@@ -131,8 +131,8 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
 
 	// Apply quadratic function 
-	// f(x) = controllerFilter ^ 3 * 0.00009
-	double quadraticFilter = pow(controllerFilter, 3) * 0.00009;
+	// f(x) = controllerFilter / 127.0 ^ 3 * 127.0
+	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 127.0;
 
 	// Return solution
 	return quadraticFilter;
@@ -218,12 +218,10 @@ void opcontrol() {
 
 	// Driver Control Loop
 	while (true) {
-		// Filter input
-		double leftY = master.get_analog(ANALOG_LEFT_Y) / 127.0;
-		double rightY = master.get_analog(ANALOG_RIGHT_Y) / 127.0;
 
-		int leftWheelMag = pow(leftY, 3) * 127;
-		int rightWheelMag = pow(rightY, 3) * 127;
+		// Filter and calculate magnitudes
+		int leftWheelMag = filterAxis(master, ANALOG_LEFT_Y);
+		int rightWheelMag = filterAxis(master, ANALOG_RIGHT_Y);
 
 		// Send parameters to motors
 		frontLeftMotor.move(leftWheelMag);
@@ -231,6 +229,7 @@ void opcontrol() {
 		frontRightMotor.move(rightWheelMag);
 		backRightMotor.move(rightWheelMag);
 
+		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
 
 			// Used for testing how well the inertial sensor will keep orientation
