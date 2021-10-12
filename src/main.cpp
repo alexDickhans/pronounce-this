@@ -20,6 +20,10 @@ pros::Motor backRightMotor(4, true);
 // Intake
 pros::Motor intakeMotor(21);
 
+// Flippers
+pros::Motor frontFlipperMotor(20);
+pros::Motor rearFlipperMotor(19);
+
 // Inertial Measurement Unit
 pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
@@ -219,7 +223,11 @@ void opcontrol() {
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
+	// Motor buttons
 	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 127, 0, -127);
+
+	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_L1, DIGITAL_L2, 127, 0, -127);
+	MotorButton rearFlipperButton(&master, &rearFlipperMotor, DIGITAL_X, DIGITAL_Y, 127, 0, -127);
 
 	// Driver Control Loop
 	while (true) {
@@ -243,6 +251,8 @@ void opcontrol() {
 
 		// Buttons
 		intakeButton.update();
+		frontFlipperButton.update();
+		rearFlipperButton.update();
 
 		// Prevent wasted resources
 		pros::delay(20);
