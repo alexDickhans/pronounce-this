@@ -17,6 +17,9 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(3);
 pros::Motor backRightMotor(4, true);
 
+// Intake
+pros::Motor intakeMotor(21);
+
 // Inertial Measurement Unit
 pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
@@ -216,6 +219,8 @@ void opcontrol() {
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
+	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 127, 0, -127);
+
 	// Driver Control Loop
 	while (true) {
 
@@ -236,9 +241,8 @@ void opcontrol() {
 			lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
 		}
 
-
 		// Buttons
-
+		intakeButton.update();
 
 		// Prevent wasted resources
 		pros::delay(20);
