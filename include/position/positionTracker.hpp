@@ -5,22 +5,19 @@
 
 namespace Pronounce
 {
-    class PositionTracker
-    {
+    class PositionTracker {
     private:
-        
+
     public:
         PositionTracker(/* args */);
         ~PositionTracker();
     };
-    
-    PositionTracker::PositionTracker(/* args */)
-    {
+
+    PositionTracker::PositionTracker(/* args */) {
     }
-    
-    PositionTracker::~PositionTracker()
-    {
+
+    PositionTracker::~PositionTracker() {
     }
-    
+
 } // namespace Pronounce
 

@@ -5,11 +5,10 @@
 namespace Pronounce {
     /**
      * Abstract class for odometry wheels
-     * 
+     *
      * @author ad101-lab
      */
-    class OdomWheel
-    {
+    class OdomWheel {
     private:
         double mmPosition = 0;
         double lastPosition = 0;
@@ -35,7 +34,7 @@ namespace Pronounce {
         }
 
         void update();
-        
+
         ~OdomWheel();
     };
 } // namespace Pronounce

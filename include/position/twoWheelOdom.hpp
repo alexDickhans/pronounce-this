@@ -6,8 +6,7 @@
 
 namespace Pronounce
 {
-    class TwoWheelOdom
-    {
+    class TwoWheelOdom {
 
     private:
         OdomWheel* vertical;

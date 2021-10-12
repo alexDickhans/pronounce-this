@@ -9,27 +9,27 @@ using namespace Pronounce;
 
 namespace Pronounce {
     class TankOdom {
-private:
-    Position* position;
+    private:
+        Position* position;
 
-    OdomWheel* leftPivot;
-    OdomWheel* rightPivot;
+        OdomWheel* leftPivot;
+        OdomWheel* rightPivot;
 
-	pros::Imu* imu;
+        pros::Imu* imu;
 
-public:
-    TankOdom(OdomWheel* leftPivot, OdomWheel* rightPivot, pros::Imu* imu);
+    public:
+        TankOdom(OdomWheel* leftPivot, OdomWheel* rightPivot, pros::Imu* imu);
 
-    void update();
+        void update();
 
-	Position getPosition() {
-		return *this->position;
-	}
+        Position getPosition() {
+            return *this->position;
+        }
 
-	void setPostition(Position position) {
-		this->position = &position;
-	}
+        void setPostition(Position position) {
+            this->position = &position;
+        }
 
-    ~TankOdom();
-};
+        ~TankOdom();
+    };
 } // namespace Pronounce

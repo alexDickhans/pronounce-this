@@ -5,7 +5,7 @@ namespace Pronounce {
         this->motor = motor;
         this->radius = radiusMM;
     }
-    
+
     MotorOdom::~MotorOdom() {
     }
 
