@@ -21,8 +21,9 @@ pros::Motor backRightMotor(10, true);
 pros::Motor intakeMotor(8);
 
 // Flippers
-pros::Motor frontFlipperMotor(3);
-pros::Motor rearFlipperMotor(7);
+pros::Motor frontFlipperMotor1(3);
+pros::Motor frontFlipperMotor2(4, true);
+pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
@@ -65,6 +66,12 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+
+	frontFlipperMotor1.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontFlipperMotor2.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontFlipperMotor1.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	frontFlipperMotor2.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	backFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -161,14 +168,14 @@ void initialize() {
 	lv_init();
 
 	// Initialize functions
-	initSensors();
+	//initSensors();
 	initMotors();
 	initController();
 	initSelector();
 	initLogger();
 	initVision();
 
-	pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
+	// pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
 }
 
 /**
@@ -224,10 +231,12 @@ void opcontrol() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
 	// Motor buttons
-	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 127, 0, -127);
+	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 85, 0, -127, 0, 0);
 
-	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_L1, DIGITAL_L2, 127, 0, -127);
-	MotorButton rearFlipperButton(&master, &rearFlipperMotor, DIGITAL_X, DIGITAL_Y, 127, 0, -127);
+	MotorButton frontFlipperButton1(&master, &frontFlipperMotor1, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 100);
+	MotorButton frontFlipperButton2(&master, &frontFlipperMotor2, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 100);
+	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 0, 3700);
+	backFlipperButton.setGoToImmediately(true);
 
 	// Driver Control Loop
 	while (true) {
@@ -244,17 +253,17 @@ void opcontrol() {
 
 		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
-
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
+			lv_label_set_text(infoLabel, std::to_string(frontFlipperButton1.getButtonStatus()).c_str());
 		}
 
 		// Buttons
 		intakeButton.update();
-		frontFlipperButton.update();
-		rearFlipperButton.update();
+		frontFlipperButton1.update();
+		frontFlipperButton2.update();
+		backFlipperButton.update();
 
 		// Prevent wasted resources
-		pros::delay(20);
+		pros::delay(10);
 	}
 }
