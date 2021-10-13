@@ -12,21 +12,29 @@ PronounceTiP::Vision vision(9);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(10);
-pros::Motor frontRightMotor(3, true);
-pros::Motor backLeftMotor(2);
-pros::Motor backRightMotor(4, true);
+pros::Motor frontLeftMotor(1);
+pros::Motor frontRightMotor(2, true);
+pros::Motor backLeftMotor(9);
+pros::Motor backRightMotor(10, true);
+
+// Intake
+pros::Motor intakeMotor(8);
+
+// Flippers
+pros::Motor frontFlipperMotor1(3);
+pros::Motor frontFlipperMotor2(4, true);
+pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 bool relativeMovement = false;
+bool driveOdomEnabled = true;
 
 #define ROLL_AUTHORITY 1.0
-#define STOP_ROLL_IF_CALIBRATING true
 
-#define DRIFT_MIN 3
+#define DRIFT_MIN 7.0
 
 /**
  * Render thread to update items on the controller
@@ -58,6 +66,12 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+
+	frontFlipperMotor1.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontFlipperMotor2.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontFlipperMotor1.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	frontFlipperMotor2.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	backFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -71,11 +85,11 @@ void initController() {
 void initVision() {
 	vision = PronounceTiP::Vision(9);
 	vision.clear_led();
-	vision.set_wifi_mode(0);	
+	vision.set_wifi_mode(0);
 
 	pros::vision_signature_s_t BLUE_RING =
 		pros::Vision::signature_from_utility(1, -2899, -1681, -2290, 8489, 12763, 10626, 3.000, 0);
-	
+
 	pros::vision_signature_s_t YELLOW_GOAL =
 		pros::Vision::signature_from_utility(2, -8245, -5707, -6976, -7199, -3865, -5532, 3.000, 0);
 
@@ -131,8 +145,8 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
 
 	// Apply quadratic function 
-	// f(x) = controllerFilter ^ 3 * 0.00009
-	double quadraticFilter = pow(controllerFilter, 3) * 0.00009;
+	// f(x) = controllerFilter / 127.0 ^ 3 * 127.0
+	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 127.0;
 
 	// Return solution
 	return quadraticFilter;
@@ -154,14 +168,14 @@ void initialize() {
 	lv_init();
 
 	// Initialize functions
-	initSensors();
+	//initSensors();
 	initMotors();
 	initController();
 	initSelector();
 	initLogger();
 	initVision();
 
-	pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
+	// pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
 }
 
 /**
@@ -209,10 +223,6 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-	if (!pros::competition::is_connected()) {
-		// Choose auton
-		// autonomousSel->choose();
-	}
 
 	// Delete all items on screen
 	lv_obj_clean(lv_scr_act());
@@ -220,60 +230,40 @@ void opcontrol() {
 	// Condensed way to put a few pieces of information on screen
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
-	// Variable to hold imu data during reset
-	double degrees = 0;
+	// Motor buttons
+	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 85, 0, -127, 0, 0);
+
+	MotorButton frontFlipperButton1(&master, &frontFlipperMotor1, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 100);
+	MotorButton frontFlipperButton2(&master, &frontFlipperMotor2, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 100);
+	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 0, 3700);
+	backFlipperButton.setGoToImmediately(true);
 
 	// Driver Control Loop
 	while (true) {
-		// Filter input
-		int leftX = master.get_analog(ANALOG_LEFT_X);
-		int leftY = master.get_analog(ANALOG_LEFT_Y);
-		int roll = STOP_ROLL_IF_CALIBRATING && imu.is_calibrating() ? 0 : filterAxis(master, ANALOG_RIGHT_X) * ROLL_AUTHORITY;
 
-		// Calculate the controller vector + mixing
-		double magnitude = pow(master.getMagnitude(PRONOUNCE_CONTROLLER_LEFT), 2) * 0.009;
-		double leftJoystickAngle = master.getTheta(PRONOUNCE_CONTROLLER_RIGHT);
-		double angle = leftJoystickAngle + toRadians(imu.get_rotation());
-
-		// Create a switch between relative movement on and off
-		double computedX;
-		double computedY;
-
-		// Used to hold degrees while calibrating
-		if (!imu.is_calibrating()) {
-			degrees = imu.get_rotation();
-		}
-
-		// Use a switch
-		// I was debating weather to switch modes based on the status of the imu, but I thought 
-		// it would be a much more usable experience if the robot did not automatically switch modes.
-		if (relativeMovement/* || imu.is_calibrating()*/) {
-			computedX = magnitude * cos(angle);
-			computedY = magnitude * sin(angle);
-		}
-		else {
-			computedX = leftX;
-			computedY = leftY;
-		}
+		// Filter and calculate magnitudes
+		int leftWheelMag = filterAxis(master, ANALOG_LEFT_Y);
+		int rightWheelMag = filterAxis(master, ANALOG_RIGHT_Y);
 
 		// Send parameters to motors
-		frontLeftMotor.move(computedY + computedX + roll);
-		frontRightMotor.move(computedY - computedX - roll);
-		backLeftMotor.move(computedY - computedX + roll);
-		backRightMotor.move(computedY + computedX - roll);
+		frontLeftMotor.move(leftWheelMag);
+		backLeftMotor.move(leftWheelMag);
+		frontRightMotor.move(rightWheelMag);
+		backRightMotor.move(rightWheelMag);
 
-		// Used for testing how well the inertial sensor will keep orientation
-		lv_label_set_text(infoLabel, std::to_string(imu.get_rotation()).c_str());
+		// Used to test odom on the robot currently
+		if (driveOdomEnabled) {
+			// Used for testing how well the inertial sensor will keep orientation
+			lv_label_set_text(infoLabel, std::to_string(frontFlipperButton1.getButtonStatus()).c_str());
+		}
 
 		// Buttons
-		if (master.get_digital(DIGITAL_Y)) {
-			relativeMovement = !relativeMovement;
-		}
-		if (master.get_digital(DIGITAL_X)) {
-			imu.reset();
-		}
+		intakeButton.update();
+		frontFlipperButton1.update();
+		frontFlipperButton2.update();
+		backFlipperButton.update();
 
 		// Prevent wasted resources
-		pros::delay(50);
+		pros::delay(10);
 	}
 }

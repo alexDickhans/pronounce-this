@@ -14,10 +14,14 @@ namespace Pronounce {
     class MotorButton {
     private:
         ButtonStatus buttonStatus;
-        bool enabled;
+        bool enabled = true;
+        bool goToImmediately = false;
         int positiveAuthority = 0;
         int neutralAuthority = 0;
         int negativeAuthority = 0;
+
+        int min = 0;
+        int max = 0;
 
         pros::Motor* motor;
         pros::Controller* controller;
@@ -27,16 +31,34 @@ namespace Pronounce {
         void updateMotor();
 
     public:
-        MotorButton();
         MotorButton(pros::Controller* controller, pros::Motor* motor,
             pros::controller_digital_e_t positiveButton,
             pros::controller_digital_e_t negativeButton,
             int positiveAuthority,
             int neutralAuthority,
-            int negativeAuthority);
+            int negativeAuthority,
+            int min,
+            int max);
+        MotorButton();
 
         ButtonStatus getButtonStatus() {
             return buttonStatus;
+        }
+
+        bool getEnabled() {
+            return this->enabled;
+        }
+
+        void setEnabled(bool enabled) {
+            this->enabled = enabled;
+        }
+
+        bool getGoToImmediately() {
+            return this->goToImmediately;
+        }
+
+        void setGoToImmediately(bool goToImmediately) {
+            this->goToImmediately = goToImmediately;
         }
 
         void update();
