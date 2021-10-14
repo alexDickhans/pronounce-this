@@ -26,8 +26,8 @@ pros::Motor frontFlipperMotor1(3);
 pros::Motor frontFlipperMotor2(4, true);
 pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
-Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 100);
-Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 100);
+Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 50.8);
+Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 50.8);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
