@@ -2,22 +2,27 @@
 
 #include "api.h"
 #include "odomWheel.hpp"
+#include "utils/position.hpp"
 
 namespace Pronounce
 {
-    class TwoWheelOdom
-    {
+    class TwoWheelOdom {
 
     private:
-        OdomWheel* forward;
+        OdomWheel* vertical;
         OdomWheel* horizontal;
 
         pros::Imu* imu;
 
         double offset;
+
+        Position* position;
     public:
-        TwoWheelOdom(OdomWheel* forward, OdomWheel* horizontal, pros::Imu* imu);
-        TwoWheelOdom(OdomWheel* forward, OdomWheel* horizontal, pros::Imu* imu, double offset);
+        TwoWheelOdom(OdomWheel* vertical, OdomWheel* horizontal, pros::Imu* imu);
+        TwoWheelOdom(OdomWheel* vertical, OdomWheel* horizontal, pros::Imu* imu, double offset);
+
+        void update();
+
         ~TwoWheelOdom();
     };
 } // namespace Pronounce

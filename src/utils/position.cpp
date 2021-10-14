@@ -1,4 +1,4 @@
-#include "utils/position.hpp"
+#include "position.hpp"
 
 namespace Pronounce {
     Position::Position() {

@@ -25,5 +25,5 @@ namespace Pronounce
 
         ~MotorOdom();
     };
-    
+
 } // namespace Pronounce
