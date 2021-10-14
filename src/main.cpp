@@ -26,14 +26,14 @@ pros::Motor frontFlipperMotor1(3);
 pros::Motor frontFlipperMotor2(4, true);
 pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
-Pronounce::MotorOdom backLeftOdom(&backLeftMotor, 100);
-Pronounce::MotorOdom backRightOdom(&backRightMotor, 100);
+Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 100);
+Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 100);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
-TankOdom tankOdom(&backLeftOdom, &backRightOdom, &imu);
+TankOdom tankOdom(&frontLeftOdom, &frontRightOdom, &imu);
 
 bool relativeMovement = false;
 bool driveOdomEnabled = true;
@@ -250,11 +250,6 @@ void opcontrol() {
 		int leftX = master.get_analog(ANALOG_LEFT_X);
 		int leftY = master.get_analog(ANALOG_LEFT_Y);
 
-		tankOdom.update();
-
-		lv_label_set_text(infoLabel, strcat("X: ", std::to_string(tankOdom.getPosition().getX()).c_str()));
-		lv_label_set_text(infoLabel, strcat("Y: ", std::to_string(tankOdom.getPosition().getY()).c_str()));
-
 		// Filter and calculate magnitudes
 		int leftWheelMag = filterAxis(master, ANALOG_LEFT_Y);
 		int rightWheelMag = filterAxis(master, ANALOG_RIGHT_Y);
@@ -268,8 +263,10 @@ void opcontrol() {
 		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel, std::to_string(frontFlipperButton1.getButtonStatus()).c_str());
+			lv_label_set_text(infoLabel,  tankOdom.to_string().c_str());
 		}
+
+		tankOdom.update();
 
 		// Buttons
 		intakeButton.update();

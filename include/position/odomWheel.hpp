@@ -33,7 +33,7 @@ namespace Pronounce {
             return difference;
         }
 
-        void update();
+        void update() {};
 
         ~OdomWheel();
     };

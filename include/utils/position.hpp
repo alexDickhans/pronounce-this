@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace Pronounce {
     /**
      * A class to keep track of position on the field
@@ -12,6 +14,10 @@ namespace Pronounce {
         Position(double theta);
         Position(double X, double Y);
         Position(double X, double Y, double theta);
+
+        std::string to_string() {
+            return "X: " + std::to_string(this->X) + " Y:" + std::to_string(this->Y) + " T:" + std::to_string(this->theta);
+        }
 
         /**
          * Get the X position
@@ -55,7 +61,7 @@ namespace Pronounce {
          * @return Y
          */
         double getTheta() {
-            return this->Y;
+            return this->theta;
         }
 
         /**
@@ -63,8 +69,8 @@ namespace Pronounce {
          *
          * @param Y Y position
          */
-        void setTheta(double Y) {
-            this->Y = Y;
+        void setTheta(double theta) {
+            this->theta = theta;
         }
 
         ~Position();
