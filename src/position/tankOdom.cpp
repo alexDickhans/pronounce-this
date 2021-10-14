@@ -15,13 +15,17 @@ namespace Pronounce
 		rightPivot->update();
 
 		double average = (leftPivot->getChange() + rightPivot->getChange()) / 2;
-		double angle = toRadians(imu->get_rotation());
+		double angle = toRadians(imu->get_heading());
 
 		double x1 = 0;
 		double y1 = average;
 
 		double x2 = - (x1 * cos(angle)) + (y1 * sin(angle));
 		double y2 = (x1 * sin(angle)) + (y1 * cos(angle));
+
+		if (std::isnan(x2) || std::isnan(y2)) {
+			return;
+		}
 
 		this->position->setX(this->position->getX() + x2);
 		this->position->setY(this->position->getY() + y2);
