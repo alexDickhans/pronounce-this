@@ -30,7 +30,7 @@ Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 50.8);
 Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 50.8);
 
 // Inertial Measurement Unit
-pros::Imu imu(5);
+pros::Imu imu(3);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 TankOdom tankOdom(&frontLeftOdom, &frontRightOdom, &imu);
@@ -53,9 +53,8 @@ void renderThread() {
  * Initialize all sensors
  */
 void initSensors() {
-
-	// Calibrate only if it is not being calibrated.
-	if (!imu.is_calibrating()) imu.reset();
+	
+	imu.reset();
 
 	// Wait until IMU is calibrated
 	while (imu.is_calibrating()) {
