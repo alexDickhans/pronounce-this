@@ -2,6 +2,7 @@
 
 #include "drivetrain.hpp"
 #include "position/tankOdom.hpp"
+#include "pid/pid.hpp"
 
 namespace Pronounce {
     class TankDrivetrain : public Drivetrain {
@@ -9,6 +10,9 @@ namespace Pronounce {
         TankOdom tankOdom;
 
         Position* targetPosition;
+
+        PID* turnPid;
+        PID* movePid;
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
@@ -37,10 +41,3 @@ namespace Pronounce {
 
 
 
-TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) {
-}
-
-void update();
-
-TankDrivetrain::~TankDrivetrain() {
-}
