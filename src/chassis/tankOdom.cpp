@@ -6,6 +6,10 @@ namespace Pronounce {
     }
 
     void TankDrivetrain::update() {
+        Position* currentPosition = tankOdom.getPosition();
+
+        double xDiff = this->targetPosition->getX() - currentPosition->getX();
+        double yDiff = this->targetPosition->getY() - currentPosition->getY();
         
     }
 
