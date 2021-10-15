@@ -57,6 +57,7 @@
 #include "position/tankOdom.hpp"
 #include "position/motorOdom.hpp"
 #include "driver/motorButton.hpp"
+#include "chassis/tankDrive.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
