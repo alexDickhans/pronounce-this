@@ -2,36 +2,43 @@
 
 namespace Pronounce {
 
-    TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : Drivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
-        MotorOdom* leftPivot = new MotorOdom(frontLeft, 50.8);
-        MotorOdom* rightPivot = new MotorOdom(frontRight, 50.8);
-        this->tankOdom = new TankOdom(leftPivot, rightPivot, imu);
+	TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : Drivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
+		MotorOdom* leftPivot = new MotorOdom(frontLeft, 50.8);
+		MotorOdom* rightPivot = new MotorOdom(frontRight, 50.8);
+		this->tankOdom = new TankOdom(leftPivot, rightPivot, imu);
 
-        this->targetPosition = new Position();
+		this->targetPosition = new Position();
+		this->startingPosition = new Position();
 
-        this->turnPid = new PID(0, 0, 0, 0, 0);
-        this->movePid = new PID(0, 0, 0, 0, 0);
-    }
+		this->turnPid = new PID(0, 0, 0, 0, 0);
+		this->movePid = new PID(0, 0, 0, 0, 0);
+	}
 
-    void TankDrivetrain::update() {
-        Position* currentPosition = tankOdom->getPosition();
+	void TankDrivetrain::update() {
 
-        double xDiff = this->targetPosition->getX() - currentPosition->getX();
-        double yDiff = this->targetPosition->getY() - currentPosition->getY();
+		if (!enabled)
+			return;
 
-        double angle = atan(yDiff / xDiff);
-        double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
+		tankOdom->update();
 
-        this->movePid->setTarget(distance);
-        this->turnPid->setTarget(toDegrees(angle));
+		Position* currentPosition = tankOdom->getPosition();
 
-        double lateral = this->movePid->update();
-        double turn = this->turnPid->update();
+		double xDiff = this->targetPosition->getX() - currentPosition->getX();
+		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
-        this->getFrontLeft()->move(lateral + turn);
-        this->getFrontLeft()->move(lateral - turn);
-    }
+		double angle = atan(yDiff / xDiff);
+		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
 
-    TankDrivetrain::~TankDrivetrain() {
-    }
+		this->movePid->setTarget(distance);
+		this->turnPid->setTarget(toDegrees(angle));
+
+		double lateral = this->movePid->update();
+		double turn = nullRotationDistance < distance ? 0.0 : this->turnPid->update();
+
+		this->getFrontLeft()->move(lateral + turn);
+		this->getFrontLeft()->move(lateral - turn);
+	}
+
+	TankDrivetrain::~TankDrivetrain() {
+	}
 } // namespace Pronounce
