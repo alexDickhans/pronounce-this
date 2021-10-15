@@ -20,8 +20,8 @@ namespace Pronounce {
         double totalError;
         double prevError;
 
-        double integralBound;
-        double maxIntegral;
+        double integralBound = 30.0;
+        double maxIntegral = 0.3;
 
         double p;
         double i;
@@ -29,7 +29,8 @@ namespace Pronounce {
 
         double power;
     public:
-        PID(double kP, double kI, double kD, double target, double position);
+        PID();
+        PID(double kP, double kI = 0, double kD = 0, double target = 0, double position = 0);
 
         double getPower() {
             return power;
@@ -37,6 +38,14 @@ namespace Pronounce {
 
         void setPower(double power) {
             this->power = power;
+        }
+
+        double getPosition() {
+            return this->position;
+        }
+
+        void setPosition(double position) {
+            this->position = position;
         }
 
         double getTarget() {
@@ -69,6 +78,22 @@ namespace Pronounce {
 
         void setKD(double kD) {
             this->kD = kD;
+        }
+
+        double getIntegralBound() {
+            return this->integralBound;
+        }
+
+        void setIntegralBound(double integralBound) {
+            this->integralBound = integralBound;
+        }
+
+        double getMaxIntegral() {
+            return this->maxIntegral;
+        }
+
+        void setMaxIntegral(double maxIntegral) {
+            this->maxIntegral = maxIntegral;
         }
 
         double update();
