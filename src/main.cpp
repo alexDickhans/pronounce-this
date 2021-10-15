@@ -189,6 +189,10 @@ void updateVisionTask() {
 	}
 }
 
+void reset() {
+	
+}
+
 /**
  * Runs when the robot starts up
  */
@@ -268,6 +272,8 @@ void opcontrol() {
 	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 0, 3700);
 	backFlipperButton.setGoToImmediately(true);
 
+	bool lastButton = false;
+
 	// Driver Control Loop
 	while (true) {
 		// Filter input
@@ -292,6 +298,9 @@ void opcontrol() {
 			lv_label_set_text(infoLabel,  tankDrivetrain.getPosition()->to_string().c_str());
 		}
 
+		if (master.get_digital_new_press(DIGITAL_Y)) {
+			reset();
+		}
 
 		// Buttons
 		intakeButton.update();

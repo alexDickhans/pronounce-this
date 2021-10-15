@@ -14,6 +14,11 @@ namespace Pronounce {
 		this->movePid = new PID(0, 0, 0, 0, 0);
 	}
 
+	void TankDrivetrain::reset() {
+		this->tankOdom->setPosition(startingPosition);
+		this->tankOdom->reset();
+	}
+
 	void TankDrivetrain::update() {
 
 		if (!enabled)
