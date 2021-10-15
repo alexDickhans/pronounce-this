@@ -28,8 +28,8 @@ namespace Pronounce {
             return this->position;
         }
 
-        void setPosition(Position position) {
-            this->position = &position;
+        void setPosition(Position* position) {
+            this->position = position;
         }
 
         std::string to_string(){
