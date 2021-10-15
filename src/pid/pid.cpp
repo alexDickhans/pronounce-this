@@ -2,8 +2,15 @@
 
 namespace Pronounce {
 
+	PID::PID() {
+		this->kP = 0.0;
+		this->kI = 0.0;
+		this->kD = 0.0;
+		this->target = 0.0;
+		this->position = 0.0;
+	}
 
-	PID::PID(double kP = 0, double kI = 0, double kD = 0, double target = 0, double position = 0) {
+	PID::PID(double kP, double kI, double kD, double target, double position) {
 		this->kP = kP;
 		this->kI = kI;
 		this->kD = kD;
