@@ -71,6 +71,7 @@ namespace Pronounce {
         }
 
         void setTargetPosition(Position* targetPosition) {
+            this->setStartingPosition(this->getPosition());
             this->targetPosition = targetPosition;
         }
 
