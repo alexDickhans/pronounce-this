@@ -24,6 +24,8 @@ namespace Pronounce {
 
         void update();
 
+        void reset();
+
         Position* getPosition() {
             return this->position;
         }

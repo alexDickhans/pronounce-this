@@ -21,6 +21,10 @@ namespace Pronounce {
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
+        void reset();
+
+        void update();
+
         bool getEnabled() {
             return enabled;
         }
@@ -74,8 +78,6 @@ namespace Pronounce {
             this->setStartingPosition(this->getPosition());
             this->targetPosition = targetPosition;
         }
-
-        void update();
 
         ~TankDrivetrain();
     };

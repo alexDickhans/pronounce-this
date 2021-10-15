@@ -9,6 +9,10 @@ namespace Pronounce
 
 		this->position = new Position();
 	}
+	
+	void TankOdom::reset() {
+		this->imu->reset();
+	}
 
 	void TankOdom::update() {
 		leftPivot->update();
