@@ -28,7 +28,7 @@ namespace Pronounce {
             return this->position;
         }
 
-        void setPostition(Position position) {
+        void setPosition(Position position) {
             this->position = &position;
         }
 

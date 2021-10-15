@@ -7,7 +7,7 @@
 namespace Pronounce {
     class TankDrivetrain : public Drivetrain {
     private:
-        TankOdom tankOdom;
+        TankOdom* tankOdom;
 
         Position* targetPosition;
 
@@ -17,11 +17,11 @@ namespace Pronounce {
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
         Position* getPosition() {
-            return this->tankOdom.getPosition();
+            return this->tankOdom->getPosition();
         }
 
         void setPosition(Position position) {
-            this->setPosition(position);
+            this->tankOdom->setPosition(position);
         }
 
         Position* getTargetPosition() {
