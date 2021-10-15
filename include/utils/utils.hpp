@@ -7,13 +7,10 @@
 
 namespace Pronounce
 {
-    /*double toDegrees(double degrees) {
-        return degrees * 180 / M_PI;
-    }*/
-
     double toRadians(double degrees);
+    double toDegrees(double radians);
     double mapFunc(double value, double start1, double stop1, double start2, double stop2);
-    double signum_c(double x);
+    double signnum_c(double x);
 
     template<typename ... Args>
     std::string string_format(const std::string& format, Args ... args) {
