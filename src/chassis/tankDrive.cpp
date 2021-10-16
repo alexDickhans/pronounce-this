@@ -40,8 +40,8 @@ namespace Pronounce {
 		double lateral = this->movePid->update();
 		double turn = nullRotationDistance < distance ? 0.0 : this->turnPid->update();
 
-		this->getFrontLeft()->move(lateral + turn);
-		this->getFrontLeft()->move(lateral - turn);
+		this->getFrontLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
+		this->getFrontLeft()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
 	}
 
 	TankDrivetrain::~TankDrivetrain() {
