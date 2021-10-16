@@ -35,13 +35,27 @@ namespace Pronounce {
 		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
 
 		this->movePid->setTarget(distance);
-		this->turnPid->setTarget(toDegrees(angle));
+		this->turnPid->setTarget(this->getStopped() ? this->angle : toDegrees(angle));
 
 		double lateral = this->movePid->update();
 		double turn = nullRotationDistance < distance ? 0.0 : this->turnPid->update();
 
 		this->getFrontLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
 		this->getFrontLeft()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
+	}
+
+	bool TankDrivetrain::getStopped() {
+		// Derivitive ~= speed 
+		return this->movePid->getDerivitive() < speedThreshhold && this->movePid->getError() < errorThreshhold;
+	}
+
+	void TankDrivetrain::waitForStop() {
+		if (!enabled)
+			return;
+
+		while (!this->getStopped()) {
+			pros::Task::delay(20);
+		}
 	}
 
 	TankDrivetrain::~TankDrivetrain() {

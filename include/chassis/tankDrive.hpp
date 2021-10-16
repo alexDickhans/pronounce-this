@@ -18,14 +18,27 @@ namespace Pronounce {
         PID* turnPid;
         PID* movePid;
 
+        double angle;
+
         double nullRotationDistance = 10.0;
         double maxVoltage = 127.0;
+
+        double speedThreshhold = 2.0;
+        double errorThreshhold = 3.0;
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
         void reset();
 
         void update();
+
+        void waitForStop();
+
+        bool getStopped();
+
+        void setAngle(double angle) {
+            this->angle = angle;
+        }
 
         double getMaxVoltage() {
             return this->maxVoltage;
