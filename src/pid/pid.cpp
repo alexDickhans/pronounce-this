@@ -19,8 +19,8 @@ namespace Pronounce {
 	}
 
 	double PID::update() {
-		double error = position - target;
-		double derivitive = error - prevError;
+		this->error = position - target;
+		this->derivitive = error - prevError;
 
 		if (abs(error) < integralBound) {
 			totalError += error;

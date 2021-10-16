@@ -17,8 +17,10 @@ namespace Pronounce {
         double target;
         double position;
 
+        double error;
         double totalError;
         double prevError;
+        double derivitive;
 
         double integralBound = 30.0;
         double maxIntegral = 0.3;
@@ -31,6 +33,14 @@ namespace Pronounce {
     public:
         PID();
         PID(double kP, double kI = 0, double kD = 0, double target = 0, double position = 0);
+
+        double getDerivitive() {
+            return derivitive;
+        }
+
+        double getError() {
+            return error;
+        }
 
         double getPower() {
             return power;
