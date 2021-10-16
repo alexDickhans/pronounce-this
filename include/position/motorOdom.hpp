@@ -10,8 +10,17 @@ namespace Pronounce
         pros::Motor* motor;
 
         double radius;
+        double tuningFactor = 1.0;
     public:
         MotorOdom(pros::Motor* motor, double radius);
+
+        double getTuringFactor() {
+            return this->tuningFactor;
+        }
+
+        void setTuningFactor(double tuningFactor) {
+            this->tuningFactor = tuningFactor;
+        }
 
         void setMotor(pros::Motor* motor) {
             this->motor = motor;

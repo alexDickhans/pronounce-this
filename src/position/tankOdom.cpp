@@ -18,7 +18,7 @@ namespace Pronounce
 		leftPivot->update();
 		rightPivot->update();
 
-		double average = (leftPivot->getChange() + rightPivot->getChange()) / 2;
+		double average = ((leftPivot->getChange() + rightPivot->getChange()) * tuningFactor) / 2;
 		double angle = toRadians(imu->get_heading());
 
 		double x1 = 0;
