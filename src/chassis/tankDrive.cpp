@@ -31,7 +31,7 @@ namespace Pronounce {
 		double xDiff = this->targetPosition->getX() - currentPosition->getX();
 		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
-		double angle = atan(yDiff / xDiff);
+		double angle = atan2(yDiff, xDiff);
 		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
 
 		this->movePid->setTarget(distance);
