@@ -43,6 +43,41 @@ bool driveOdomEnabled = true;
 
 #define DRIFT_MIN 7.0
 
+
+/**
+ * @brief Runs during auton period before auton
+ * 
+ */
+int preAutonRun() {
+	return 0;
+}
+
+/**
+ * Left AWP Right
+ * Scores AWP and 11 rings
+ */
+int leftAwpRight() {
+	return 0;
+}
+
+/**
+ * @brief Right Awp Left
+ * 
+ * @return Status - needed for AutonSelector
+ */
+int rightAwpLeft() {
+	return 0;
+}
+
+/**
+ * @brief Test auton
+ * 
+ * @return 0
+ */
+int testAuton() {
+	return 0;
+}
+
 /**
  * Render thread to update items on the controller
  */
@@ -123,13 +158,17 @@ void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
 	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
 								(char*)"Right AWP Left", (char*)"\n",
+								(char*)"Test", (char*)"\n",
 								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
+	
+	autonomousSel->setPreRun(preAutonRun);
 
 	// Set functions
 	autonomousSel->setFunction(0, leftAwpRight);
 	autonomousSel->setFunction(2, rightAwpLeft);
+	autonomousSel->setFunction(4, testAuton);
 }
 
 /**

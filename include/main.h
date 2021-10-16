@@ -47,7 +47,6 @@
  * User defined imports
  */
 #include "autonSelector.hpp"
-#include "autonRoutines.hpp"
 #include "chassis/drivetrain.hpp"
 #include "chassis/omniDrivetrain.hpp"
 #include "chassis/xdrive.hpp"

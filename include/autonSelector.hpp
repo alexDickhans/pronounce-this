@@ -9,7 +9,7 @@ int nullAutonFunc();
 // Current User Selection, Static for the moment 
 // Because it needed a static function call
 static int userSelection;
-static const char *textMap[5];
+static const char *textMap[7];
 static bool guiFinnished;
 
 /**
@@ -20,7 +20,8 @@ class autonSelector
 private:
 
     // The function map, used for graphical and execution.
-    autonFunction functionMap[5];
+    autonFunction functionMap[7];
+    autonFunction preRun = nullAutonFunc;
     
 
     /*
@@ -89,6 +90,10 @@ public:
      */
     void setFunction(int position, autonFunction function);
 
+    void setPreRun(autonFunction function) {
+        this->preRun = preRun;
+    }
+
     /**
      * Set the user selection
      * 
@@ -112,7 +117,7 @@ public:
      */
     static lv_res_t pressHandler(lv_obj_t *btnm, const char *txt) {
 
-        for (int i = 0; i < 5; i ++) {
+        for (int i = 0; i < 7; i ++) {
             if (strcmp(txt, textMap[i]) == 0) {
                 userSelection = i;
                 break;
