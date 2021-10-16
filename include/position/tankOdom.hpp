@@ -19,17 +19,45 @@ namespace Pronounce {
 
         pros::Imu* imu;
 
+        double tuningFactor = 1.0;
+
     public:
         TankOdom(MotorOdom* leftPivot, MotorOdom* rightPivot, pros::Imu* imu);
 
+        double getTuringFactor() {
+            return this->tuningFactor;
+        }
+
+        void setTuningFactor(double tuningFactor) {
+            this->tuningFactor = tuningFactor;
+        }
+
+        MotorOdom* getLeftPivot() {
+            return leftPivot;
+        }
+
+        void setLeftPivot(MotorOdom* leftPivot) {
+            this->leftPivot = leftPivot;
+        }
+
+        MotorOdom* getRightPivot() {
+            return rightPivot;
+        }
+
+        void setRightPivot(MotorOdom* rightPivot) {
+            this->rightPivot = rightPivot;
+        }
+
         void update();
+
+        void reset();
 
         Position* getPosition() {
             return this->position;
         }
 
-        void setPostition(Position position) {
-            this->position = &position;
+        void setPosition(Position* position) {
+            this->position = position;
         }
 
         std::string to_string(){

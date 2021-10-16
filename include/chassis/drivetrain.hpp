@@ -16,8 +16,6 @@ namespace Pronounce {
 
         pros::Imu* imu;
 
-        //Position* position;
-
     public:
 
         Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
@@ -31,6 +29,8 @@ namespace Pronounce {
          * Get average speed of all the motors
          */
         double getSpeed();
+
+        
 
         /**
          * Get frontLeft motor

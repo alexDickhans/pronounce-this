@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 // Auton Selector object
 autonSelector* autonomousSel = nullptr;
 
@@ -33,7 +32,9 @@ Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 50.8);
 pros::Imu imu(3);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
-TankOdom tankOdom(&frontLeftOdom, &frontRightOdom, &imu);
+Pronounce::TankDrivetrain tankDrivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
+
+Position* startingPosition = new Position(0, 0, 0);
 
 bool relativeMovement = false;
 bool driveOdomEnabled = true;
@@ -47,6 +48,19 @@ bool driveOdomEnabled = true;
  */
 void renderThread() {
 	master.renderFunc();
+}
+
+/**
+ * @brief Tank drive thread
+ * 
+ */
+void tankDriveThread() {
+	while (true) {
+		tankDrivetrain.update();
+
+		uint32_t now = pros::millis();
+		pros::Task::delay_until(&now, pros::millis() + 20);
+	}
 }
 
 /**
@@ -84,7 +98,7 @@ void initMotors() {
  */
 void initController() {
 	master.setDrivetrain(&drivetrain);
-	pros::Task task(renderThread);
+	pros::Task renderTask(renderThread);
 }
 
 void initVision() {
@@ -141,6 +155,22 @@ void initLogger() {
 	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
 }
 
+void initDrivetrain() {
+	pros::Task tankDriveTask(tankDriveThread);
+	
+	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
+	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
+
+	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
+
+	PID* turnPid = new PID(0.0, 0.0, 0.0);
+	PID* movePid = new PID(0.0, 0.0, 0.0);
+	tankDrivetrain.setTurnPid(turnPid);
+	tankDrivetrain.setMovePid(movePid);
+
+	tankDrivetrain.setStartingPosition(startingPosition);
+}
+
 /**
  * Filter and apply the quadratic function.
  */
@@ -165,6 +195,10 @@ void updateVisionTask() {
 	}
 }
 
+void reset() {
+	
+}
+
 /**
  * Runs when the robot starts up
  */
@@ -175,6 +209,7 @@ void initialize() {
 	// Initialize functions
 	//initSensors();
 	initMotors();
+	initDrivetrain();
 	initController();
 	initSelector();
 	initLogger();
@@ -243,6 +278,8 @@ void opcontrol() {
 	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 0, 3700);
 	backFlipperButton.setGoToImmediately(true);
 
+	bool lastButton = false;
+
 	// Driver Control Loop
 	while (true) {
 		// Filter input
@@ -261,11 +298,15 @@ void opcontrol() {
 
 		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
+			tankDrivetrain.getTankOdom()->update();
+
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel,  tankOdom.to_string().c_str());
+			lv_label_set_text(infoLabel,  tankDrivetrain.getPosition()->to_string().c_str());
 		}
 
-		tankOdom.update();
+		if (master.get_digital_new_press(DIGITAL_Y)) {
+			reset();
+		}
 
 		// Buttons
 		intakeButton.update();
