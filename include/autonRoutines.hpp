@@ -3,36 +3,15 @@
 #include "api.h"
 
 /**
- * Top left autonomous
+ * Left AWP Right
+ * Scores AWP and 11 rings
  */
-int topLeft();
+int leftAwpRight();
 
 /**
- * Top right autonomous
+ * @brief Right Awp Left
+ * 
+ * @return Status - needed for AutonSelector
  */
-int topRight();
+int rightAwpLeft();
 
-/**
- * Misc left
- */
-int miscLeft();
-
-/**
- * Misc right
- */
-int miscRight();
-
-/**
- * Bottom left
- */
-int bottomLeft();
-
-/**
- * Bottom right
- */
-int bottomRight();
-
-/**
- * Skills Routine
- */
-int skills();

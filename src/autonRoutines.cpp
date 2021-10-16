@@ -1,50 +1,18 @@
 #include "autonRoutines.hpp"
 
 /**
- * Top left autonomous
+ * Left AWP Right
+ * Scores AWP and 11 rings
  */
-int topLeft() {
-    return 0;
+int leftAwpRight() {
+
 }
 
 /**
- * Top right autonomous
+ * @brief Right Awp Left
+ * 
+ * @return Status - needed for AutonSelector
  */
-int topRight() {
-    return 0;
-}
+int rightAwpLeft() {
 
-/**
- * Misc left
- */
-int miscLeft() {
-    return 0;
-}
-
-/**
- * Misc right
- */
-int miscRight() {
-    return 0;
-}
-
-/**
- * Bottom left
- */
-int bottomLeft() {
-    return 0;
-}
-
-/**
- * Bottom right
- */
-int bottomRight() {
-    return 0;
-}
-
-/**
- * Skills Routine
- */
-int skills() {
-    return 0;
 }

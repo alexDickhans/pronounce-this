@@ -6,14 +6,10 @@ typedef int (*autonFunction)();
 
 int nullAutonFunc();
 
-#define AUTON_SIDE_COUNT 3
-#define AUTON_POSITION_COUNT 4
-
-
 // Current User Selection, Static for the moment 
 // Because it needed a static function call
 static int userSelection;
-static const char *textMap[11];
+static const char *textMap[5];
 static bool guiFinnished;
 
 /**
@@ -24,7 +20,7 @@ class autonSelector
 private:
 
     // The function map, used for graphical and execution.
-    autonFunction functionMap[11];
+    autonFunction functionMap[5];
     
 
     /*
@@ -116,7 +112,7 @@ public:
      */
     static lv_res_t pressHandler(lv_obj_t *btnm, const char *txt) {
 
-        for (int i = 0; i < 11; i ++) {
+        for (int i = 0; i < 5; i ++) {
             if (strcmp(txt, textMap[i]) == 0) {
                 userSelection = i;
                 break;

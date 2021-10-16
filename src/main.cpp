@@ -52,7 +52,7 @@ void renderThread() {
 
 /**
  * @brief Tank drive thread
- * 
+ *
  */
 void tankDriveThread() {
 	while (true) {
@@ -67,7 +67,7 @@ void tankDriveThread() {
  * Initialize all sensors
  */
 void initSensors() {
-	
+
 	imu.reset();
 
 	// Wait until IMU is calibrated
@@ -121,24 +121,15 @@ void initVision() {
  */
 void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Top Left", (char*)"Top Right", (char*)"\n",
-									 (char*)"Misc Left", (char*)"Misc Right", (char*)"\n",
-									 (char*)"Bottom Left", (char*)"Bottom Left", (char*)"\n",
-											(char*)"Skills", (char*)"" };
+	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
+								(char*)"Right AWP Left", (char*)"\n",
+								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
 
 	// Set functions
-	autonomousSel->setFunction(0, topLeft);
-	autonomousSel->setFunction(1, topRight);
-
-	autonomousSel->setFunction(3, miscLeft);
-	autonomousSel->setFunction(4, miscRight);
-
-	autonomousSel->setFunction(6, bottomLeft);
-	autonomousSel->setFunction(7, bottomRight);
-
-	autonomousSel->setFunction(9, skills);
+	autonomousSel->setFunction(0, leftAwpRight);
+	autonomousSel->setFunction(2, rightAwpLeft);
 }
 
 /**
@@ -157,7 +148,7 @@ void initLogger() {
 
 void initDrivetrain() {
 	pros::Task tankDriveTask(tankDriveThread);
-	
+
 	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
 	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
 
@@ -196,7 +187,7 @@ void updateVisionTask() {
 }
 
 void reset() {
-	
+
 }
 
 /**
@@ -301,7 +292,7 @@ void opcontrol() {
 			tankDrivetrain.getTankOdom()->update();
 
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel,  tankDrivetrain.getPosition()->to_string().c_str());
+			lv_label_set_text(infoLabel, tankDrivetrain.getPosition()->to_string().c_str());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
