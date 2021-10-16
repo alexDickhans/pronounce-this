@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "drivetrain.hpp"
 #include "position/tankOdom.hpp"
 #include "pid/pid.hpp"
@@ -18,12 +19,21 @@ namespace Pronounce {
         PID* movePid;
 
         double nullRotationDistance = 10.0;
+        double maxVoltage = 127.0;
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
         void reset();
 
         void update();
+
+        double getMaxVoltage() {
+            return this->maxVoltage;
+        }
+
+        void setMaxVoltage(double maxVoltage) {
+            this->maxVoltage = maxVoltage;
+        }
 
         bool getEnabled() {
             return enabled;
