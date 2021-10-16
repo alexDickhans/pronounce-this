@@ -161,7 +161,7 @@ void initDrivetrain() {
 	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
 	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
 
-	
+	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
 
 	PID* turnPid = new PID(0.0, 0.0, 0.0);
 	PID* movePid = new PID(0.0, 0.0, 0.0);
