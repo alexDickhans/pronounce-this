@@ -57,6 +57,50 @@ int preAutonRun() {
  * Scores AWP and 11 rings
  */
 int leftAwpRight() {
+	startingPosition->setX(550);
+	startingPosition->setY(228.6);
+	startingPosition->setTheta(180.0);
+
+	tankDrivetrain.setStartingPosition(startingPosition);
+
+	tankDrivetrain.setEnabled(true);
+	
+	// Move to left goal
+	tankDrivetrain.setTargetPosition(new Position(890, 290));
+	tankDrivetrain.waitForStop();
+
+	// Pick up left goal
+
+	// Move to line
+	tankDrivetrain.setTargetPosition(new Position(2385, 1180));
+	tankDrivetrain.waitForStop();
+
+	// Start collecting and scoring rings
+
+	// Manually turn
+	tankDrivetrain.setAngle(0);
+	tankDrivetrain.waitForStop();
+
+	// Set down goal
+
+	// Stop collecting and scoring rings
+
+	// Drop goal backwards
+	tankDrivetrain.setTargetPosition(new Position(2600, 1100, -1));
+	tankDrivetrain.waitForStop();
+
+	// Move to right goal
+	tankDrivetrain.setTargetPosition(new Position(3150, 890));
+	tankDrivetrain.waitForStop();
+
+	// Pick up goal
+
+	// Move off AWP
+	tankDrivetrain.setTargetPosition(new Position(2900, 590, -1));
+
+	// Score in goal
+
+
 	return 0;
 }
 
