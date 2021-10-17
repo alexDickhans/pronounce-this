@@ -28,11 +28,13 @@ namespace Pronounce {
 
 		Position* currentPosition = tankOdom->getPosition();
 
+		bool reversed = this->targetPosition->getTheta() < 0;
+
 		double xDiff = this->targetPosition->getX() - currentPosition->getX();
 		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
-		double angle = atan2(yDiff, xDiff);
-		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
+		double angle = atan2(yDiff, xDiff) + (reversed ? 180 : 0);
+		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (reversed ? -1 : 1);
 
 		this->movePid->setTarget(distance);
 		this->turnPid->setTarget(this->getStopped() ? this->angle : toDegrees(angle));
