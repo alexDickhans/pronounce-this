@@ -134,6 +134,19 @@ int rightAwpLeft() {
  * @return 0
  */
 int testAuton() {
+
+	tankDrivetrain.setTargetPosition(new Position(10, 0));
+	tankDrivetrain.waitForStop();
+
+	pros::Task::delay(2000);
+
+	tankDrivetrain.setAngle(180);
+	tankDrivetrain.waitForStop();
+
+	pros::Task::delay(2000);
+
+	tankDrivetrain.setTargetPosition(new Position(0, 0, -1));
+	tankDrivetrain.waitForStop();
 	return 0;
 }
 
