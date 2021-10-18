@@ -25,8 +25,8 @@ pros::Motor frontFlipperMotor1(4, MOTOR_GEARSET_36, true);
 pros::Motor frontFlipperMotor2(5, MOTOR_GEARSET_36, false);
 pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
-Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 50.8);
-Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 50.8);
+Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
+Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
@@ -57,16 +57,16 @@ int preAutonRun() {
  * Scores AWP and 11 rings
  */
 int leftAwpRight() {
-	startingPosition->setX(550);
-	startingPosition->setY(228.6);
-	startingPosition->setTheta(180.0);
+	startingPosition->setX(21);
+	startingPosition->setY(9);
+	startingPosition->setTheta(90);
 
 	tankDrivetrain.setStartingPosition(startingPosition);
 
 	tankDrivetrain.setEnabled(true);
 	
 	// Move to left goal
-	tankDrivetrain.setTargetPosition(new Position(890, 290));
+	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
 	tankDrivetrain.waitForStop();
 
 	// Pick up left goal
@@ -74,11 +74,15 @@ int leftAwpRight() {
 	frontFlipperMotor1.move_absolute(20*6, 200);
 
 	// Move to line
-	tankDrivetrain.setTargetPosition(new Position(2385, 1180));
+	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
 	tankDrivetrain.waitForStop();
 
 	// Start collecting and scoring rings
 	intakeMotor.move(127);
+
+	// Collect rings
+	tankDrivetrain.setTargetPosition(new Position(94, 46.8));
+	tankDrivetrain.waitForStop();
 
 	// Manually turn
 	tankDrivetrain.setAngle(0);
@@ -91,11 +95,11 @@ int leftAwpRight() {
 	intakeMotor.move(0);
 
 	// Drop goal backwards
-	tankDrivetrain.setTargetPosition(new Position(2600, 1100, -1));
+	tankDrivetrain.setTargetPosition(new Position(2600, 43, -1));
 	tankDrivetrain.waitForStop();
 
 	// Move to right goal
-	tankDrivetrain.setTargetPosition(new Position(3150, 890));
+	tankDrivetrain.setTargetPosition(new Position(124, 35));
 	tankDrivetrain.waitForStop();
 
 	// Pick up goal
@@ -103,7 +107,7 @@ int leftAwpRight() {
 	frontFlipperMotor1.move_absolute(20*6, 200);
 
 	// Move off AWP
-	tankDrivetrain.setTargetPosition(new Position(2900, 590, -1));
+	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
 
 	// Score in goal
 	intakeMotor.move(127);
