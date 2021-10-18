@@ -246,7 +246,7 @@ void initLogger() {
 
 void initDrivetrain() {
 	pros::Task tankDriveTask(tankDriveThread);
-
+	
 	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
 	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
 
@@ -285,7 +285,6 @@ void updateVisionTask() {
 }
 
 void reset() {
-
 }
 
 /**
