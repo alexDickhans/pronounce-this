@@ -70,20 +70,25 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up left goal
+	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor1.move_absolute(20*6, 200);
 
 	// Move to line
 	tankDrivetrain.setTargetPosition(new Position(2385, 1180));
 	tankDrivetrain.waitForStop();
 
 	// Start collecting and scoring rings
+	intakeMotor.move(127);
 
 	// Manually turn
 	tankDrivetrain.setAngle(0);
 	tankDrivetrain.waitForStop();
 
 	// Set down goal
+	frontFlipperMotor1.move_absolute(0, 200);
 
 	// Stop collecting and scoring rings
+	intakeMotor.move(0);
 
 	// Drop goal backwards
 	tankDrivetrain.setTargetPosition(new Position(2600, 1100, -1));
@@ -94,12 +99,18 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up goal
+	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor1.move_absolute(20*6, 200);
 
 	// Move off AWP
 	tankDrivetrain.setTargetPosition(new Position(2900, 590, -1));
 
 	// Score in goal
+	intakeMotor.move(127);
 
+	pros::Task::delay(1000);
+
+	intakeMotor.move(0);
 
 	return 0;
 }
