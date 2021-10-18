@@ -26,6 +26,9 @@ namespace Pronounce {
 
         double speedThreshhold = 2.0;
         double errorThreshhold = 3.0;
+
+        double turnThreshhold = 2.0;
+        double turnErrorThreshhold = 3.0;
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
         void reset();
