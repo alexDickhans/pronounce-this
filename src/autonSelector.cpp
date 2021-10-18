@@ -1,6 +1,6 @@
 #include "autonSelector.hpp"
 
-int nullAutonSelector() {
+int nullAutonFunc() {
     return 0;
 }
 
