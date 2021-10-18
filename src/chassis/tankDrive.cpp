@@ -33,14 +33,15 @@ namespace Pronounce {
 		double xDiff = this->targetPosition->getX() - currentPosition->getX();
 		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
-		double angle = atan2(yDiff, xDiff) + (reversed ? 180 : 0);
 		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (reversed ? -1 : 1);
+		double angle = nullRotationDistance < distance ? atan2(yDiff, xDiff) + (reversed ? 180 : 0) : prevAngle;
+		this->prevAngle = angle;
 
 		this->movePid->setTarget(distance);
 		this->turnPid->setTarget(this->getStopped() ? this->angle : toDegrees(angle));
 
 		double lateral = this->movePid->update();
-		double turn = nullRotationDistance < distance ? 0.0 : this->turnPid->update();
+		double turn = this->turnPid->update();
 
 		this->getFrontLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
 		this->getFrontLeft()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
@@ -48,7 +49,8 @@ namespace Pronounce {
 
 	bool TankDrivetrain::getStopped() {
 		// Derivitive ~= speed 
-		return this->movePid->getDerivitive() < speedThreshhold && this->movePid->getError() < errorThreshhold;
+		return this->movePid->getDerivitive() < speedThreshhold && this->movePid->getError() < errorThreshhold ||
+				this->turnPid->getDerivitive() < turnThreshhold && this->turnPid->getError() < turnErrorThreshhold;
 	}
 
 	void TankDrivetrain::waitForStop() {
