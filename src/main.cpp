@@ -49,6 +49,11 @@ bool driveOdomEnabled = true;
  * 
  */
 int preAutonRun() {
+	// Drivetrain
+	tankDrivetrain.setEnabled(true);
+
+	// Back flipper
+	backFlipperMotor.move_absolute(2500, 200);
 	return 0;
 }
 
@@ -125,6 +130,40 @@ int leftAwpRight() {
  * @return Status - needed for AutonSelector
  */
 int rightAwpLeft() {
+	return 0;
+}
+
+int rightStealRight() {
+	startingPosition->setX(105.7);
+	startingPosition->setY(12);
+	startingPosition->setTheta(90);
+
+	tankDrivetrain.setStartingPosition(startingPosition);
+
+	// Move to right neutral goal
+	tankDrivetrain.setTargetPosition(new Position(105.7, 62));
+	tankDrivetrain.waitForStop();
+
+	// Pick up goal
+	frontFlipperMotor1.move_absolute(30, 200);
+	frontFlipperMotor2.move_absolute(30, 200);
+
+	// Move to other goal
+	tankDrivetrain.setAngle(180);
+	tankDrivetrain.waitForStop();
+	tankDrivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
+	tankDrivetrain.waitForStop();
+
+	// Pick up ring
+	backFlipperMotor.move_absolute(3700, 200);
+
+	// Move to the target position
+	tankDrivetrain.setTargetPosition(new Position(130, 23));
+	tankDrivetrain.waitForStop();
+
+	// Get ready for match
+	tankDrivetrain.setAngle(45);
+
 	return 0;
 }
 
@@ -230,6 +269,7 @@ void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
 	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
 								(char*)"Right AWP Left", (char*)"\n",
+								(char*)"Right Steal Right", (char*)"\n",
 								(char*)"Test", (char*)"\n",
 								(char*)"" };
 
@@ -240,7 +280,8 @@ void initSelector() {
 	// Set functions
 	autonomousSel->setFunction(0, leftAwpRight);
 	autonomousSel->setFunction(2, rightAwpLeft);
-	autonomousSel->setFunction(4, testAuton);
+	autonomousSel->setFunction(4, rightStealRight);
+	autonomousSel->setFunction(6, testAuton);
 }
 
 /**
