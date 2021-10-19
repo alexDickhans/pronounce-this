@@ -43,6 +43,7 @@ bool driveOdomEnabled = true;
 
 #define DRIFT_MIN 7.0
 
+bool preDriverTasksDone = false;
 
 /**
  * @brief Runs during auton period before auton
@@ -176,6 +177,16 @@ int testAuton() {
 	return 0;
 }
 
+int preDriver() {
+	preDriverTasksDone = true;
+	return 0;
+}
+
+int postAuton() {
+	preDriver();
+	return 0;
+}
+
 /**
  * Render thread to update items on the controller
  */
@@ -262,7 +273,9 @@ void initSelector() {
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
 	
+	// Set pre and post run
 	autonomousSel->setPreRun(preAutonRun);
+	autonomousSel->setPostAuton(postAuton);
 
 	// Set functions
 	autonomousSel->setFunction(0, leftAwpRight);
@@ -392,6 +405,10 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
+
+	if (!preDriverTasksDone) {
+		preDriver();
+	}
 
 	// Delete all items on screen
 	lv_obj_clean(lv_scr_act());
