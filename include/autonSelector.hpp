@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api.h"
+#include "defines.h"
 
 typedef int (*autonFunction)();
 
@@ -9,7 +10,7 @@ int nullAutonFunc();
 // Current User Selection, Static for the moment 
 // Because it needed a static function call
 static int userSelection;
-static const char *textMap[7];
+static const char *textMap[AUTON_SELECTOR_COUNT];
 static bool guiFinnished;
 
 /**
@@ -20,7 +21,7 @@ class autonSelector
 private:
 
     // The function map, used for graphical and execution.
-    autonFunction functionMap[7];
+    autonFunction functionMap[AUTON_SELECTOR_COUNT];
     autonFunction preRun = nullAutonFunc;
     
 
@@ -117,7 +118,7 @@ public:
      */
     static lv_res_t pressHandler(lv_obj_t *btnm, const char *txt) {
 
-        for (int i = 0; i < 7; i ++) {
+        for (int i = 0; i < AUTON_SELECTOR_COUNT; i ++) {
             if (strcmp(txt, textMap[i]) == 0) {
                 userSelection = i;
                 break;

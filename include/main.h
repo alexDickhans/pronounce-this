@@ -43,6 +43,8 @@
 #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
+#include "defines.h"
+
 /**
  * User defined imports
  */
