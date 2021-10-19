@@ -96,7 +96,7 @@ public:
         this->preRun = function;
     }
 
-    void setPostAuton(autonFunction function) {
+    void setPreAuton(autonFunction function) {
         this->postAuton = function;
     }
 
