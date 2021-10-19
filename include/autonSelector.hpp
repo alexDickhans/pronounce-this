@@ -23,6 +23,7 @@ private:
     // The function map, used for graphical and execution.
     autonFunction functionMap[AUTON_SELECTOR_COUNT];
     autonFunction preRun = nullAutonFunc;
+    autonFunction postAuton = nullAutonFunc;
     
 
     /*
@@ -92,7 +93,11 @@ public:
     void setFunction(int position, autonFunction function);
 
     void setPreRun(autonFunction function) {
-        this->preRun = preRun;
+        this->preRun = function;
+    }
+
+    void setPreAuton(autonFunction function) {
+        this->postAuton = function;
     }
 
     /**
