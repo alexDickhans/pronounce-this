@@ -25,8 +25,8 @@ pros::Motor frontFlipperMotor1(4, MOTOR_GEARSET_36, true);
 pros::Motor frontFlipperMotor2(5, MOTOR_GEARSET_36, false);
 pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
-Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 50.8);
-Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 50.8);
+Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
+Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
@@ -43,6 +43,150 @@ bool driveOdomEnabled = true;
 
 #define DRIFT_MIN 7.0
 
+bool preDriverTasksDone = false;
+
+/**
+ * @brief Runs during auton period before auton
+ * 
+ */
+int preAutonRun() {
+	// Drivetrain
+	tankDrivetrain.setEnabled(true);
+
+	// Back flipper
+	backFlipperMotor.move_absolute(2500, 200);
+	return 0;
+}
+
+/**
+ * Left AWP Right
+ * Scores AWP and 11 rings
+ */
+int leftAwpRight() {
+	startingPosition->setX(21);
+	startingPosition->setY(9);
+	startingPosition->setTheta(90);
+
+	tankDrivetrain.setStartingPosition(startingPosition);
+
+	tankDrivetrain.setEnabled(true);
+	
+	// Move to left goal
+	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
+	tankDrivetrain.waitForStop();
+
+	// Pick up left goal
+	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor1.move_absolute(20*6, 200);
+
+	// Move to line
+	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
+	tankDrivetrain.waitForStop();
+
+	// Start collecting and scoring rings
+	intakeMotor.move(127);
+
+	// Collect rings
+	tankDrivetrain.setTargetPosition(new Position(94, 46.8));
+	tankDrivetrain.waitForStop();
+
+	// Manually turn
+	tankDrivetrain.setAngle(0);
+	tankDrivetrain.waitForStop();
+
+	// Set down goal
+	frontFlipperMotor1.move_absolute(0, 200);
+
+	// Stop collecting and scoring rings
+	intakeMotor.move(0);
+
+	// Drop goal backwards
+	tankDrivetrain.setTargetPosition(new Position(2600, 43, -1));
+	tankDrivetrain.waitForStop();
+
+	// Move to right goal
+	tankDrivetrain.setTargetPosition(new Position(124, 35));
+	tankDrivetrain.waitForStop();
+
+	// Pick up goal
+	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor1.move_absolute(20*6, 200);
+
+	// Move off AWP
+	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
+
+	// Score in goal
+	intakeMotor.move(127);
+
+	pros::Task::delay(1000);
+
+	intakeMotor.move(0);
+
+	return 0;
+}
+
+/**
+ * @brief Right Awp Left
+ * 
+ * @return Status - needed for AutonSelector
+ */
+int rightAwpLeft() {
+	return 0;
+}
+
+int rightStealRight() {
+	startingPosition->setX(105.7);
+	startingPosition->setY(12);
+	startingPosition->setTheta(90);
+
+	tankDrivetrain.setStartingPosition(startingPosition);
+
+	// Move to right neutral goal
+	tankDrivetrain.setTargetPosition(new Position(105.7, 62));
+	tankDrivetrain.waitForStop();
+
+	// Pick up goal
+	frontFlipperMotor1.move_absolute(30, 200);
+	frontFlipperMotor2.move_absolute(30, 200);
+
+	// Move to other goal
+	tankDrivetrain.setAngle(180);
+	tankDrivetrain.waitForStop();
+	tankDrivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
+	tankDrivetrain.waitForStop();
+
+	// Pick up ring
+	backFlipperMotor.move_absolute(3700, 200);
+
+	// Move to the target position
+	tankDrivetrain.setTargetPosition(new Position(130, 23));
+	tankDrivetrain.waitForStop();
+
+	// Get ready for match
+	tankDrivetrain.setAngle(45);
+
+	return 0;
+}
+
+/**
+ * @brief Test auton
+ * 
+ * @return 0
+ */
+int testAuton() {
+	return 0;
+}
+
+int preDriver() {
+	preDriverTasksDone = true;
+	return 0;
+}
+
+int postAuton() {
+	preDriver();
+	return 0;
+}
+
 /**
  * Render thread to update items on the controller
  */
@@ -52,7 +196,7 @@ void renderThread() {
 
 /**
  * @brief Tank drive thread
- * 
+ *
  */
 void tankDriveThread() {
 	while (true) {
@@ -67,7 +211,7 @@ void tankDriveThread() {
  * Initialize all sensors
  */
 void initSensors() {
-	
+
 	imu.reset();
 
 	// Wait until IMU is calibrated
@@ -121,24 +265,23 @@ void initVision() {
  */
 void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Top Left", (char*)"Top Right", (char*)"\n",
-									 (char*)"Misc Left", (char*)"Misc Right", (char*)"\n",
-									 (char*)"Bottom Left", (char*)"Bottom Left", (char*)"\n",
-											(char*)"Skills", (char*)"" };
+	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
+								(char*)"Right AWP Left", (char*)"\n",
+								(char*)"Right Steal Right", (char*)"\n",
+								(char*)"Test", (char*)"\n",
+								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
+	
+	// Set pre and post run
+	autonomousSel->setPreRun(preAutonRun);
+	autonomousSel->setPostAuton(postAuton);
 
 	// Set functions
-	autonomousSel->setFunction(0, topLeft);
-	autonomousSel->setFunction(1, topRight);
-
-	autonomousSel->setFunction(3, miscLeft);
-	autonomousSel->setFunction(4, miscRight);
-
-	autonomousSel->setFunction(6, bottomLeft);
-	autonomousSel->setFunction(7, bottomRight);
-
-	autonomousSel->setFunction(9, skills);
+	autonomousSel->setFunction(0, leftAwpRight);
+	autonomousSel->setFunction(2, rightAwpLeft);
+	autonomousSel->setFunction(4, rightStealRight);
+	autonomousSel->setFunction(6, testAuton);
 }
 
 /**
@@ -196,7 +339,6 @@ void updateVisionTask() {
 }
 
 void reset() {
-	
 }
 
 /**
@@ -264,6 +406,10 @@ void autonomous() {
  */
 void opcontrol() {
 
+	if (!preDriverTasksDone) {
+		preDriver();
+	}
+
 	// Delete all items on screen
 	lv_obj_clean(lv_scr_act());
 
@@ -301,7 +447,7 @@ void opcontrol() {
 			tankDrivetrain.getTankOdom()->update();
 
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel,  tankDrivetrain.getPosition()->to_string().c_str());
+			lv_label_set_text(infoLabel, tankDrivetrain.getPosition()->to_string().c_str());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {

@@ -8,14 +8,14 @@ autonSelector::autonSelector() {
     // Nothing
 }
 
-autonSelector::autonSelector(char* inTextMap[11]) {
-    for (int i = 0; i < 11; i ++) {
+autonSelector::autonSelector(char* inTextMap[AUTON_SELECTOR_COUNT]) {
+    for (int i = 0; i < AUTON_SELECTOR_COUNT; i ++) {
         textMap[i] = inTextMap[i];
     }
 }
 
-autonSelector::autonSelector(char* inTextMap[11], lv_obj_t* buttonMapRegion) {
-    for (int i = 0; i < 11; i ++) {
+autonSelector::autonSelector(char* inTextMap[AUTON_SELECTOR_COUNT], lv_obj_t* buttonMapRegion) {
+    for (int i = 0; i < AUTON_SELECTOR_COUNT; i ++) {
         textMap[i] = inTextMap[i];
     }
     this->buttonMapRegion = buttonMapRegion;
@@ -42,7 +42,9 @@ int autonSelector::choose() {
 }
 
 int autonSelector::runSelection() {
-    return this->functionMap[userSelection]();
+    this->preRun();
+    this->functionMap[userSelection]();
+    this->postAuton();
 }
 
 void autonSelector::setFunction(int position, autonFunction function) {

@@ -43,11 +43,12 @@
 #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
+#include "defines.h"
+
 /**
  * User defined imports
  */
 #include "autonSelector.hpp"
-#include "autonRoutines.hpp"
 #include "chassis/drivetrain.hpp"
 #include "chassis/omniDrivetrain.hpp"
 #include "chassis/xdrive.hpp"
