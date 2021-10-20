@@ -21,8 +21,9 @@ pros::Motor backRightMotor(10, true);
 pros::Motor intakeMotor(8);
 
 // Flippers
-pros::Motor frontFlipperMotor1(4, MOTOR_GEARSET_36, true);
-pros::Motor frontFlipperMotor2(5, MOTOR_GEARSET_36, false);
+pros::Motor frontLiftLeftMotor(4, MOTOR_GEARSET_36, true);
+pros::Motor frontLiftRightMotor(5, MOTOR_GEARSET_36, false);
+pros::Motor frontFlipperMotor(6, MOTOR_GEARSET_36, true);
 pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
 
 Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
@@ -76,8 +77,7 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up left goal
-	frontFlipperMotor1.move_absolute(20*6, 200);
-	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor.move_absolute(20*6, 200);
 
 	// Move to line
 	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
@@ -95,7 +95,7 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Set down goal
-	frontFlipperMotor1.move_absolute(0, 200);
+	frontFlipperMotor.move_absolute(0, 200);
 
 	// Stop collecting and scoring rings
 	intakeMotor.move(0);
@@ -109,8 +109,7 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up goal
-	frontFlipperMotor1.move_absolute(20*6, 200);
-	frontFlipperMotor1.move_absolute(20*6, 200);
+	frontFlipperMotor.move_absolute(20*6, 200);
 
 	// Move off AWP
 	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
@@ -146,8 +145,7 @@ int rightStealRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up goal
-	frontFlipperMotor1.move_absolute(30, 200);
-	frontFlipperMotor2.move_absolute(30, 200);
+	frontFlipperMotor.move_absolute(30, 200);
 
 	// Move to other goal
 	tankDrivetrain.setAngle(180);
@@ -232,10 +230,8 @@ void initMotors() {
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 
-	frontFlipperMotor1.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontFlipperMotor2.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontFlipperMotor1.set_encoder_units(MOTOR_ENCODER_DEGREES);
-	frontFlipperMotor2.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	frontFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontFlipperMotor.set_encoder_units(MOTOR_ENCODER_DEGREES);
 	backFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
@@ -419,20 +415,14 @@ void opcontrol() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
 	// Motor buttons
-	MotorButton intakeButton(&master, &intakeMotor, DIGITAL_R1, DIGITAL_R2, 85, 0, -127, 0, 0);
-
-	MotorButton frontFlipperButton1(&master, &frontFlipperMotor1, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
-	MotorButton frontFlipperButton2(&master, &frontFlipperMotor2, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
-	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 0, 3700);
+	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_R1, DIGITAL_R2, 90, 0, -90, 0, 0);
+	MotorButton frontLiftLeftButton(&master, &frontLiftLeftMotor, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
+	MotorButton frontLiftRightButton(&master, &frontLiftRightMotor, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
+	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 2000, 3700);
 	backFlipperButton.setGoToImmediately(true);
-
-	bool lastButton = false;
 
 	// Driver Control Loop
 	while (true) {
-		// Filter input
-		int leftX = master.get_analog(ANALOG_LEFT_X);
-		int leftY = master.get_analog(ANALOG_LEFT_Y);
 
 		// Filter and calculate magnitudes
 		int leftWheelMag = filterAxis(master, ANALOG_LEFT_Y);
@@ -457,9 +447,9 @@ void opcontrol() {
 		}
 
 		// Buttons
-		intakeButton.update();
-		frontFlipperButton1.update();
-		frontFlipperButton2.update();
+		frontFlipperButton.update();
+		frontLiftLeftButton.update();
+		frontLiftRightButton.update();
 		backFlipperButton.update();
 
 		// Prevent wasted resources
