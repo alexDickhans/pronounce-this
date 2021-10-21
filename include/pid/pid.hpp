@@ -14,25 +14,21 @@ namespace Pronounce {
         double kI;
         double kD;
 
-        double target;
+        double target = 0.0;
         double position;
 
-        double error;
-        double totalError;
-        double prevError;
+        double error = 0.0;
+        double totalError = 0.0;
+        double prevError = 0.0;
         double derivitive;
 
         double integralBound = 30.0;
         double maxIntegral = 0.3;
 
-        double p;
-        double i;
-        double d;
-
         double power;
     public:
         PID();
-        PID(double kP, double kI = 0, double kD = 0, double target = 0, double position = 0);
+        PID(double kP, double kI, double kD, double target = 0, double position = 0);
 
         double getDerivitive() {
             return derivitive;
