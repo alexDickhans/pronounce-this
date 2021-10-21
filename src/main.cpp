@@ -48,7 +48,7 @@ bool preDriverTasksDone = false;
 
 /**
  * @brief Runs during auton period before auton
- * 
+ *
  */
 int preAutonRun() {
 	// Drivetrain
@@ -69,13 +69,13 @@ int leftAwpRight() {
 	startingPosition->setTheta(90);
 
 	tankDrivetrain.setStartingPosition(startingPosition);
-	
+
 	// Move to left goal
 	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
 	tankDrivetrain.waitForStop();
 
 	// Pick up left goal
-	frontFlipperMotor.move_absolute(20*6, 200);
+	frontFlipperMotor.move_absolute(20 * 6, 200);
 
 	// Move to line
 	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
@@ -107,7 +107,7 @@ int leftAwpRight() {
 	tankDrivetrain.waitForStop();
 
 	// Pick up goal
-	frontFlipperMotor.move_absolute(20*6, 200);
+	frontFlipperMotor.move_absolute(20 * 6, 200);
 
 	// Move off AWP
 	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
@@ -124,7 +124,7 @@ int leftAwpRight() {
 
 /**
  * @brief Right Awp Left
- * 
+ *
  * @return Status - needed for AutonSelector
  */
 int rightAwpLeft() {
@@ -166,7 +166,7 @@ int rightStealRight() {
 
 /**
  * @brief Test auton
- * 
+ *
  * @return 0
  */
 int testAuton() {
@@ -293,7 +293,7 @@ void initSelector() {
 								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
-	
+
 	// Set pre and post run
 	autonomousSel->setPreRun(nullAutonFunc);
 	autonomousSel->setPostAuton(postAuton);
@@ -321,7 +321,7 @@ void initLogger() {
 
 void initDrivetrain() {
 	pros::Task tankDriveTask(tankDriveThread);
-	
+
 	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
 	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
 
@@ -345,7 +345,7 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 
 	// Apply quadratic function 
 	// f(x) = controllerFilter / 127.0 ^ 3 * 127.0
-	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 127.0;
+	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 200;
 
 	// Return solution
 	return quadraticFilter;
@@ -426,7 +426,7 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-	
+
 	if (!preDriverTasksDone) {
 		preDriver();
 	}
@@ -452,10 +452,17 @@ void opcontrol() {
 		int rightWheelMag = filterAxis(master, ANALOG_RIGHT_Y);
 
 		// Send variables to motors
-		frontLeftMotor.move(leftWheelMag);
-		backLeftMotor.move(leftWheelMag);
-		frontRightMotor.move(rightWheelMag);
-		backRightMotor.move(rightWheelMag);
+		frontLeftMotor.move_velocity(leftWheelMag);
+		backLeftMotor.move_velocity(leftWheelMag);
+		frontRightMotor.move_velocity(rightWheelMag);
+		backRightMotor.move_velocity(rightWheelMag);
+
+
+		if (leftWheelMag == 0) {
+			frontLeftMotor.move_velocity(0.0);
+			backLeftMotor.move_velocity(0.0);
+		}
+
 
 		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
