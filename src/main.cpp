@@ -55,7 +55,7 @@ int preAutonRun() {
 	tankDrivetrain.setEnabled(true);
 
 	// Back flipper
-	backFlipperMotor.move_absolute(2500, 200);
+	backFlipperMotor.move_absolute(2000, 200);
 	return 0;
 }
 
@@ -69,8 +69,6 @@ int leftAwpRight() {
 	startingPosition->setTheta(90);
 
 	tankDrivetrain.setStartingPosition(startingPosition);
-
-	tankDrivetrain.setEnabled(true);
 	
 	// Move to left goal
 	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
@@ -172,19 +170,27 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
+	startingPosition->setX(0);
+	startingPosition->setY(0);
+	startingPosition->setTheta(90);
 
-	tankDrivetrain.setTargetPosition(new Position(10, 0));
+	tankDrivetrain.setStartingPosition(startingPosition);
+
+	tankDrivetrain.setEnabled(true);
+
+	tankDrivetrain.setTargetPosition(new Position(0, 10));
 	tankDrivetrain.waitForStop();
 
-	pros::Task::delay(2000);
+	// pros::Task::delay(2000);
 
-	tankDrivetrain.setAngle(180);
-	tankDrivetrain.waitForStop();
+	// tankDrivetrain.setAngle(180);
+	// tankDrivetrain.waitForStop();
 
-	pros::Task::delay(2000);
+	// pros::Task::delay(2000);
 
-	tankDrivetrain.setTargetPosition(new Position(0, 0, -1));
-	tankDrivetrain.waitForStop();
+	// tankDrivetrain.setTargetPosition(new Position(0, 0, -1));
+	// tankDrivetrain.waitForStop();
+
 	return 0;
 }
 
@@ -195,6 +201,7 @@ int preDriver() {
 }
 
 int postAuton() {
+	tankDrivetrain.setEnabled(false);
 	preDriver();
 	return 0;
 }
@@ -246,6 +253,9 @@ void initMotors() {
 	frontFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	frontFlipperMotor.set_encoder_units(MOTOR_ENCODER_DEGREES);
 	backFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+
+	frontLiftLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontLiftRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -279,13 +289,13 @@ void initSelector() {
 	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
 								(char*)"Right AWP Left", (char*)"\n",
 								(char*)"Right Steal Right", (char*)"\n",
-								(char*)"Test", (char*)"\n",
+								(char*)"Test",
 								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
 	
 	// Set pre and post run
-	autonomousSel->setPreRun(preAutonRun);
+	autonomousSel->setPreRun(nullAutonFunc);
 	autonomousSel->setPostAuton(postAuton);
 
 	// Set functions
@@ -318,7 +328,7 @@ void initDrivetrain() {
 	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
 
 	PID* turnPid = new PID(0.0, 0.0, 0.0);
-	PID* movePid = new PID(0.0, 0.0, 0.0);
+	PID* movePid = new PID(1.0, 0.0, 0.0);
 	tankDrivetrain.setTurnPid(turnPid);
 	tankDrivetrain.setMovePid(movePid);
 
@@ -457,6 +467,12 @@ void opcontrol() {
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
 			reset();
+		}
+
+		if (master.get_digital_new_press(DIGITAL_B)) {
+			preAutonRun();
+			testAuton();
+			postAuton();
 		}
 
 		// Buttons
