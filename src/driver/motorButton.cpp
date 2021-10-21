@@ -39,7 +39,7 @@ namespace Pronounce
 
     void MotorButton::updateMotor() {
         if (!enabled) {
-            this->motor->move(0.0);
+            this->motor->move_velocity(0.0);
             return;
         }
 
@@ -54,7 +54,7 @@ namespace Pronounce
                 this->motor->move(negativeAuthority);
             }
             else {
-                this->motor->move(neutralAuthority);
+                this->motor->move_velocity(neutralAuthority);
             }
             break;
         case POSITIVE:
@@ -67,14 +67,14 @@ namespace Pronounce
                 this->motor->move(positiveAuthority);
             }
             else {
-                this->motor->move(neutralAuthority);
+                this->motor->move_velocity(neutralAuthority);
             }
             break;
         case NEUTRAL:
         default:
             if (goToImmediately)
                 return;
-            this->motor->move(neutralAuthority);
+            this->motor->move_velocity(neutralAuthority);
             break;
         }
 
