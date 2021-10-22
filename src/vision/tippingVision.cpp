@@ -2,11 +2,6 @@
 #include "utils/utils.hpp"
 #include "okapi/api.hpp"
 
-std::shared_ptr<okapi::Logger> visionLogger = std::make_shared<okapi::Logger>(
-    okapi::TimeUtilFactory::createDefault().getTimer(),
-    "/ser/sout", // "/usd/visionLog.txt",
-    okapi::Logger::LogLevel::debug // Show everything
-    );
 
 namespace PronounceTiP
 {
@@ -38,11 +33,11 @@ namespace PronounceTiP
                 positions[i].setX(x);
                 positions[i].setY(y);
             }
-            visionLogger.get()->debug<std::string>(Pronounce::string_format("Object Count: %d, X: %d, Y: %d", this->get_object_count(), positions[0].getX(), positions[0].getY()));
+            // visionLogger.get()->debug<std::string>(Pronounce::string_format("Object Count: %d, X: %d, Y: %d", this->get_object_count(), positions[0].getX(), positions[0].getY()));
 
         }
 
-        visionLogger.get()->debug<std::string>(Pronounce::string_format("Object Count: %d", this->get_object_count()));
+        // visionLogger.get()->debug<std::string>(Pronounce::string_format("Object Count: %d", this->get_object_count()));
 
     }
 

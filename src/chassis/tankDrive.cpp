@@ -1,5 +1,11 @@
 #include "tankDrive.hpp"
 
+std::shared_ptr<okapi::Logger> visionLogger = std::make_shared<okapi::Logger>(
+	okapi::TimeUtilFactory::createDefault().getTimer(),
+	"/ser/sout", // "/usd/visionLog.txt",
+	okapi::Logger::LogLevel::debug // Show everything
+	);
+
 namespace Pronounce {
 
 	TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : Drivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
@@ -21,8 +27,9 @@ namespace Pronounce {
 
 	void TankDrivetrain::update() {
 
-		if (!enabled)
+		if (!enabled) {
 			return;
+		}
 
 		tankOdom->update();
 
@@ -33,9 +40,13 @@ namespace Pronounce {
 		double xDiff = this->targetPosition->getX() - currentPosition->getX();
 		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
-		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (reversed ? -1 : 1);
+		double angleToTarget = toDegrees(atan2(yDiff, xDiff));
+		double robotAngleToTarget = fmod(angleToTarget - imu->get_heading(), 360.0);
+		bool flipDistance = fmod(robotAngleToTarget,  360.0) < 0; //|| (270 < fmod(robotAngleToTarget,  360.0) || fmod(robotAngleToTarget,  360.0) < 90); // < 90.0; // Allow the robot to reverse when it passes the target
+
+		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (flipDistance ? -1 : 1);// * (reversed ? -1 : 1);
 		double linearPosition = sqrt(pow(this->targetPosition->getX() - this->startingPosition->getX(), 2) + pow(this->targetPosition->getY() - this->startingPosition->getY(), 2)) - distance;
-		double angle = nullRotationDistance < distance ? atan2(yDiff, xDiff) + (reversed ? 180 : 0) : prevAngle;
+		double angle = nullRotationDistance < distance ? angleToTarget + (reversed ? 180 : 0) : prevAngle;
 		this->prevAngle = angle;
 
 		this->movePid->setPosition(linearPosition);
@@ -46,14 +57,18 @@ namespace Pronounce {
 		double lateral = this->movePid->update();
 		double turn = this->turnPid->update();
 
+		visionLogger.get()->debug<std::string>("robotAngleToTarget: " + std::to_string(robotAngleToTarget) + " robotY:" + std::to_string(currentPosition->getY()));
+
 		this->getFrontLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
-		this->getFrontLeft()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
+		this->getBackLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
+		this->getFrontRight()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
+		this->getBackRight()->move(std::clamp(lateral - turn, -maxVoltage, maxVoltage));
 	}
 
 	bool TankDrivetrain::getStopped() {
 		// Derivitive ~= speed 
-		return this->movePid->getDerivitive() < speedThreshhold && this->movePid->getError() < errorThreshhold ||
-			this->turnPid->getDerivitive() < turnThreshhold && this->turnPid->getError() < turnErrorThreshhold;
+		return abs(this->movePid->getError()) < errorThreshhold &&
+			abs(this->turnPid->getError()) < turnErrorThreshhold;
 	}
 
 	void TankDrivetrain::waitForStop() {

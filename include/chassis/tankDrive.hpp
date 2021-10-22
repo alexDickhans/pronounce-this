@@ -4,6 +4,8 @@
 #include "drivetrain.hpp"
 #include "position/tankOdom.hpp"
 #include "pid/pid.hpp"
+#include "okapi/api.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce {
     class TankDrivetrain : public Drivetrain {
@@ -25,10 +27,10 @@ namespace Pronounce {
         double maxVoltage = 127.0;
 
         double speedThreshhold = 2.0;
-        double errorThreshhold = 3.0;
+        double errorThreshhold = 0.5;
 
         double turnThreshhold = 2.0;
-        double turnErrorThreshhold = 3.0;
+        double turnErrorThreshhold = 5.0;
     public:
         TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
         void reset();
