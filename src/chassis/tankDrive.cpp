@@ -41,10 +41,10 @@ namespace Pronounce {
 		double yDiff = this->targetPosition->getY() - currentPosition->getY();
 
 		double angleToTarget = toDegrees(atan2(yDiff, xDiff));
-		double robotAngleToTarget = fmod(angleToTarget - fmod(imu->get_rotation() + 720, 360.0), 360.0);
-		bool flipDistance = fmod(robotAngleToTarget,  360.0) < 0 && fmod(robotAngleToTarget,  360.0) > -180;// Allow the robot to reverse when it passes the target
+		double robotAngleToTarget = fmod(angleToTarget - imu->get_heading() + 360, 360.0);
+		bool flipDistance = -90 < fmod(robotAngleToTarget,  360.0) < 90;// Allow the robot to reverse when it passes the target
 
-		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (flipDistance ? -1 : 1);// * (reversed ? -1 : 1);
+		double distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2)) * (flipDistance ? -1 : 1) * (reversed ? -1 : 1);
 		double linearPosition = sqrt(pow(this->targetPosition->getX() - this->startingPosition->getX(), 2) + pow(this->targetPosition->getY() - this->startingPosition->getY(), 2)) - distance;
 		double angle = nullRotationDistance < distance ? angleToTarget + (reversed ? 180 : 0) : prevAngle;
 		this->prevAngle = angle;
@@ -58,12 +58,12 @@ namespace Pronounce {
 		double turn = this->turnPid->update();
 
 		visionLogger.get()->debug<std::string>("imu angle: " + std::to_string(turnPid->getPosition())
-								 + " Turn target:" + std::to_string(turnPid->getTarget()) 
+								 + " robotAngleToTarget:" + std::to_string(robotAngleToTarget) 
 								 + " X:" + std::to_string(currentPosition->getX())
 								 + " Y:" + std::to_string(currentPosition->getY())
 								 + " TargetX:" + std::to_string(targetPosition->getX())
 								 + " targetY:" + std::to_string(targetPosition->getY())
-								 + " lateral:" + std::to_string(std::clamp(lateral, -maxVoltage, maxVoltage)));
+								 + " heading:" + std::to_string(imu->get_heading()));// std::clamp(lateral, -maxVoltage, maxVoltage)));
 
 		this->getFrontLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));
 		this->getBackLeft()->move(std::clamp(lateral + turn, -maxVoltage, maxVoltage));

@@ -92,6 +92,7 @@ namespace Pronounce {
         void setStartingPosition(Position* position) {
             this->tankOdom->setPosition(position);
             this->startingPosition = startingPosition;
+            this->imu->set_rotation(position->getTheta());
             angle = NAN;
         }
 

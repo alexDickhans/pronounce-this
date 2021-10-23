@@ -55,6 +55,10 @@ int preAutonRun() {
 	// backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	// backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 
+	while(imu.is_calibrating()) {
+		pros::Task::delay(50);
+	}
+
 	// Drivetrain
 	tankDrivetrain.setEnabled(true);
 
@@ -181,7 +185,7 @@ int testAuton() {
 	tankDrivetrain.setTargetPosition(new Position(24, 24));
 	tankDrivetrain.waitForStop();
 
-	pros::Task::delay(4000);
+	pros::Task::delay(6000);
 
 	// tankDrivetrain.setAngle(180);
 	// tankDrivetrain.waitForStop();
@@ -338,7 +342,7 @@ void initDrivetrain() {
 	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
 
 	PID* turnPid = new PID(4, 0.0, -2);
-	PID* movePid = new PID(15.0, 0.0, -10.0);
+	PID* movePid = new PID(10.0, 0.0, 0.0);
 	tankDrivetrain.setTurnPid(turnPid);
 	tankDrivetrain.setMovePid(movePid);
 
@@ -419,9 +423,6 @@ void disabled() {
  */
 void competition_initialize() {
 
-	// Show GUI
-	autonomousSel->choose();
-
 }
 
 /**
@@ -430,7 +431,7 @@ void competition_initialize() {
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	autonomousSel->runSelection();
+	//autonomousSel->runSelection();
 
 }
 
@@ -440,15 +441,14 @@ void autonomous() {
  */
 void opcontrol() {
 
+	// Show GUI
+	//autonomousSel->choose();
+
+	tankDrivetrain.setEnabled(false);
+
 	if (!preDriverTasksDone) {
 		preDriver();
 	}
-
-	// Delete all items on screen
-	lv_obj_clean(lv_scr_act());
-
-	// Condensed way to put a few pieces of information on screen
-	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 
 	// Motor buttons
 	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_R1, DIGITAL_R2, 90, 0, -90, 0, 0);
@@ -482,19 +482,11 @@ void opcontrol() {
 			//tankDrivetrain.getTankOdom()->update();
 
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string().c_str());
+			//lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string().c_str());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
 			reset();
-		}
-
-		if (master.get_digital(DIGITAL_B)) {
-			preAutonRun();
-			testAuton();
-			postAuton();
-		} else {
-			tankDrivetrain.setEnabled(false);
 		}
 
 		// Buttons
