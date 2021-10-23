@@ -74,7 +74,7 @@ namespace Pronounce {
          * @return backLeft motor pointer
          */
         pros::Motor* getBackLeft() {
-            return this->frontLeft;
+            return this->backLeft;
         }
 
         /**
@@ -92,7 +92,7 @@ namespace Pronounce {
          * @return backRight motor pointer
          */
         pros::Motor* getBackRight() {
-            return this->frontLeft;
+            return this->backRight;
         }
 
         /**

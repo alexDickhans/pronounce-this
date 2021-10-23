@@ -30,21 +30,14 @@ int autonSelector::choose() {
     this->draw();
     this->addCallbacks();
 
-    // Wait until finnished.
-    while (!guiFinnished) {
-        pros::delay(20);
-    }
-
-    this->del();
-
     // Return the selection.
     return userSelection;
 }
 
 int autonSelector::runSelection() {
-    //this->preRun();
-    //this->functionMap[userSelection]();
-    //this->postAuton();
+    this->preRun();
+    this->functionMap[userSelection]();
+    this->postAuton();
 }
 
 void autonSelector::setFunction(int position, autonFunction function) {
