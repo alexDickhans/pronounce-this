@@ -92,6 +92,7 @@ namespace Pronounce {
         void setStartingPosition(Position* position) {
             this->tankOdom->setPosition(position);
             this->startingPosition = startingPosition;
+            angle = NAN;
         }
 
         void setPosition(Position* position) {
@@ -104,6 +105,7 @@ namespace Pronounce {
 
         void setTargetPosition(Position* targetPosition) {
             this->startingPosition = this->getPosition();
+            angle = NAN;
             this->targetPosition = targetPosition;
         }
 

@@ -24,7 +24,7 @@ namespace Pronounce
 		double x1 = 0;
 		double y1 = average;
 
-		double x2 = - (x1 * cos(angle)) + (y1 * sin(angle));
+		double x2 = (x1 * cos(angle)) + (y1 * sin(angle));
 		double y2 = (x1 * sin(angle)) + (y1 * cos(angle));
 
 		if (std::isnan(x2) || std::isnan(y2)) {

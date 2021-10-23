@@ -178,13 +178,21 @@ int testAuton() {
 
 	tankDrivetrain.setStartingPosition(startingPosition);
 
-	tankDrivetrain.setTargetPosition(new Position(0, 10));
+	tankDrivetrain.setTargetPosition(new Position(24, 24));
 	tankDrivetrain.waitForStop();
 
-	pros::Task::delay(5000);
+	pros::Task::delay(4000);
 
 	// tankDrivetrain.setAngle(180);
 	// tankDrivetrain.waitForStop();
+
+	// pros::Task::delay(5000);
+
+	// tankDrivetrain.setAngle(0);
+	// pros::Task::delay(500);
+	// tankDrivetrain.waitForStop();
+
+	// pros::Task::delay(2000);
 
 	// pros::Task::delay(2000);
 
@@ -329,8 +337,8 @@ void initDrivetrain() {
 
 	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
 
-	PID* turnPid = new PID(0.0, 0.0, 0.0);
-	PID* movePid = new PID(5.0, 0.0, 0.0);
+	PID* turnPid = new PID(4, 0.0, -2);
+	PID* movePid = new PID(15.0, 0.0, -10.0);
 	tankDrivetrain.setTurnPid(turnPid);
 	tankDrivetrain.setMovePid(movePid);
 
@@ -474,7 +482,7 @@ void opcontrol() {
 			//tankDrivetrain.getTankOdom()->update();
 
 			// Used for testing how well the inertial sensor will keep orientation
-			lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string());
+			lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string().c_str());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
