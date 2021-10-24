@@ -11,6 +11,6 @@ namespace Pronounce {
     }
 
     void MotorOdom::update() {
-        this->setMM(motor->get_position() * radius * M_PI * 2.0 * tuningFactor);
+        this->setPosition(motor->get_position() * radius * M_PI * 2.0 * tuningFactor);
     }
 } // namespace Pronounce
