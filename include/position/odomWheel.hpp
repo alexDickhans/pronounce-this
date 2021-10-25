@@ -6,7 +6,7 @@ namespace Pronounce {
     /**
      * Abstract class for odometry wheels
      *
-     * @author ad101-lab
+     * @author Alex(ad101-lab)
      */
     class OdomWheel {
     private:
@@ -17,23 +17,23 @@ namespace Pronounce {
         /**
          * Get the mm at the current moment
          */
-        double getPosition() {
+        virtual double getPosition() {
             return this->position;
         }
         /**
          * Set the MM
          */
-        void setPosition(double position) {
+        virtual void setPosition(double position) {
             this->position = position;
         }
 
-        double getChange() {
+        virtual double getChange() {
             double difference = this->getPosition() - this->lastPosition;
             this->lastPosition = this->getPosition();
             return difference;
         }
 
-        void update() {};
+        virtual void update() {};
 
         ~OdomWheel();
     };
