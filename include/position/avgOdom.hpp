@@ -1,6 +1,7 @@
 #pragma once
 
 #include "odomWheel.hpp"
+#include <list>
 
 namespace Pronounce {
 
@@ -11,66 +12,64 @@ namespace Pronounce {
      *
      * @authors Alex(ad101-lab)
      */
-    template<int I>
-    class AvgOdom : OdomWheel {
+    class AvgOdom : public OdomWheel {
     private:
-        OdomWheel odomWheels[I];
+        std::list<OdomWheel> odomWheels;
     public:
         AvgOdom();
-        AvgOdom(OdomWheel odomWheels[I]);
+        AvgOdom(OdomWheel odomWheels[]);
+        AvgOdom(std::list<OdomWheel> odomWheels);
+        AvgOdom(std::list<OdomWheel>* odomWheels);
 
         /**
          * Get the distance at the current moment
          */
         double getPosition() {
             double total = 0;
-            for (int i = 0; i < I; i++) {
-                total += odomWheels[i].getPosition();
+            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
+                total += it->getPosition();
             }
-            return total / I;
+            return total / odomWheels.size();
         }
         /**
          * Set the distance
          */
         void setPosition(double position) {
-            for (int i = 0; i < I; i++) {
-                odomWheels[i].setPosition(position);
+            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
+                it->setPosition(position);
             }
         }
 
         double getChange() {
+
             double total = 0;
-            for (int i = 0; i < I; i++) {
-                total += odomWheels[i].getChange();
+            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
+                total += it->getChange();
             }
-            return total / I;
+            return total / odomWheels.size();
         }
 
         void update() {
-            for (int i = 0; i < I; i++) {
-                odomWheels[i].update();
+            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
+                it->update();
             }
         }
 
         ~AvgOdom();
     };
 
-    template<int I>
-    AvgOdom<I>::AvgOdom() {
-        for (i = 0; i < I; i++) {
-            this->odomWheels = new OdomWheel();
-        }
+    AvgOdom::AvgOdom() {
     }
 
-    template<int I>
-    AvgOdom<I>::AvgOdom(OdomWheel odomWheels[I]) {
-        for (i = 0; i < I; i++) {
-            this->odomWheels[i] = odomWheels[i];
-        }
+    AvgOdom::AvgOdom(std::list<OdomWheel> odomWheels) {
+        this->odomWheels = odomWheels;
     }
 
-    template<int I>
-    AvgOdom<I>::~AvgOdom() {
+    AvgOdom::AvgOdom(std::list<OdomWheel>* odomWheels) {
+        this->odomWheels = *odomWheels;
+    }
+
+    AvgOdom::~AvgOdom() {
     }
 } // namespace Pronounce
 

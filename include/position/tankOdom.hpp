@@ -14,15 +14,14 @@ namespace Pronounce {
     private:
         Position* position;
 
-        MotorOdom* leftPivot;
-        MotorOdom* rightPivot;
+        OdomWheel* odomWheel;
 
         pros::Imu* imu;
 
         double tuningFactor = 1.0;
 
     public:
-        TankOdom(MotorOdom* leftPivot, MotorOdom* rightPivot, pros::Imu* imu);
+        TankOdom(OdomWheel* odomWheel, pros::Imu* imu);
 
         double getTuringFactor() {
             return this->tuningFactor;
@@ -32,20 +31,12 @@ namespace Pronounce {
             this->tuningFactor = tuningFactor;
         }
 
-        MotorOdom* getLeftPivot() {
-            return leftPivot;
+        OdomWheel* getOdomWheel() {
+            return this->odomWheel;
         }
 
-        void setLeftPivot(MotorOdom* leftPivot) {
-            this->leftPivot = leftPivot;
-        }
-
-        MotorOdom* getRightPivot() {
-            return rightPivot;
-        }
-
-        void setRightPivot(MotorOdom* rightPivot) {
-            this->rightPivot = rightPivot;
+        void setOdomWheel(OdomWheel* odomWheel) {
+            this->odomWheel = odomWheel;
         }
 
         void update();

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <algorithm>
+#include <list>
 #include "drivetrain.hpp"
 #include "position/tankOdom.hpp"
 #include "pid/pid.hpp"
 #include "okapi/api.hpp"
 #include "utils/utils.hpp"
+#include "position/avgOdom.hpp"
 
 namespace Pronounce {
     class TankDrivetrain : public Drivetrain {

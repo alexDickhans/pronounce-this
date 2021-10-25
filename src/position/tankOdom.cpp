@@ -2,9 +2,8 @@
 
 namespace Pronounce
 {
-	TankOdom::TankOdom(MotorOdom* leftPivot, MotorOdom* rightPivot, pros::Imu* imu) {
-		this->leftPivot = leftPivot;
-		this->rightPivot = rightPivot;
+	TankOdom::TankOdom(OdomWheel* odomWheel, pros::Imu* imu) {
+		this->odomWheel = odomWheel;
 		this->imu = imu;
 
 		this->position = new Position();
@@ -15,10 +14,9 @@ namespace Pronounce
 	}
 
 	void TankOdom::update() {
-		leftPivot->update();
-		rightPivot->update();
+		odomWheel->update();
 
-		double average = ((leftPivot->getChange() + rightPivot->getChange()) * tuningFactor) / 2;
+		double average = odomWheel->getChange();
 		double angle = toRadians(imu->get_heading());
 
 		double x1 = 0;
