@@ -336,7 +336,6 @@ void initLogger() {
 
 void initDrivetrain() {
 
-	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
 	tankDrivetrain.getTankOdom()->getOdomWheel()-> setTuningFactor(1.0);
 
 	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);

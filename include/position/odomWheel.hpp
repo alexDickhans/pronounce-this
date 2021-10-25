@@ -12,8 +12,29 @@ namespace Pronounce {
     private:
         double position = 0;
         double lastPosition = 0;
+
+        double radius;
+
+        double tuningFactor = 1.0;
     public:
         OdomWheel();
+        OdomWheel(double radius);
+        
+        double getRadius() {
+            return this->radius;
+        }
+
+        void setRadius(double radius) {
+            this->radius = radius;
+        }
+
+        double getTuningFactor() {
+            return this->tuningFactor;
+        }
+
+        void setTuningFactor(double tuningFactor) {
+            this->tuningFactor = tuningFactor;
+        }
 
         /**
          * Get the mm at the current moment
