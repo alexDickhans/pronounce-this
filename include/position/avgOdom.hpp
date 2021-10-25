@@ -6,9 +6,9 @@ namespace Pronounce {
 
     /**
      * @brief Class to average multiple odom wheels, useful for tank drives and similar base designs.
-     * 
+     *
      * @tparam I Wheel count
-     * 
+     *
      * @authors Alex(ad101-lab)
      */
     template<int I>
@@ -57,10 +57,16 @@ namespace Pronounce {
 
     template<int I>
     AvgOdom<I>::AvgOdom() {
+        for (i = 0; i < I; i++) {
+            this->odomWheels = new OdomWheel();
+        }
     }
 
     template<int I>
     AvgOdom<I>::AvgOdom(OdomWheel odomWheels[I]) {
+        for (i = 0; i < I; i++) {
+            this->odomWheels[i] = odomWheels[i];
+        }
     }
 
     template<int I>

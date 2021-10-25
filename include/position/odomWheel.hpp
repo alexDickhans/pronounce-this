@@ -13,6 +13,7 @@ namespace Pronounce {
         double position = 0;
         double lastPosition = 0;
     public:
+        OdomWheel();
 
         /**
          * Get the mm at the current moment
