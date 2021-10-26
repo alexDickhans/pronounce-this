@@ -19,11 +19,10 @@ namespace Pronounce
 		double average = odomWheel->getChange();
 		double angle = toRadians(imu->get_heading());
 
-		double x1 = 0;
-		double y1 = average;
+		double magnitude = average;
 
-		double x2 = (x1 * cos(angle)) + (y1 * sin(angle));
-		double y2 = (x1 * sin(angle)) + (y1 * cos(angle));
+		double x2 = magnitude * cos(angle);
+		double y2 = magnitude * sin(angle);
 
 		if (std::isnan(x2) || std::isnan(y2)) {
 			return;
