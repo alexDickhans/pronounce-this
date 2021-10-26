@@ -57,9 +57,6 @@ namespace Pronounce {
 
         ~AvgOdom();
     };
-
-    AvgOdom::AvgOdom() {
-    }
 } // namespace Pronounce
 
 
