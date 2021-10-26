@@ -66,6 +66,7 @@
 // Position
 #include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
+#include "position/odometry.hpp"
 #include "position/odomWheel.hpp"
 #include "position/tankOdom.hpp"
 

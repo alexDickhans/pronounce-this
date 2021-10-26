@@ -3,6 +3,7 @@
 #include "utils/position.hpp"
 #include "odomWheel.hpp"
 #include "motorOdom.hpp"
+#include "odometry.hpp"
 #include "utils/utils.hpp"
 #include "api.h"
 #include <string>
@@ -10,10 +11,8 @@
 using namespace Pronounce;
 
 namespace Pronounce {
-    class TankOdom {
+    class TankOdom : public Odometry {
     private:
-        Position* position;
-
         OdomWheel* odomWheel;
 
         pros::Imu* imu;
@@ -42,14 +41,6 @@ namespace Pronounce {
         void update();
 
         void reset();
-
-        Position* getPosition() {
-            return this->position;
-        }
-
-        void setPosition(Position* position) {
-            this->position = position;
-        }
 
         std::string to_string(){
             return this->getPosition()->to_string();

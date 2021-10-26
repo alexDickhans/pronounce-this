@@ -6,7 +6,7 @@ namespace Pronounce
 		this->odomWheel = odomWheel;
 		this->imu = imu;
 
-		this->position = new Position();
+		this->setPosition(new Position());
 	}
 	
 	void TankOdom::reset() {
@@ -29,9 +29,9 @@ namespace Pronounce
 			return;
 		}
 
-		this->position->setX(this->position->getX() + x2);
-		this->position->setY(this->position->getY() + y2);
-		this->position->setTheta(angle);
+		this->getPosition()->setX(this->getPosition()->getX() + x2);
+		this->getPosition()->setY(this->getPosition()->getY() + y2);
+		this->getPosition()->setTheta(angle);
 	}
 
 	TankOdom::~TankOdom() {
