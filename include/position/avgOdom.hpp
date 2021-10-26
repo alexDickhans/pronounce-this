@@ -41,7 +41,6 @@ namespace Pronounce {
         }
 
         double getChange() {
-
             double total = 0;
             for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
                 total += it->getChange();
@@ -57,9 +56,6 @@ namespace Pronounce {
 
         ~AvgOdom();
     };
-
-    AvgOdom::AvgOdom() {
-    }
 } // namespace Pronounce
 
 
