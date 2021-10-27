@@ -1,9 +1,9 @@
 #include "motorOdom.hpp"
 
 namespace Pronounce {
-    MotorOdom::MotorOdom(pros::Motor* motor, double radiusMM) {
+    MotorOdom::MotorOdom(pros::Motor* motor, double radius) {
         this->motor = motor;
-        this->radius = radiusMM;
+        this->radius = radius;
         this->motor->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
     }
 

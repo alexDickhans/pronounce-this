@@ -15,13 +15,13 @@ namespace Pronounce {
     public:
 
         /**
-         * Get the mm at the current moment
+         * Get the position at the current moment
          */
         double getPosition() {
             return this->position;
         }
         /**
-         * Set the MM
+         * Set the position
          */
         void setPosition(double position) {
             this->position = position;
