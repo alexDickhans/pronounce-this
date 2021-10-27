@@ -11,7 +11,8 @@ namespace Pronounce {
 	TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : Drivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
 		MotorOdom* leftPivot = new MotorOdom(frontLeft, 2);
 		MotorOdom* rightPivot = new MotorOdom(frontRight, 2);
-		this->tankOdom = new TankOdom(leftPivot, rightPivot, imu);
+		AvgOdom* odomWheels = new AvgOdom(new std::list<OdomWheel>(leftPivot, rightPivot));
+		this->tankOdom = new TankOdom(odomWheels, imu);
 
 		this->targetPosition = new Position();
 		this->startingPosition = new Position();

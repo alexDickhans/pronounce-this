@@ -29,9 +29,8 @@ Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
-Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
-Pronounce::TankDrivetrain tankDrivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 Position* startingPosition = new Position(0, 0, 0);
 
@@ -60,7 +59,7 @@ int preAutonRun() {
 	}
 
 	// Drivetrain
-	tankDrivetrain.setEnabled(true);
+	drivetrain.setEnabled(true);
 
 	// Back flipper
 	backFlipperMotor.move_absolute(2000, 200);
@@ -76,49 +75,49 @@ int leftAwpRight() {
 	startingPosition->setY(9);
 	startingPosition->setTheta(90);
 
-	tankDrivetrain.setStartingPosition(startingPosition);
+	drivetrain.setStartingPosition(startingPosition);
 
 	// Move to left goal
-	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
-	tankDrivetrain.waitForStop();
+	drivetrain.setTargetPosition(new Position(35, 11.5));
+	drivetrain.waitForStop();
 
 	// Pick up left goal
 	frontFlipperMotor.move_absolute(20 * 6, 200);
 
 	// Move to line
-	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
+	drivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	// Collect rings
-	tankDrivetrain.setTargetPosition(new Position(94, 46.8));
+	drivetrain.setTargetPosition(new Position(94, 46.8));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	// Manually turn
-	tankDrivetrain.setAngle(0);
-	tankDrivetrain.waitForStop();
+	drivetrain.setAngle(0);
+	drivetrain.waitForStop();
 
 	// Set down goal
 	frontFlipperMotor.move_absolute(0, 200);
 
 	// Drop goal backwards
-	tankDrivetrain.setTargetPosition(new Position(2600, 43, -1));
+	drivetrain.setTargetPosition(new Position(2600, 43, -1));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	// Move to right goal
-	tankDrivetrain.setTargetPosition(new Position(124, 35));
+	drivetrain.setTargetPosition(new Position(124, 35));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	// Pick up goal
 	frontFlipperMotor.move_absolute(20 * 6, 200);
 
 	// Move off AWP
-	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
+	drivetrain.setTargetPosition(new Position(114, 23.2, -1));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	pros::Task::delay(1000);
 
@@ -139,30 +138,30 @@ int rightStealRight() {
 	startingPosition->setY(12);
 	startingPosition->setTheta(90);
 
-	tankDrivetrain.setStartingPosition(startingPosition);
+	drivetrain.setStartingPosition(startingPosition);
 
 	// Move to right neutral goal
-	tankDrivetrain.setTargetPosition(new Position(105.7, 62));
-	tankDrivetrain.waitForStop();
+	drivetrain.setTargetPosition(new Position(105.7, 62));
+	drivetrain.waitForStop();
 
 	// Pick up goal
 	frontFlipperMotor.move_absolute(30, 200);
 
 	// Move to other goal
-	tankDrivetrain.setAngle(180);
-	tankDrivetrain.waitForStop();
-	tankDrivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
-	tankDrivetrain.waitForStop();
+	drivetrain.setAngle(180);
+	drivetrain.waitForStop();
+	drivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
+	drivetrain.waitForStop();
 
 	// Pick up ring
 	backFlipperMotor.move_absolute(3700, 200);
 
 	// Move to the target position
-	tankDrivetrain.setTargetPosition(new Position(130, 23));
-	tankDrivetrain.waitForStop();
+	drivetrain.setTargetPosition(new Position(130, 23));
+	drivetrain.waitForStop();
 
 	// Get ready for match
-	tankDrivetrain.setAngle(45);
+	drivetrain.setAngle(45);
 
 	return 0;
 }
@@ -174,35 +173,35 @@ int rightStealRight() {
  */
 int testAuton() {
 
-	tankDrivetrain.setEnabled(true);
+	drivetrain.setEnabled(true);
 
 	startingPosition->setX(0);
 	startingPosition->setY(0);
 	startingPosition->setTheta(90);
 
-	tankDrivetrain.setStartingPosition(startingPosition);
+	drivetrain.setStartingPosition(startingPosition);
 
-	tankDrivetrain.setTargetPosition(new Position(24, 24));
-	tankDrivetrain.waitForStop();
+	drivetrain.setTargetPosition(new Position(24, 24));
+	drivetrain.waitForStop();
 
 	pros::Task::delay(6000);
 
-	// tankDrivetrain.setAngle(180);
-	// tankDrivetrain.waitForStop();
+	// drivetrain.setAngle(180);
+	// drivetrain.waitForStop();
 
 	// pros::Task::delay(5000);
 
-	// tankDrivetrain.setAngle(0);
+	// drivetrain.setAngle(0);
 	// pros::Task::delay(500);
-	// tankDrivetrain.waitForStop();
+	// drivetrain.waitForStop();
 
 	// pros::Task::delay(2000);
 
 	// pros::Task::delay(2000);
 
-	tankDrivetrain.setTargetPosition(new Position(0, 0, -1));
+	drivetrain.setTargetPosition(new Position(0, 0, -1));
 	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
+	drivetrain.waitForStop();
 
 	return 0;
 }
@@ -214,7 +213,7 @@ int preDriver() {
 }
 
 int postAuton() {
-	tankDrivetrain.setEnabled(false);
+	drivetrain.setEnabled(false);
 	preDriver();
 	return 0;
 }
@@ -233,7 +232,7 @@ void renderThread() {
  */
 pros::task_fn_t tankDriveThread(void) {
 	while (true) {
-		tankDrivetrain.update();
+		drivetrain.update();
 
 		uint32_t now = pros::millis();
 		pros::Task::delay_until(&now, 50);
@@ -336,17 +335,16 @@ void initLogger() {
 
 void initDrivetrain() {
 
-	tankDrivetrain.getTankOdom()->getLeftPivot()->setTuningFactor(1.0);
-	tankDrivetrain.getTankOdom()->getRightPivot()->setTuningFactor(1.0);
+	drivetrain.getTankOdom()->getOdomWheel()-> setTuningFactor(1.0);
 
-	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
+	drivetrain.getTankOdom()->setTuningFactor(1.0);
 
 	PID* turnPid = new PID(4, 0.0, -2);
 	PID* movePid = new PID(10.0, 0.0, 0.0);
-	tankDrivetrain.setTurnPid(turnPid);
-	tankDrivetrain.setMovePid(movePid);
+	drivetrain.setTurnPid(turnPid);
+	drivetrain.setMovePid(movePid);
 
-	tankDrivetrain.setStartingPosition(startingPosition);
+	drivetrain.setStartingPosition(startingPosition);
 
 	pros::Task tankDriveTask(tankDriveThread, "TankDrive");
 }
@@ -376,7 +374,7 @@ void updateVisionTask() {
 }
 
 void reset() {
-	tankDrivetrain.reset();
+	drivetrain.reset();
 }
 
 /**
@@ -444,7 +442,7 @@ void opcontrol() {
 	// Show GUI
 	//autonomousSel->choose();
 
-	tankDrivetrain.setEnabled(false);
+	drivetrain.setEnabled(false);
 
 	if (!preDriverTasksDone) {
 		preDriver();
@@ -479,10 +477,10 @@ void opcontrol() {
 
 		// Used to test odom on the robot currently
 		if (driveOdomEnabled) {
-			//tankDrivetrain.getTankOdom()->update();
+			//drivetrain.getTankOdom()->update();
 
 			// Used for testing how well the inertial sensor will keep orientation
-			//lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string().c_str());
+			//lv_label_set_text(infoLabel, drivetrain.getTankOdom()->to_string().c_str());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
@@ -495,7 +493,7 @@ void opcontrol() {
 		frontLiftRightButton.update();
 		backFlipperButton.update();
 		
-		tankDrivetrain.update();
+		drivetrain.update();
 
 		// Prevent wasted resources
 		pros::delay(10);

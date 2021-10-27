@@ -2,12 +2,11 @@
 
 namespace Pronounce
 {
-	TankOdom::TankOdom(MotorOdom* leftPivot, MotorOdom* rightPivot, pros::Imu* imu) {
-		this->leftPivot = leftPivot;
-		this->rightPivot = rightPivot;
+	TankOdom::TankOdom(OdomWheel* odomWheel, pros::Imu* imu) {
+		this->odomWheel = odomWheel;
 		this->imu = imu;
 
-		this->position = new Position();
+		this->setPosition(new Position());
 	}
 	
 	void TankOdom::reset() {
@@ -15,25 +14,23 @@ namespace Pronounce
 	}
 
 	void TankOdom::update() {
-		leftPivot->update();
-		rightPivot->update();
+		odomWheel->update();
 
-		double average = ((leftPivot->getChange() + rightPivot->getChange()) * tuningFactor) / 2;
+		double average = odomWheel->getChange();
 		double angle = toRadians(imu->get_heading());
 
-		double x1 = 0;
-		double y1 = average;
+		double magnitude = average;
 
-		double x2 = (x1 * cos(angle)) + (y1 * sin(angle));
-		double y2 = (x1 * sin(angle)) + (y1 * cos(angle));
+		double x2 = magnitude * cos(angle);
+		double y2 = magnitude * sin(angle);
 
 		if (std::isnan(x2) || std::isnan(y2)) {
 			return;
 		}
 
-		this->position->setX(this->position->getX() + x2);
-		this->position->setY(this->position->getY() + y2);
-		this->position->setTheta(angle);
+		this->getPosition()->setX(this->getPosition()->getX() + x2);
+		this->getPosition()->setY(this->getPosition()->getY() + y2);
+		this->getPosition()->setTheta(angle);
 	}
 
 	TankOdom::~TankOdom() {

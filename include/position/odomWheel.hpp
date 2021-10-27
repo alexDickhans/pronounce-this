@@ -6,34 +6,56 @@ namespace Pronounce {
     /**
      * Abstract class for odometry wheels
      *
-     * @author ad101-lab
+     * @author Alex(ad101-lab)
      */
     class OdomWheel {
     private:
         double position = 0;
         double lastPosition = 0;
+
+        double radius;
+
+        double tuningFactor = 1.0;
     public:
+        OdomWheel();
+        OdomWheel(double radius);
+        
+        double getRadius() {
+            return this->radius;
+        }
+
+        void setRadius(double radius) {
+            this->radius = radius;
+        }
+
+        double getTuningFactor() {
+            return this->tuningFactor;
+        }
+
+        void setTuningFactor(double tuningFactor) {
+            this->tuningFactor = tuningFactor;
+        }
 
         /**
          * Get the position at the current moment
          */
-        double getPosition() {
+        virtual double getPosition() {
             return this->position;
         }
         /**
          * Set the position
          */
-        void setPosition(double position) {
+        virtual void setPosition(double position) {
             this->position = position;
         }
 
-        double getChange() {
+        virtual double getChange() {
             double difference = this->getPosition() - this->lastPosition;
             this->lastPosition = this->getPosition();
             return difference;
         }
 
-        void update() {};
+        virtual void update() {};
 
         ~OdomWheel();
     };
