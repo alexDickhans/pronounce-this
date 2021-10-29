@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 namespace Pronounce {
     class Point {
     private:
@@ -8,6 +10,20 @@ namespace Pronounce {
     public:
         Point();
         Point(double x, double y);
+
+        double distance(Point point) {
+            double x = point.getX() - this->getX();
+            double y = point.getY() - this->getY();
+
+            double distance = sqrt(pow(x, 2) + pow(y, 2));
+
+            return distance;
+        }
+
+        Point positionRelativeTo(Point point) {
+            Point result = Point(point.getX() - this->getX(), point.getY() - this->getY());
+            return result;
+        }
 
         double getX() {
             return this->x;
