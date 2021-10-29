@@ -37,13 +37,13 @@ namespace Pronounce {
         }
 
         /**
-         * Get the mm at the current moment
+         * Get the position at the current moment
          */
         virtual double getPosition() {
             return this->position;
         }
         /**
-         * Set the MM
+         * Set the position
          */
         virtual void setPosition(double position) {
             this->position = position;
