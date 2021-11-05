@@ -1,58 +1,23 @@
 #pragma once
 
+#include "point.hpp"
 #include <string>
 
 namespace Pronounce {
     /**
      * A class to keep track of position on the field
      */
-    class Position {
+    class Position : public Point {
     private:
-        double X, Y, theta;
+        double theta;
     public:
         Position();
         Position(double theta);
-        Position(double X, double Y);
-        Position(double X, double Y, double theta);
+        Position(double x, double y);
+        Position(double x, double y, double theta);
 
         std::string to_string() {
-            return "X: " + std::to_string(this->X) + " Y:" + std::to_string(this->Y) + " T:" + std::to_string(this->theta);
-        }
-
-        /**
-         * Get the X position
-         *
-         * @return X
-         */
-        double getX() {
-            return this->X;
-        }
-
-        /**
-         * Get the X position
-         *
-         * @param X X position
-         */
-        void setX(double X) {
-            this->X = X;
-        }
-
-        /**
-         * Get the Y position
-         *
-         * @return Y
-         */
-        double getY() {
-            return this->Y;
-        }
-
-        /**
-         * Get the Y position
-         *
-         * @param Y Y position
-         */
-        void setY(double Y) {
-            this->Y = Y;
+            return "X: " + std::to_string(this->getX()) + " Y:" + std::to_string(this->getY()) + " T:" + std::to_string(this->theta);
         }
 
         /**

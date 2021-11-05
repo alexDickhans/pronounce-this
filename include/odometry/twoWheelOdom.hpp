@@ -1,7 +1,7 @@
 #pragma once
 
 #include "api.h"
-#include "odomWheel.hpp"
+#include "position/odomWheel.hpp"
 #include "utils/position.hpp"
 
 namespace Pronounce
@@ -14,12 +14,14 @@ namespace Pronounce
 
         pros::Imu* imu;
 
-        double offset;
+        double angleOffset;
+        double verticalOffset;
+        double horizontalOffset;
 
         Position* position;
     public:
         TwoWheelOdom(OdomWheel* vertical, OdomWheel* horizontal, pros::Imu* imu);
-        TwoWheelOdom(OdomWheel* vertical, OdomWheel* horizontal, pros::Imu* imu, double offset);
+        TwoWheelOdom(OdomWheel* vertical, OdomWheel* horizontal, pros::Imu* imu, double angleOffset);
 
         void update();
 
