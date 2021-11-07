@@ -67,106 +67,6 @@ int preAutonRun() {
 }
 
 /**
- * Left AWP Right
- * Scores AWP and 11 rings
- */
-int leftAwpRight() {
-	startingPosition->setX(21);
-	startingPosition->setY(9);
-	startingPosition->setTheta(90);
-
-	drivetrain.setStartingPosition(startingPosition);
-
-	// Move to left goal
-	drivetrain.setTargetPosition(new Position(35, 11.5));
-	drivetrain.waitForStop();
-
-	// Pick up left goal
-	frontFlipperMotor.move_absolute(20 * 6, 200);
-
-	// Move to line
-	drivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
-	pros::Task::delay(500);
-	drivetrain.waitForStop();
-
-	// Collect rings
-	drivetrain.setTargetPosition(new Position(94, 46.8));
-	pros::Task::delay(500);
-	drivetrain.waitForStop();
-
-	// Manually turn
-	drivetrain.setAngle(0);
-	drivetrain.waitForStop();
-
-	// Set down goal
-	frontFlipperMotor.move_absolute(0, 200);
-
-	// Drop goal backwards
-	drivetrain.setTargetPosition(new Position(2600, 43, -1));
-	pros::Task::delay(500);
-	drivetrain.waitForStop();
-
-	// Move to right goal
-	drivetrain.setTargetPosition(new Position(124, 35));
-	pros::Task::delay(500);
-	drivetrain.waitForStop();
-
-	// Pick up goal
-	frontFlipperMotor.move_absolute(20 * 6, 200);
-
-	// Move off AWP
-	drivetrain.setTargetPosition(new Position(114, 23.2, -1));
-	pros::Task::delay(500);
-	drivetrain.waitForStop();
-
-	pros::Task::delay(1000);
-
-	return 0;
-}
-
-/**
- * @brief Right Awp Left
- *
- * @return Status - needed for AutonSelector
- */
-int rightAwpLeft() {
-	return 0;
-}
-
-int rightStealRight() {
-	startingPosition->setX(105.7);
-	startingPosition->setY(12);
-	startingPosition->setTheta(90);
-
-	drivetrain.setStartingPosition(startingPosition);
-
-	// Move to right neutral goal
-	drivetrain.setTargetPosition(new Position(105.7, 62));
-	drivetrain.waitForStop();
-
-	// Pick up goal
-	frontFlipperMotor.move_absolute(30, 200);
-
-	// Move to other goal
-	drivetrain.setAngle(180);
-	drivetrain.waitForStop();
-	drivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
-	drivetrain.waitForStop();
-
-	// Pick up ring
-	backFlipperMotor.move_absolute(3700, 200);
-
-	// Move to the target position
-	drivetrain.setTargetPosition(new Position(130, 23));
-	drivetrain.waitForStop();
-
-	// Get ready for match
-	drivetrain.setAngle(45);
-
-	return 0;
-}
-
-/**
  * @brief Test auton
  *
  * @return 0
@@ -278,30 +178,12 @@ void initController() {
 	pros::Task renderTask(renderThread);
 }
 
-void initVision() {
-	vision = PronounceTiP::Vision(9);
-	vision.clear_led();
-	vision.set_wifi_mode(0);
-
-	pros::vision_signature_s_t BLUE_RING =
-		pros::Vision::signature_from_utility(1, -2899, -1681, -2290, 8489, 12763, 10626, 3.000, 0);
-
-	pros::vision_signature_s_t YELLOW_GOAL =
-		pros::Vision::signature_from_utility(2, -8245, -5707, -6976, -7199, -3865, -5532, 3.000, 0);
-
-	vision.set_signature(1, &BLUE_RING);
-	vision.set_signature(2, &YELLOW_GOAL);
-}
-
 /**
  * Initialize the Auton Selector
  */
 void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Left AWP Right", (char*)"\n",
-								(char*)"Right AWP Left", (char*)"\n",
-								(char*)"Right Steal Right", (char*)"\n",
-								(char*)"Test",
+	static char* btnm_map[] = { (char*)"Test",
 								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
@@ -311,10 +193,7 @@ void initSelector() {
 	autonomousSel->setPostAuton(postAuton);
 
 	// Set functions
-	autonomousSel->setFunction(0, leftAwpRight);
-	autonomousSel->setFunction(2, rightAwpLeft);
-	autonomousSel->setFunction(4, rightStealRight);
-	autonomousSel->setFunction(6, testAuton);
+	autonomousSel->setFunction(0, testAuton);
 
 	autonomousSel->setSelection(0);
 }
@@ -365,14 +244,6 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 	return quadraticFilter;
 }
 
-
-void updateVisionTask() {
-	while (1) {
-		vision.updateAngles();
-		pros::Task::delay(500);
-	}
-}
-
 void reset() {
 	drivetrain.reset();
 }
@@ -391,7 +262,6 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
-	// initVision();
 
 	// pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
 }
@@ -444,10 +314,6 @@ void opcontrol() {
 
 	drivetrain.setEnabled(false);
 
-	if (!preDriverTasksDone) {
-		preDriver();
-	}
-
 	// Motor buttons
 	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_R1, DIGITAL_R2, 90, 0, -90, 0, 0);
 	MotorButton frontLiftLeftButton(&master, &frontLiftLeftMotor, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
@@ -481,10 +347,6 @@ void opcontrol() {
 
 			// Used for testing how well the inertial sensor will keep orientation
 			//lv_label_set_text(infoLabel, drivetrain.getTankOdom()->to_string().c_str());
-		}
-
-		if (master.get_digital_new_press(DIGITAL_Y)) {
-			reset();
 		}
 
 		// Buttons
