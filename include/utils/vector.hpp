@@ -17,6 +17,11 @@ namespace Pronounce {
         Vector(double magnitude, double angle);
         Vector(Point point);
 
+        Vector operator=(Vector vector) {
+            Vector result = Vector(vector.getMagnitude(), vector.getAngle());
+            return result;
+        }
+
         /**
          * @brief Get the vector in the cartesian reference frame
          * 

@@ -39,7 +39,7 @@ namespace Pronounce {
     }
 
     Vector Vector::scale(double scalar) {
-        Vector vector = Vector(this);
+        Vector vector = *this;
 
         vector.setMagnitude(vector.getMagnitude() * scalar);
 
