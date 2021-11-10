@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "point.hpp"
+#include "pointUtil.hpp"
+#include "vector.hpp"
 
 namespace Pronounce {
 
@@ -15,17 +16,27 @@ namespace Pronounce {
 	public:
 		Path();
 
-		std::vector<Point> setPath() {
-			
+		std::vector<Point> getPath() {
+			return path;
+		}
+
+		void setPath(std::vector<Point> path) {
+			this->path = path;
 		}
 
 		Point getPoint(size_t index) {
 			return path.at(index);
 		}
 
-		Point getLookAheadPoint(Point currentPosition, double lookaheadDistance) {
-
+		void addPoint(Point point) {
+			this->path.emplace_back(point);
 		}
+
+		void addPoint(double x, double y) {
+			this->path.emplace_back(Point(x, y));
+		}
+
+		Point getLookAheadPoint(Point currentPosition, double lookaheadDistance);
 
 		/**
 		 * @brief Get the closest point in the path to the robot
@@ -37,28 +48,4 @@ namespace Pronounce {
 
 		~Path();
 	};
-
-	Path::Path(/* args */) {
-	}
-
-	Point Path::getClosestPoint(Point currentPosition) {
-		Point closestPoint;
-		double closestDistance = 0;
-
-		// Returns the largest item in list
-		// If two items are the same distance apart, will return first one
-		for (int i = 0; i < path.size(); i++) {
-			double distance = path.at(i).distance(currentPosition);
-			if (distance < closestDistance) {
-				closestDistance = distance;
-				closestPoint = path.at(i);
-			}
-		}
-
-		return closestPoint;
-	}
-
-	Path::~Path() {
-	}
-
 } // namespace Pronounce

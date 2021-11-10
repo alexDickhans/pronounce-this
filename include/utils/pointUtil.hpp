@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 namespace Pronounce {
     class Point {
@@ -39,6 +40,20 @@ namespace Pronounce {
 
         void setY(double y) {
             this->y = y;
+        }
+
+        void operator=(Point point) {
+            this->setX(point.getX());
+            this->setY(point.getY());
+        }
+
+        void operator+=(Point point) {
+            this->setX(this->getX() + point.getX());
+            this->setY(this->getY() + point.getY());
+        }
+
+        std::string to_string() {
+            return "X: " + std::to_string(x) + ", Y: " + std::to_string(y);
         }
 
         ~Point();
