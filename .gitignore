@@ -1,7 +1,7 @@
 # Compiled Object files
 *.o
 *.obj
-pathTest
+./pathTest
 
 # Executables
 *.bin
