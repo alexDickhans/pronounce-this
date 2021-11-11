@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include<graphics.h>
-
 namespace Pronounce {
     Point Path::getLookAheadPoint(Point currentPosition, double lookaheadDistance) {
         Point lookaheadPoint = Point();
