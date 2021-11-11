@@ -1,4 +1,4 @@
 #pragma once
 
-#define AUTON_SELECTOR_COUNT 9
+#define AUTON_SELECTOR_COUNT 2
 
