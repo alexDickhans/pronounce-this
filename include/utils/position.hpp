@@ -1,6 +1,6 @@
 #pragma once
 
-#include "point.hpp"
+#include "pointUtil.hpp"
 #include <string>
 
 namespace Pronounce {

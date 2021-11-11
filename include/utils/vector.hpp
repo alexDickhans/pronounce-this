@@ -13,9 +13,10 @@ namespace Pronounce {
     private:
         double magnitude;
         double angle;
-
     public:
         Vector();
+        Vector(Point* point);
+        Vector(Point* point1, Point* point2);
         Vector(double magnitude, double angle);
 
         void operator=(Vector vector) {
