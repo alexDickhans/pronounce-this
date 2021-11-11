@@ -6,6 +6,12 @@
 
 namespace Pronounce
 {
+    /**
+     * @brief Two wheel odometry with IMU and 2 perpendicular odom wheels
+     * 
+     * @deprecated Implementation not tested
+     * 
+     */
     class TwoWheelOdom {
 
     private:
