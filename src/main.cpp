@@ -6,9 +6,6 @@ autonSelector* autonomousSel = nullptr;
 // Controllers
 Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 
-// Our vision implementation
-PronounceTiP::Vision vision(9);
-
 // Motors
 
 // Drive Motors
@@ -17,21 +14,12 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-
-// Flippers
-pros::Motor frontLiftLeftMotor(4, MOTOR_GEARSET_36, true);
-pros::Motor frontLiftRightMotor(5, MOTOR_GEARSET_36, false);
-pros::Motor frontFlipperMotor(6, MOTOR_GEARSET_36, true);
-pros::Motor backFlipperMotor(7, MOTOR_GEARSET_36, true);
-
 Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
 Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
 Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
-
-Pronounce::TankDrivetrain tankDrivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 Position* startingPosition = new Position(0, 0, 0);
 
@@ -50,20 +38,10 @@ bool preDriverTasksDone = false;
  */
 int preAutonRun() {
 
-	// frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	// frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	// backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	// backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-
 	while(imu.is_calibrating()) {
 		pros::Task::delay(50);
 	}
 
-	// Drivetrain
-	tankDrivetrain.setEnabled(true);
-
-	// Back flipper
-	backFlipperMotor.move_absolute(2000, 200);
 	return 0;
 }
 
@@ -72,56 +50,6 @@ int preAutonRun() {
  * Scores AWP and 11 rings
  */
 int leftAwpRight() {
-	startingPosition->setX(21);
-	startingPosition->setY(9);
-	startingPosition->setTheta(90);
-
-	tankDrivetrain.setStartingPosition(startingPosition);
-
-	// Move to left goal
-	tankDrivetrain.setTargetPosition(new Position(35, 11.5));
-	tankDrivetrain.waitForStop();
-
-	// Pick up left goal
-	frontFlipperMotor.move_absolute(20 * 6, 200);
-
-	// Move to line
-	tankDrivetrain.setTargetPosition(new Position(33.5, 33.5, -1));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	// Collect rings
-	tankDrivetrain.setTargetPosition(new Position(94, 46.8));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	// Manually turn
-	tankDrivetrain.setAngle(0);
-	tankDrivetrain.waitForStop();
-
-	// Set down goal
-	frontFlipperMotor.move_absolute(0, 200);
-
-	// Drop goal backwards
-	tankDrivetrain.setTargetPosition(new Position(2600, 43, -1));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	// Move to right goal
-	tankDrivetrain.setTargetPosition(new Position(124, 35));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	// Pick up goal
-	frontFlipperMotor.move_absolute(20 * 6, 200);
-
-	// Move off AWP
-	tankDrivetrain.setTargetPosition(new Position(114, 23.2, -1));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	pros::Task::delay(1000);
-
 	return 0;
 }
 
@@ -135,35 +63,6 @@ int rightAwpLeft() {
 }
 
 int rightStealRight() {
-	startingPosition->setX(105.7);
-	startingPosition->setY(12);
-	startingPosition->setTheta(90);
-
-	tankDrivetrain.setStartingPosition(startingPosition);
-
-	// Move to right neutral goal
-	tankDrivetrain.setTargetPosition(new Position(105.7, 62));
-	tankDrivetrain.waitForStop();
-
-	// Pick up goal
-	frontFlipperMotor.move_absolute(30, 200);
-
-	// Move to other goal
-	tankDrivetrain.setAngle(180);
-	tankDrivetrain.waitForStop();
-	tankDrivetrain.setTargetPosition(new Position(105.7, 73.3, -1));
-	tankDrivetrain.waitForStop();
-
-	// Pick up ring
-	backFlipperMotor.move_absolute(3700, 200);
-
-	// Move to the target position
-	tankDrivetrain.setTargetPosition(new Position(130, 23));
-	tankDrivetrain.waitForStop();
-
-	// Get ready for match
-	tankDrivetrain.setAngle(45);
-
 	return 0;
 }
 
@@ -173,49 +72,10 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
-
-	tankDrivetrain.setEnabled(true);
-
-	startingPosition->setX(0);
-	startingPosition->setY(0);
-	startingPosition->setTheta(90);
-
-	tankDrivetrain.setStartingPosition(startingPosition);
-
-	tankDrivetrain.setTargetPosition(new Position(24, 24));
-	tankDrivetrain.waitForStop();
-
-	pros::Task::delay(6000);
-
-	// tankDrivetrain.setAngle(180);
-	// tankDrivetrain.waitForStop();
-
-	// pros::Task::delay(5000);
-
-	// tankDrivetrain.setAngle(0);
-	// pros::Task::delay(500);
-	// tankDrivetrain.waitForStop();
-
-	// pros::Task::delay(2000);
-
-	// pros::Task::delay(2000);
-
-	tankDrivetrain.setTargetPosition(new Position(0, 0, -1));
-	pros::Task::delay(500);
-	tankDrivetrain.waitForStop();
-
-	return 0;
-}
-
-
-int preDriver() {
-	preDriverTasksDone = true;
 	return 0;
 }
 
 int postAuton() {
-	tankDrivetrain.setEnabled(false);
-	preDriver();
 	return 0;
 }
 
@@ -225,19 +85,6 @@ int postAuton() {
  */
 void renderThread() {
 	master.renderFunc();
-}
-
-/**
- * @brief Tank drive thread
- *
- */
-pros::task_fn_t tankDriveThread(void) {
-	while (true) {
-		tankDrivetrain.update();
-
-		uint32_t now = pros::millis();
-		pros::Task::delay_until(&now, 50);
-	}
 }
 
 /**
@@ -262,13 +109,6 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-
-	frontFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontFlipperMotor.set_encoder_units(MOTOR_ENCODER_DEGREES);
-	backFlipperMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-
-	frontLiftLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontLiftRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -313,22 +153,6 @@ void initLogger() {
 	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
 }
 
-void initDrivetrain() {
-
-	tankDrivetrain.getTankOdom()->getOdomWheel()-> setTuningFactor(1.0);
-
-	tankDrivetrain.getTankOdom()->setTuningFactor(1.0);
-
-	PID* turnPid = new PID(4, 0.0, -2);
-	PID* movePid = new PID(10.0, 0.0, 0.0);
-	tankDrivetrain.setTurnPid(turnPid);
-	tankDrivetrain.setMovePid(movePid);
-
-	tankDrivetrain.setStartingPosition(startingPosition);
-
-	pros::Task tankDriveTask(tankDriveThread, "TankDrive");
-}
-
 /**
  * Filter and apply the quadratic function.
  */
@@ -345,10 +169,6 @@ double filterAxis(pros::Controller controller, pros::controller_analog_e_t contr
 	return quadraticFilter;
 }
 
-void reset() {
-	tankDrivetrain.reset();
-}
-
 /**
  * Runs when the robot starts up
  */
@@ -359,12 +179,9 @@ void initialize() {
 	// Initialize functions
 	//initSensors();
 	initMotors();
-	initDrivetrain();
 	initController();
 	initSelector();
 	initLogger();
-
-	// pros::Task visionTask = pros::Task(updateVisionTask, "Vision");
 }
 
 /**
@@ -410,53 +227,19 @@ void autonomous() {
  */
 void opcontrol() {
 
-	// Show GUI
-	//autonomousSel->choose();
-
-	tankDrivetrain.setEnabled(false);
-
-	// Motor buttons
-	MotorButton frontFlipperButton(&master, &frontFlipperMotor, DIGITAL_R1, DIGITAL_R2, 90, 0, -90, 0, 0);
-	MotorButton frontLiftLeftButton(&master, &frontLiftLeftMotor, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
-	MotorButton frontLiftRightButton(&master, &frontLiftRightMotor, DIGITAL_L1, DIGITAL_L2, 90, 0, -90, 0, 0);
-	MotorButton backFlipperButton(&master, &backFlipperMotor, DIGITAL_X, DIGITAL_A, 100, 0, -200, 2000, 3700);
-	backFlipperButton.setGoToImmediately(true);
-
 	// Driver Control Loop
 	while (true) {
 
 		// Filter and calculate magnitudes
-		int leftWheelMag = filterAxis(master, ANALOG_LEFT_Y);
-		int rightWheelMag = filterAxis(master, ANALOG_RIGHT_Y);
+		int leftY = filterAxis(master, ANALOG_LEFT_Y);
+		int leftX = filterAxis(master, ANALOG_LEFT_X);
+		int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
 		// Send variables to motors
-		frontLeftMotor.move_velocity(leftWheelMag);
-		backLeftMotor.move_velocity(leftWheelMag);
-		frontRightMotor.move_velocity(rightWheelMag);
-		backRightMotor.move_velocity(rightWheelMag);
-
-
-		if (leftWheelMag == 0) {
-			frontLeftMotor.move_velocity(0.0);
-			backLeftMotor.move_velocity(0.0);
-		}
-
-
-		// Used to test odom on the robot currently
-		if (driveOdomEnabled) {
-			//tankDrivetrain.getTankOdom()->update();
-
-			// Used for testing how well the inertial sensor will keep orientation
-			//lv_label_set_text(infoLabel, tankDrivetrain.getTankOdom()->to_string().c_str());
-		}
-
-		// Buttons
-		frontFlipperButton.update();
-		frontLiftLeftButton.update();
-		frontLiftRightButton.update();
-		backFlipperButton.update();
-		
-		tankDrivetrain.update();
+		frontLeftMotor.move_velocity(leftY + leftX + rightX);
+		backLeftMotor.move_velocity(leftY - leftX + rightX);
+		frontRightMotor.move_velocity(leftY - leftX - rightX);
+		backRightMotor.move_velocity(leftY + leftX - rightX);
 
 		// Prevent wasted resources
 		pros::delay(10);
