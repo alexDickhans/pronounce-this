@@ -76,6 +76,7 @@
 
 // Utils
 #include "utils/utils.hpp"
+#include "utils/runningAverage.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"

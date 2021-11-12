@@ -14,9 +14,9 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-pros::ADIEncoder leftEncoder(0, 1);
-pros::ADIEncoder rightEncoder(2, 3);
-pros::ADIEncoder backEncoder(4, 5);
+pros::ADIEncoder leftEncoder(2, 1, true);
+pros::ADIEncoder rightEncoder(4, 3, true);
+pros::ADIEncoder backEncoder(6, 5, false);
 
 Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
 Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
@@ -190,6 +190,13 @@ void initialize() {
 	initSelector();
 	initLogger();
 
+	//leftEncoder.set_config(pros::adi_port_config_e_t::E_ADI_LEGACY_ENCODER);
+	leftEncoder.reset();
+	//rightEncoder.set_config(ADI_LEGACY_ENCODER);
+	rightEncoder.reset();
+	//backEncoder.set_config(ADI_LEGACY_ENCODER);
+	backEncoder.reset();
+
 	threeWheelOdom.setBackOffset(3.25);
 	threeWheelOdom.setLeftOffset(4);
 	threeWheelOdom.setRightOffset(4);
@@ -242,6 +249,11 @@ void opcontrol() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_label_set_text(infoLabel, "opcontrol()");
 
+	const int runningAverageLength = 25;
+	RunningAverage<runningAverageLength> leftXAvg;
+	RunningAverage<runningAverageLength> leftYAvg;
+	RunningAverage<runningAverageLength> rightXAvg;
+
 	// Driver Control Loop
 	while (true) {
 
@@ -249,6 +261,14 @@ void opcontrol() {
 		int leftY = filterAxis(master, ANALOG_LEFT_Y);
 		int leftX = filterAxis(master, ANALOG_LEFT_X);
 		int rightX = filterAxis(master, ANALOG_RIGHT_X);
+
+		leftXAvg.add(leftX);
+		leftYAvg.add(leftY);
+		rightXAvg.add(rightX);
+
+		leftX = leftXAvg.getAverage();
+		leftY = leftYAvg.getAverage();
+		rightX = rightXAvg.getAverage();
 
 		// Send variables to motors
 		frontLeftMotor.move_velocity(leftY + leftX + rightX);
@@ -258,7 +278,7 @@ void opcontrol() {
 
 		threeWheelOdom.update();
 
-		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
+		lv_label_set_text(infoLabel, std::to_string(leftEncoder.get_value()).c_str());
 
 		// Prevent wasted resources
 		pros::delay(10);
