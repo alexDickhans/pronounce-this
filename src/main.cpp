@@ -227,6 +227,11 @@ void autonomous() {
  */
 void opcontrol() {
 
+	const int runningAverageLength = 25;
+	RunningAverage<runningAverageLength> leftXAvg;
+	RunningAverage<runningAverageLength> leftYAvg;
+	RunningAverage<runningAverageLength> rightXAvg;
+
 	// Driver Control Loop
 	while (true) {
 
@@ -234,6 +239,14 @@ void opcontrol() {
 		int leftY = filterAxis(master, ANALOG_LEFT_Y);
 		int leftX = filterAxis(master, ANALOG_LEFT_X);
 		int rightX = filterAxis(master, ANALOG_RIGHT_X);
+
+		leftXAvg.add(leftX);
+		leftYAvg.add(leftY);
+		rightXAvg.add(rightX);
+
+		leftX = leftXAvg.getAverage();
+		leftY = leftYAvg.getAverage();
+		rightX = rightXAvg.getAverage();
 
 		// Send variables to motors
 		frontLeftMotor.move_velocity(leftY + leftX + rightX);
