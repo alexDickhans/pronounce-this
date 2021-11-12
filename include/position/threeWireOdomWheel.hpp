@@ -3,7 +3,7 @@
 #include "odomWheel.hpp"
 
 namespace Pronounce {
-    class AdiOdomWheel : public OdomWheel {
+    class  AdiOdomWheel : public OdomWheel {
     private:
         pros::ADIEncoder* encoder;
     public:

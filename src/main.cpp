@@ -14,8 +14,15 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
-Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
+pros::ADIEncoder leftEncoder(0, 1);
+pros::ADIEncoder rightEncoder(2, 3);
+pros::ADIEncoder backEncoder(4, 5);
+
+Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
+Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
+Pronounce::AdiOdomWheel backOdom(&backEncoder);
+
+Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
@@ -38,7 +45,7 @@ bool preDriverTasksDone = false;
  */
 int preAutonRun() {
 
-	while(imu.is_calibrating()) {
+	while (imu.is_calibrating()) {
 		pros::Task::delay(50);
 	}
 
@@ -182,6 +189,10 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
+
+	threeWheelOdom.setBackOffset(3.25);
+	threeWheelOdom.setLeftOffset(4);
+	threeWheelOdom.setRightOffset(4);
 }
 
 /**
@@ -227,6 +238,10 @@ void autonomous() {
  */
 void opcontrol() {
 
+
+	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
+	lv_label_set_text(infoLabel, "opcontrol()");
+
 	// Driver Control Loop
 	while (true) {
 
@@ -240,6 +255,10 @@ void opcontrol() {
 		backLeftMotor.move_velocity(leftY - leftX + rightX);
 		frontRightMotor.move_velocity(leftY - leftX - rightX);
 		backRightMotor.move_velocity(leftY + leftX - rightX);
+
+		threeWheelOdom.update();
+
+		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
 
 		// Prevent wasted resources
 		pros::delay(10);
