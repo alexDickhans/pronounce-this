@@ -1,7 +1,6 @@
 #pragma once
 
-namespace Pronounce
-{
+namespace Pronounce{
     template<int L>
     class RunningAverage {
     private:

@@ -25,7 +25,8 @@ namespace Pronounce {
 
             if (discriminant < 0) {
 
-            } else {
+            }
+            else {
                 discriminant = sqrt(discriminant);
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
@@ -64,7 +65,7 @@ namespace Pronounce {
         }
 
         if (!pointFound) {
-            return getClosestPoint(currentPosition);
+            return this->getClosestPoint(currentPosition);
         }
 
         return lookaheadPoint;
@@ -75,15 +76,32 @@ namespace Pronounce {
 
     Point Path::getClosestPoint(Point currentPosition) {
         Point closestPoint;
-        double closestDistance = 0;
+        double closestDistance = INT32_MAX;
 
         // Returns the largest item in list
         // If two items are the same distance apart, will return first one
-        for (int i = 0; i < path.size(); i++) {
-            double distance = path.at(i).distance(currentPosition);
+        for (int i = 1; i < path.size(); i++) {
+            Point lastPoint = path.at(i - 1);
+            Point thisPoint = path.at(i);
+
+            Vector thisMinusLast(&thisPoint, &lastPoint);
+            Vector positionMinusLast(&currentPosition, &lastPoint);
+
+            // https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
+            double lambdaS = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
+
+            if (0 < lambdaS && lambdaS < 1) {
+                lastPoint += Vector(&lastPoint, &thisPoint).scale(lambdaS).getCartesian();
+            } else if (lambdaS > 1) {
+                lastPoint = thisPoint;
+            } else if (lambdaS < 0) {
+                lastPoint = lastPoint;
+            }
+
+            double distance = lastPoint.distance(currentPosition);
             if (distance < closestDistance) {
                 closestDistance = distance;
-                closestPoint = path.at(i);
+                closestPoint = lastPoint;
             }
         }
 
