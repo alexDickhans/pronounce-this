@@ -4,20 +4,26 @@
 #include<stdlib.h>
 #include<graphics.h>
 
+#include <chrono>
+
 #include "include/utils/vector.hpp"
 #include "src/utils/vector.cpp"
 #include "include/utils/pointUtil.hpp"
 #include "src/utils/pointUtil.cpp"
 #include "include/utils/path.hpp"
 #include "src/utils/path.cpp"
+#include "include/utils/runningAverage.hpp"
+#include "src/utils/runningAverage.cpp"
 
 using namespace Pronounce;
 
 #define xOffset 150
 #define yOffset 200
-#define multiplier 2
+#define multiplier 2.5
 
-#define lookahead 20
+#define lookahead 50
+
+#define starting_point_random 1
 
 #define PRINT_LIVE true
 #define GRAPH true
@@ -46,53 +52,91 @@ void printPath(Path path) {
 
         line((lastPoint.getX() * multiplier) + xOffset, -(lastPoint.getY() * multiplier) + yOffset, (currentPoint.getX() * multiplier) + xOffset, -(currentPoint.getY() * multiplier) + yOffset);
 
-        printRobot(lastPoint);
+        // printRobot(lastPoint);
+    }
+}
+
+void printPath(std::vector<Point> path) {
+
+    if (path.size() < 2) {
+        return;
+    }
+
+    for (int i = 1; i < path.size(); i++) {
+        Point lastPoint = path.at(i - 1);
+        Point currentPoint = path.at(i);
+
+        line((lastPoint.getX() * multiplier) + xOffset, -(lastPoint.getY() * multiplier) + yOffset, (currentPoint.getX() * multiplier) + xOffset, -(currentPoint.getY() * multiplier) + yOffset);
+
+        // printRobot(lastPoint);
     }
 }
 
 int main() {
 
+    // Create path
     Path path = Path();
-    path.addPoint(0, 0);
-    path.addPoint(100, 50);
-    path.addPoint(150, 0);
-    path.addPoint(100, -50);
-    path.addPoint(0, -100);
+    path.addPoint(-50, 0);
+    path.addPoint(10, 40);
+    path.addPoint(150, 40);
+
+    srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
 #if GRAPH
     int gd = DETECT, gm;
     initgraph(&gd, &gm, NULL);
 
-    delay(1000);
-    printPath(path);
-#endif
+    setbkcolor(WHITE);
+    setcolor(DARKGRAY);
 
-    Point robot = Point(0, 0);
+    delay(1000);
+    //printPath(path);
+#endif
+    // Set random robot starting position
+    Point firstPosition = path.getPath().at(0);
+    
+    firstPosition.setX(firstPosition.getX() + ((rand() / 1073741823) - 1) * starting_point_random);
+    firstPosition.setY(firstPosition.getY() + ((rand() / 1073741823) - 1) * starting_point_random);
+    Point robot = firstPosition;
     Vector robotMovement = Vector();
 
     std::vector<Point> pathVector = path.getPath();
 #if GRAPH
     std::vector<Point> robotPositions;
+    robotPositions.emplace_back(path.getPath().at(0));
 #endif
 
-    while (pathVector.at(pathVector.size() - 1).distance(robot) > 0.5) {
+    // Use a running average to estimate momentum
+    const int runningAverageLength = 15;
+
+    RunningAverage<runningAverageLength> runningAverageX;
+    RunningAverage<runningAverageLength> runningAverageY;
+
+    // Loop until you get to the last point
+    while (pathVector.at(pathVector.size() - 1).distance(robot) > 1) {
+        // Get the lookahead point 
         Point lookaheadPoint = path.getLookAheadPoint(robot, lookahead);
         robotMovement = Vector(&robot, &lookaheadPoint);
-        robotMovement.normalize();
-        //robotMovement = robotMovement.scale(5);
-        robot += robotMovement.getCartesian();
+        if (robotMovement.getMagnitude() > 1) {
+            robotMovement.normalize();
+        }
+        robotMovement = robotMovement.scale(1);
+        runningAverageX.add(robotMovement.getCartesian().getX());
+        runningAverageY.add(robotMovement.getCartesian().getY());
+
+        // Move robot
+        Point runningAveragePosition(runningAverageX.getAverage(), runningAverageY.getAverage());
+        robot += runningAveragePosition;
 
 #if GRAPH
 #if PRINT_LIVE
         printRobotWithLookahead(robot);
 
-        for (int i = 0; i < robotPositions.size(); i++) {
-            printRobot(robotPositions.at(i));
-        }
+        printPath(robotPositions);
 
         printPath(path);
 
-        // delay(10);
+        delay(10);
         cleardevice();
 #endif // PRINT_LIVE
 
@@ -101,14 +145,15 @@ int main() {
     }
 #if GRAPH
 
-    printRobotWithLookahead(robot);
+    // printRobotWithLookahead(robot);
 
-    for (int i = 0; i < robotPositions.size(); i++) {
-        printRobot(robotPositions.at(i));
-    }
+    setlinestyle(SOLID_LINE, 5, 2);
+
+    printPath(robotPositions);
 
     robotPositions.emplace_back(robot);
 
+    setlinestyle(DASHED_LINE, 5, 2);
     printPath(path);
 
     delay(500000);
