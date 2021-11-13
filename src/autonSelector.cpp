@@ -36,8 +36,9 @@ int autonSelector::choose() {
 
 int autonSelector::runSelection() {
     this->preRun();
-    this->functionMap[userSelection]();
+    int result = this->functionMap[userSelection]();
     this->postAuton();
+    return result;
 }
 
 void autonSelector::setFunction(int position, autonFunction function) {
