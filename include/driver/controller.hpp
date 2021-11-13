@@ -3,6 +3,7 @@
 #include "api.h"
 #include "chassis/drivetrain.hpp"
 #include "utils/position.hpp"
+#include "utils/vector.hpp"
 
 #define STATE_AUTON 0
 #define STATE_DRIVER 1
@@ -46,6 +47,8 @@ namespace Pronounce {
         double getTheta(int joystick);
 
         double getMagnitude(int joystick);
+
+        Vector getVector(int joystick);
 
         void render();
         void renderAuton();

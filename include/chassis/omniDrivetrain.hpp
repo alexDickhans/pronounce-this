@@ -2,20 +2,21 @@
 
 #include "api.h"
 #include "drivetrain.hpp"
+#include "utils/vector.hpp"
 
 namespace Pronounce
 {
     /**
      * Omnidirectional drive type, used for X-Drive/Mecanum drive
      */
-    class OmniDrivetrain : protected Drivetrain
-    {
+    class OmniDrivetrain : public Drivetrain {
     protected:
-        /* data */
+        
     public:
         OmniDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-        
-        
+
+        virtual void setDriveVectorVelocity(Vector vector) {}
+        virtual void setDriveVectorVelocity(Vector vector, double rotation) {}
         
         ~OmniDrivetrain();
     };

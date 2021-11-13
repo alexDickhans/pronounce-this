@@ -30,7 +30,7 @@ namespace Pronounce {
          */
         double getSpeed();
 
-        
+        virtual void update() {}        
 
         /**
          * Get frontLeft motor

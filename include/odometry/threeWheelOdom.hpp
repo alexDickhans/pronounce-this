@@ -1,3 +1,5 @@
+#pragma once
+
 #include "odometry.hpp"
 #include "position/odomWheel.hpp"
 #include "utils/vector.hpp"
