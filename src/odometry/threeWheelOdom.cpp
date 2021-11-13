@@ -1,43 +1,46 @@
 #include "threeWheelOdom.hpp"
 
 namespace Pronounce {
-    ThreeWheelOdom::ThreeWheelOdom(/* args */) {
+    ThreeWheelOdom::ThreeWheelOdom(/* args */) : Odometry() {
     }
 
-    ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) {
+    ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : Odometry() {
         this->leftWheel = leftWheel;
         this->rightWheel = rightWheel;
         this->backWheel = backWheel;
     }
 
     void ThreeWheelOdom::update() {
+        leftWheel->update();
+        rightWheel->update();
+        backWheel->update();
+
         double deltaLeft = leftWheel->getChange();
         double deltaRight = rightWheel->getChange();
         double deltaBack = backWheel->getChange();
 
         Position* lastPosition = this->getPosition();
-        Position newPosition = *this->getPosition();
 
         double lastAngle = lastPosition->getTheta();
-        double angleChange = (deltaLeft - deltaRight) / (leftOffset / rightOffset);
+        double angleChange = (deltaLeft - deltaRight) / (leftOffset + rightOffset);
         double currentAngle = lastAngle + angleChange;
         double averageOrientation = lastAngle + (angleChange / 2);
 
         Vector localOffset;
-        if (angleChange == 0) {
-            localOffset = Vector(deltaBack, deltaRight);
+        if (abs(angleChange) < 0.05) {
+            localOffset = Vector(new Point(deltaBack, deltaRight));
         }
         else {
-            localOffset = Vector((deltaBack / angleChange) + backOffset, (deltaRight / angleChange) + rightOffset);
+            localOffset = Vector(new Point((deltaBack / angleChange) + backOffset, (deltaRight / angleChange) + rightOffset));
         }
 
         // Rotate vector
         localOffset.setAngle(localOffset.getAngle() - averageOrientation);
 
-        newPosition += localOffset.getCartesian();
-        newPosition.setTheta(currentAngle);
+        lastPosition->add(localOffset.getCartesian());
+        lastPosition->setTheta(currentAngle);
 
-        this->setPosition(&newPosition);
+        this->setPosition(lastPosition);
     }
 
     ThreeWheelOdom::~ThreeWheelOdom() {

@@ -192,14 +192,24 @@ void initialize() {
 
 	//leftEncoder.set_config(pros::adi_port_config_e_t::E_ADI_LEGACY_ENCODER);
 	leftEncoder.reset();
+	leftOdom.setRadius(1.625);
+	leftOdom.setTuningFactor(1.0);
 	//rightEncoder.set_config(ADI_LEGACY_ENCODER);
 	rightEncoder.reset();
+	rightOdom.setRadius(1.625);
+	rightOdom.setTuningFactor(1.0);
 	//backEncoder.set_config(ADI_LEGACY_ENCODER);
 	backEncoder.reset();
+	backOdom.setRadius(1.625);
+	backOdom.setTuningFactor(1.0);
+
+	pros::Task::delay(100);
 
 	threeWheelOdom.setBackOffset(3.25);
 	threeWheelOdom.setLeftOffset(4);
 	threeWheelOdom.setRightOffset(4);
+
+	//threeWheelOdom.setPosition(new Position());
 }
 
 /**
@@ -278,7 +288,7 @@ void opcontrol() {
 
 		threeWheelOdom.update();
 
-		lv_label_set_text(infoLabel, std::to_string(leftEncoder.get_value()).c_str());
+		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
 
 		// Prevent wasted resources
 		pros::delay(10);
