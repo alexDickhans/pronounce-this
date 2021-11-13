@@ -1,8 +1,8 @@
 #pragma once
 
 #include "utils/position.hpp"
-#include "odomWheel.hpp"
-#include "motorOdom.hpp"
+#include "position/odomWheel.hpp"
+#include "position/motorOdom.hpp"
 #include "odometry.hpp"
 #include "utils/utils.hpp"
 #include "api.h"
