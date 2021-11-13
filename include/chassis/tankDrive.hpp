@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <list>
 #include "drivetrain.hpp"
-#include "position/tankOdom.hpp"
+#include "odometry/tankOdom.hpp"
 #include "pid/pid.hpp"
 #include "okapi/api.hpp"
 #include "utils/utils.hpp"

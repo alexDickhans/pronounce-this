@@ -49,7 +49,6 @@
 
 #include "defines.h"
 #include "autonSelector.hpp"
-#include "controller.hpp"
 
 // Chassis
 #include "chassis/drivetrain.hpp"
@@ -59,19 +58,25 @@
 
 // Driver
 #include "driver/motorButton.hpp"
+#include "driver/controller.hpp"
+
+// Odometry
+#include "odometry/odometry.hpp"
+#include "odometry/threeWheelOdom.hpp"
+#include "odometry/tankOdom.hpp"
 
 // PID
 #include "pid/pid.hpp"
 
 // Position
+#include "position/threeWireOdomWheel.hpp"
 #include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
-#include "position/odometry.hpp"
 #include "position/odomWheel.hpp"
-#include "position/tankOdom.hpp"
 
 // Utils
 #include "utils/utils.hpp"
+#include "utils/runningAverage.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"
