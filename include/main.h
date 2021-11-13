@@ -49,7 +49,6 @@
 
 #include "defines.h"
 #include "autonSelector.hpp"
-#include "controller.hpp"
 
 // Chassis
 #include "chassis/drivetrain.hpp"
@@ -59,6 +58,7 @@
 
 // Driver
 #include "driver/motorButton.hpp"
+#include "driver/controller.hpp"
 
 // Odometry
 #include "odometry/odometry.hpp"
