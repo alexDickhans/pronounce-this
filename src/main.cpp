@@ -14,8 +14,15 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-Pronounce::MotorOdom frontLeftOdom(&frontLeftMotor, 2);
-Pronounce::MotorOdom frontRightOdom(&frontRightMotor, 2);
+pros::ADIEncoder leftEncoder(2, 1, true);
+pros::ADIEncoder rightEncoder(4, 3, true);
+pros::ADIEncoder backEncoder(6, 5, false);
+
+Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
+Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
+Pronounce::AdiOdomWheel backOdom(&backEncoder);
+
+Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
@@ -38,7 +45,7 @@ bool preDriverTasksDone = false;
  */
 int preAutonRun() {
 
-	while(imu.is_calibrating()) {
+	while (imu.is_calibrating()) {
 		pros::Task::delay(50);
 	}
 
@@ -182,6 +189,27 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
+
+	//leftEncoder.set_config(pros::adi_port_config_e_t::E_ADI_LEGACY_ENCODER);
+	leftEncoder.reset();
+	leftOdom.setRadius(1.625);
+	leftOdom.setTuningFactor(1.0);
+	//rightEncoder.set_config(ADI_LEGACY_ENCODER);
+	rightEncoder.reset();
+	rightOdom.setRadius(1.625);
+	rightOdom.setTuningFactor(1.0);
+	//backEncoder.set_config(ADI_LEGACY_ENCODER);
+	backEncoder.reset();
+	backOdom.setRadius(1.625);
+	backOdom.setTuningFactor(1.0);
+
+	pros::Task::delay(100);
+
+	threeWheelOdom.setBackOffset(3.25);
+	threeWheelOdom.setLeftOffset(4);
+	threeWheelOdom.setRightOffset(4);
+
+	//threeWheelOdom.setPosition(new Position());
 }
 
 /**
@@ -227,6 +255,10 @@ void autonomous() {
  */
 void opcontrol() {
 
+
+	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
+	lv_label_set_text(infoLabel, "opcontrol()");
+
 	const int runningAverageLength = 25;
 	RunningAverage<runningAverageLength> leftXAvg;
 	RunningAverage<runningAverageLength> leftYAvg;
@@ -253,6 +285,10 @@ void opcontrol() {
 		backLeftMotor.move_velocity(leftY - leftX + rightX);
 		frontRightMotor.move_velocity(leftY - leftX - rightX);
 		backRightMotor.move_velocity(leftY + leftX - rightX);
+
+		threeWheelOdom.update();
+
+		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
 
 		// Prevent wasted resources
 		pros::delay(10);

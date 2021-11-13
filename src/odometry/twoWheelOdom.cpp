@@ -3,18 +3,18 @@
 namespace Pronounce
 {
 
-	TwoWheelOdom::TwoWheelOdom(OdomWheel* horizontal, OdomWheel* vertical, pros::Imu* imu, double offset) {
+	TwoWheelOdom::TwoWheelOdom(OdomWheel* horizontal, OdomWheel* vertical, pros::Imu* imu, double angleOffset) {
 		this->vertical = vertical;
 		this->horizontal = horizontal;
 		this->imu = imu;
-		this->offset = offset;
+		this->angleOffset = angleOffset;
 	}
 
 	void TwoWheelOdom::update() {
 		this->horizontal->update();
 		this->vertical->update();
 
-		double angle = this->imu->get_rotation() - this->offset;
+		double angle = this->imu->get_rotation() - this->angleOffset;
 		double x1 = this->horizontal->getChange();
 		double y1 = this->vertical->getChange();
 

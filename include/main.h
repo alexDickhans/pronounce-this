@@ -60,15 +60,19 @@
 // Driver
 #include "driver/motorButton.hpp"
 
+// Odometry
+#include "odometry/odometry.hpp"
+#include "odometry/threeWheelOdom.hpp"
+#include "odometry/tankOdom.hpp"
+
 // PID
 #include "pid/pid.hpp"
 
 // Position
+#include "position/threeWireOdomWheel.hpp"
 #include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
-#include "position/odometry.hpp"
 #include "position/odomWheel.hpp"
-#include "position/tankOdom.hpp"
 
 // Utils
 #include "utils/utils.hpp"
