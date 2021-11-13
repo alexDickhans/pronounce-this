@@ -48,6 +48,10 @@ namespace Pronounce {
         return angle;
     }
 
+    Vector Controller::getVector(int joystick) {
+        return Vector(this->getMagnitude(joystick), this->getTheta(joystick));
+    }
+
     void Controller::render() {
         this->clear();
         pros::Task::delay(100);

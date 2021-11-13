@@ -26,7 +26,7 @@ Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
 // Inertial Measurement Unit
 pros::Imu imu(3);
-Drivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
+MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &threeWheelOdom);
 
 Position* startingPosition = new Position(0, 0, 0);
 
@@ -194,9 +194,21 @@ void initialize() {
 	initSelector();
 	initLogger();
 
-	//leftEncoder.set_config(pros::adi_port_config_e_t::E_ADI_LEGACY_ENCODER);
 	leftEncoder.reset();
 	leftOdom.setRadius(1.625);
+	leftOdom.setTuningFactor(1.015873);
+	rightEncoder.reset();
+	rightOdom.setRadius(1.625);
+	rightOdom.setTuningFactor(1.01343);
+	backEncoder.reset();
+	backOdom.setRadius(1.625);
+	backOdom.setTuningFactor(1.01343);
+
+	//pros::Task::delay(100);
+
+	threeWheelOdom.setBackOffset(3.25);
+	threeWheelOdom.setLeftOffset(7.75/2);
+	threeWheelOdom.setRightOffset(7.75/2);
 
 	//threeWheelOdom.setPosition(new Position());
 }
@@ -268,11 +280,11 @@ void opcontrol() {
 		leftY = leftYAvg.getAverage();
 		rightX = rightXAvg.getAverage();
 
+		Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
+		driveVector.setAngle((driveVector.getAngle()) + threeWheelOdom.getPosition()->getTheta());
+
 		// Send variables to motors
-		frontLeftMotor.move_velocity(leftY + leftX + rightX);
-		backLeftMotor.move_velocity(leftY - leftX + rightX);
-		frontRightMotor.move_velocity(leftY - leftX - rightX);
-		backRightMotor.move_velocity(leftY + leftX - rightX);
+		drivetrain.setDriveVectorVelocity(driveVector, rightX);
 
 		threeWheelOdom.update();
 

@@ -52,6 +52,7 @@
 
 // Chassis
 #include "chassis/drivetrain.hpp"
+#include "chassis/mecanumDrivetrain.hpp"
 #include "chassis/omniDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
 #include "chassis/xdrive.hpp"
