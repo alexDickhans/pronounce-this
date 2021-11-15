@@ -1,4 +1,4 @@
-    
+
 #include<stdio.h>
 #include <iostream>
 #include<stdlib.h>
@@ -19,9 +19,9 @@ using namespace Pronounce;
 
 #define xOffset 150
 #define yOffset 200
-#define multiplier 2.5
+#define multiplier 3
 
-#define lookahead 50
+#define lookahead 10
 
 #define starting_point_random 1
 
@@ -76,9 +76,12 @@ int main() {
 
     // Create path
     Path path = Path();
-    path.addPoint(-50, 0);
-    path.addPoint(10, 40);
-    path.addPoint(150, 40);
+    path.addPoint(0, 0);
+    path.addPoint(24, 0);
+    path.addPoint(24, 24);
+    path.addPoint(24, 48);
+    path.addPoint(-24, 48);
+    path.addPoint(0, 24);
 
     srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
@@ -94,7 +97,7 @@ int main() {
 #endif
     // Set random robot starting position
     Point firstPosition = path.getPath().at(0);
-    
+
     firstPosition.setX(firstPosition.getX() + ((rand() / 1073741823) - 1) * starting_point_random);
     firstPosition.setY(firstPosition.getY() + ((rand() / 1073741823) - 1) * starting_point_random);
     Point robot = firstPosition;
@@ -107,7 +110,7 @@ int main() {
 #endif
 
     // Use a running average to estimate momentum
-    const int runningAverageLength = 15;
+    const int runningAverageLength = 10;
 
     RunningAverage<runningAverageLength> runningAverageX;
     RunningAverage<runningAverageLength> runningAverageY;

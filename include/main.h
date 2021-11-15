@@ -61,6 +61,9 @@
 #include "driver/motorButton.hpp"
 #include "driver/controller.hpp"
 
+// Motion control
+#include "motionControl/purePursuit.hpp"
+
 // Odometry
 #include "odometry/odometry.hpp"
 #include "odometry/threeWheelOdom.hpp"
