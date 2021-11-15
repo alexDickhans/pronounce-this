@@ -85,6 +85,8 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
+	threeWheelOdom.setPosition(new Position());
+
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
@@ -245,12 +247,13 @@ void initialize() {
 	//pros::Task::delay(100);
 
 	threeWheelOdom.setBackOffset(3.25);
-	threeWheelOdom.setLeftOffset(4);
-	threeWheelOdom.setRightOffset(4);
+	threeWheelOdom.setLeftOffset(3.87);
+	threeWheelOdom.setRightOffset(3.87);
 
-	purePursuit.setAnglePid(new PID(100, 0, 0));
-	purePursuit.setLateralPid(new PID(10, 0, 0));
-	purePursuit.setLookahead(5);
+	purePursuit.setAnglePid(new PID(0, 0, 0));
+	purePursuit.setLateralPid(new PID(30, 0, 0));
+	purePursuit.setNormalizeDistance(10);
+	purePursuit.setLookahead(10);
 
 	purePursuit.setOdometry(&threeWheelOdom);
 

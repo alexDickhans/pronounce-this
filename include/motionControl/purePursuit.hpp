@@ -14,6 +14,7 @@ namespace Pronounce {
 		std::vector<Path> paths;
 		int currentPath = -1;
 		double stopDistance;
+		double normalizeDistance = 1;
 
 		PID* lateralPid;
 		PID* anglePid;
@@ -57,6 +58,14 @@ namespace Pronounce {
 
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
+		}
+
+		double getNormalizeDistance() {
+			return normalizeDistance;
+		}
+
+		void setNormalizeDistance(double normalizeDistance) {
+			this->normalizeDistance = normalizeDistance;
 		}
 
 		PID* getLateralPid() {

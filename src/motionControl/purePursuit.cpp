@@ -44,7 +44,11 @@ namespace Pronounce {
         // Get lookahead point and vector from robot
         Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
         Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
-        lookaheadVector.setAngle(lookaheadVector.getAngle() - currentPosition->getTheta());
+        lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPosition->getTheta());
+
+        if (lookaheadVector.getMagnitude() > normalizeDistance) {
+            lookaheadVector.setMagnitude(normalizeDistance);
+        }
 
         lateralPid->setPosition(0);
         lateralPid->setTarget(lookaheadVector.getMagnitude());
