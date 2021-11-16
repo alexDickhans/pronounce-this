@@ -27,18 +27,21 @@ namespace Pronounce {
         double averageOrientation = lastAngle + (angleChange / 2);
 
         Vector localOffset;
-        if (abs(angleChange) < 0.05) {
+        if (angleChange == 0) {
             localOffset = Vector(new Point(deltaBack, deltaRight));
         }
         else {
+            double multiplier = 2 * sin(angleChange / 2);
             localOffset = Vector(new Point((deltaBack / angleChange) + backOffset, (deltaRight / angleChange) + rightOffset));
+            localOffset.scale(multiplier);
         }
+        //std::cout << localOffset.getCartesian().getX() - deltaBack << std::endl;
 
         // Rotate vector
         localOffset.setAngle(localOffset.getAngle() - averageOrientation);
 
         lastPosition->add(localOffset.getCartesian());
-        lastPosition->setTheta(currentAngle);
+        lastPosition->setTheta(fmod(currentAngle, M_PI * 2));
 
         this->setPosition(lastPosition);
     }

@@ -246,13 +246,13 @@ void initialize() {
 
 	//pros::Task::delay(100);
 
-	threeWheelOdom.setBackOffset(3.25);
+	threeWheelOdom.setBackOffset(3.375);
 	threeWheelOdom.setLeftOffset(3.87);
 	threeWheelOdom.setRightOffset(3.87);
 
 	purePursuit.setAnglePid(new PID(0, 0, 0));
 	purePursuit.setLateralPid(new PID(30, 0, 0));
-	purePursuit.setNormalizeDistance(10);
+	purePursuit.setNormalizeDistance(5);
 	purePursuit.setLookahead(10);
 
 	purePursuit.setOdometry(&threeWheelOdom);
