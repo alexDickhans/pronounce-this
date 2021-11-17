@@ -18,8 +18,8 @@ namespace Pronounce {
         pros::Controller* controller;
         pros::controller_digital_e_t positiveButton, negativeButton;
     public:
-        Button(Controller* cotroller);
-        Button(Controller* cotroller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton);
+        Button(pros::Controller* cotroller);
+        Button(pros::Controller* cotroller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton);
 
         void update();
         void updateController();
