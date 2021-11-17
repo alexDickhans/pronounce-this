@@ -13,7 +13,6 @@ namespace Pronounce {
 
         void update() {
             this->setPosition((encoder->get_value()/360.0) * this->getRadius() * M_PI * 2.0 * this->getTuningFactor());
-            std::cout << this->getPosition() << std::endl;
         }
 
         ~AdiOdomWheel();

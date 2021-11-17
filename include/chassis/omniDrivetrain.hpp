@@ -13,6 +13,7 @@ namespace Pronounce
     protected:
         
     public:
+        OmniDrivetrain();
         OmniDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 
         virtual void setDriveVectorVelocity(Vector vector) {}

@@ -28,6 +28,8 @@ Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 pros::Imu imu(3);
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &threeWheelOdom);
 
+Pronounce::PurePursuit purePursuit(&drivetrain, 15);
+
 Position* startingPosition = new Position(0, 0, 0);
 
 bool relativeMovement = false;
@@ -39,6 +41,8 @@ bool driveOdomEnabled = true;
 
 bool preDriverTasksDone = false;
 
+int testPathIndex;
+
 /**
  * @brief Runs during auton period before auton
  *
@@ -48,6 +52,8 @@ int preAutonRun() {
 	while (imu.is_calibrating()) {
 		pros::Task::delay(50);
 	}
+
+	purePursuit.setEnabled(true);
 
 	return 0;
 }
@@ -79,10 +85,19 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
+	threeWheelOdom.setPosition(new Position());
+
+	purePursuit.setCurrentPathIndex(testPathIndex);
+	purePursuit.setFollowing(true);
+
+	pros::Task::delay(15000);
+
 	return 0;
 }
 
 int postAuton() {
+	purePursuit.setEnabled(false);
+	purePursuit.setFollowing(false);
 	return 0;
 }
 
@@ -94,6 +109,17 @@ void renderThread() {
 	master.renderFunc();
 }
 
+void updateDrivetrain() {
+	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
+	lv_label_set_text(infoLabel, "opcontrol()");
+	while (1) {
+		uint32_t startTime = pros::millis();
+		purePursuit.update();
+		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
+		pros::Task::delay_until(&startTime, 10);
+	}
+}
+
 /**
  * Initialize all sensors
  */
@@ -102,9 +128,9 @@ void initSensors() {
 	imu.reset();
 
 	// Wait until IMU is calibrated
-	while (imu.is_calibrating()) {
-		pros::delay(20);
-	}
+	// while (imu.is_calibrating()) {
+	// 	pros::delay(20);
+	// }
 }
 
 /**
@@ -137,7 +163,7 @@ void initSelector() {
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
 
 	// Set pre and post run
-	autonomousSel->setPreRun(nullAutonFunc);
+	autonomousSel->setPreRun(preAutonRun);
 	autonomousSel->setPostAuton(postAuton);
 
 	// Set functions
@@ -158,6 +184,19 @@ void initLogger() {
 			)
 	);
 	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
+}
+
+void autoPaths() {
+	Path testPath = Path();
+	testPath.addPoint(0, 0);
+	testPath.addPoint(24, 0);
+	testPath.addPoint(24, 24);
+	testPath.addPoint(24, 48);
+	testPath.addPoint(-24, 48);
+	testPath.addPoint(0, 24);
+
+	purePursuit.addPath(testPath);
+	testPathIndex = 0;
 }
 
 /**
@@ -193,24 +232,34 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
+	autoPaths();
 
 	leftEncoder.reset();
 	leftOdom.setRadius(1.625);
-	leftOdom.setTuningFactor(1.015873);
+	leftOdom.setTuningFactor(1.003);
 	rightEncoder.reset();
 	rightOdom.setRadius(1.625);
-	rightOdom.setTuningFactor(1.01343);
+	rightOdom.setTuningFactor(1.003);
 	backEncoder.reset();
 	backOdom.setRadius(1.625);
-	backOdom.setTuningFactor(1.01343);
+	backOdom.setTuningFactor(1.003);
 
 	//pros::Task::delay(100);
 
-	threeWheelOdom.setBackOffset(3.25);
-	threeWheelOdom.setLeftOffset(7.75/2);
-	threeWheelOdom.setRightOffset(7.75/2);
+	threeWheelOdom.setBackOffset(3.375);
+	threeWheelOdom.setLeftOffset(3.87);
+	threeWheelOdom.setRightOffset(3.87);
 
-	//threeWheelOdom.setPosition(new Position());
+	purePursuit.setAnglePid(new PID(0, 0, 0));
+	purePursuit.setLateralPid(new PID(30, 0, 0));
+	purePursuit.setNormalizeDistance(5);
+	purePursuit.setLookahead(10);
+
+	purePursuit.setOdometry(&threeWheelOdom);
+
+	pros::Task purePursuitTast = pros::Task(updateDrivetrain, "Pure Pursuit");
+
+	threeWheelOdom.setPosition(new Position());
 }
 /**
  * Runs while the robot is disabled i.e. before and after match, between auton
@@ -245,7 +294,7 @@ void competition_initialize() {
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	//autonomousSel->runSelection();
+	autonomousSel->runSelection();
 
 }
 
@@ -257,7 +306,7 @@ void opcontrol() {
 
 
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(infoLabel, "opcontrol()");
+	lv_label_set_text(infoLabel, "");
 
 	const int runningAverageLength = 25;
 	RunningAverage<runningAverageLength> leftXAvg;
@@ -288,8 +337,6 @@ void opcontrol() {
 
 		threeWheelOdom.update();
 
-		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
-		
 		// Prevent wasted resources
 		pros::delay(10);
 	}
