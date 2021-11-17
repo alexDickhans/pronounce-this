@@ -4,13 +4,13 @@
 
 namespace Pronounce {
     MotorButton::MotorButton(pros::Controller* controller, pros::Motor* motor,
-        pros::controller_digital_e_t positiveButton = pros::E_CONTROLLER_DIGITAL_L1,
-        pros::controller_digital_e_t negativeButton = pros::E_CONTROLLER_DIGITAL_L2,
-        int positiveAuthority = 0,
-        int neutralAuthority = 0,
-        int negativeAuthority = 0,
-        int min = 0,
-        int max = 0) {
+            pros::controller_digital_e_t positiveButton,
+            pros::controller_digital_e_t negativeButton,
+            int positiveAuthority,
+            int neutralAuthority,
+            int negativeAuthority,
+            int min,
+            int max) : Button(controller, positiveButton, negativeButton) {
         this->positiveAuthority = positiveAuthority;
         this->neutralAuthority = neutralAuthority;
         this->negativeAuthority = negativeAuthority;
