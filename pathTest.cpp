@@ -19,7 +19,7 @@ using namespace Pronounce;
 
 #define xOffset 0
 #define yOffset 0
-#define multiplier 2
+#define multiplier 3
 
 #define lookahead 10
 
