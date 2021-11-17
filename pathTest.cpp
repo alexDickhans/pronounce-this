@@ -278,6 +278,9 @@ int main() {
         setlinestyle(DASHED_LINE, 5, 2);
         printPath(path);
 
+        setcolor(LIGHTGRAY);
+        setlinestyle(SOLID_LINE, 5, 2);
+        line(robot.getY() * multiplier, robot.getX() * multiplier, lookaheadPoint.getY() * multiplier, lookaheadPoint.getX() * multiplier);
         printRobotWithLookahead(robot);
 
         delay(5);
