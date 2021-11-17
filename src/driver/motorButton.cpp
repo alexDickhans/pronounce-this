@@ -2,8 +2,7 @@
 
 
 
-namespace Pronounce
-{
+namespace Pronounce {
     MotorButton::MotorButton(pros::Controller* controller, pros::Motor* motor,
         pros::controller_digital_e_t positiveButton = pros::E_CONTROLLER_DIGITAL_L1,
         pros::controller_digital_e_t negativeButton = pros::E_CONTROLLER_DIGITAL_L2,
@@ -12,11 +11,6 @@ namespace Pronounce
         int negativeAuthority = 0,
         int min = 0,
         int max = 0) {
-
-        this->controller = controller;
-        this->motor = motor;
-        this->positiveButton = positiveButton;
-        this->negativeButton = negativeButton;
         this->positiveAuthority = positiveAuthority;
         this->neutralAuthority = neutralAuthority;
         this->negativeAuthority = negativeAuthority;
@@ -24,26 +18,13 @@ namespace Pronounce
         this->max = max;
     }
 
-    void MotorButton::updateController() {
-
-        if (this->controller->get_digital(negativeButton)) {
-            this->buttonStatus = NEGATIVE;
-        }
-        else if (this->controller->get_digital(positiveButton)) {
-            this->buttonStatus = POSITIVE;
-        }
-        else if (!goToImmediately) {
-            this->buttonStatus = NEUTRAL;
-        }
-    }
-
-    void MotorButton::updateMotor() {
-        if (!enabled) {
+    void MotorButton::updateActuator() {
+        if (!this->getEnabled()) {
             this->motor->move_velocity(0.0);
             return;
         }
 
-        switch (this->buttonStatus) {
+        switch (this->getButtonStatus()) {
         case NEGATIVE:
             if (goToImmediately) {
                 this->motor->move_absolute(min, negativeAuthority);
@@ -79,11 +60,6 @@ namespace Pronounce
         }
 
 
-    }
-
-    void MotorButton::update() {
-        this->updateController();
-        this->updateMotor();
     }
 
     MotorButton::~MotorButton() {
