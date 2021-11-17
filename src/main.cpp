@@ -189,16 +189,23 @@ void initLogger() {
 void autoPaths() {
 	Path testPath = Path();
 
-	/*
 	testPath.addPoint(0, 0);
 	testPath.addPoint(24, 0);
 	testPath.addPoint(24, 24);
 	testPath.addPoint(24, 48);
 	testPath.addPoint(-24, 48);
 	testPath.addPoint(0, 24);
-	*/
 
-	
+/*
+    testPath.addPoint(105.7, 13.5);
+    testPath.addPoint(105.7, 30);
+    testPath.addPoint(88, 30);
+    testPath.addPoint(64, 53);
+    testPath.addPoint(58, 35);
+    testPath.addPoint(23, 25);
+    testPath.addPoint(14, 20);
+    testPath.addPoint(34, 11.45);
+*/
 
 	purePursuit.addPath(testPath);
 	testPathIndex = 0;
