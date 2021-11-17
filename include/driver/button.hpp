@@ -38,7 +38,4 @@ namespace Pronounce {
         }
         ~Button();
     };
-
-    Button::Button(Controller) {
-    }
 } // namespace Pronounce
