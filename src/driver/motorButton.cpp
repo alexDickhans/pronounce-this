@@ -58,8 +58,6 @@ namespace Pronounce {
             this->motor->move_velocity(neutralAuthority);
             break;
         }
-
-
     }
 
     MotorButton::~MotorButton() {
