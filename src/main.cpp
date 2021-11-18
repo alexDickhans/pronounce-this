@@ -261,9 +261,8 @@ void initialize() {
 	threeWheelOdom.setBackOffset(3.375);
 	threeWheelOdom.setLeftOffset(3.87);
 	threeWheelOdom.setRightOffset(3.87);
-
-	purePursuit.setAnglePid(new PID(0, 0, 0));
-	purePursuit.setLateralPid(new PID(30, 0, 0));
+	
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(0, 0, 0), new PID(30, 0, 0)));
 	purePursuit.setNormalizeDistance(5);
 	purePursuit.setLookahead(10);
 

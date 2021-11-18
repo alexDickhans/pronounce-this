@@ -38,6 +38,14 @@ namespace Pronounce {
 			return this->profiles.at(index);
 		}
 
+		PurePursuitProfile getDefaultProfile() {
+			return defaultProfile;
+		}
+
+		void setDefaultProfile(PurePursuitProfile defaultProfile) {
+			this->defaultProfile = defaultProfile;
+		} 
+
 		~PurePursuitProfileManager();
 	};
 } // namespace Pronounce

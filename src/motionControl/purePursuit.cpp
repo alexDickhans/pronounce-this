@@ -50,16 +50,16 @@ namespace Pronounce {
             lookaheadVector.setMagnitude(normalizeDistance);
         }
 
-        lateralPid->setPosition(0);
-        lateralPid->setTarget(lookaheadVector.getMagnitude());
+        currentProfile.getLateralPid()->setPosition(0);
+        currentProfile.getLateralPid()->setTarget(lookaheadVector.getMagnitude());
 
-        double lateralPower = lateralPid->update();
+        double lateralPower = currentProfile.getLateralPid()->update();
         Vector moveVector = Vector(lateralPower, lookaheadVector.getAngle());
 
-        anglePid->setPosition(currentPosition->getTheta());
-        anglePid->setTarget(turnTarget);
+        currentProfile.getTurnPid()->setPosition(currentPosition->getTheta());
+        currentProfile.getTurnPid()->setTarget(turnTarget);
 
-        double turnPower = anglePid->update();
+        double turnPower = currentProfile.getTurnPid()->update();
 
         drivetrain->setDriveVectorVelocity(moveVector, turnPower);
     }

@@ -4,6 +4,9 @@
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
+#include "utils/vector.hpp"
+#include "utils/purePursuitProfileManager.hpp"
+#include "utils/purePursuitProfile.hpp"
 #include "odometry/odometry.hpp"
 #include "chassis/omniDrivetrain.hpp"
 
@@ -16,8 +19,9 @@ namespace Pronounce {
 		double stopDistance;
 		double normalizeDistance = 1;
 
-		PID* lateralPid;
-		PID* anglePid;
+		PurePursuitProfile currentProfile;
+
+		PurePursuitProfileManager purePursuitProfileManager;
 
 		double turnTarget;
 
@@ -58,6 +62,7 @@ namespace Pronounce {
 
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
+			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 
 		double getNormalizeDistance() {
@@ -68,20 +73,12 @@ namespace Pronounce {
 			this->normalizeDistance = normalizeDistance;
 		}
 
-		PID* getLateralPid() {
-			return lateralPid;
+		PurePursuitProfileManager getPurePursuitProfileManager() {
+			return purePursuitProfileManager;
 		}
 
-		void setLateralPid(PID* lateralPid) {
-			this->lateralPid = lateralPid;
-		}
-
-		PID* getAnglePid() {
-			return anglePid;
-		}
-
-		void setAnglePid(PID* anglePid) {
-			this->anglePid = anglePid;
+		void setPurePursuitProfileManager(PurePursuitProfileManager purePursuitProfileManager) {
+			this->purePursuitProfileManager = purePursuitProfileManager;
 		}
 
 		OmniDrivetrain* getDrivetrain() {

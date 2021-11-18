@@ -40,6 +40,14 @@ namespace Pronounce {
             this->maxIntegral = pid.getMaxIntegral();
         }
 
+        void operator=(PID* pid) {
+            this->kP = pid->getKP();
+            this->kI = pid->getKI();
+            this->kD = pid->getKD();
+            this->integralBound = pid->getIntegralBound();
+            this->maxIntegral = pid->getMaxIntegral();
+        }
+
         double getDerivitive() {
             return derivitive;
         }

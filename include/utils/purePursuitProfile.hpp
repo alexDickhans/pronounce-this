@@ -15,8 +15,8 @@ namespace Pronounce {
         PurePursuitProfile(PID* lateralPid, PID* turnPid, double lookaheadDistance);
 
         void operator=(PurePursuitProfile purePursuitProfile) {
-            this->lateralPid = purePursuitProfile.getLateralPid();
-            this->turnPid = purePursuitProfile.getTurnPid();
+            this->lateralPid->operator=(purePursuitProfile.getLateralPid());
+            this->turnPid->operator=(purePursuitProfile.getTurnPid());
             this->lookaheadDistance = purePursuitProfile.getLookaheadDistance();
         }
 
