@@ -29,9 +29,12 @@ namespace Pronounce {
 		 * @brief Get the Profile object at index
 		 *
 		 * @param index The index of the profile
-		 * @return PurePursuitProfile The profile at index
+		 * @return PurePursuitProfile The profile at index, or the default one if the array is out of bound
 		 */
 		PurePursuitProfile getProfile(int index) {
+			if (index >= sizeof(profiles)) {
+				return defaultProfile;
+			}
 			return this->profiles.at(index);
 		}
 

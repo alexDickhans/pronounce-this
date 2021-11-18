@@ -3,8 +3,7 @@
 #include "pid/pid.hpp"
 
 namespace Pronounce {
-    class PurePursuitProfile
-    {
+    class PurePursuitProfile {
     private:
         PID* lateralPid;
         PID* turnPid;
