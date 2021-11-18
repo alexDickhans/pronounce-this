@@ -6,25 +6,35 @@ namespace Pronounce {
     class PurePursuitProfile
     {
     private:
-        PID* pid;
+        PID* lateralPid;
+        PID* turnPid;
         double lookaheadDistance;
     public:
         PurePursuitProfile();
-        PurePursuitProfile(PID* pid);
+        PurePursuitProfile(PID* lateralPid, PID* turnPid);
         PurePursuitProfile(double lookaheadDistance);
-        PurePursuitProfile(PID* pid, double lookaheadDistance);
+        PurePursuitProfile(PID* lateralPid, PID* turnPid, double lookaheadDistance);
 
         void operator=(PurePursuitProfile purePursuitProfile) {
-            this->pid = purePursuitProfile.getPid();
+            this->lateralPid = purePursuitProfile.getLateralPid();
+            this->turnPid = purePursuitProfile.getTurnPid();
             this->lookaheadDistance = purePursuitProfile.getLookaheadDistance();
         }
 
-        PID* getPid() {
-            return pid;
+        PID* getLateralPid() {
+            return lateralPid;
         }
 
-        void setPid(PID* pid) {
-            this->pid = pid;
+        void setLateralPid(PID* lateralPid) {
+            this->lateralPid = lateralPid;
+        }
+
+        PID* getTurnPid() {
+            return turnPid;
+        }
+
+        void setTurnPid(PID* turnPid) {
+            this->turnPid = turnPid;
         }
 
         double getLookaheadDistance() {
