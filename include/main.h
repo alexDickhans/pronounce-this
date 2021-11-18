@@ -83,6 +83,7 @@
 #include "utils/pointUtil.hpp"
 #include "utils/position.hpp"
 #include "utils/purePursuitProfile.hpp"
+#include "utils/purePursuitProfileManager.hpp"
 #include "utils/runningAverage.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
