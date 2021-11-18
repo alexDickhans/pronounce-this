@@ -1,7 +1,7 @@
 #pragma once
 
 #include "api.h"
-#include "button.h"
+#include "button.hpp"
 
 namespace Pronounce {
     class SolenoidButton : public Button {

@@ -58,8 +58,10 @@
 #include "chassis/xdrive.hpp"
 
 // Driver
-#include "driver/motorButton.hpp"
+#include "driver/button.hpp"
 #include "driver/controller.hpp"
+#include "driver/motorButton.hpp"
+#include "driver/solenoidButton.hpp"
 
 // Odometry
 #include "odometry/odometry.hpp"
