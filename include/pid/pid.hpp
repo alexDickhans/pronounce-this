@@ -30,6 +30,16 @@ namespace Pronounce {
         PID();
         PID(double kP, double kI, double kD, double target = 0, double position = 0);
 
+        double update();
+
+        void operator=(PID pid) {
+            this->kP = pid.getKP();
+            this->kI = pid.getKI();
+            this->kD = pid.getKD();
+            this->integralBound = pid.getIntegralBound();
+            this->maxIntegral = pid.getMaxIntegral();
+        }
+
         double getDerivitive() {
             return derivitive;
         }
@@ -101,8 +111,6 @@ namespace Pronounce {
         void setMaxIntegral(double maxIntegral) {
             this->maxIntegral = maxIntegral;
         }
-
-        double update();
 
         ~PID();
     };

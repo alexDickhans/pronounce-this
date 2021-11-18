@@ -79,8 +79,13 @@
 #include "position/odomWheel.hpp"
 
 // Utils
-#include "utils/utils.hpp"
+#include "utils/path.hpp"
+#include "utils/pointUtil.hpp"
+#include "utils/position.hpp"
+#include "utils/purePursuitProfile.hpp"
 #include "utils/runningAverage.hpp"
+#include "utils/utils.hpp"
+#include "utils/vector.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"
