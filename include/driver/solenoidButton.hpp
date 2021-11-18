@@ -6,7 +6,7 @@
 namespace Pronounce {
     class SolenoidButton : public Button {
     private:
-        pros::ADIDigitalOut solenoid;
+        pros::ADIDigitalOut* solenoid;
 
         bool inverted{false};
         bool retainOnNeutral{true};
@@ -25,12 +25,12 @@ namespace Pronounce {
             this->inverted = inverted;
         }
 
-        pros::ADIDigitalOut getSolenoid() {
+        pros::ADIDigitalOut* getSolenoid() {
             return solenoid;
         }
 
-        void setSolenoid(pros::ADIDigitalOut solenoid) {
+        void setSolenoid(pros::ADIDigitalOut* solenoid) {
             this->solenoid = solenoid;
         }
-    }
+    };
 } // Pronounce
