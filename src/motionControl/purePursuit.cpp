@@ -50,6 +50,18 @@ namespace Pronounce {
             lookaheadVector.setMagnitude(normalizeDistance);
         }
 
+        // Normalize vectors to make dot product cleaner.
+        Vector normalizedLastLookaheadVector = lastLookaheadVector;
+        normalizedLastLookaheadVector.normalize();
+        Vector normalizedLookaheadVector = lookaheadVector;
+        normalizedLookaheadVector.normalize();
+
+        // Get the dot product of how similar the last two vectors are
+        double dotProduct = normalizedLookaheadVector.dot(normalizedLastLookaheadVector) - 1;
+        dotProduct = ((dotProduct * curvatureMultiplier) / 2) + 1;
+
+        lastLookaheadVector = lookaheadVector;
+
         lateralPid->setPosition(0);
         lateralPid->setTarget(lookaheadVector.getMagnitude());
 
@@ -61,7 +73,7 @@ namespace Pronounce {
 
         double turnPower = anglePid->update();
 
-        drivetrain->setDriveVectorVelocity(moveVector, turnPower);
+        drivetrain->setDriveVectorVelocity(moveVector.scale(dotProduct), turnPower);
     }
 
     PurePursuit::~PurePursuit() {

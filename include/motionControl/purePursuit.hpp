@@ -15,6 +15,7 @@ namespace Pronounce {
 		int currentPath = -1;
 		double stopDistance;
 		double normalizeDistance = 1;
+		double curvatureMultiplier = 0;
 
 		PID* lateralPid;
 		PID* anglePid;
@@ -23,6 +24,7 @@ namespace Pronounce {
 
 		OmniDrivetrain* drivetrain;
 		Odometry* odometry;
+		Vector lastLookaheadVector;
 
 		bool enabled = false;
 		bool following = false;
