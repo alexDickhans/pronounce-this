@@ -32,7 +32,7 @@ namespace Pronounce {
         }
         else {
             double PI_2 = 2 * M_PI;
-            localOffset = Vector(new Point(deltaBack - ((angleChange/PI_2) * PI_2 * backOffset), deltaRight - ((angleChange/PI_2) * PI_2 * rightOffset)));
+            localOffset = Vector(new Point(deltaBack + ((angleChange/PI_2) * PI_2 * backOffset), deltaRight + ((angleChange/PI_2) * PI_2 * rightOffset)));
         }
         //std::cout << localOffset.getCartesian().getX() - deltaBack << std::endl;
 

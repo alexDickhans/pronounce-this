@@ -116,7 +116,7 @@ void updateDrivetrain() {
 		uint32_t startTime = pros::millis();
 		purePursuit.update();
 		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 10);
+		pros::Task::delay_until(&startTime, 7);
 	}
 }
 
@@ -188,6 +188,7 @@ void initLogger() {
 
 void autoPaths() {
 	Path testPath = Path();
+
 
 	testPath.addPoint(0, 0);
 	testPath.addPoint(24, 0);
