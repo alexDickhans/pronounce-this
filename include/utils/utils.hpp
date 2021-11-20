@@ -9,6 +9,7 @@ namespace Pronounce
 {
     double toRadians(double degrees);
     double toDegrees(double radians);
+    double angleDifference(double angle1, double angle2);
     double mapFunc(double value, double start1, double stop1, double start2, double stop2);
     double signnum_c(double x);
 

@@ -40,7 +40,7 @@ namespace Pronounce {
         localOffset.setAngle(localOffset.getAngle() - averageOrientation);
 
         lastPosition->add(localOffset.getCartesian());
-        lastPosition->setTheta(fmod(currentAngle, M_PI * 2));
+        lastPosition->setTheta(fmod(currentAngle+M_PI * 2, M_PI * 2));
 
         this->setPosition(lastPosition);
     }

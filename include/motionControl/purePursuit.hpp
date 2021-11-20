@@ -4,6 +4,7 @@
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
+#include "utils/utils.hpp"
 #include "odometry/odometry.hpp"
 #include "chassis/omniDrivetrain.hpp"
 

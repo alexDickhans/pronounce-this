@@ -68,8 +68,8 @@ namespace Pronounce {
         double lateralPower = lateralPid->update();
         Vector moveVector = Vector(lateralPower, lookaheadVector.getAngle());
 
-        anglePid->setPosition(currentPosition->getTheta());
-        anglePid->setTarget(turnTarget);
+        anglePid->setPosition(angleDifference(currentPosition->getTheta(), 0.0));
+        anglePid->setTarget(angleDifference(turnTarget, 0.0));
 
         double turnPower = anglePid->update();
 

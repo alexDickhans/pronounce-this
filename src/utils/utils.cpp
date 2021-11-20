@@ -10,6 +10,16 @@ namespace Pronounce
         return radians * 180 / M_PI;
     }
 
+    double angleDifference(double angle1, double angle2) {
+        angle1 = fmod(angle1 + M_PI * 2.0, M_PI * 2.0);
+        angle2 = fmod(angle2 + M_PI * 2.0, M_PI * 2.0);
+
+        double result = angle1 - angle2;
+        result = fmod(result + M_PI, M_PI * 2.0) - 180;
+
+        return result;
+    }
+
     double mapFunc(double value, double start1, double stop1, double start2, double stop2) {
         return ((value - start1) / (stop1 - start1)) * ((stop2 - start2) + start2);
     }
