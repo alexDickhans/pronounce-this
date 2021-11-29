@@ -19,6 +19,11 @@ namespace Pronounce {
     public:
         OdomWheel();
         OdomWheel(double radius);
+
+        void reset() {
+            position = 0;
+            lastPosition = 0;
+        }
         
         double getRadius() {
             return this->radius;

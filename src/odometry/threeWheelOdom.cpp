@@ -22,8 +22,8 @@ namespace Pronounce {
         Position* lastPosition = this->getPosition();
 
         double lastAngle = lastPosition->getTheta();
-        double angleChange = (deltaLeft - deltaRight) / (leftOffset + rightOffset);
-        double currentAngle = lastAngle + angleChange;
+        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (rightOffset + rightOffset);
+        double angleChange = currentAngle - lastAngle;
         double averageOrientation = lastAngle + (angleChange / 2);
 
         Vector localOffset;

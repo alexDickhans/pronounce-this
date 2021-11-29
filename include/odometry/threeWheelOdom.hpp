@@ -16,6 +16,13 @@ namespace Pronounce
 
         void update();
 
+        void reset(Position* position) {
+            Odometry::reset();
+            this->leftWheel->reset();
+            this->rightWheel->reset();
+            this->backWheel->reset();
+        }
+
         double getLeftOffset() {
             return leftOffset;
         }
