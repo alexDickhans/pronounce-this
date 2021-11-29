@@ -85,7 +85,7 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
-	threeWheelOdom.setPosition(new Position());
+	threeWheelOdom.reset(new Position());
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
@@ -272,7 +272,7 @@ void initialize() {
 
 	pros::Task purePursuitTast = pros::Task(updateDrivetrain, "Pure Pursuit");
 
-	threeWheelOdom.setPosition(new Position());
+	threeWheelOdom.reset(new Position());
 }
 /**
  * Runs while the robot is disabled i.e. before and after match, between auton
