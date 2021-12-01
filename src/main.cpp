@@ -59,22 +59,9 @@ int preAutonRun() {
 }
 
 /**
- * Left AWP Right
- * Scores AWP and 11 rings
- */
-int leftAwpRight() {
-	return 0;
-}
-
-/**
- * @brief Right Awp Left
+ * @brief Runs the Right Steal Right Auton
  *
- * @return Status - needed for AutonSelector
  */
-int rightAwpLeft() {
-	return 0;
-}
-
 int rightStealRight() {
 	return 0;
 }
@@ -144,6 +131,32 @@ void initMotors() {
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
+void initDrivetrain() {
+	// Set the encoder modes and variables
+	leftEncoder.reset();
+	leftOdom.setRadius(1.625);
+	leftOdom.setTuningFactor(1.003);
+	rightEncoder.reset();
+	rightOdom.setRadius(1.625);
+	rightOdom.setTuningFactor(1.003);
+	backEncoder.reset();
+	backOdom.setRadius(1.625);
+	backOdom.setTuningFactor(1.003);
+
+	// Set the drivetrain odometry offsets
+	threeWheelOdom.setBackOffset(3.375);
+	threeWheelOdom.setLeftOffset(3.87);
+	threeWheelOdom.setRightOffset(3.87);
+
+	purePursuit.setNormalizeDistance(5);
+
+	purePursuit.setOdometry(&threeWheelOdom);
+
+	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
+	
+	threeWheelOdom.reset(new Position());
+}
+
 /**
  * Initialize the controller
  */
@@ -188,8 +201,10 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile();
+	PurePursuitProfile defaultProfile(new PID(30, 0, 0), new PID(30, 0, 0), 10);
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
 
+	// Test path
 	Path testPath = Path();
 
 	testPath.addPoint(0, 0);
@@ -199,19 +214,10 @@ void autoPaths() {
 	testPath.addPoint(-24, 48);
 	testPath.addPoint(0, 24);
 
-/*
-    testPath.addPoint(105.7, 13.5);
-    testPath.addPoint(105.7, 30);
-    testPath.addPoint(88, 30);
-    testPath.addPoint(64, 53);
-    testPath.addPoint(58, 35);
-    testPath.addPoint(23, 25);
-    testPath.addPoint(14, 20);
-    testPath.addPoint(34, 11.45);
-*/
-
 	purePursuit.addPath(testPath);
 	testPathIndex = 0;
+
+	// Left AWP Right
 }
 
 /**
@@ -244,38 +250,13 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initMotors();
+	initDrivetrain();
 	initController();
 	initSelector();
 	initLogger();
 	autoPaths();
-
-	leftEncoder.reset();
-	leftOdom.setRadius(1.625);
-	leftOdom.setTuningFactor(1.003);
-	rightEncoder.reset();
-	rightOdom.setRadius(1.625);
-	rightOdom.setTuningFactor(1.003);
-	backEncoder.reset();
-	backOdom.setRadius(1.625);
-	backOdom.setTuningFactor(1.003);
-
-	//pros::Task::delay(100);
-
-	threeWheelOdom.setBackOffset(3.375);
-	threeWheelOdom.setLeftOffset(3.87);
-	threeWheelOdom.setRightOffset(3.87);
-
-	purePursuit.setAnglePid(new PID(30, 0, 0));
-	purePursuit.setLateralPid(new PID(30, 0, 0));
-	purePursuit.setNormalizeDistance(5);
-	purePursuit.setLookahead(10);
-
-	purePursuit.setOdometry(&threeWheelOdom);
-
-	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-
-	threeWheelOdom.reset(new Position());
 }
+
 /**
  * Runs while the robot is disabled i.e. before and after match, between auton
  * and teleop period
@@ -348,8 +329,6 @@ void opcontrol() {
 
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
-
-		threeWheelOdom.update();
 
 		// Prevent wasted resources
 		pros::delay(10);
