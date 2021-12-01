@@ -58,8 +58,10 @@
 #include "chassis/xdrive.hpp"
 
 // Driver
-#include "driver/motorButton.hpp"
+#include "driver/button.hpp"
 #include "driver/controller.hpp"
+#include "driver/motorButton.hpp"
+#include "driver/solenoidButton.hpp"
 
 // Motion control
 #include "motionControl/purePursuit.hpp"
@@ -79,8 +81,14 @@
 #include "position/odomWheel.hpp"
 
 // Utils
-#include "utils/utils.hpp"
+#include "utils/path.hpp"
+#include "utils/pointUtil.hpp"
+#include "utils/position.hpp"
+#include "utils/purePursuitProfile.hpp"
+#include "utils/purePursuitProfileManager.hpp"
 #include "utils/runningAverage.hpp"
+#include "utils/utils.hpp"
+#include "utils/vector.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"

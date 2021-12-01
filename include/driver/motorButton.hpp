@@ -2,56 +2,34 @@
 
 #include "api.h"
 #include "controller.hpp"
+#include "button.hpp"
 
 namespace Pronounce {
 
-    typedef enum {
-        NEUTRAL = 0,
-        POSITIVE = 1,
-        NEGATIVE = 2
-    } ButtonStatus;
-
-    class MotorButton {
+    class MotorButton : public Button {
     private:
-        ButtonStatus buttonStatus;
-        bool enabled = true;
         bool goToImmediately = false;
+
         int positiveAuthority = 0;
         int neutralAuthority = 0;
         int negativeAuthority = 0;
 
         int min = 0;
         int max = 0;
-
         pros::Motor* motor;
-        pros::Controller* controller;
-        pros::controller_digital_e_t positiveButton, negativeButton;
-
-        void updateController();
-        void updateMotor();
 
     public:
         MotorButton(pros::Controller* controller, pros::Motor* motor,
-            pros::controller_digital_e_t positiveButton,
-            pros::controller_digital_e_t negativeButton,
-            int positiveAuthority,
-            int neutralAuthority,
-            int negativeAuthority,
-            int min,
-            int max);
+        pros::controller_digital_e_t positiveButton = pros::E_CONTROLLER_DIGITAL_L1,
+        pros::controller_digital_e_t negativeButton = pros::E_CONTROLLER_DIGITAL_L2,
+        int positiveAuthority = 0,
+        int neutralAuthority = 0,
+        int negativeAuthority = 0,
+        int min = 0,
+        int max = 0);
         MotorButton();
-
-        ButtonStatus getButtonStatus() {
-            return buttonStatus;
-        }
-
-        bool getEnabled() {
-            return this->enabled;
-        }
-
-        void setEnabled(bool enabled) {
-            this->enabled = enabled;
-        }
+        
+        void updateActuator();
 
         bool getGoToImmediately() {
             return this->goToImmediately;

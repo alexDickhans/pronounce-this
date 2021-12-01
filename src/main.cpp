@@ -187,8 +187,10 @@ void initLogger() {
 }
 
 void autoPaths() {
-	Path testPath = Path();
+	// Default pure pursuit profile
+	PurePursuitProfile defaultProfile();
 
+	Path testPath = Path();
 
 	testPath.addPoint(0, 0);
 	testPath.addPoint(24, 0);
@@ -270,7 +272,7 @@ void initialize() {
 
 	purePursuit.setOdometry(&threeWheelOdom);
 
-	pros::Task purePursuitTast = pros::Task(updateDrivetrain, "Pure Pursuit");
+	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
 	threeWheelOdom.reset(new Position());
 }
@@ -308,7 +310,6 @@ void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	autonomousSel->runSelection();
-
 }
 
 

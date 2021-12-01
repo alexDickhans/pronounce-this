@@ -42,7 +42,7 @@ namespace Pronounce {
         }
 
         // Get lookahead point and vector from robot
-        Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
+        Point lookaheadPoint = path.getLookAheadPoint(currentPoint, this->currentProfile.getLookaheadDistance());
         Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
         lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPosition->getTheta());
 
@@ -61,17 +61,24 @@ namespace Pronounce {
         dotProduct = ((dotProduct * curvatureMultiplier) / 2) + 1;
 
         lastLookaheadVector = lookaheadVector;
+        
+        // Set the drive vector
 
-        lateralPid->setPosition(0);
-        lateralPid->setTarget(lookaheadVector.getMagnitude());
+        // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
+        // PID controller behaves the same for different lookahead paths
+        double magnitude = lookaheadVector.getMagnitude();
+        double mappedMagnitude = map(magnitude, 0, currentProfile.getLookaheadDistance(), 0, normalizeDistance);
+    
+        currentProfile.getLateralPid()->setPosition(0);
+        currentProfile.getLateralPid()->setTarget(mappedMagnitude);
 
-        double lateralPower = lateralPid->update();
+        double lateralPower = currentProfile.getLateralPid()->update();
         Vector moveVector = Vector(lateralPower, lookaheadVector.getAngle());
 
-        anglePid->setPosition(angleDifference(currentPosition->getTheta(), 0.0));
-        anglePid->setTarget(angleDifference(turnTarget, 0.0));
+        currentProfile.getTurnPid()->setPosition(currentPosition->getTheta());
+        currentProfile.getTurnPid()->setTarget(turnTarget);
 
-        double turnPower = anglePid->update();
+        double turnPower = currentProfile.getTurnPid()->update();
 
         drivetrain->setDriveVectorVelocity(moveVector.scale(dotProduct), turnPower);
     }
