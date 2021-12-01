@@ -110,6 +110,10 @@ namespace Pronounce {
 		void setFollowing(bool following) {
 			this->following = following;
 		}
+		
+		bool isDone(double maxDistance) {
+			return maxDistance > odometry->getPosition()->distance(paths.at(currentPath).getPoint(paths.at(currentPath).getPath().size() - 1));
+		}
 
 		void update();
 

@@ -77,7 +77,10 @@ int testAuton() {
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	pros::Task::delay(15000);
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
 
 	return 0;
 }
@@ -153,7 +156,7 @@ void initDrivetrain() {
 	purePursuit.setOdometry(&threeWheelOdom);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-	
+
 	threeWheelOdom.reset(new Position());
 }
 
