@@ -55,6 +55,14 @@ namespace Pronounce {
 			return currentPath;
 		}
 
+		double getTurnTarget() {
+			return turnTarget;
+		}
+
+		void setTurnTarget(double turnTarget) {
+			this->turnTarget = turnTarget;
+		}
+
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
 			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
