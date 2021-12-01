@@ -42,6 +42,11 @@ bool driveOdomEnabled = true;
 bool preDriverTasksDone = false;
 
 int testPathIndex;
+int rightHomeToGoalNeutralIndex;
+int rightNeutralToMidNeutralIndex;
+int midNeutralToRightAllianceIndex;
+int rightAllianceToRightRingIndex;
+int rightRingToRightHomeIndex;
 
 /**
  * @brief Runs during auton period before auton
@@ -63,6 +68,36 @@ int preAutonRun() {
  *
  */
 int rightStealRight() {
+	threeWheelOdom.reset(new Position(105.7, 8));
+
+	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
+	purePursuit.setFollowing(true);
+	
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	// Collect goal
+
+	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(3.14);
+	
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+
+	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
+	purePursuit.setFollowing(true);
+	
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
 	return 0;
 }
 
@@ -220,7 +255,47 @@ void autoPaths() {
 	purePursuit.addPath(testPath);
 	testPathIndex = 0;
 
-	// Left AWP Right
+	// Right Steal Right
+	Path rightHomeToGoalNeutral;
+
+	rightHomeToGoalNeutral.addPoint(105.7, 8);
+	rightHomeToGoalNeutral.addPoint(105.7, 70.3);
+
+	purePursuit.addPath(rightHomeToGoalNeutral);
+	rightHomeToGoalNeutralIndex = 1;
+
+	Path rightNeutralToMidNeutral;
+
+	rightNeutralToMidNeutral.addPoint(117.5, 70.3);
+	rightNeutralToMidNeutral.addPoint(82.3, 46.8);
+	rightNeutralToMidNeutral.addPoint(70.3, 70.3);
+
+	purePursuit.addPath(rightNeutralToMidNeutral);
+	rightNeutralToMidNeutralIndex = 2;
+
+	Path midNeutralToRightAlliance;
+
+	midNeutralToRightAlliance.addPoint(70.3, 70.3);
+	midNeutralToRightAlliance.addPoint(129.1, 35);
+
+	purePursuit.addPath(midNeutralToRightAlliance);
+	midNeutralToRightAllianceIndex = 3;
+
+	Path rightAllianceToRightRing;
+
+	rightAllianceToRightRing.addPoint(117.5, 46.8);
+	rightAllianceToRightRing.addPoint(117.5, 70.3);
+
+	purePursuit.addPath(rightAllianceToRightRing);
+	rightAllianceToRightRingIndex = 4;
+
+	Path rightRingToRightHome;
+
+	rightRingToRightHome.addPoint(117.5, 70.3);
+	rightRingToRightHome.addPoint(105.7, 12);
+
+	purePursuit.addPath(rightRingToRightHome);
+	rightRingToRightHomeIndex = 5;
 }
 
 /**
