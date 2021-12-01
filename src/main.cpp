@@ -72,27 +72,52 @@ int rightStealRight() {
 
 	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
 	purePursuit.setFollowing(true);
-	
+
 	// Wait until it is done
 	while (purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
 
-	// Collect goal
+	// Collect back goal
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(3.14);
+
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
 	
+	// In the middle drop back goal
+
+	// Collect front goal
+
+	purePursuit.setCurrentPathIndex(midNeutralToRightAllianceIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(2.355);
+
 	// Wait until it is done
 	while (purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
 
+	purePursuit.setTurnTarget(0);
+	pros::Task::delay(500);
 
-	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
+	purePursuit.setCurrentPathIndex(rightAllianceToRightRingIndex);
 	purePursuit.setFollowing(true);
-	
+	purePursuit.setTurnTarget(0);
+
+	// Wait until it is done
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setCurrentPathIndex(rightRingToRightHomeIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(5.5);
+
 	// Wait until it is done
 	while (purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
