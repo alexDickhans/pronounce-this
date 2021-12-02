@@ -188,7 +188,7 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile();
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0));
 
 	Path testPath = Path();
 
@@ -265,10 +265,7 @@ void initialize() {
 	threeWheelOdom.setLeftOffset(3.87);
 	threeWheelOdom.setRightOffset(3.87);
 
-	purePursuit.setAnglePid(new PID(30, 0, 0));
-	purePursuit.setLateralPid(new PID(30, 0, 0));
-	purePursuit.setNormalizeDistance(5);
-	purePursuit.setLookahead(10);
+	purePursuit.setNormalizeDistance(10);
 
 	purePursuit.setOdometry(&threeWheelOdom);
 
