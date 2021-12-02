@@ -284,6 +284,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
+	autonomousSel->choose();
 
 }
 
