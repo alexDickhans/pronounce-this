@@ -2,17 +2,19 @@
 
 namespace Pronounce {
     PurePursuit::PurePursuit() {
+        this->setPurePursuitProfileManager(PurePursuitProfileManager());
     }
 
-    PurePursuit::PurePursuit(double lookahead) {
+    PurePursuit::PurePursuit(double lookahead) : PurePursuit() {
         this->lookahead = lookahead;
     }
-    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain) {
+
+    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain) : PurePursuit() {
         this->drivetrain = drivetrain;
         this->lookahead = 0;
     }
-    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain, double lookahead) {
-        this->drivetrain = drivetrain;
+
+    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain, double lookahead) : PurePursuit(drivetrain) {
         this->lookahead = lookahead;
 
     }

@@ -209,8 +209,7 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile(new PID(30, 0, 0), new PID(30, 0, 0), 10);
-	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0));
 
 	// Test path
 	Path testPath = Path();
