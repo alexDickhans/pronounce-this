@@ -10,7 +10,6 @@
 
 #define PRONOUNCE_CONTROLLER_LEFT 0
 #define PRONOUNCE_CONTROLLER_RIGHT 1
-asdfasd
 
 namespace Pronounce {
 
