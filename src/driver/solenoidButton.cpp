@@ -2,14 +2,13 @@
 
 namespace Pronounce {
     SolenoidButton::SolenoidButton(pros::Controller* controller) : Button(controller) {
-        this->solenoid = new pros::ADIDigitalOut(9);
     }
     
     SolenoidButton::SolenoidButton(pros::Controller* controller, pros::ADIDigitalOut* solenoid) : Button(controller) {
         this->solenoid = solenoid;
     }
 
-    SolenoidButton::SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton) : Button(controller, positiveButton, negativeButton) {
+    SolenoidButton::SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton) : SolenoidButton(controller, positiveButton, negativeButton) {
         this->solenoid = new pros::ADIDigitalOut(9);
     }
 
