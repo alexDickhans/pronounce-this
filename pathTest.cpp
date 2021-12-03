@@ -207,6 +207,7 @@ int main() {
 
     // Create path
     Path path = Path();
+    std::vector<Path> paths = std::vector<Path>();
     path.addPoint(105.7, 13.5);
     path.addPoint(105.7, 30);
     path.addPoint(88, 30);
@@ -215,6 +216,7 @@ int main() {
     path.addPoint(23, 25);
     path.addPoint(14, 20);
     path.addPoint(34, 11.45);
+    paths.emplace_back(path);
 
     srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
@@ -229,14 +231,13 @@ int main() {
     //printPath(path);
 #endif
     // Set random robot starting position
-    Point firstPosition = path.getPath().at(0);
+    Point firstPosition = paths.at(0).getPath().at(0);
 
     firstPosition.setX(firstPosition.getX() + ((rand() / 1073741823) - 1) * starting_point_random);
     firstPosition.setY(firstPosition.getY() + ((rand() / 1073741823) - 1) * starting_point_random);
     Point robot = firstPosition;
     Vector robotMovement = Vector();
 
-    std::vector<Point> pathVector = path.getPath();
 #if GRAPH
     std::vector<Point> robotPositions;
     robotPositions.emplace_back(path.getPath().at(0));
@@ -248,46 +249,52 @@ int main() {
     RunningAverage<runningAverageLength> runningAverageX;
     RunningAverage<runningAverageLength> runningAverageY;
 
-    // Loop until you get to the last point
-    while (pathVector.at(pathVector.size() - 1).distance(robot) > 1) {
-        // Get the lookahead point 
-        Point lookaheadPoint = path.getLookAheadPoint(robot, lookahead);
-        robotMovement = Vector(&robot, &lookaheadPoint);
-        if (robotMovement.getMagnitude() > 1) {
-            robotMovement.normalize();
-        }
-        robotMovement = robotMovement.scale(1);
-        runningAverageX.add(robotMovement.getCartesian().getX());
-        runningAverageY.add(robotMovement.getCartesian().getY());
+    // Loop through paths
+    for (int i = 0; i < paths.size(); i++) {
 
-        // Move robot
-        Point runningAveragePosition(runningAverageX.getAverage(), runningAverageY.getAverage());
-        robot += runningAveragePosition;
+        std::vector<Point> pathVector = paths.at(i).getPath();
+        
+        // Loop until you get to the last point
+        while (pathVector.at(pathVector.size() - 1).distance(robot) > 1) {
+            // Get the lookahead point 
+            Point lookaheadPoint = path.getLookAheadPoint(robot, lookahead);
+            robotMovement = Vector(&robot, &lookaheadPoint);
+            if (robotMovement.getMagnitude() > 1) {
+                robotMovement.normalize();
+            }
+            robotMovement = robotMovement.scale(1);
+            runningAverageX.add(robotMovement.getCartesian().getX());
+            runningAverageY.add(robotMovement.getCartesian().getY());
+
+            // Move robot
+            Point runningAveragePosition(runningAverageX.getAverage(), runningAverageY.getAverage());
+            robot += runningAveragePosition;
 
 #if GRAPH
 #if PRINT_LIVE
-        cleardevice();
-        printField();
+            cleardevice();
+            printField();
 
-        setlinestyle(SOLID_LINE, 5, 2);
+            setlinestyle(SOLID_LINE, 5, 2);
 
-        printPath(robotPositions);
+            printPath(robotPositions);
 
-        robotPositions.emplace_back(robot);
+            robotPositions.emplace_back(robot);
 
-        setlinestyle(DASHED_LINE, 5, 2);
-        printPath(path);
+            setlinestyle(DASHED_LINE, 5, 2);
+            printPath(path);
 
-        setcolor(LIGHTGRAY);
-        setlinestyle(SOLID_LINE, 5, 2);
-        line(robot.getY() * multiplier, robot.getX() * multiplier, lookaheadPoint.getY() * multiplier, lookaheadPoint.getX() * multiplier);
-        printRobotWithLookahead(robot);
+            setcolor(LIGHTGRAY);
+            setlinestyle(SOLID_LINE, 5, 2);
+            line(robot.getY() * multiplier, robot.getX() * multiplier, lookaheadPoint.getY() * multiplier, lookaheadPoint.getX() * multiplier);
+            printRobotWithLookahead(robot);
 
-        delay(5);
+            delay(5);
 #endif // PRINT_LIVE
 
-        robotPositions.emplace_back(robot);
+            robotPositions.emplace_back(robot);
 #endif
+        }
     }
 #if GRAPH
 
