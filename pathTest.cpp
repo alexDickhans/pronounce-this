@@ -21,11 +21,11 @@ using namespace Pronounce;
 #define yOffset 0
 #define multiplier 3
 
-#define lookahead 7
+#define lookahead 10
 
 #define starting_point_random 1
 
-#define PRINT_LIVE false
+#define PRINT_LIVE true
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
