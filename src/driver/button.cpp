@@ -1,8 +1,10 @@
 #include "button.hpp"
 
 namespace Pronounce {
-    Button::Button(pros::Controller* controller) {
+    Button::Button(pros::Controller* controller){
         this->controller = controller;
+        this->positiveButton = pros::E_CONTROLLER_DIGITAL_L1;
+        this->negativeButton = pros::E_CONTROLLER_DIGITAL_L2;
     }
 
     Button::Button(pros::Controller* controller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton) {
