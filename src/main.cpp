@@ -255,13 +255,13 @@ void initialize() {
 	printf("LVGL Init");
 
 	// Initialize functions
-	// initSensors();
+	initSensors();
 	initMotors();
-	//initDrivetrain();
+	initDrivetrain();
 	initController();
-	//initSelector();
-	//initLogger();
-	//autoPaths();
+	initSelector();
+	initLogger();
+	autoPaths();
 }
 
 /**
