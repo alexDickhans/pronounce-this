@@ -14,6 +14,11 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
+pros::Motor rightLift(3);
+pros::Motor leftLift(4, true);
+
+pros::ADIDigitalOut frontGrabber(1);
+
 pros::ADIEncoder leftEncoder(2, 1, true);
 pros::ADIEncoder rightEncoder(4, 3, true);
 pros::ADIEncoder backEncoder(6, 5, false);
@@ -251,13 +256,13 @@ void initialize() {
 	printf("LVGL Init");
 
 	// Initialize functions
-	initSensors();
+	// initSensors();
 	initMotors();
-	initDrivetrain();
+	//initDrivetrain();
 	initController();
-	initSelector();
-	initLogger();
-	autoPaths();
+	//initSelector();
+	//initLogger();
+	//autoPaths();
 }
 
 /**
@@ -304,13 +309,20 @@ void autonomous() {
 void opcontrol() {
 
 
-	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(infoLabel, "");
+	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
+	// lv_label_set_text(infoLabel, "");
 
 	const int runningAverageLength = 25;
 	RunningAverage<runningAverageLength> leftXAvg;
 	RunningAverage<runningAverageLength> leftYAvg;
 	RunningAverage<runningAverageLength> rightXAvg;
+
+	MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
+	MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
+
+	SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
+	frontGrabberButton.setSolenoid(&frontGrabber);
+	frontGrabberButton.setRetainOnNeutral(true);
 
 	// Driver Control Loop
 	while (true) {
@@ -329,10 +341,14 @@ void opcontrol() {
 		rightX = rightXAvg.getAverage();
 
 		Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
-		driveVector.setAngle((driveVector.getAngle()) + threeWheelOdom.getPosition()->getTheta());
+		driveVector.setAngle((driveVector.getAngle()));// + threeWheelOdom.getPosition()->getTheta());
 
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
+
+		leftLiftButton.update();
+		rightLiftButton.update();
+		frontGrabberButton.update();
 
 		// Prevent wasted resources
 		pros::delay(10);
