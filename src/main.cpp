@@ -238,6 +238,8 @@ void initialize() {
 	initLogger();
 	autoPaths();
 
+	printf("Init drivetrain");
+
 	leftEncoder.reset();
 	leftOdom.setRadius(1.625);
 	leftOdom.setTuningFactor(1.003);
@@ -261,6 +263,8 @@ void initialize() {
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
 	threeWheelOdom.reset(new Position());
+
+	printf("Init done");
 }
 /**
  * Runs while the robot is disabled i.e. before and after match, between auton
@@ -304,6 +308,7 @@ void autonomous() {
  */
 void opcontrol() {
 
+	printf("OpControl");
 
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_label_set_text(infoLabel, "");
