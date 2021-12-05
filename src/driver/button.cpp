@@ -23,9 +23,11 @@ namespace Pronounce {
         if (singleToggle) {
             // Toggle button status between neutral and positive
             if (controller->get_digital_new_press(positiveButton)) {
+                printf("Button pressed\n");
                 buttonStatus = buttonStatus == ButtonStatus::POSITIVE ? ButtonStatus::NEUTRAL : ButtonStatus::POSITIVE;
-                return;
+                printf("Button status: %d\n", buttonStatus);
             }
+            return;
         }
 
         // Update button status

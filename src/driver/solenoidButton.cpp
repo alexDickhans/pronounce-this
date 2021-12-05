@@ -13,6 +13,10 @@ namespace Pronounce {
     }
 
     void SolenoidButton::updateActuator() {
+        if (this->getSingleToggle()) {
+            this->solenoid->set_value(this->getButtonStatus());
+        }
+
         switch (this->getButtonStatus()) {
             case ButtonStatus::POSITIVE:
                 this->solenoid->set_value(!this->inverted);

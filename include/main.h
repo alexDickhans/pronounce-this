@@ -79,6 +79,7 @@
 #include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
+#include "position/trackingWheel.hpp"
 
 // Utils
 #include "utils/path.hpp"

@@ -14,20 +14,21 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-pros::Motor rightLift(3);
-pros::Motor leftLift(4, true);
+pros::Motor rightLift(3, true);
+pros::Motor leftLift(4, false);
 
 pros::Motor backGrabber(6);
 
 pros::ADIDigitalOut frontGrabber(1, false);
+pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 
-pros::ADIEncoder leftEncoder(2, 1, true);
-pros::ADIEncoder rightEncoder(4, 3, true);
-pros::ADIEncoder backEncoder(6, 5, false);
+pros::Rotation leftEncoder(2);
+pros::Rotation rightEncoder(4);
+pros::Rotation backEncoder(6);
 
-Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
-Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
-Pronounce::AdiOdomWheel backOdom(&backEncoder);
+Pronounce::TrackingWheel leftOdom(&leftEncoder);
+Pronounce::TrackingWheel rightOdom(&rightEncoder);
+Pronounce::TrackingWheel backOdom(&backEncoder);
 
 Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
@@ -328,7 +329,7 @@ void opcontrol() {
 	SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 	frontGrabberButton.setSolenoid(&frontGrabber);
 	frontGrabberButton.setSingleToggle(true);
-	frontGrabberButton.setRetainOnNeutral(true);
+	// frontGrabberButton.setRetainOnNeutral(true);
 
 	// Driver Control Loop
 	while (true) {
@@ -352,9 +353,9 @@ void opcontrol() {
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
 
-		// if (frontMobileGoalButton.get_new_press()) {
-		//	frontGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
-		// }
+		if (frontGrabberBumperSwitch.get_new_press()) {
+			frontGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
+		}
 
 		leftLiftButton.update();
 		rightLiftButton.update();
