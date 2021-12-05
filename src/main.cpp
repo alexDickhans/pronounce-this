@@ -17,7 +17,9 @@ pros::Motor backRightMotor(10, true);
 pros::Motor rightLift(3);
 pros::Motor leftLift(4, true);
 
-pros::ADIDigitalOut frontGrabber(1);
+pros::Motor backGrabber(6);
+
+pros::ADIDigitalOut frontGrabber(1, false);
 
 pros::ADIEncoder leftEncoder(2, 1, true);
 pros::ADIEncoder rightEncoder(4, 3, true);
@@ -137,6 +139,9 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	backGrabber.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 }
 
 void initDrivetrain() {
@@ -257,11 +262,11 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initMotors();
-	initDrivetrain();
+	//initDrivetrain();
 	initController();
-	initSelector();
-	initLogger();
-	autoPaths();
+	//initSelector();
+	//initLogger();
+	// autoPaths();
 }
 
 /**
@@ -318,9 +323,11 @@ void opcontrol() {
 
 	MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
 	MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
+	MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 127, 0, -127, 0, 0);
 
 	SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 	frontGrabberButton.setSolenoid(&frontGrabber);
+	frontGrabberButton.setSingleToggle(true);
 	frontGrabberButton.setRetainOnNeutral(true);
 
 	// Driver Control Loop
@@ -345,9 +352,14 @@ void opcontrol() {
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
 
+		// if (frontMobileGoalButton.get_new_press()) {
+		//	frontGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
+		// }
+
 		leftLiftButton.update();
 		rightLiftButton.update();
 		frontGrabberButton.update();
+		backGrabberButton.update();
 
 		// Prevent wasted resources
 		pros::delay(10);
