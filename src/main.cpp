@@ -236,7 +236,7 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
-	autoPaths();
+	// autoPaths();
 
 	printf("Init drivetrain");
 

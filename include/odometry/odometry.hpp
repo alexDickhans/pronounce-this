@@ -16,7 +16,7 @@ namespace Pronounce {
         }
 
         void setPosition(Position* position) {
-            this->position = position;
+            this->position->operator=(position);
         }
 
         Position* getResetPosition() {
@@ -24,7 +24,7 @@ namespace Pronounce {
         }
 
         void setResetPosition(Position* resetPosition) {
-            this->resetPosition = resetPosition;
+            this->resetPosition->operator=(resetPosition);
         }
 
         virtual void update() {};
@@ -32,7 +32,7 @@ namespace Pronounce {
         virtual void reset(Position* position) {
             this->position->operator=(position);
             this->resetPosition->operator=(position);
-        };
+        }
         
         void reset() {
             this->reset(new Position());
