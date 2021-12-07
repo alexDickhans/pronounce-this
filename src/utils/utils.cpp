@@ -11,13 +11,10 @@ namespace Pronounce
     }
 
     double angleDifference(double angle1, double angle2) {
-        angle1 = fmod(angle1 + M_PI * 2.0, M_PI * 2.0);
-        angle2 = fmod(angle2 + M_PI * 2.0, M_PI * 2.0);
-
-        double result = angle1 - angle2;
-        result = fmod(result + M_PI, M_PI * 2.0) - 180;
-
-        return result;
+        double difference = angle1 - angle2;
+        while (difference < -M_PI) difference += M_PI * 2.0;
+        while (difference > M_PI) difference -= M_PI * 2.0;
+        return difference;
     }
     
     double signum_c(double x) {
@@ -27,7 +24,11 @@ namespace Pronounce
     }
 
     double map(double value, double start1, double stop1, double start2, double stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+        double result = start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+        if (std::isnan(result)) {
+            return 0.0;
+        }
+        return result;
     }
 
     // Basically std::format, but only added in C++20

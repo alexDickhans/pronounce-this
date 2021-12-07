@@ -111,12 +111,13 @@ void renderThread() {
 
 void updateDrivetrain() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(infoLabel, "opcontrol()");
+	lv_label_set_text(infoLabel, "drivetrain");
 	while (1) {
 		uint32_t startTime = pros::millis();
+		threeWheelOdom.update();
 		purePursuit.update();
 		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 7);
+		pros::Task::delay_until(&startTime, 15);
 	}
 }
 
@@ -188,7 +189,9 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0));
+	PurePursuitProfile defaultProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
+	printf("Default profile lookahead distance: %f\n", purePursuit.getPurePursuitProfileManager().getDefaultProfile().getLookaheadDistance());
 
 	Path testPath = Path();
 
@@ -236,7 +239,7 @@ void initialize() {
 	initController();
 	initSelector();
 	initLogger();
-	// autoPaths();
+	autoPaths();
 
 	printf("Init drivetrain");
 
@@ -339,6 +342,10 @@ void opcontrol() {
 
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
+
+		if (master.get_digital_new_press(DIGITAL_X)) {
+			threeWheelOdom.reset(new Position());
+		}
 
 		threeWheelOdom.update();
 

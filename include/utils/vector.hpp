@@ -101,6 +101,10 @@ namespace Pronounce {
             this->angle = angle;
         }
 
+        void rotate(double angle) {
+            this->angle += angle;
+        }
+
         std::string to_string() {
             return "Magnitude: " + std::to_string(magnitude) + " angle: " + std::to_string(angle);
         }

@@ -3,6 +3,7 @@
 #include "odometry.hpp"
 #include "position/odomWheel.hpp"
 #include "utils/vector.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce
 {

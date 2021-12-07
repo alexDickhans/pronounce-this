@@ -15,6 +15,12 @@ namespace Pronounce {
             this->setPosition((encoder->get_value()/360.0) * this->getRadius() * M_PI * 2.0 * this->getTuningFactor());
         }
 
+        void reset() {
+            encoder->reset();
+            this->setPosition(0.0);
+            this->setLastPosition(0.0);
+        }
+
         ~AdiOdomWheel();
     };    
 } // namespace Pronounce

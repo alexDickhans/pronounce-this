@@ -32,7 +32,7 @@ namespace Pronounce {
 		 * @return PurePursuitProfile The profile at index, or the default one if the array is out of bound
 		 */
 		PurePursuitProfile getProfile(int index) {
-			if (index >= sizeof(profiles)) {
+			if (index >= profiles.size()) {
 				return defaultProfile;
 			}
 			return this->profiles.at(index);
@@ -44,6 +44,8 @@ namespace Pronounce {
 
 		void setDefaultProfile(PurePursuitProfile defaultProfile) {
 			this->defaultProfile = defaultProfile;
+			printf("Default profile lookahead distance: %f\n", defaultProfile.getLookaheadDistance());
+			printf("Member lookahead distance: %f\n", this->getDefaultProfile().getLookaheadDistance());
 		} 
 
 		~PurePursuitProfileManager();
