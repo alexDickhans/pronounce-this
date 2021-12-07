@@ -94,8 +94,8 @@ int testAuton() {
 }
 
 int postAuton() {
-	purePursuit.setEnabled(false);
 	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
 	return 0;
 }
 
@@ -109,12 +109,13 @@ void renderThread() {
 
 void updateDrivetrain() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(infoLabel, "opcontrol()");
+	lv_label_set_text(infoLabel, "drivetrain");
 	while (1) {
 		uint32_t startTime = pros::millis();
+		threeWheelOdom.update();
 		purePursuit.update();
 		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 7);
+		pros::Task::delay_until(&startTime, 15);
 	}
 }
 
@@ -146,7 +147,8 @@ void initMotors() {
 }
 
 void initDrivetrain() {
-	// Set the encoder modes and variables
+	printf("Init drivetrain");
+
 	leftEncoder.reset();
 	leftOdom.setRadius(1.625);
 	leftOdom.setTuningFactor(1.003);
@@ -157,18 +159,21 @@ void initDrivetrain() {
 	backOdom.setRadius(1.625);
 	backOdom.setTuningFactor(1.003);
 
-	// Set the drivetrain odometry offsets
+	//pros::Task::delay(100);
+
 	threeWheelOdom.setBackOffset(3.375);
 	threeWheelOdom.setLeftOffset(3.87);
 	threeWheelOdom.setRightOffset(3.87);
 
-	purePursuit.setNormalizeDistance(5);
+	purePursuit.setNormalizeDistance(10);
 
 	purePursuit.setOdometry(&threeWheelOdom);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
 	threeWheelOdom.reset(new Position());
+
+	printf("Init done");
 }
 
 /**
@@ -215,7 +220,9 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0));
+	PurePursuitProfile defaultProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
+	printf("Default profile lookahead distance: %f\n", purePursuit.getPurePursuitProfileManager().getDefaultProfile().getLookaheadDistance());
 
 	// Test path
 	Path testPath = Path();
@@ -263,11 +270,11 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initMotors();
-	//initDrivetrain();
+	initDrivetrain();
 	initController();
-	//initSelector();
-	//initLogger();
-	// autoPaths();
+	initSelector();
+	initLogger();
+	autoPaths();
 }
 
 /**
@@ -313,6 +320,7 @@ void autonomous() {
  */
 void opcontrol() {
 
+	printf("OpControl");
 
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
@@ -361,6 +369,12 @@ void opcontrol() {
 		rightLiftButton.update();
 		frontGrabberButton.update();
 		backGrabberButton.update();
+		
+		if (master.get_digital_new_press(DIGITAL_X)) {
+			threeWheelOdom.reset(new Position());
+		}
+
+		threeWheelOdom.update();
 
 		// Prevent wasted resources
 		pros::delay(10);

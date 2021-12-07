@@ -7,7 +7,7 @@ namespace Pronounce {
     private:
         PID* lateralPid;
         PID* turnPid;
-        double lookaheadDistance;
+        double lookaheadDistance = 0.0;
     public:
         PurePursuitProfile();
         PurePursuitProfile(PID* lateralPid, PID* turnPid);
