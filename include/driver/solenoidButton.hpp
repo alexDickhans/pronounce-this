@@ -25,6 +25,14 @@ namespace Pronounce {
             this->inverted = inverted;
         }
 
+        bool getRetainOnNeutral() {
+            return retainOnNeutral;
+        }
+
+        void setRetainOnNeutral(bool retainOnNeutral) {
+            this->retainOnNeutral = retainOnNeutral;
+        }
+
         pros::ADIDigitalOut* getSolenoid() {
             return solenoid;
         }

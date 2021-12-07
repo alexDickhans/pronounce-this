@@ -11,6 +11,7 @@ namespace Pronounce {
             int negativeAuthority,
             int min,
             int max) : Button(controller, positiveButton, negativeButton) {
+        this->motor = motor;
         this->positiveAuthority = positiveAuthority;
         this->neutralAuthority = neutralAuthority;
         this->negativeAuthority = negativeAuthority;

@@ -39,8 +39,6 @@ namespace Pronounce {
             this->goToImmediately = goToImmediately;
         }
 
-        void update();
-
         ~MotorButton();
     };
 

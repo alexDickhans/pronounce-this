@@ -3,6 +3,7 @@
 #include "odometry.hpp"
 #include "position/odomWheel.hpp"
 #include "utils/vector.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce
 {
@@ -17,7 +18,8 @@ namespace Pronounce
         void update();
 
         void reset(Position* position) {
-            Odometry::reset();
+            this->setPosition(position);
+            this->setResetPosition(position);
             this->leftWheel->reset();
             this->rightWheel->reset();
             this->backWheel->reset();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <math.h>
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
@@ -65,6 +66,7 @@ namespace Pronounce {
 
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
+			printf("Current Path: %d\n", currentPath);
 			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 
