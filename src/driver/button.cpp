@@ -19,6 +19,10 @@ namespace Pronounce {
     }
 
     void Button::updateController() {
+        // If in autonomous mode don't update the controller
+        if (autonomous)
+            return;
+
         // Update the controller if the controller toggles with a button
         if (singleToggle) {
             // Toggle button status between neutral and positive
@@ -36,8 +40,9 @@ namespace Pronounce {
         }
         else if (controller->get_digital(negativeButton)) {
             buttonStatus = ButtonStatus::NEGATIVE;
-        }
-        else {
+        } else if (retainOnNeutral) {
+            // Don't do anything
+        } else {
             buttonStatus = ButtonStatus::NEUTRAL;
         }
     }

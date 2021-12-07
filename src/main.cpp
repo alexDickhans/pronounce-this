@@ -22,6 +22,7 @@ pros::Motor backGrabber(6);
 pros::ADIDigitalOut frontGrabber(1, false);
 pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 
+/*
 pros::Rotation leftEncoder(2);
 pros::Rotation rightEncoder(4);
 pros::Rotation backEncoder(6);
@@ -29,6 +30,16 @@ pros::Rotation backEncoder(6);
 Pronounce::TrackingWheel leftOdom(&leftEncoder);
 Pronounce::TrackingWheel rightOdom(&rightEncoder);
 Pronounce::TrackingWheel backOdom(&backEncoder);
+
+*/
+
+pros::ADIEncoder leftEncoder(2, 1, true);
+pros::ADIEncoder rightEncoder(4, 3, true);
+pros::ADIEncoder backEncoder(6, 5, false);
+
+Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
+Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
+Pronounce::AdiOdomWheel backOdom(&backEncoder);
 
 Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
@@ -244,12 +255,18 @@ void initController() {
 	pros::Task renderTask(renderThread);
 }
 
+// Run selector as task
+void runSelector() {
+	autonomousSel->choose();
+}
+
 /**
  * Initialize the Auton Selector
  */
 void initSelector() {
 	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Test",
+	static char* btnm_map[] = { (char*)"Test", (char*)"\n",
+								(char*)"Right steal right",
 								(char*)"" };
 
 	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
@@ -260,8 +277,12 @@ void initSelector() {
 
 	// Set functions
 	autonomousSel->setFunction(0, testAuton);
+	autonomousSel->setFunction(1, rightStealRight);
 
 	autonomousSel->setSelection(0);
+	
+	// Start the task
+	pros::Task selectorTask(runSelector, "Auton Selector");
 }
 
 /**
@@ -282,7 +303,6 @@ void autoPaths() {
 	// Default pure pursuit profile
 	PurePursuitProfile defaultProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
 	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
-	printf("Default profile lookahead distance: %f\n", purePursuit.getPurePursuitProfileManager().getDefaultProfile().getLookaheadDistance());
 
 	// Test path
 	Path testPath = Path();
@@ -425,7 +445,7 @@ void opcontrol() {
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
 
-	const int runningAverageLength = 25;
+	const int runningAverageLength = 1;
 	RunningAverage<runningAverageLength> leftXAvg;
 	RunningAverage<runningAverageLength> leftYAvg;
 	RunningAverage<runningAverageLength> rightXAvg;
