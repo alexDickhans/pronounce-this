@@ -33,7 +33,7 @@ Pronounce::TrackingWheel backOdom(&backEncoder);
 Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 
 // Inertial Measurement Unit
-pros::Imu imu(3);
+pros::Imu imu(5);
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &threeWheelOdom);
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 15);
@@ -369,7 +369,6 @@ void opcontrol() {
 		rightLiftButton.update();
 		frontGrabberButton.update();
 		backGrabberButton.update();
-		
 		if (master.get_digital_new_press(DIGITAL_X)) {
 			threeWheelOdom.reset(new Position());
 		}
