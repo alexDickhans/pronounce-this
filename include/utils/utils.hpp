@@ -9,8 +9,20 @@ namespace Pronounce
 {
     double toRadians(double degrees);
     double toDegrees(double radians);
-    double mapFunc(double value, double start1, double stop1, double start2, double stop2);
+    double angleDifference(double angle1, double angle2);
     double signnum_c(double x);
+
+    /**
+     * @brief A function like processing's map function. Maps a value from one range to another.
+     * 
+     * @param value Value to map
+     * @param start1 Start of input range
+     * @param stop1 End of input range
+     * @param start2 Start of output range
+     * @param stop2 End of output range
+     * @return double Mapped value
+     */
+    double map(double value, double start1, double stop1, double start2, double stop2);
 
     template<typename ... Args>
     std::string string_format(const std::string& format, Args ... args) {

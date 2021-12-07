@@ -3,6 +3,7 @@
 #include "odometry.hpp"
 #include "position/odomWheel.hpp"
 #include "utils/vector.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce
 {
@@ -15,6 +16,14 @@ namespace Pronounce
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
 
         void update();
+
+        void reset(Position* position) {
+            this->setPosition(position);
+            this->setResetPosition(position);
+            this->leftWheel->reset();
+            this->rightWheel->reset();
+            this->backWheel->reset();
+        }
 
         double getLeftOffset() {
             return leftOffset;

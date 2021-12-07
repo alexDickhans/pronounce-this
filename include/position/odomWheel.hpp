@@ -19,6 +19,11 @@ namespace Pronounce {
     public:
         OdomWheel();
         OdomWheel(double radius);
+
+        virtual void reset() {
+            position = 0;
+            lastPosition = 0;
+        }
         
         double getRadius() {
             return this->radius;
@@ -49,7 +54,21 @@ namespace Pronounce {
             this->position = position;
         }
 
-        virtual double getChange() {
+        /**
+         * Get the last position
+         */
+        double getLastPosition() {
+            return this->lastPosition;
+        }
+
+        /**
+         * Set the last position
+         */
+        void setLastPosition(double lastPosition) {
+            this->lastPosition = lastPosition;
+        }
+
+        double getChange() {
             double difference = this->getPosition() - this->lastPosition;
             this->lastPosition = this->getPosition();
             return difference;

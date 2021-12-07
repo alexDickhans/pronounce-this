@@ -38,6 +38,18 @@ namespace Pronounce {
             this->theta = theta;
         }
 
+        void operator=(Position position) {
+            this->setX(position.getX());
+            this->setY(position.getY());
+            this->setTheta(position.getTheta());
+        }
+
+        void operator=(Position* position) {
+            this->setX(position->getX());
+            this->setY(position->getY());
+            this->setTheta(position->getTheta());
+        }
+
         ~Position();
     };
 

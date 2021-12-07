@@ -1,9 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <math.h>
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
+#include "utils/utils.hpp"
 #include "utils/vector.hpp"
 #include "utils/purePursuitProfileManager.hpp"
 #include "utils/purePursuitProfile.hpp"
@@ -18,6 +20,7 @@ namespace Pronounce {
 		int currentPath = -1;
 		double stopDistance;
 		double normalizeDistance = 1;
+		double curvatureMultiplier = 0;
 
 		PurePursuitProfile currentProfile;
 
@@ -27,6 +30,7 @@ namespace Pronounce {
 
 		OmniDrivetrain* drivetrain;
 		Odometry* odometry;
+		Vector lastLookaheadVector;
 
 		bool enabled = false;
 		bool following = false;
@@ -38,14 +42,6 @@ namespace Pronounce {
 
 		void addPath(Path path) {
 			paths.emplace_back(path);
-		}
-
-		double getLookahead() {
-			return lookahead;
-		}
-
-		void setLookahead(double lookahead) {
-			this->lookahead = lookahead;
 		}
 
 		std::vector<Path> getPaths() {
@@ -62,6 +58,7 @@ namespace Pronounce {
 
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
+			printf("Current Path: %d\n", currentPath);
 			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 

@@ -10,14 +10,25 @@ namespace Pronounce
         return radians * 180 / M_PI;
     }
 
-    double mapFunc(double value, double start1, double stop1, double start2, double stop2) {
-        return ((value - start1) / (stop1 - start1)) * ((stop2 - start2) + start2);
+    double angleDifference(double angle1, double angle2) {
+        double difference = angle1 - angle2;
+        while (difference < -M_PI) difference += M_PI * 2.0;
+        while (difference > M_PI) difference -= M_PI * 2.0;
+        return difference;
     }
-
+    
     double signum_c(double x) {
         if (x > 0.0) return 1.0;
         if (x < 0.0) return -1.0;
         return x;
+    }
+
+    double map(double value, double start1, double stop1, double start2, double stop2) {
+        double result = start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+        if (std::isnan(result)) {
+            return 0.0;
+        }
+        return result;
     }
 
     // Basically std::format, but only added in C++20

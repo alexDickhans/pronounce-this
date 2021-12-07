@@ -85,7 +85,7 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
-	threeWheelOdom.setPosition(new Position());
+	threeWheelOdom.reset(new Position());
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
@@ -111,12 +111,13 @@ void renderThread() {
 
 void updateDrivetrain() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(infoLabel, "opcontrol()");
+	lv_label_set_text(infoLabel, "drivetrain");
 	while (1) {
 		uint32_t startTime = pros::millis();
+		threeWheelOdom.update();
 		purePursuit.update();
 		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 10);
+		pros::Task::delay_until(&startTime, 15);
 	}
 }
 
@@ -187,6 +188,11 @@ void initLogger() {
 }
 
 void autoPaths() {
+	// Default pure pursuit profile
+	PurePursuitProfile defaultProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
+	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
+	printf("Default profile lookahead distance: %f\n", purePursuit.getPurePursuitProfileManager().getDefaultProfile().getLookaheadDistance());
+
 	Path testPath = Path();
 
 	testPath.addPoint(0, 0);
@@ -195,17 +201,6 @@ void autoPaths() {
 	testPath.addPoint(24, 48);
 	testPath.addPoint(-24, 48);
 	testPath.addPoint(0, 24);
-
-/*
-    testPath.addPoint(105.7, 13.5);
-    testPath.addPoint(105.7, 30);
-    testPath.addPoint(88, 30);
-    testPath.addPoint(64, 53);
-    testPath.addPoint(58, 35);
-    testPath.addPoint(23, 25);
-    testPath.addPoint(14, 20);
-    testPath.addPoint(34, 11.45);
-*/
 
 	purePursuit.addPath(testPath);
 	testPathIndex = 0;
@@ -246,6 +241,8 @@ void initialize() {
 	initLogger();
 	autoPaths();
 
+	printf("Init drivetrain");
+
 	leftEncoder.reset();
 	leftOdom.setRadius(1.625);
 	leftOdom.setTuningFactor(1.003);
@@ -261,16 +258,16 @@ void initialize() {
 	threeWheelOdom.setBackOffset(3.375);
 	threeWheelOdom.setLeftOffset(3.87);
 	threeWheelOdom.setRightOffset(3.87);
-	
-	purePursuit.getPurePursuitProfileManager().setDefaultProfile(PurePursuitProfile(new PID(0, 0, 0), new PID(30, 0, 0)));
-	purePursuit.setNormalizeDistance(5);
-	purePursuit.setLookahead(10);
+
+	purePursuit.setNormalizeDistance(10);
 
 	purePursuit.setOdometry(&threeWheelOdom);
 
-	pros::Task purePursuitTast = pros::Task(updateDrivetrain, "Pure Pursuit");
+	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
-	threeWheelOdom.setPosition(new Position());
+	threeWheelOdom.reset(new Position());
+
+	printf("Init done");
 }
 /**
  * Runs while the robot is disabled i.e. before and after match, between auton
@@ -306,7 +303,6 @@ void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	autonomousSel->runSelection();
-
 }
 
 
@@ -315,6 +311,7 @@ void autonomous() {
  */
 void opcontrol() {
 
+	printf("OpControl");
 
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_label_set_text(infoLabel, "");
@@ -345,6 +342,10 @@ void opcontrol() {
 
 		// Send variables to motors
 		drivetrain.setDriveVectorVelocity(driveVector, rightX);
+
+		if (master.get_digital_new_press(DIGITAL_X)) {
+			threeWheelOdom.reset(new Position());
+		}
 
 		threeWheelOdom.update();
 
