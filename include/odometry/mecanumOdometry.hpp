@@ -21,13 +21,12 @@ namespace Pronounce {
 
         pros::Imu* imu;
 
-        double wheelRadius;
         double xOffset;
         double yOffset;
     public:
         MecanumOdometry();
-        MecanumOdometry(double wheelRadius, double xOffset, double yOffset);
-        MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double wheelRadius, double xOffset, double yOffset);
+        MecanumOdometry(double xOffset, double yOffset);
+        MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double xOffset, double yOffset);
 
         void update();
 
@@ -39,19 +38,6 @@ namespace Pronounce {
             wheel3->reset();
             wheel4->reset();
             imu->set_rotation(position->getTheta());
-        }
-
-        /**
-         * @brief Set the Wheel Radius object
-         * 
-         * @param wheelRadius 
-         */
-        void setWheelRadius(double wheelRadius) {
-            this->wheelRadius = wheelRadius;
-        }
-        
-        double getWheelRadius() {
-            return wheelRadius;
         }
 
         /**

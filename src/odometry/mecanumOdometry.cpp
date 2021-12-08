@@ -4,13 +4,12 @@ namespace Pronounce {
     MecanumOdometry::MecanumOdometry(/* args */) {
     }
 
-    MecanumOdometry::MecanumOdometry(double wheelRadius, double xOffset, double yOffset) {
-        this->wheelRadius = wheelRadius;
+    MecanumOdometry::MecanumOdometry(double xOffset, double yOffset) {
         this->xOffset = xOffset;
         this->yOffset = yOffset;
     }
 
-    MecanumOdometry::MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double wheelRadius, double xOffset, double yOffset) : MecanumOdometry(wheelRadius, xOffset, yOffset) {
+    MecanumOdometry::MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double xOffset, double yOffset) : MecanumOdometry(xOffset, yOffset) {
         this->wheel1 = wheel1;
         this->wheel2 = wheel2;
         this->wheel3 = wheel3;
