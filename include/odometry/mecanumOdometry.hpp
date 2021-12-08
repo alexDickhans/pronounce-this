@@ -10,7 +10,7 @@
 
 namespace Pronounce {
 
-    class MecanumOdometry : Odometry {
+    class MecanumOdometry : public Odometry {
     private:
         OdomWheel* wheel1;
         OdomWheel* wheel2;
@@ -108,6 +108,14 @@ namespace Pronounce {
             this->wheel4 = wheel4;
         }
         
+        bool isUseImu() {
+            return useImu;
+        }
+
+        void setUseImu(bool useImu) {
+            this->useImu = useImu;
+        }
+
         /**
          * @brief Destroy the Mecanum Odometry object
          * 

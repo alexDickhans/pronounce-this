@@ -22,30 +22,17 @@ pros::Motor backGrabber(6);
 pros::ADIDigitalOut frontGrabber(1, false);
 pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 
-/*
-pros::Rotation leftEncoder(2);
-pros::Rotation rightEncoder(4);
-pros::Rotation backEncoder(6);
-
-Pronounce::TrackingWheel leftOdom(&leftEncoder);
-Pronounce::TrackingWheel rightOdom(&rightEncoder);
-Pronounce::TrackingWheel backOdom(&backEncoder);
-
-*/
-
-pros::ADIEncoder leftEncoder(2, 1, true);
-pros::ADIEncoder rightEncoder(4, 3, true);
-pros::ADIEncoder backEncoder(6, 5, false);
-
-Pronounce::AdiOdomWheel leftOdom(&leftEncoder);
-Pronounce::AdiOdomWheel rightOdom(&rightEncoder);
-Pronounce::AdiOdomWheel backOdom(&backEncoder);
-
-Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
-
 // Inertial Measurement Unit
 pros::Imu imu(5);
-MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &threeWheelOdom);
+
+Pronounce::MotorOdom wheel1(&frontLeftMotor, 2);
+Pronounce::MotorOdom wheel2(&frontRightMotor, 2);
+Pronounce::MotorOdom wheel3(&backLeftMotor, 2);
+Pronounce::MotorOdom wheel4(&backRightMotor, 2);
+
+Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 4.0, 4.0);
+
+MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 10);
 
@@ -85,7 +72,7 @@ int preAutonRun() {
  *
  */
 int rightStealRight() {
-	threeWheelOdom.reset(new Position(105.7, 8));
+	odometry.reset(new Position(105.7, 8));
 
 	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
 	purePursuit.setFollowing(true);
@@ -102,7 +89,7 @@ int rightStealRight() {
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(3.14);
 
-	while (threeWheelOdom.getPosition()->getY() < 46.8) {
+	while (odometry.getPosition()->getY() < 46.8) {
 		pros::Task::delay(50);
 	}
 	
@@ -159,7 +146,7 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
-	threeWheelOdom.reset(new Position());
+	odometry.reset(new Position());
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
@@ -191,9 +178,9 @@ void updateDrivetrain() {
 	lv_label_set_text(infoLabel, "drivetrain");
 	while (1) {
 		uint32_t startTime = pros::millis();
-		threeWheelOdom.update();
+		odometry.update();
 		purePursuit.update();
-		lv_label_set_text(infoLabel, threeWheelOdom.getPosition()->to_string().c_str());
+		lv_label_set_text(infoLabel, odometry.getPosition()->to_string().c_str());
 		pros::Task::delay_until(&startTime, 15);
 	}
 }
@@ -228,29 +215,13 @@ void initMotors() {
 void initDrivetrain() {
 	printf("Init drivetrain");
 
-	leftEncoder.reset();
-	leftOdom.setRadius(1.625);
-	leftOdom.setTuningFactor(1.003);
-	rightEncoder.reset();
-	rightOdom.setRadius(1.625);
-	rightOdom.setTuningFactor(1.003);
-	backEncoder.reset();
-	backOdom.setRadius(1.625);
-	backOdom.setTuningFactor(1.003);
-
-	//pros::Task::delay(100);
-
-	threeWheelOdom.setBackOffset(3.375);
-	threeWheelOdom.setLeftOffset(3.87);
-	threeWheelOdom.setRightOffset(3.87);
-
 	purePursuit.setNormalizeDistance(10);
 
-	purePursuit.setOdometry(&threeWheelOdom);
+	purePursuit.setOdometry(&odometry);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
-	threeWheelOdom.reset(new Position());
+	odometry.reset(new Position());
 
 	printf("Init done");
 }
@@ -495,10 +466,10 @@ void opcontrol() {
 		frontGrabberButton.update();
 		backGrabberButton.update();
 		if (master.get_digital_new_press(DIGITAL_X)) {
-			threeWheelOdom.reset(new Position());
+			odometry.reset(new Position());
 		}
 
-		threeWheelOdom.update();
+		odometry.update();
 
 		// Prevent wasted resources
 		pros::delay(10);
