@@ -12,10 +12,10 @@ namespace Pronounce {
 
     class MecanumOdometry : Odometry {
     private:
-        OdomWheel wheel1;
-        OdomWheel wheel2;
-        OdomWheel wheel3;
-        OdomWheel wheel4;
+        OdomWheel* wheel1;
+        OdomWheel* wheel2;
+        OdomWheel* wheel3;
+        OdomWheel* wheel4;
 
         bool useImu;
 
@@ -27,17 +27,17 @@ namespace Pronounce {
     public:
         MecanumOdometry();
         MecanumOdometry(double wheelRadius, double xOffset, double yOffset);
-        MecanumOdometry(OdomWheel wheel1, OdomWheel wheel2, OdomWheel wheel3, OdomWheel wheel4, pros::Imu imu, double wheelRadius, double xOffset, double yOffset);
+        MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double wheelRadius, double xOffset, double yOffset);
 
         void update();
 
         void reset(Position* position) {
             this->setPosition(position);
             this->setResetPosition(position);
-            wheel1.reset();
-            wheel2.reset();
-            wheel3.reset();
-            wheel4.reset();
+            wheel1->reset();
+            wheel2->reset();
+            wheel3->reset();
+            wheel4->reset();
             imu->set_rotation(position->getTheta());
         }
 
@@ -90,35 +90,35 @@ namespace Pronounce {
             return yOffset;
         }
         
-        OdomWheel getWheel1() {
+        OdomWheel* getWheel1() {
             return wheel1;
         }
 
-        void setWheel1(OdomWheel wheel1) {
+        void setWheel1(OdomWheel *wheel1) {
             this->wheel1 = wheel1;
         }
 
-        OdomWheel getWheel2() {
+        OdomWheel* getWheel2() {
             return wheel2;
         }
 
-        void setWheel2(OdomWheel wheel2) {
+        void setWheel2(OdomWheel* wheel2) {
             this->wheel2 = wheel2;
         }
 
-        OdomWheel getWheel3() {
+        OdomWheel* getWheel3() {
             return wheel3;
         }
 
-        void setWheel3(OdomWheel wheel3) {
+        void setWheel3(OdomWheel* wheel3) {
             this->wheel3 = wheel3;
         }
 
-        OdomWheel getWheel4() {
+        OdomWheel* getWheel4() {
             return wheel4;
         }
 
-        void setWheel4(OdomWheel wheel4) {
+        void setWheel4(OdomWheel* wheel4) {
             this->wheel4 = wheel4;
         }
         

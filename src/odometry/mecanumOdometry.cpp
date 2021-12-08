@@ -10,7 +10,7 @@ namespace Pronounce {
         this->yOffset = yOffset;
     }
 
-    MecanumOdometry::MecanumOdometry(OdomWheel wheel1, OdomWheel wheel2, OdomWheel wheel3, OdomWheel wheel4, pros::Imu imu, double wheelRadius, double xOffset, double yOffset) : MecanumOdometry(wheelRadius, xOffset, yOffset) {
+    MecanumOdometry::MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double wheelRadius, double xOffset, double yOffset) : MecanumOdometry(wheelRadius, xOffset, yOffset) {
         this->wheel1 = wheel1;
         this->wheel2 = wheel2;
         this->wheel3 = wheel3;
@@ -24,10 +24,10 @@ namespace Pronounce {
         newPosition->operator=(lastPosition);
 
         // Update the wheel positions
-        wheel1.update();
-        wheel2.update();
-        wheel3.update();
-        wheel4.update();
+        wheel1->update();
+        wheel2->update();
+        wheel3->update();
+        wheel4->update();
 
         double angleChange = 0;
         double lastAngle = lastPosition->getTheta();
@@ -42,8 +42,8 @@ namespace Pronounce {
             // Use the wheel encoders to determine orientation
 
             // Calculate the orientation since last reset
-            double currentAngle = (-wheel1.getPosition() + wheel2.getPosition() - wheel3.getPosition() + wheel4.getPosition()) / (4 * xOffset, yOffset);
-            
+            double currentAngle = (-wheel1->getPosition() + wheel2->getPosition() - wheel3->getPosition() + wheel4->getPosition()) / (4 * xOffset, yOffset);
+
             angleChange = currentAngle - lastAngle;
 
             newPosition->setTheta(currentAngle);
@@ -55,8 +55,8 @@ namespace Pronounce {
 
         Vector localOffset = Vector(
             new Point(
-                (wheel1.getChange() + wheel2.getChange() + wheel3.getChange() + wheel4.getChange()) / 4, 
-                (-wheel1.getChange() + wheel2.getChange() + wheel3.getChange() - wheel4.getChange()) / 4));
+                (wheel1->getChange() + wheel2->getChange() + wheel3->getChange() + wheel4->getChange()) / 4,
+                (-wheel1->getChange() + wheel2->getChange() + wheel3->getChange() - wheel4->getChange()) / 4));
         localOffset.rotate(averageOrientation);
         newPosition->add(localOffset.getCartesian());
 
