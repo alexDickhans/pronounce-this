@@ -47,9 +47,7 @@ Pronounce::ThreeWheelOdom threeWheelOdom(&leftOdom, &rightOdom, &backOdom);
 pros::Imu imu(5);
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &threeWheelOdom);
 
-Pronounce::PurePursuit purePursuit(&drivetrain, 15);
-
-Position* startingPosition = new Position(0, 0, 0);
+Pronounce::PurePursuit purePursuit(&drivetrain, 10);
 
 bool relativeMovement = false;
 bool driveOdomEnabled = true;
@@ -65,7 +63,7 @@ int rightHomeToGoalNeutralIndex;
 int rightNeutralToMidNeutralIndex;
 int midNeutralToRightAllianceIndex;
 int rightAllianceToRightRingIndex;
-int rightRingToRightHomeIndex;
+int rightRingToLeftHomeZoneIndex;
 
 /**
  * @brief Runs during auton period before auton
@@ -97,20 +95,28 @@ int rightStealRight() {
 		pros::Task::delay(50);
 	}
 
-	// Collect back goal
+	// Collect front goal
+	frontGrabber.set_value(true);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(3.14);
 
+	while (threeWheelOdom.getPosition()->getY() < 46.8) {
+		pros::Task::delay(50);
+	}
+	
+	// Let go of front goal and get ready to collect again
+	frontGrabber.set_value(false);
+	purePursuit.setTurnTarget(0);
+
 	// Wait until it is done
 	while (purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
-	
-	// In the middle drop back goal
 
 	// Collect front goal
+	frontGrabber.set_value(true);
 
 	purePursuit.setCurrentPathIndex(midNeutralToRightAllianceIndex);
 	purePursuit.setFollowing(true);
@@ -120,6 +126,8 @@ int rightStealRight() {
 	while (purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
+
+	backGrabber.move_velocity(200);
 
 	purePursuit.setTurnTarget(0);
 	pros::Task::delay(500);
@@ -133,9 +141,9 @@ int rightStealRight() {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setCurrentPathIndex(rightRingToRightHomeIndex);
+	purePursuit.setCurrentPathIndex(rightRingToLeftHomeZoneIndex);
 	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(5.5);
+	purePursuit.setTurnTarget(-M_PI_2);
 
 	// Wait until it is done
 	while (purePursuit.isDone(0.5)) {
@@ -280,7 +288,7 @@ void initSelector() {
 	autonomousSel->setFunction(1, rightStealRight);
 
 	autonomousSel->setSelection(0);
-	
+
 	// Start the task
 	pros::Task selectorTask(runSelector, "Auton Selector");
 }
@@ -314,50 +322,47 @@ void autoPaths() {
 	testPath.addPoint(-24, 48);
 	testPath.addPoint(0, 24);
 
-	purePursuit.addPath(testPath);
-	testPathIndex = 0;
+	testPathIndex = purePursuit.addPath(testPath);
 
 	// Right Steal Right
 	Path rightHomeToGoalNeutral;
 
 	rightHomeToGoalNeutral.addPoint(105.7, 8);
-	rightHomeToGoalNeutral.addPoint(105.7, 70.3);
+	rightHomeToGoalNeutral.addPoint(105.7, 60);
 
-	purePursuit.addPath(rightHomeToGoalNeutral);
-	rightHomeToGoalNeutralIndex = 1;
+	rightHomeToGoalNeutralIndex = purePursuit.addPath(rightHomeToGoalNeutral);
 
 	Path rightNeutralToMidNeutral;
 
-	rightNeutralToMidNeutral.addPoint(117.5, 70.3);
-	rightNeutralToMidNeutral.addPoint(82.3, 46.8);
-	rightNeutralToMidNeutral.addPoint(70.3, 70.3);
+	rightNeutralToMidNeutral.addPoint(105.7, 60);
+	rightNeutralToMidNeutral.addPoint(82.3, 40);
+	rightNeutralToMidNeutral.addPoint(70.3, 60);
 
-	purePursuit.addPath(rightNeutralToMidNeutral);
-	rightNeutralToMidNeutralIndex = 2;
+	rightNeutralToMidNeutralIndex = purePursuit.addPath(rightNeutralToMidNeutral);
 
 	Path midNeutralToRightAlliance;
 
-	midNeutralToRightAlliance.addPoint(70.3, 70.3);
-	midNeutralToRightAlliance.addPoint(129.1, 35);
+	midNeutralToRightAlliance.addPoint(70.3, 60);
+	midNeutralToRightAlliance.addPoint(120.1, 36);
 
-	purePursuit.addPath(midNeutralToRightAlliance);
-	midNeutralToRightAllianceIndex = 3;
+	midNeutralToRightAllianceIndex = purePursuit.addPath(midNeutralToRightAlliance);
 
 	Path rightAllianceToRightRing;
 
+	rightAllianceToRightRing.addPoint(120.1, 36);
 	rightAllianceToRightRing.addPoint(117.5, 46.8);
 	rightAllianceToRightRing.addPoint(117.5, 70.3);
+	rightAllianceToRightRing.addPoint(117.5, 70.3);
 
-	purePursuit.addPath(rightAllianceToRightRing);
-	rightAllianceToRightRingIndex = 4;
+	rightAllianceToRightRingIndex = purePursuit.addPath(rightAllianceToRightRing);
 
-	Path rightRingToRightHome;
+	Path rightRingToLeftHomeZone;
 
-	rightRingToRightHome.addPoint(117.5, 70.3);
-	rightRingToRightHome.addPoint(105.7, 12);
+	rightRingToLeftHomeZone.addPoint(117.5, 70.3);
+	rightRingToLeftHomeZone.addPoint(105, 35);
+	rightRingToLeftHomeZone.addPoint(35, 35);
 
-	purePursuit.addPath(rightRingToRightHome);
-	rightRingToRightHomeIndex = 5;
+	rightRingToLeftHomeZoneIndex = purePursuit.addPath(rightRingToLeftHomeZone);
 }
 
 /**
