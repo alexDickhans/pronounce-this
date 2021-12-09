@@ -30,7 +30,7 @@ Pronounce::MotorOdom wheel2(&frontRightMotor, 2);
 Pronounce::MotorOdom wheel3(&backLeftMotor, 2);
 Pronounce::MotorOdom wheel4(&backRightMotor, 2);
 
-Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 6.5, 13.75/2);
+Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 14/2, 10.5/2);
 
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
@@ -193,9 +193,9 @@ void initSensors() {
 	imu.reset();
 
 	// Wait until IMU is calibrated
-	// while (imu.is_calibrating()) {
-	// 	pros::delay(20);
-	// }
+	while (imu.is_calibrating()) {
+		pros::delay(20);
+	}
 }
 
 /**
@@ -399,7 +399,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	autonomousSel->choose();
+	//autonomousSel->choose();
 
 }
 
@@ -419,6 +419,7 @@ void autonomous() {
 void opcontrol() {
 
 	printf("OpControl");
+	lv_obj_clean(lv_scr_act());
 
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
@@ -430,12 +431,13 @@ void opcontrol() {
 
 	MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
 	MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
-	MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 127, 0, -127, 0, 0);
+	MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 200, 200, 200, 0, 450*3);
+	backGrabberButton.setSingleToggle(true);
+	backGrabberButton.setGoToImmediately(true);
 
 	SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 	frontGrabberButton.setSolenoid(&frontGrabber);
 	frontGrabberButton.setSingleToggle(true);
-	// frontGrabberButton.setRetainOnNeutral(true);
 
 	// Driver Control Loop
 	while (true) {

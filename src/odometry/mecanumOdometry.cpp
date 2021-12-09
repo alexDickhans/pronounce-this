@@ -31,6 +31,11 @@ namespace Pronounce {
         double angleChange = 0;
         double lastAngle = lastPosition->getTheta();
 
+        double deltaWheel1 = wheel1->getChange();
+        double deltaWheel2 = wheel2->getChange();
+        double deltaWheel3 = wheel3->getChange();
+        double deltaWheel4 = wheel4->getChange();
+
         if (useImu && imu != nullptr) {
             if (imu->is_calibrating()) {
                 return;
@@ -60,10 +65,10 @@ namespace Pronounce {
 
         Vector localOffset(
             new Point(
-                -(-wheel1->getChange() + wheel2->getChange() + wheel3->getChange() - wheel4->getChange()) / 4,
-                (wheel1->getChange() + wheel2->getChange() + wheel3->getChange() + wheel4->getChange())));
+                -(-deltaWheel1 + deltaWheel2 + deltaWheel3 - deltaWheel4) / 4,
+                (deltaWheel1 + deltaWheel2 + deltaWheel3 + deltaWheel4) / 4));
 
-        //localOffset.rotate(-averageOrientation);
+        localOffset.rotate(-averageOrientation);
         newPosition->add(localOffset.getCartesian());
 
         // Update the position

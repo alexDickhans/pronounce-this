@@ -54,6 +54,9 @@ namespace Pronounce {
             break;
         case NEUTRAL:
         default:
+            if (this->getSingleToggle() && goToImmediately) {
+                this->motor->move_absolute(min, neutralAuthority);
+            }
             if (goToImmediately)
                 return;
             this->motor->move_velocity(neutralAuthority);
