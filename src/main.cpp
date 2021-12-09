@@ -1,7 +1,5 @@
 #include "main.h"
 
-// Auton Selector object
-autonSelector* autonomousSel = nullptr;
 
 // Controllers
 Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
@@ -35,6 +33,9 @@ Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 14
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 10);
+
+// Autonomous Selector
+Pronounce::AutonSelector autonomousSelector;
 
 bool relativeMovement = false;
 bool driveOdomEnabled = true;
@@ -238,31 +239,17 @@ void initController() {
 
 // Run selector as task
 void runSelector() {
-	autonomousSel->choose();
+	autonomousSelector.choose();
 }
 
 /**
  * Initialize the Auton Selector
  */
 void initSelector() {
-	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Test", (char*)"\n",
-								(char*)"Right steal right",
-								(char*)"" };
+	autonomousSelector.addAuton(Auton("Right steal right", rightStealRight));
+	autonomousSelector.addAuton(Auton("Test", testAuton));
+	autonomousSelector.setDefaultAuton(Auton("Right steal right", rightStealRight));
 
-	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
-
-	// Set pre and post run
-	autonomousSel->setPreRun(preAutonRun);
-	autonomousSel->setPostAuton(postAuton);
-
-	// Set functions
-	autonomousSel->setFunction(0, testAuton);
-	autonomousSel->setFunction(1, rightStealRight);
-
-	autonomousSel->setSelection(0);
-
-	// Start the task
 	pros::Task selectorTask(runSelector, "Auton Selector");
 }
 
@@ -399,7 +386,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	// autonomousSel->choose();
+	// autonomousSelector.choose();
 
 }
 
@@ -408,8 +395,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
-	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	autonomousSel->runSelection();
+	// autonRoutines.hpp and the implementation is autonRoutines.cp
 }
 
 
