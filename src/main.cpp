@@ -263,7 +263,7 @@ void initSelector() {
 	autonomousSel->setSelection(0);
 
 	// Start the task
-	// pros::Task selectorTask(runSelector, "Auton Selector");
+	pros::Task selectorTask(runSelector, "Auton Selector");
 }
 
 /**
@@ -369,10 +369,10 @@ void initialize() {
 	initSensors();
 	initMotors();
 	initDrivetrain();
-	initController();
-	initSelector();
-	initLogger();
 	autoPaths();
+	initController();
+	initLogger();
+	initSelector();
 }
 
 /**
@@ -399,7 +399,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	//autonomousSel->choose();
+	// autonomousSel->choose();
 
 }
 

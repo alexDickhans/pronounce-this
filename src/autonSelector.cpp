@@ -30,12 +30,6 @@ int autonSelector::choose() {
     this->draw();
     this->addCallbacks();
 
-    while (!guiFinnished) {
-        pros::Task::delay(20);
-    }
-
-    this->del();
-
     // Return the selection.
     return userSelection;
 }

@@ -14,9 +14,10 @@ static const char *textMap[AUTON_SELECTOR_COUNT];
 static bool guiFinnished;
 
 /**
- * A graphical interface for selecting a auton. Uses LVGL, so make sure that is included. Also a singleton.
+ * A graphical interface for selecting a auton. Uses LVGL, so make sure that is included.
  */
-class autonSelector {
+class autonSelector
+{
 private:
 
     // The function map, used for graphical and execution.
