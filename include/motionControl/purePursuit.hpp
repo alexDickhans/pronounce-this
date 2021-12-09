@@ -40,8 +40,9 @@ namespace Pronounce {
 		PurePursuit(OmniDrivetrain* drivetrain);
 		PurePursuit(OmniDrivetrain* drivetrain, double lookahead);
 
-		void addPath(Path path) {
+		int addPath(Path path) {
 			paths.emplace_back(path);
+			return paths.size() - 1;
 		}
 
 		std::vector<Path> getPaths() {
@@ -54,6 +55,14 @@ namespace Pronounce {
 
 		int getCurrentPathIndex() {
 			return currentPath;
+		}
+
+		double getTurnTarget() {
+			return turnTarget;
+		}
+
+		void setTurnTarget(double turnTarget) {
+			this->turnTarget = turnTarget;
 		}
 
 		void setCurrentPathIndex(int index) {
@@ -111,6 +120,10 @@ namespace Pronounce {
 
 		void setFollowing(bool following) {
 			this->following = following;
+		}
+		
+		bool isDone(double maxDistance) {
+			return maxDistance > odometry->getPosition()->distance(paths.at(currentPath).getPoint(paths.at(currentPath).getPath().size() - 1));
 		}
 
 		void update();

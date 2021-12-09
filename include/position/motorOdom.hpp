@@ -11,6 +11,10 @@ namespace Pronounce
     public:
         MotorOdom(pros::Motor* motor, double radius);
 
+        void reset() {
+            motor->tare_position();
+        }
+
         void setMotor(pros::Motor* motor) {
             this->motor = motor;
         }

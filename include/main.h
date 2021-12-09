@@ -67,6 +67,7 @@
 #include "motionControl/purePursuit.hpp"
 
 // Odometry
+#include "odometry/mecanumOdometry.hpp"
 #include "odometry/odometry.hpp"
 #include "odometry/threeWheelOdom.hpp"
 #include "odometry/tankOdom.hpp"
@@ -79,6 +80,7 @@
 #include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
+#include "position/trackingWheel.hpp"
 
 // Utils
 #include "utils/path.hpp"

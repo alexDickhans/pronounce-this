@@ -204,6 +204,8 @@ void printField() {
 
 int main() {
 
+    int loopcount = 0;
+
     // Create path
     std::vector<Path> paths = std::vector<Path>();
 
@@ -211,34 +213,43 @@ int main() {
     Path rightHomeToGoalNeutral;
 
     rightHomeToGoalNeutral.addPoint(105.7, 8);
-    rightHomeToGoalNeutral.addPoint(105.7, 70.3);
+    rightHomeToGoalNeutral.addPoint(105.7, 60);
 
     paths.emplace_back(rightHomeToGoalNeutral);
 
     Path rightNeutralToMidNeutral;
 
-    rightNeutralToMidNeutral.addPoint(105.7, 70.3);
-    rightNeutralToMidNeutral.addPoint(82.3, 46.8);
-    rightNeutralToMidNeutral.addPoint(70.3, 70.3);
+    rightNeutralToMidNeutral.addPoint(105.7, 60);
+    rightNeutralToMidNeutral.addPoint(82.3, 40);
+    rightNeutralToMidNeutral.addPoint(70.3, 60);
 
     paths.emplace_back(rightNeutralToMidNeutral);
 
     Path midNeutralToRightAlliance;
 
-    midNeutralToRightAlliance.addPoint(70.3, 70.3);
-    midNeutralToRightAlliance.addPoint(129.1, 35);
+    midNeutralToRightAlliance.addPoint(70.3, 60);
+    midNeutralToRightAlliance.addPoint(120.1, 36);
 
     paths.emplace_back(midNeutralToRightAlliance);
 
     Path rightAllianceToRightRing;
 
+    // Turn to negative 90 degrees
+    
+    rightAllianceToRightRing.addPoint(120.1, 36);
     rightAllianceToRightRing.addPoint(117.5, 46.8);
     rightAllianceToRightRing.addPoint(117.5, 70.3);
-    rightAllianceToRightRing.addPoint(117.5, 80);
-    rightAllianceToRightRing.addPoint(70.3, 35);
+    rightAllianceToRightRing.addPoint(117.5, 70.3);
 
-    // paths.emplace_back(rightRingToRightHome);
     paths.emplace_back(rightAllianceToRightRing);
+
+    Path rightRingToLeftHomeZone;
+
+    rightRingToLeftHomeZone.addPoint(117.5, 70.3);
+    rightRingToLeftHomeZone.addPoint(105, 35);
+    rightRingToLeftHomeZone.addPoint(35, 35);
+
+    paths.emplace_back(rightRingToLeftHomeZone);
 
     srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
@@ -279,6 +290,8 @@ int main() {
 
         // Loop until you get to the last point
         while (pathVector.at(pathVector.size() - 1).distance(robot) > 1) {
+            loopcount++;
+
             // Get the lookahead point 
             Point lookaheadPoint = path.getLookAheadPoint(robot, lookahead);
             robotMovement = Vector(&robot, &lookaheadPoint);
@@ -314,7 +327,7 @@ int main() {
             line(robot.getY() * multiplier, robot.getX() * multiplier, lookaheadPoint.getY() * multiplier, lookaheadPoint.getX() * multiplier);
             printRobotWithLookahead(robot);
 
-            delay(5);
+            delay(3);
 #endif // PRINT_LIVE
 
             robotPositions.emplace_back(robot);
@@ -341,9 +354,13 @@ int main() {
     setcolor(LIGHTGRAY);
     printPath(robotPositions);
 
+    // Print loopcount
+    std::cout << "Loopcount: " << loopcount << std::endl;
+
     delay(500000);
     closegraph();
 
 #endif // GRAPH
+
     return 0;
 }

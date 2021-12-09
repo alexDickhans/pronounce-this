@@ -8,20 +8,20 @@
 namespace Pronounce {
 	class MecanumDrivetrain : public OmniDrivetrain {
 	private:
-		ThreeWheelOdom* threeWheelOdom;
+		Odometry* odometry;
 	public:
         MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-        MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, ThreeWheelOdom* threeWheelOdom);
+        MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, Odometry* odometry);
 
 		void setDriveVectorVelocity(Vector vector);
 		void setDriveVectorVelocity(Vector vector, double rotation);
 
-		ThreeWheelOdom* getThreeWheelOdom() {
-			return threeWheelOdom;
+		Odometry* getThreeWheelOdom() {
+			return odometry;
 		}
 
-		void setThreeWheelOdom(ThreeWheelOdom* threeWheelOdom) {
-			this->threeWheelOdom = threeWheelOdom;
+		void setThreeWheelOdom(Odometry* odometry) {
+			this->odometry = odometry;
 		}
 
 		~MecanumDrivetrain();

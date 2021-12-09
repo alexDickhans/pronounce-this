@@ -9,7 +9,6 @@ namespace Pronounce {
         pros::ADIDigitalOut* solenoid;
 
         bool inverted{false};
-        bool retainOnNeutral{true};
     public:
         SolenoidButton(pros::Controller* controller);
         SolenoidButton(pros::Controller* controller, pros::ADIDigitalOut* solenoid);

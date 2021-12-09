@@ -4,8 +4,8 @@ namespace Pronounce {
     MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : OmniDrivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
 	}
 
-    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, ThreeWheelOdom* threeWheelOdom) : OmniDrivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
-        this->threeWheelOdom = threeWheelOdom;
+    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, Odometry* odometry) : OmniDrivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
+        this->odometry = odometry;
 	}
 
 	void MecanumDrivetrain::setDriveVectorVelocity(Vector vector) {
