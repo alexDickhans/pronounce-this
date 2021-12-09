@@ -12,7 +12,7 @@ namespace Pronounce {
     }
 
     Vector::Vector(Point* point) {
-        this->magnitude = sqrt(point->getX() * point->getX() + point->getY() * point->getY());
+        this->magnitude = point->distance(Point());
         this->angle = atan2(point->getY(), point->getX());
     }
 

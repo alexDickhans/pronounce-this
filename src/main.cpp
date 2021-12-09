@@ -30,7 +30,7 @@ Pronounce::MotorOdom wheel2(&frontRightMotor, 2);
 Pronounce::MotorOdom wheel3(&backLeftMotor, 2);
 Pronounce::MotorOdom wheel4(&backRightMotor, 2);
 
-Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 4.0, 4.0);
+Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 6.5, 13.75/2);
 
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
@@ -203,10 +203,10 @@ void initSensors() {
  */
 void initMotors() {
 	// Motor brake modes
-	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
+	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
+	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
+	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backGrabber.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
@@ -214,6 +214,8 @@ void initMotors() {
 
 void initDrivetrain() {
 	printf("Init drivetrain");
+
+	odometry.setUseImu(true);
 
 	purePursuit.setNormalizeDistance(10);
 
@@ -261,7 +263,7 @@ void initSelector() {
 	autonomousSel->setSelection(0);
 
 	// Start the task
-	pros::Task selectorTask(runSelector, "Auton Selector");
+	// pros::Task selectorTask(runSelector, "Auton Selector");
 }
 
 /**
@@ -280,7 +282,7 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile(new PID(30, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
+	PurePursuitProfile defaultProfile(new PID(20, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
 	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
 
 	// Test path

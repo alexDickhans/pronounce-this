@@ -32,12 +32,17 @@ namespace Pronounce {
         double lastAngle = lastPosition->getTheta();
 
         if (useImu && imu != nullptr) {
+            if (imu->is_calibrating()) {
+                return;
+            }
+
             // Use the imu to determine the orientation
             newPosition->setTheta(toRadians(imu->get_rotation()));
 
             angleChange = newPosition->getTheta() - lastPosition->getTheta();
 
-        } else {
+        }
+        else {
             // Use the wheel encoders to determine orientation
 
             // Calculate the orientation since last reset
@@ -48,15 +53,17 @@ namespace Pronounce {
             newPosition->setTheta(currentAngle);
         }
 
-        double averageOrientation = lastAngle + angleChange/2;
+        double averageOrientation = lastAngle + angleChange / 2;
 
         double orientation = newPosition->getTheta();
 
-        Vector localOffset = Vector(
+
+        Vector localOffset(
             new Point(
-                (wheel1->getChange() + wheel2->getChange() + wheel3->getChange() + wheel4->getChange()) / 4,
-                (-wheel1->getChange() + wheel2->getChange() + wheel3->getChange() - wheel4->getChange()) / 4));
-        localOffset.rotate(averageOrientation);
+                -(-wheel1->getChange() + wheel2->getChange() + wheel3->getChange() - wheel4->getChange()) / 4,
+                (wheel1->getChange() + wheel2->getChange() + wheel3->getChange() + wheel4->getChange())));
+
+        //localOffset.rotate(-averageOrientation);
         newPosition->add(localOffset.getCartesian());
 
         // Update the position
