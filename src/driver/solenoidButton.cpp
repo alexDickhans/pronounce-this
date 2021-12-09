@@ -3,7 +3,7 @@
 namespace Pronounce {
     SolenoidButton::SolenoidButton(pros::Controller* controller) : Button(controller) {
     }
-    
+
     SolenoidButton::SolenoidButton(pros::Controller* controller, pros::ADIDigitalOut* solenoid) : Button(controller) {
         this->solenoid = solenoid;
     }
@@ -18,20 +18,16 @@ namespace Pronounce {
         }
 
         switch (this->getButtonStatus()) {
-            case ButtonStatus::POSITIVE:
-                this->solenoid->set_value(!this->inverted);
-                break;
-            case ButtonStatus::NEGATIVE:
-                this->solenoid->set_value(this->inverted);
-                break;
-            case ButtonStatus::NEUTRAL:
-            default:
-                if (retainOnNeutral) {
-                    // Nothing
-                } else {
-                    this->solenoid->set_value(this->inverted);
-                }
-                break;
+        case ButtonStatus::POSITIVE:
+            this->solenoid->set_value(!this->inverted);
+            break;
+        case ButtonStatus::NEGATIVE:
+            this->solenoid->set_value(this->inverted);
+            break;
+        case ButtonStatus::NEUTRAL:
+        default:
+            this->solenoid->set_value(this->inverted);
+            break;
         }
     }
 } // Pronounce

@@ -40,8 +40,9 @@ namespace Pronounce {
 		PurePursuit(OmniDrivetrain* drivetrain);
 		PurePursuit(OmniDrivetrain* drivetrain, double lookahead);
 
-		void addPath(Path path) {
+		int addPath(Path path) {
 			paths.emplace_back(path);
+			return paths.size() - 1;
 		}
 
 		std::vector<Path> getPaths() {
