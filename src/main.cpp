@@ -142,7 +142,7 @@ int rightAwpRight() {
 	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
-	
+
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
@@ -156,6 +156,17 @@ int rightAwpRight() {
 	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
+
+	return 0;
+}
+
+int leftAwpLeft() {
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(1000);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	return 0;
 }
 
 /**
@@ -180,7 +191,7 @@ int testAuton() {
 int postAuton() {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
-	frontGrabberButton.setAutonomous(false);	
+	frontGrabberButton.setAutonomous(false);
 	backGrabberButton.setAutonomous(false);
 	leftLiftButton.setAutonomous(false);
 	rightLiftButton.setAutonomous(false);
@@ -454,7 +465,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRight();
+	leftAwpLeft();
 	postAuton();
 }
 
