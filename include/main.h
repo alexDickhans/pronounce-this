@@ -48,7 +48,10 @@
  */
 
 #include "defines.h"
-#include "autonSelector.hpp"
+
+// Auton
+#include "auton/auton.hpp"
+#include "auton/autonSelector.hpp"
 
 // Chassis
 #include "chassis/drivetrain.hpp"

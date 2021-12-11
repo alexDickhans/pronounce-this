@@ -77,7 +77,10 @@ namespace Pronounce {
     }
 
     void Controller::renderFunc() {
-        while (this->continueRendering) {
+        while (true) {
+            if(!continueRendering) {
+                break;
+            }
             this->render();
 
             // Prevent wasted resources
