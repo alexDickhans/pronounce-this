@@ -59,6 +59,8 @@ int rightNeutralToMidNeutralIndex;
 int midNeutralToRightAllianceIndex;
 int midNeutralToMidHomeZoneIndex;
 int rightNeutralToRightHomeIndex;
+int farRightHomeZoneToRightAllianceIndex;
+int rightAllianceToRightHomeZoneIndex;
 
 /**
  * @brief Runs during auton period before auton
@@ -102,6 +104,7 @@ int rightStealRight() {
 
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
 	leftLiftButton.setAutonomousAuthority(360);
 	rightLiftButton.setAutonomousAuthority(360);
 
@@ -127,6 +130,32 @@ int rightStealRight() {
 	}
 
 	return 0;
+}
+
+int rightAwpRight() {
+	odometry.reset(new Position(129.9, 16));
+
+	purePursuit.setCurrentPathIndex(farRightHomeZoneToRightAllianceIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+	
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	leftLiftButton.setAutonomousAuthority(360);
+	rightLiftButton.setAutonomousAuthority(360);
+
+	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
 }
 
 /**
@@ -330,6 +359,19 @@ void autoPaths() {
 
 	midNeutralToMidHomeZoneIndex = purePursuit.addPath(midNeutralToMidHomeZone);
 
+	Path farRightHomeZoneToRightAlliance;
+
+	farRightHomeZoneToRightAlliance.addPoint(127.9, 16);
+	farRightHomeZoneToRightAlliance.addPoint(127.9, 24);
+
+	farRightHomeZoneToRightAllianceIndex = purePursuit.addPath(farRightHomeZoneToRightAlliance);
+
+	Path rightAllianceToRightHomeZone;
+
+	rightAllianceToRightHomeZone.addPoint(127.9, 24);
+	rightAllianceToRightHomeZone.addPoint(105.7, 16);
+
+	rightAllianceToRightHomeZoneIndex = purePursuit.addPath(rightAllianceToRightHomeZone);
 }
 
 /**
