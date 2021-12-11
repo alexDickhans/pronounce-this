@@ -42,7 +42,7 @@ namespace Pronounce {
             }
 
             // Use the imu to determine the orientation
-            newPosition->setTheta(toRadians(imu->get_rotation()));
+            newPosition->setTheta(toRadians(imu->get_rotation()) + this->getResetPosition()->getTheta());
 
             angleChange = newPosition->getTheta() - lastPosition->getTheta();
 
