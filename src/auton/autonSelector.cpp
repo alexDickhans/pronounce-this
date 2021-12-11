@@ -3,6 +3,9 @@
 namespace Pronounce {
     AutonSelector::AutonSelector() {
         controller = new Pronounce::Controller(pros::E_CONTROLLER_MASTER);
+        preAuton = Auton();
+        postAuton = Auton();
+        defaultAuton = Auton();
     }
 
     AutonSelector::AutonSelector(std::vector<Auton> autons, Auton defaultAuton) : AutonSelector() {
@@ -21,7 +24,11 @@ namespace Pronounce {
 
         controller->setIsRendering(false);
 
+        printf("Auton selector\n");
+
         while (!done) {
+            controller->clear();
+
             if (controller->get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                 done = true;
             }
@@ -40,10 +47,13 @@ namespace Pronounce {
                 }
             }
 
-            pros::lcd::print(0, "Auton: %s", autons[autonIndex].getName().c_str());
+            controller->set_text(0, 0, autons[autonIndex].getName());
 
-            pros::Task::delay(20);
+            pros::Task::delay(50);
+
         }
+
+        printf("Auton selected: %s", autons[autonIndex].getName().c_str());
 
         controller->setIsRendering(true);
     }

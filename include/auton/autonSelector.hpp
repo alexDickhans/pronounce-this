@@ -11,6 +11,9 @@ namespace Pronounce {
         std::vector<Auton> autons;
         Auton defaultAuton;
 
+        Auton preAuton;
+        Auton postAuton;
+
         Pronounce::Controller* controller;
 
         int autonIndex = 0;
@@ -27,13 +30,18 @@ namespace Pronounce {
         }
 
         int run() {
+            preAuton.run();
+            int result = 0;
             if (autonIndex >= autons.size()) {
-                return defaultAuton.run();
+                result = defaultAuton.run();
             }
-            return autons[autonIndex].run();
+            result = autons[autonIndex].run();
+            postAuton.run();
+            return result;
         }
 
         Auton getAuton(int index) {
+            int result = 0;
             if (index < 0 || index >= autons.size()) {
                 return defaultAuton;
             }
@@ -54,6 +62,22 @@ namespace Pronounce {
 
         void setDefaultAuton(Auton defaultAuton) {
             this->defaultAuton = defaultAuton;
+        }
+
+        Auton getPreAuton() {
+            return preAuton;
+        }
+
+        void setPreAuton(Auton preAuton) {
+            this->preAuton = preAuton;
+        }
+
+        Auton getPostAuton() {
+            return postAuton;
+        }
+
+        void setPostAuton(Auton postAuton) {
+            this->postAuton = postAuton;
         }
 
         void setController(Pronounce::Controller* controller) {
