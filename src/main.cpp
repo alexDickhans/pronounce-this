@@ -34,7 +34,6 @@ MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, 
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 10);
 
-
 MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 200, 200, 200, 0, 450 * 3);
@@ -53,14 +52,26 @@ bool driveOdomEnabled = true;
 
 bool preDriverTasksDone = false;
 
+int driverMode = 0;
+
+// Test path
 int testPathIndex;
+
+// Right steal right
 int rightHomeToGoalNeutralIndex;
 int rightNeutralToMidNeutralIndex;
 int midNeutralToRightAllianceIndex;
 int midNeutralToMidHomeZoneIndex;
 int rightNeutralToRightHomeIndex;
+
+// Right awp right
 int farRightHomeZoneToRightAllianceIndex;
 int rightAllianceToRightHomeZoneIndex;
+
+// Left steal left
+int leftAllianceToLeftNeutralIndex;
+int leftNeutralToMidNeutralIndex;
+int midNeutralToLeftHomeZoneIndex;
 
 /**
  * @brief Runs during auton period before auton
@@ -161,10 +172,50 @@ int rightAwpRight() {
 }
 
 int leftAwpLeft() {
+	odometry.reset(new Position(54.1, 11.4, M_PI_2));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(1000);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	
+	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	leftLiftButton.setAutonomousAuthority(360);
+	rightLiftButton.setAutonomousAuthority(360);
+
+	purePursuit.setCurrentPathIndex(leftNeutralToMidNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(3.14);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	pros::Task::delay(500);
+	
+	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI_2);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
 
 	return 0;
 }
@@ -344,7 +395,7 @@ void autoPaths() {
 	Path rightHomeToGoalNeutral;
 
 	rightHomeToGoalNeutral.addPoint(105.7, 16);
-	rightHomeToGoalNeutral.addPoint(105.7, 62);
+	rightHomeToGoalNeutral.addPoint(105.7, 61);
 
 	rightHomeToGoalNeutralIndex = purePursuit.addPath(rightHomeToGoalNeutral);
 
@@ -383,6 +434,23 @@ void autoPaths() {
 	rightAllianceToRightHomeZone.addPoint(105.7, 16);
 
 	rightAllianceToRightHomeZoneIndex = purePursuit.addPath(rightAllianceToRightHomeZone);
+
+	Path leftAllianceToLeftNeutral;
+
+	leftAllianceToLeftNeutral.addPoint(54.5, 11.4);
+	leftAllianceToLeftNeutral.addPoint(34, 67);
+
+	leftAllianceToLeftNeutralIndex = purePursuit.addPath(leftAllianceToLeftNeutral);
+
+	Path leftNeutralToMidNeutral;
+
+	leftNeutralToMidNeutral.addPoint(34, 67);
+	leftNeutralToMidNeutral.addPoint(65.3, 40);
+	leftNeutralToMidNeutral.addPoint(77.3, 65);
+
+	leftNeutralToMidNeutralIndex = purePursuit.addPath(leftNeutralToMidNeutral);
+
+	// mid neutral to mid home zone
 }
 
 /**
@@ -491,24 +559,37 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 
-		// Filter and calculate magnitudes
-		int leftY = filterAxis(master, ANALOG_LEFT_Y);
-		int leftX = filterAxis(master, ANALOG_LEFT_X);
-		int rightX = filterAxis(master, ANALOG_RIGHT_X);
+		if (driverMode > 0) {
+			// Filter and calculate magnitudes
+			int leftY = filterAxis(master, ANALOG_LEFT_Y);
+			int leftX = filterAxis(master, ANALOG_LEFT_X);
+			int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
-		leftXAvg.add(leftX);
-		leftYAvg.add(leftY);
-		rightXAvg.add(rightX);
+			leftXAvg.add(leftX);
+			leftYAvg.add(leftY);
+			rightXAvg.add(rightX);
 
-		leftX = leftXAvg.getAverage();
-		leftY = leftYAvg.getAverage();
-		rightX = rightXAvg.getAverage();
+			leftX = leftXAvg.getAverage();
+			leftY = leftYAvg.getAverage();
+			rightX = rightXAvg.getAverage();
 
-		Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
-		driveVector.setAngle((driveVector.getAngle()));// + threeWheelOdom.getPosition()->getTheta());
+			Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
+			if (driverMode == 1) {
+				driveVector.setAngle(driveVector.getAngle());
+			} else {
+				driveVector.setAngle(driveVector.getAngle() + toRadians(imu.get_rotation()));
+			}
 
-		// Send variables to motors
-		drivetrain.setDriveVectorVelocity(driveVector, rightX);
+			// Send variables to motors
+			drivetrain.setDriveVectorVelocity(driveVector, rightX);
+		}
+		else {
+			int leftX = filterAxis(master, ANALOG_LEFT_X);
+			int leftY = filterAxis(master, ANALOG_LEFT_Y);
+			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
+
+			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(leftX, (leftY + rightY) / 2)), leftY - rightY);
+		}
 
 		if (frontGrabberBumperSwitch.get_new_press()) {
 			frontGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
@@ -516,6 +597,16 @@ void opcontrol() {
 
 		if (master.get_digital_new_press(DIGITAL_X)) {
 			odometry.reset(new Position());
+		}
+
+		if (master.get_digital_new_press(DIGITAL_UP)) {
+			driverMode = 0;
+		}
+		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
+			driverMode = 1;
+		}
+		else if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			driverMode = 2;
 		}
 
 		// Prevent wasted resources
