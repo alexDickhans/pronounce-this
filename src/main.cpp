@@ -73,6 +73,12 @@ int leftAllianceToLeftNeutralIndex;
 int leftNeutralToMidNeutralIndex;
 int midNeutralToLeftHomeZoneIndex;
 
+// Skills
+int rightNeutralToFarPlatformIndex;
+int farPlatformToNearPlatformIndex;
+int nearPlatformViaLeftNeutralToFarPlatformIndex;
+int nearPlatformToMidIndex;
+
 /**
  * @brief Runs during auton period before auton
  *
@@ -172,16 +178,11 @@ int rightAwpRight() {
 }
 
 int leftAwpLeft() {
-	odometry.reset(new Position(54.1, 11.4, M_PI_2));
+	odometry.reset(new Position(20.5, 16));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-	pros::Task::delay(1000);
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	
 	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(0);
@@ -207,10 +208,106 @@ int leftAwpLeft() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	pros::Task::delay(500);
-	
+
 	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(M_PI_2);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	return 0;
+}
+
+int skills() {
+	odometry.reset(new Position(105.7, 16));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	purePursuit.setCurrentPathIndex(rightNeutralToFarPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(farPlatformToNearPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI);
+
+	// Wait until gets to goal
+	while (odometry.getPosition()->getY() > 80) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(nearPlatformViaLeftNeutralToFarPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until gets to goal
+	while (odometry.getPosition()->getY() < 61) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(nearPlatformToMidIndex);
+	purePursuit.setFollowing(true);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -386,7 +483,7 @@ void autoPaths() {
 
 	Path rightNeutralToRightHomeZone;
 
-	rightNeutralToRightHomeZone.addPoint(105.7, 61);
+	rightNeutralToRightHomeZone.addPoint(105.7, 60);
 	rightNeutralToRightHomeZone.addPoint(105.7, 16);
 
 	rightNeutralToRightHomeIndex = purePursuit.addPath(rightNeutralToRightHomeZone);
@@ -410,14 +507,14 @@ void autoPaths() {
 	Path midNeutralToRightAlliance;
 
 	midNeutralToRightAlliance.addPoint(70.3, 65);
-	midNeutralToRightAlliance.addPoint(120.1, 36);
+	midNeutralToRightAlliance.addPoint(120.1, 28);
 
 	midNeutralToRightAllianceIndex = purePursuit.addPath(midNeutralToRightAlliance);
 
 	Path midNeutralToMidHomeZone;
 
 	midNeutralToMidHomeZone.addPoint(70.3, 70.3);
-	midNeutralToMidHomeZone.addPoint(70.3, 35);
+	midNeutralToMidHomeZone.addPoint(70.3, 24);
 
 	midNeutralToMidHomeZoneIndex = purePursuit.addPath(midNeutralToMidHomeZone);
 
@@ -437,7 +534,7 @@ void autoPaths() {
 
 	Path leftAllianceToLeftNeutral;
 
-	leftAllianceToLeftNeutral.addPoint(54.5, 11.4);
+	leftAllianceToLeftNeutral.addPoint(29, 11.4);
 	leftAllianceToLeftNeutral.addPoint(34, 67);
 
 	leftAllianceToLeftNeutralIndex = purePursuit.addPath(leftAllianceToLeftNeutral);
@@ -446,11 +543,46 @@ void autoPaths() {
 
 	leftNeutralToMidNeutral.addPoint(34, 67);
 	leftNeutralToMidNeutral.addPoint(65.3, 40);
-	leftNeutralToMidNeutral.addPoint(77.3, 65);
+	leftNeutralToMidNeutral.addPoint(77.3, 61);
 
 	leftNeutralToMidNeutralIndex = purePursuit.addPath(leftNeutralToMidNeutral);
 
 	// mid neutral to mid home zone
+
+	Path rightNeutralToFarPlatform;
+
+	rightNeutralToFarPlatform.addPoint(105.7, 61);
+	rightNeutralToFarPlatform.addPoint(75, 76.5);
+	rightNeutralToFarPlatform.addPoint(75, 100);
+	rightNeutralToFarPlatform.addPoint(60.3, 115);
+
+	rightNeutralToFarPlatformIndex = purePursuit.addPath(rightNeutralToFarPlatform);
+
+	Path farPlatformToNearPlatform;
+
+	farPlatformToNearPlatform.addPoint(70.3, 107);
+	farPlatformToNearPlatform.addPoint(60, 70.3);
+	farPlatformToNearPlatform.addPoint(58.6, 64.1);
+	farPlatformToNearPlatform.addPoint(58.6, 45);
+	farPlatformToNearPlatform.addPoint(70.3, 30.7);
+
+	farPlatformToNearPlatformIndex = purePursuit.addPath(farPlatformToNearPlatform);
+
+	Path nearPlatformViaLeftNeutralToFarPlatform;
+
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(70.3, 30.7);
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(35, 61);
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(70.3, 115);
+
+	nearPlatformViaLeftNeutralToFarPlatformIndex = purePursuit.addPath(nearPlatformViaLeftNeutralToFarPlatform);
+
+	Path nearPlatformToMid;
+
+	nearPlatformToMid.addPoint(70.3, 115);
+	nearPlatformToMid.addPoint(70.3, 70.3);
+
+	nearPlatformToMidIndex = purePursuit.addPath(nearPlatformToMid);
+
 }
 
 /**
@@ -576,7 +708,8 @@ void opcontrol() {
 			Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
 			if (driverMode == 1) {
 				driveVector.setAngle(driveVector.getAngle());
-			} else {
+			}
+			else {
 				driveVector.setAngle(driveVector.getAngle() + toRadians(imu.get_rotation()));
 			}
 
