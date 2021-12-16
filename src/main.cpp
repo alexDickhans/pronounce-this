@@ -15,6 +15,8 @@ pros::Motor backRightMotor(10, true);
 pros::Motor rightLift(3, true);
 pros::Motor leftLift(4, false);
 
+pros::Motor intake(11);
+
 pros::Motor backGrabber(6);
 
 pros::ADIDigitalOut frontGrabber(1, false);
@@ -23,12 +25,16 @@ pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 // Inertial Measurement Unit
 pros::Imu imu(5);
 
-Pronounce::MotorOdom wheel1(&frontLeftMotor, 2);
-Pronounce::MotorOdom wheel2(&frontRightMotor, 2);
-Pronounce::MotorOdom wheel3(&backLeftMotor, 2);
-Pronounce::MotorOdom wheel4(&backRightMotor, 2);
+pros::Rotation leftEncoder(12);
+pros::Rotation rightEncoder(13);
+pros::Rotation backEncoder(14);
 
-Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 14 / 2, 10.5 / 2);
+// Odom wheels
+Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
+Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
+Pronounce::TrackingWheel backOdomWheel(&backEncoder);
+
+ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
@@ -36,7 +42,8 @@ Pronounce::PurePursuit purePursuit(&drivetrain, 10);
 
 MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 200, 200, 200, 0, 450 * 3);
+MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R1, 200, 200, 200, 0, 450 * 3);
+MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_R2, 200, 0, 0, 0, 0);
 
 SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 
@@ -95,8 +102,8 @@ int preAutonRun() {
 	backGrabberButton.setAutonomous(true);
 	leftLiftButton.setAutonomous(true);
 	rightLiftButton.setAutonomous(true);
-
 	backGrabberButton.setAutonomousButton(true);
+	intakeButton.setAutonomousButton(true);
 
 	return 0;
 }
@@ -343,6 +350,7 @@ int postAuton() {
 	backGrabberButton.setAutonomous(false);
 	leftLiftButton.setAutonomous(false);
 	rightLiftButton.setAutonomous(false);
+	intakeButton.setAutonomous(false);
 
 	return 0;
 }
@@ -386,6 +394,7 @@ void updateMotors() {
 		backGrabberButton.update();
 		leftLiftButton.update();
 		rightLiftButton.update();
+		intakeButton.update();
 
 		pros::Task::delay(20);
 	}
@@ -404,13 +413,32 @@ void initMotors() {
 	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 
+	backGrabberButton.setSingleToggle(true);
+	backGrabberButton.setGoToImmediately(true);
+
+	frontGrabberButton.setSolenoid(&frontGrabber);
+	frontGrabberButton.setSingleToggle(true);
+
+	intakeButton.setSingleToggle(true);
+
 	pros::Task updateButtons(updateMotors, "Update buttons");
 }
 
 void initDrivetrain() {
 	printf("Init drivetrain");
 
-	odometry.setUseImu(true);
+	// odometry.setUseImu(true);
+
+	leftOdomWheel.setRadius(3.25/2);
+	leftOdomWheel.setTuningFactor(1);
+	rightOdomWheel.setRadius(3.25/2);
+	rightOdomWheel.setTuningFactor(1);
+	backOdomWheel.setRadius(3.25/2);
+	backOdomWheel.setTuningFactor(1);
+
+	odometry.setLeftOffset(1);
+	odometry.setRightOffset(1);
+	odometry.setBackOffset(1);
 
 	purePursuit.setNormalizeDistance(10);
 
@@ -620,13 +648,6 @@ void initialize() {
 	initController();
 	initLogger();
 	// initSelector();
-
-
-	backGrabberButton.setSingleToggle(true);
-	backGrabberButton.setGoToImmediately(true);
-
-	frontGrabberButton.setSolenoid(&frontGrabber);
-	frontGrabberButton.setSingleToggle(true);
 }
 
 /**
