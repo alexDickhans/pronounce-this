@@ -87,6 +87,7 @@
 
 // Utils
 #include "utils/path.hpp"
+#include "utils/pointCloud.hpp"
 #include "utils/pointUtil.hpp"
 #include "utils/position.hpp"
 #include "utils/purePursuitProfile.hpp"
@@ -96,7 +97,7 @@
 #include "utils/vector.hpp"
 
 // Vision
-#include "vision/tippingVision.hpp"
+#include "vision/vision.hpp"
 
 
 /**
@@ -111,7 +112,7 @@
 // using namespace pros::literals;
 using namespace okapi;
 using namespace Pronounce; // General Lib
-using namespace PronounceTiP; // TiP Exclusive libs
+// using namespace PronounceTiP; // TiP Exclusive libs
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure
