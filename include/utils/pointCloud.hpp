@@ -3,6 +3,7 @@
 #include "pointUtil.hpp"
 #include "vector.hpp"
 #include <vector>
+#include <string>
 
 namespace Pronounce
 {
@@ -34,6 +35,10 @@ namespace Pronounce
 
         int getSize() {
             return points.size();
+        }
+
+        std::string to_string() {
+            return this->getPoint(0).to_string();
         }
 
         ~PointCloud();
