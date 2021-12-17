@@ -3,6 +3,7 @@
 #include "api.h"
 #include "utils/position.hpp"
 #include "utils/pointCloud.hpp"
+#include "utils/utils.hpp"
 
 #define numItems 10 
 
@@ -13,7 +14,7 @@ namespace Pronounce
         double xOffset = 0, yOffset = 0, zOffset = 0;
         double pitch = 0, yaw = 0;
 
-        double xFov = 61, yFov = 41;
+        double xFov = 1.06, yFov = 0.72;
         double xPixels = 640, yPixels = 400;
 
     public:
@@ -64,22 +65,4 @@ namespace Pronounce
 
         ~Vision();
     };
-
-    PointCloud Vision::getLocalPointCloud(int signature, size_t maxSigs) {
-        int objectCount = this->get_object_count();
-
-        pros::vision_object_s_t objects[maxSigs];
-        this->read_by_sig(0, signature, maxSigs, objects);
-
-        for (int i = 0; maxSigs < i; i++) {
-            pros::vision_object_s_t object = objects[i];
-
-            double objectXAngle = map(object.x_middle_coord, 0, xPixels, 0, xFov) + yaw;
-            double objectYAngle = map(object.y_middle_coord, 0, yPixels, 0, yFov) + pitch;
-
-            double localX = tan(objectXAngle) * yOffset;
-        }
-        
-
-    }
 } // namespace PronounceTiP
