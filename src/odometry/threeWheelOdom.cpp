@@ -36,16 +36,12 @@ namespace Pronounce {
         // Rotate vector
         localOffset.rotate(-averageOrientation);
 
-        // Print localOffset
-        printf(Point((angleChange * backOffset), (angleChange * rightOffset)).to_string().c_str());
-        printf("\n");
-        printf("Local offset: %f, %f\n", localOffset.getMagnitude(), localOffset.getAngle());
-        printf("%f %f\n", localOffset.getCartesian().getX(), localOffset.getCartesian().getY());
-        printf("Angle change: %f\n", angleChange);
-
         // Add localOffset to the global offset
         lastPosition->add(localOffset.getCartesian());
         lastPosition->setTheta(fmod(currentAngle + M_PI * 2, M_PI * 2));
+
+        // Print last position
+        printf("Last position: %f, %f, %f\n", lastPosition->getX(), lastPosition->getY(), lastPosition->getTheta());
 
         // Update the position
         this->setPosition(lastPosition);
