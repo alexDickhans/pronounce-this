@@ -72,8 +72,12 @@ namespace Pronounce {
         double lateralPower = currentProfile.getLateralPid()->update();
         Vector moveVector = Vector(lateralPower, lookaheadVector.getAngle());
 
-        currentProfile.getTurnPid()->setPosition(currentPosition->getTheta());
+        currentProfile.getTurnPid()->setPosition(angleDifference(0, currentPosition->getTheta()));
         currentProfile.getTurnPid()->setTarget(angleDifference(0, turnTarget));
+
+        // Print the turn target
+        printf("currentPosition: %f \n", angleDifference(0, currentPosition->getTheta()));
+        printf("turnTarget: %f \n", angleDifference(0, turnTarget));
 
         double turnPower = currentProfile.getTurnPid()->update();
 

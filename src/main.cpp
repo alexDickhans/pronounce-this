@@ -26,8 +26,8 @@ pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 pros::Imu imu(5);
 
 pros::Rotation leftEncoder(12);
-pros::Rotation rightEncoder(13);
-pros::Rotation backEncoder(14);
+pros::Rotation rightEncoder(14);
+pros::Rotation backEncoder(13);
 
 // Odom wheels
 Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
@@ -383,9 +383,9 @@ void initSensors() {
 	imu.reset();
 
 	// Wait until IMU is calibrated
-	while (imu.is_calibrating()) {
-		pros::delay(20);
-	}
+	// while (imu.is_calibrating()) {
+	// 	pros::delay(20);
+	// }
 }
 
 void updateMotors() {
@@ -436,15 +436,22 @@ void initDrivetrain() {
 	backOdomWheel.setRadius(3.25/2);
 	backOdomWheel.setTuningFactor(1);
 
-	odometry.setLeftOffset(1);
-	odometry.setRightOffset(1);
-	odometry.setBackOffset(1);
+	leftEncoder.set_reversed(true);
+	rightEncoder.set_reversed(false);
+	backEncoder.set_reversed(false);
+
+	odometry.setLeftOffset(3.25);
+	odometry.setRightOffset(3.25);
+	odometry.setBackOffset(2);
 
 	purePursuit.setNormalizeDistance(10);
 
 	purePursuit.setOdometry(&odometry);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
+
+	// delay to let time for settling
+	pros::Task::delay(200);
 
 	odometry.reset(new Position());
 
@@ -494,7 +501,7 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile(new PID(20, 0.0, -1.0), new PID(100, 0.0, 40.0), 10.0);
+	PurePursuitProfile defaultProfile(new PID(20, 0.0, 2.0), new PID(60.0, 0.0, 5.0), 10.0);
 	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
 
 	// Test path
@@ -542,7 +549,7 @@ void autoPaths() {
 	Path midNeutralToMidHomeZone;
 
 	midNeutralToMidHomeZone.addPoint(70.3, 70.3);
-	midNeutralToMidHomeZone.addPoint(70.3, 24);
+	midNeutralToMidHomeZone.addPoint(70.3, 36);
 
 	midNeutralToMidHomeZoneIndex = purePursuit.addPath(midNeutralToMidHomeZone);
 
@@ -563,15 +570,15 @@ void autoPaths() {
 	Path leftAllianceToLeftNeutral;
 
 	leftAllianceToLeftNeutral.addPoint(29, 11.4);
-	leftAllianceToLeftNeutral.addPoint(34, 67);
+	leftAllianceToLeftNeutral.addPoint(32, 67);
 
 	leftAllianceToLeftNeutralIndex = purePursuit.addPath(leftAllianceToLeftNeutral);
 
 	Path leftNeutralToMidNeutral;
 
-	leftNeutralToMidNeutral.addPoint(34, 67);
+	leftNeutralToMidNeutral.addPoint(32, 67);
 	leftNeutralToMidNeutral.addPoint(65.3, 40);
-	leftNeutralToMidNeutral.addPoint(77.3, 61);
+	leftNeutralToMidNeutral.addPoint(70.3, 65);
 
 	leftNeutralToMidNeutralIndex = purePursuit.addPath(leftNeutralToMidNeutral);
 
