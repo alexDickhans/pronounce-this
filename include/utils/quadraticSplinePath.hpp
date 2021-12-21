@@ -30,8 +30,6 @@ namespace Pronounce
 				Point endingPoint = endingSplinePoint.getPoint();
 				Point endingControlPoint = endingSplinePoint.getNegativeControlArm();
 
-				printf("%f, %f\n", startingPoint.getX(), startingPoint.getY());
-
 				SplinePath currentPath;
 				currentPath.addPoint(startingPoint);
 				currentPath.addPoint(startingControlPoint);
@@ -40,8 +38,6 @@ namespace Pronounce
 				
 				path += currentPath.getPath(pointGranularity).getPath();
 			}
-
-			printf("%d\n", path.getPath().size());
 
 			return path;
 		}
