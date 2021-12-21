@@ -12,6 +12,7 @@
 #include "src/utils/pointUtil.cpp"
 #include "include/utils/path.hpp"
 #include "src/utils/path.cpp"
+#include "include/utils/splinePath.hpp"
 #include "include/utils/runningAverage.hpp"
 #include "src/utils/runningAverage.cpp"
 
@@ -25,7 +26,7 @@ using namespace Pronounce;
 
 #define starting_point_random 1
 
-#define PRINT_LIVE true
+#define PRINT_LIVE false
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
@@ -67,6 +68,7 @@ void printPath(std::vector<Point> path) {
 
         line(lastPoint.getY() * multiplier, lastPoint.getX() * multiplier, currentPoint.getY() * multiplier, currentPoint.getX() * multiplier);
 
+        // printRobot(currentPoint);
         // printRobot(lastPoint);
     }
 }
@@ -217,13 +219,13 @@ int main() {
 
     paths.emplace_back(rightHomeToGoalNeutral);
 
-    Path rightNeutralToMidNeutral;
+    SplinePath rightNeutralToMidNeutral;
 
     rightNeutralToMidNeutral.addPoint(105.7, 60);
     rightNeutralToMidNeutral.addPoint(82.3, 40);
     rightNeutralToMidNeutral.addPoint(70.3, 60);
 
-    paths.emplace_back(rightNeutralToMidNeutral);
+    paths.emplace_back(rightNeutralToMidNeutral.getPath(0.1));
 
     Path midNeutralToRightAlliance;
 
@@ -232,7 +234,7 @@ int main() {
 
     paths.emplace_back(midNeutralToRightAlliance);
 
-    Path rightAllianceToRightRing;
+    SplinePath rightAllianceToRightRing;
 
     // Turn to negative 90 degrees
     
@@ -241,15 +243,15 @@ int main() {
     rightAllianceToRightRing.addPoint(117.5, 70.3);
     rightAllianceToRightRing.addPoint(117.5, 70.3);
 
-    paths.emplace_back(rightAllianceToRightRing);
+    paths.emplace_back(rightAllianceToRightRing.getPath(0.1));
 
-    Path rightRingToLeftHomeZone;
+    SplinePath rightRingToLeftHomeZone;
 
     rightRingToLeftHomeZone.addPoint(117.5, 70.3);
     rightRingToLeftHomeZone.addPoint(105, 35);
     rightRingToLeftHomeZone.addPoint(35, 35);
 
-    paths.emplace_back(rightRingToLeftHomeZone);
+    paths.emplace_back(rightRingToLeftHomeZone.getPath(0.1));
 
     srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
