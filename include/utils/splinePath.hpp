@@ -24,12 +24,8 @@ namespace Pronounce {
 				for (int i = 0; i < points.size() - 1; i++) {
 					Point startPoint = points.at(i);
 					Point endPoint = points.at(i + 1);
-
-					Vector vector = Vector(&startPoint, &endPoint);
-
-					startPoint.add(vector.scale(t).getCartesian());
-
-					newPoints.emplace_back(startPoint);
+					
+					newPoints.emplace_back(startPoint.lerp(endPoint, t));
 				}
 
 				return getPoint(t, newPoints);
@@ -38,11 +34,7 @@ namespace Pronounce {
 			Point startPoint = points.at(0);
 			Point endPoint = points.at(1);
 
-			Vector vector = Vector(&startPoint, &endPoint);
-
-			startPoint.add(vector.scale(t).getCartesian());
-
-			return startPoint;
+			return startPoint.lerp(endPoint, t);
 		}
 
 		Point getPoint(double t) {

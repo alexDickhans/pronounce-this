@@ -15,6 +15,8 @@
 #include "include/utils/splinePath.hpp"
 #include "include/utils/runningAverage.hpp"
 #include "src/utils/runningAverage.cpp"
+#include "include/utils/utils.hpp"
+#include "src/utils/utils.cpp"
 
 using namespace Pronounce;
 

@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include "utils.hpp"
 
 namespace Pronounce {
     class Point {
@@ -25,6 +26,11 @@ namespace Pronounce {
             Point result = Point(point.getX() - this->getX(), point.getY() - this->getY());
             return result;
         }
+
+		Point lerp(Point point2, double t) {
+			Point result = Point(map(t, 0, 1, this->getX(), point2.getX()), map(t, 0, 1, this->getY(), point2.getY()));
+			return result;
+		}
 
         double getX() {
             return this->x;
