@@ -110,6 +110,22 @@ namespace Pronounce {
 		 */
 		Point getClosestPoint(Point currentPosition);
 
+		void operator+= (Point point) {
+			this->path.emplace_back(point);
+		}
+
+		void operator+= (std::vector<Point> points) {
+			for (Point point : points) {
+				this->path.emplace_back(point);
+			}
+		}
+
+		void operator+= (Path path) {
+			for (Point point : path.getPath()) {
+				this->path.emplace_back(point);
+			}
+		}
+
 		~Path();
 	};
 } // namespace Pronounce

@@ -13,6 +13,7 @@
 #include "include/utils/path.hpp"
 #include "src/utils/path.cpp"
 #include "include/utils/splinePath.hpp"
+#include "include/utils/quadraticSplinePath.hpp"
 #include "include/utils/runningAverage.hpp"
 #include "src/utils/runningAverage.cpp"
 #include "include/utils/utils.hpp"
@@ -28,7 +29,7 @@ using namespace Pronounce;
 
 #define starting_point_random 1
 
-#define PRINT_LIVE false
+#define PRINT_LIVE true
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
@@ -213,8 +214,19 @@ int main() {
     // Create path
     std::vector<Path> paths = std::vector<Path>();
 
+	// Create path
+	QuadraticSplinePath path;
+
+	// Add points to path
+	path.addPoint(SplinePoint(Point(50, 8), Vector(50.0, 0)));
+	path.addPoint(SplinePoint(Point(105.7, 60), Vector(50.0, 0)));
+	path.addPoint(SplinePoint(Point(50, 120), Vector(50.0, 0)));
+
+	// Add path to paths
+	paths.emplace_back(path.getPath(0.1));
+
     // Right Steal Right
-    Path rightHomeToGoalNeutral;
+    /* Path rightHomeToGoalNeutral;
 
     rightHomeToGoalNeutral.addPoint(105.7, 8);
     rightHomeToGoalNeutral.addPoint(105.7, 60);
@@ -253,7 +265,7 @@ int main() {
     rightRingToLeftHomeZone.addPoint(105, 35);
     rightRingToLeftHomeZone.addPoint(35, 35);
 
-    paths.emplace_back(rightRingToLeftHomeZone.getPath(0.1));
+    paths.emplace_back(rightRingToLeftHomeZone.getPath(0.1));*/
 
     srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 
