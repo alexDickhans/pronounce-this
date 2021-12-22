@@ -5,6 +5,10 @@
 #include <vector>
 
 namespace Pronounce {
+	/**
+	 * @brief Smooths a list of points using splines
+	 * 
+	 */
 	class SplinePath {
 	private:
 		std::vector<Point> points;

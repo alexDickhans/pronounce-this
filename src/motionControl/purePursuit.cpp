@@ -9,27 +9,7 @@ namespace Pronounce {
         this->lookahead = lookahead;
     }
 
-    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain) : PurePursuit() {
-        this->drivetrain = drivetrain;
-        this->lookahead = 0;
-    }
-
-    PurePursuit::PurePursuit(OmniDrivetrain* drivetrain, double lookahead) : PurePursuit(drivetrain) {
-        this->lookahead = lookahead;
-
-    }
-
-    void PurePursuit::update() {
-        if (!enabled)
-            return;
-
-        if (!following) {
-            drivetrain->setDriveVectorVelocity(Vector(0.0, 0.0));
-            return;
-        }
-
-        if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath))
-            return;
+	void PurePursuit::updatePointData() {
 
         // Set position and path variables
         Path path = paths.at(currentPath);
@@ -37,7 +17,7 @@ namespace Pronounce {
         Position* currentPosition = odometry->getPosition();
         Point currentPoint = Point(currentPosition->getX(), currentPosition->getY());
 
-        // Returns if robot is close to target to prevent 
+        // Returns if robot is close to target to prevent little wiggles
         if (pathVector.at(pathVector.size() - 1).distance(currentPoint) < stopDistance) {
             return;
         }
@@ -48,16 +28,8 @@ namespace Pronounce {
         lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPosition->getTheta());
 
         // Normalize vectors to make dot product cleaner.
-        Vector normalizedLastLookaheadVector = lastLookaheadVector;
-        normalizedLastLookaheadVector.normalize();
         Vector normalizedLookaheadVector = lookaheadVector;
         normalizedLookaheadVector.normalize();
-
-        // Get the dot product of how similar the last two vectors are
-        double dotProduct = normalizedLookaheadVector.dot(normalizedLastLookaheadVector) - 1;
-        dotProduct = ((dotProduct * curvatureMultiplier) / 2) + 1;
-
-        lastLookaheadVector = normalizedLookaheadVector;
         
         // Set the drive vector
 
@@ -65,23 +37,21 @@ namespace Pronounce {
         // PID controller behaves the same for different lookahead paths
         double magnitude = lookaheadVector.getMagnitude();
         double mappedMagnitude = std::clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
-    
-        currentProfile.getLateralPid()->setPosition(0);
-        currentProfile.getLateralPid()->setTarget(mappedMagnitude);
+		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
-        double lateralPower = currentProfile.getLateralPid()->update();
-        Vector moveVector = Vector(lateralPower, lookaheadVector.getAngle());
+		// Calculate curvature
+		double a = -tan(currentPosition->getTheta());
+		double b = 1;
+		double c = tan(currentPosition->getTheta());
 
-        currentProfile.getTurnPid()->setPosition(angleDifference(0, currentPosition->getTheta()));
-        currentProfile.getTurnPid()->setTarget(angleDifference(0, turnTarget));
+		double curvature = abs((a * lookaheadVector.getCartesian().getX()) + (b * lookaheadVector.getCartesian().getY()) + c) / sqrt(pow(a, 2) + pow(b, 2));
+		double side = signum_c((sin(currentPosition->getTheta()) * lookaheadVector.getCartesian().getX()) - (cos(currentPosition->getTheta()) * lookaheadVector.getCartesian().getY()));
+		double signedCurvature = curvature * side;
 
-        // Print the turn target
-        printf("currentPosition: %f \n", angleDifference(0, currentPosition->getTheta()));
-        printf("turnTarget: %f \n", angleDifference(0, turnTarget));
-
-        double turnPower = currentProfile.getTurnPid()->update();
-
-        drivetrain->setDriveVectorVelocity(moveVector.scale(dotProduct), turnPower);
+		this->pointData.lookaheadPoint = lookaheadPoint;
+		this->pointData.lookaheadVector = lookaheadVector;
+		this->pointData.normalizedLookaheadVector = normalizedLookaheadVector;
+		this->pointData.curvature = signedCurvature;
     }
 
     PurePursuit::~PurePursuit() {
