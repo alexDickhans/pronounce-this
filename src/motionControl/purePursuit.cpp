@@ -3,11 +3,18 @@
 namespace Pronounce {
     PurePursuit::PurePursuit() {
         this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->odometry = new Odometry();
     }
 
     PurePursuit::PurePursuit(double lookahead) : PurePursuit() {
         this->lookahead = lookahead;
     }
+
+	PurePursuit::PurePursuit(Odometry* odometry, double lookahead) {
+		this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->odometry = odometry;
+		this->lookahead = lookahead;
+	}
 
 	void PurePursuit::updatePointData() {
 
@@ -26,12 +33,6 @@ namespace Pronounce {
         Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
         Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
         lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPosition->getTheta());
-
-        // Normalize vectors to make dot product cleaner.
-        Vector normalizedLookaheadVector = lookaheadVector;
-        normalizedLookaheadVector.normalize();
-        
-        // Set the drive vector
 
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
         // PID controller behaves the same for different lookahead paths

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <math.h>
+#include <algorithm>
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
@@ -10,9 +11,12 @@
 #include "utils/purePursuitProfileManager.hpp"
 #include "utils/purePursuitProfile.hpp"
 #include "odometry/odometry.hpp"
-#include "chassis/omniDrivetrain.hpp"
 
 namespace Pronounce {
+	/**
+	 * @brief Struct to store the information that is used to control the robot.
+	 * 
+	 */
 	struct PurePursuitPointData {
 		Point lookaheadPoint;
 		Vector lookaheadVector;
@@ -21,7 +25,7 @@ namespace Pronounce {
 	};
 
 	/**
-	 * @brief Abstract class for tracking paths, read full docstring for impelmentation details
+	 * @brief Abstract class for tracking paths. Read full docstring for impelmentation details
 	 * 
 	 * @attention PurePursuit an abstract class for tracking paths. 
 	 * It is meant to be inherited by a class that implements the 
@@ -60,8 +64,7 @@ namespace Pronounce {
 	public:
 		PurePursuit();
 		PurePursuit(double lookahead);
-		PurePursuit(OmniDrivetrain* drivetrain);
-		PurePursuit(OmniDrivetrain* drivetrain, double lookahead);
+		PurePursuit(Odometry* odometry, double lookahead);
 
 		virtual void updateDrivetrain() {}
 
@@ -123,6 +126,14 @@ namespace Pronounce {
 
 		void setNormalizeDistance(double normalizeDistance) {
 			this->normalizeDistance = normalizeDistance;
+		}
+
+		PurePursuitProfile getCurrentProfile() {
+			return this->currentProfile;
+		}
+
+		void setCurrentProfile(PurePursuitProfile profile) {
+			this->currentProfile = profile;
 		}
 
 		PurePursuitProfileManager getPurePursuitProfileManager() {

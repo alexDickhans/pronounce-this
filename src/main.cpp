@@ -38,7 +38,7 @@ ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
-Pronounce::PurePursuit purePursuit(&drivetrain, 10);
+Pronounce::OmniPurePursuit purePursuit(&drivetrain, 10);
 
 MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
