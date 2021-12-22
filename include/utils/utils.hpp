@@ -1,9 +1,9 @@
 #pragma once
 
-#include "api.h"
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <cmath>
 
 namespace Pronounce
 {
