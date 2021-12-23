@@ -6,6 +6,10 @@ namespace Pronounce {
 		
 	}
 
+	TankDrivetrain::TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth) : Drivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
+		this->trackWidth = trackWidth;
+	}
+
 	void TankDrivetrain::skidSteerVelocity(double speed, double turn) {
 		this->frontLeft->move_velocity(speed + turn);
 		this->frontRight->move_velocity(speed - turn);

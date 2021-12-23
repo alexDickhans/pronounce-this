@@ -54,7 +54,7 @@ ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
-Pronounce::OmniPurePursuit purePursuit(&drivetrain, 10);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
 MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
@@ -463,8 +463,6 @@ void initDrivetrain() {
 	odometry.setBackOffset(2);
 
 	purePursuit.setNormalizeDistance(10);
-
-	purePursuit.setOdometry(&odometry);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 

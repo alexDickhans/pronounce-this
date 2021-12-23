@@ -69,6 +69,7 @@
 // Motion control
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
+#include "motionControl/tankPurePursuit.hpp"
 
 // Odometry
 #include "odometry/mecanumOdometry.hpp"
