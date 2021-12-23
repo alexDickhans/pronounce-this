@@ -25,6 +25,10 @@ pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 // Inertial Measurement Unit
 pros::Imu imu(5);
 
+// #define VEX_ROTATION_ODOM
+
+#ifdef VEX_ROTATION_ODOM
+
 pros::Rotation leftEncoder(12);
 pros::Rotation rightEncoder(14);
 pros::Rotation backEncoder(13);
@@ -34,9 +38,21 @@ Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
 Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
 Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 
+#else
+
+pros::ADIEncoder leftEncoder(2, 1, true);
+pros::ADIEncoder rightEncoder(4, 3, true);
+pros::ADIEncoder backEncoder(6, 5, false);
+
+Pronounce::AdiOdomWheel leftOdomWheel(&leftEncoder);
+Pronounce::AdiOdomWheel rightOdomWheel(&rightEncoder);
+Pronounce::AdiOdomWheel backOdomWheel(&backEncoder);
+
+#endif // VEX_ROTATION_ODOM
+
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
-MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 Pronounce::OmniPurePursuit purePursuit(&drivetrain, 10);
 
@@ -436,9 +452,11 @@ void initDrivetrain() {
 	backOdomWheel.setRadius(3.25/2);
 	backOdomWheel.setTuningFactor(1);
 
+#ifdef VEX_ROTATION_ODOM
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(false);
 	backEncoder.set_reversed(false);
+#endif // VEX_ROTATION_ODOM
 
 	odometry.setLeftOffset(3.25);
 	odometry.setRightOffset(3.25);
@@ -722,34 +740,15 @@ void opcontrol() {
 		if (driverMode > 0) {
 			// Filter and calculate magnitudes
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
-			int leftX = filterAxis(master, ANALOG_LEFT_X);
 			int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
-			leftXAvg.add(leftX);
-			leftYAvg.add(leftY);
-			rightXAvg.add(rightX);
-
-			leftX = leftXAvg.getAverage();
-			leftY = leftYAvg.getAverage();
-			rightX = rightXAvg.getAverage();
-
-			Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
-			if (driverMode == 1) {
-				driveVector.setAngle(driveVector.getAngle());
-			}
-			else {
-				driveVector.setAngle(driveVector.getAngle() + toRadians(imu.get_rotation()));
-			}
-
-			// Send variables to motors
-			drivetrain.setDriveVectorVelocity(driveVector, rightX);
+			drivetrain.skidSteerVelocity(leftY, rightX);
 		}
 		else {
-			int leftX = filterAxis(master, ANALOG_LEFT_X);
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
-			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(leftX, (leftY + rightY) / 2)), leftY - rightY);
+			drivetrain.tankSteerVelocity(leftY, rightY);
 		}
 
 		if (frontGrabberBumperSwitch.get_new_press()) {
