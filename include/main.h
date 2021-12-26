@@ -81,8 +81,6 @@
 #include "pid/pid.hpp"
 
 // Position
-#include "position/threeWireOdomWheel.hpp"
-#include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
 #include "position/trackingWheel.hpp"
