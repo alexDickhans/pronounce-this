@@ -7,20 +7,18 @@ Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(1);
-pros::Motor frontRightMotor(2, true);
-pros::Motor backLeftMotor(9);
-pros::Motor backRightMotor(10, true);
+pros::Motor frontLeftMotor(1, true);
+pros::Motor frontRightMotor(2);
+pros::Motor backLeftMotor(9, true);
+pros::Motor backRightMotor(10);
 
-pros::Motor rightLift(3, true);
-pros::Motor leftLift(4, false);
+pros::Motor lift(3, false);
 
-pros::Motor intake(11);
-
-pros::Motor backGrabber(6);
+pros::Motor intake(11, true);
 
 pros::ADIDigitalOut frontGrabber(1, false);
-pros::ADIDigitalIn frontGrabberBumperSwitch(2);
+pros::ADIDigitalOut backGrabber(2, false);
+pros::ADIDigitalIn frontGrabberBumperSwitch(3);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
@@ -40,11 +38,10 @@ MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, 
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 10);
 
-MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R1, 200, 200, 200, 0, 450 * 3);
+MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_R2, 200, 0, 0, 0, 0);
 
+SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
 SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 
 // Autonomous Selector
@@ -100,10 +97,9 @@ int preAutonRun() {
 
 	frontGrabberButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
-	leftLiftButton.setAutonomous(true);
-	rightLiftButton.setAutonomous(true);
-	backGrabberButton.setAutonomousButton(true);
-	intakeButton.setAutonomousButton(true);
+	liftButton.setAutonomous(true);
+	backGrabberButton.setAutonomous(true);
+	intakeButton.setAutonomous(true);
 
 	return 0;
 }
@@ -129,8 +125,7 @@ int rightStealRight() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
@@ -170,8 +165,7 @@ int rightAwpRight() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
@@ -201,8 +195,7 @@ int leftAwpLeft() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(leftNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
@@ -250,8 +243,7 @@ int skills() {
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(0);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -260,8 +252,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(farPlatformToNearPlatformIndex);
 	purePursuit.setFollowing(true);
@@ -275,8 +266,7 @@ int skills() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
 	while (!purePursuit.isDone(0.5)) {
@@ -285,8 +275,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(nearPlatformViaLeftNeutralToFarPlatformIndex);
 	purePursuit.setFollowing(true);
@@ -300,8 +289,7 @@ int skills() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
 	while (!purePursuit.isDone(0.5)) {
@@ -310,8 +298,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(nearPlatformToMidIndex);
 	purePursuit.setFollowing(true);
@@ -348,8 +335,7 @@ int postAuton() {
 	purePursuit.setEnabled(false);
 	frontGrabberButton.setAutonomous(false);
 	backGrabberButton.setAutonomous(false);
-	leftLiftButton.setAutonomous(false);
-	rightLiftButton.setAutonomous(false);
+	liftButton.setAutonomous(false);
 	intakeButton.setAutonomous(false);
 
 	return 0;
@@ -392,8 +378,7 @@ void updateMotors() {
 	while (1) {
 		frontGrabberButton.update();
 		backGrabberButton.update();
-		leftLiftButton.update();
-		rightLiftButton.update();
+		liftButton.update();
 		intakeButton.update();
 
 		pros::Task::delay(20);
@@ -409,15 +394,13 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backGrabber.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-
-	backGrabberButton.setSingleToggle(true);
-	backGrabberButton.setGoToImmediately(true);
+	lift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 
 	frontGrabberButton.setSolenoid(&frontGrabber);
 	frontGrabberButton.setSingleToggle(true);
+
+	backGrabberButton.setSolenoid(&backGrabber);
+	backGrabberButton.setSingleToggle(true);
 
 	intakeButton.setSingleToggle(true);
 
@@ -733,7 +716,7 @@ void opcontrol() {
 			leftY = leftYAvg.getAverage();
 			rightX = rightXAvg.getAverage();
 
-			Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
+			Vector driveVector = Vector(new Pronounce::Point(0, leftY));
 			if (driverMode == 1) {
 				driveVector.setAngle(driveVector.getAngle());
 			}
@@ -749,7 +732,7 @@ void opcontrol() {
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
-			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(leftX, (leftY + rightY) / 2)), leftY - rightY);
+			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(0, (leftY + rightY) / 2)), leftY - rightY);
 		}
 
 		if (frontGrabberBumperSwitch.get_new_press()) {
