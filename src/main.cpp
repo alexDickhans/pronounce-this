@@ -12,22 +12,16 @@ pros::Motor frontRightMotor(2, true);
 pros::Motor backLeftMotor(9);
 pros::Motor backRightMotor(10, true);
 
-pros::Motor rightLift(3, true);
-pros::Motor leftLift(4, false);
+pros::Motor lift(3, true);
 
 pros::Motor intake(11);
 
-pros::Motor backGrabber(6);
-
 pros::ADIDigitalOut frontGrabber(1, false);
-pros::ADIDigitalIn frontGrabberBumperSwitch(2);
+pros::ADIDigitalOut backGrabber(2, false);
+pros::ADIDigitalIn frontGrabberBumperSwitch(3);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
-
-// #define VEX_ROTATION_ODOM
-
-#ifdef VEX_ROTATION_ODOM
 
 pros::Rotation leftEncoder(12);
 pros::Rotation rightEncoder(14);
@@ -38,38 +32,20 @@ Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
 Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
 Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 
-#else
-
-pros::ADIEncoder leftEncoder(2, 1, true);
-pros::ADIEncoder rightEncoder(4, 3, true);
-pros::ADIEncoder backEncoder(6, 5, false);
-
-Pronounce::AdiOdomWheel leftOdomWheel(&leftEncoder);
-Pronounce::AdiOdomWheel rightOdomWheel(&rightEncoder);
-Pronounce::AdiOdomWheel backOdomWheel(&backEncoder);
-
-#endif // VEX_ROTATION_ODOM
-
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
-MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R1, 200, 200, 200, 0, 450 * 3);
+MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_R2, 200, 0, 0, 0, 0);
 
 SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
+SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
 
 // Autonomous Selector
 Pronounce::AutonSelector autonomousSelector;
-
-bool relativeMovement = false;
-bool driveOdomEnabled = true;
-
-#define ROLL_AUTHORITY 1.0
 
 #define DRIFT_MIN 7.0
 
@@ -116,9 +92,8 @@ int preAutonRun() {
 
 	frontGrabberButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
-	leftLiftButton.setAutonomous(true);
-	rightLiftButton.setAutonomous(true);
-	backGrabberButton.setAutonomousButton(true);
+	liftButton.setAutonomous(true);
+	backGrabberButton.setAutonomous(true);
 	intakeButton.setAutonomousButton(true);
 
 	return 0;
@@ -145,8 +120,7 @@ int rightStealRight() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
@@ -186,8 +160,7 @@ int rightAwpRight() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
@@ -217,8 +190,7 @@ int leftAwpLeft() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(200);
-	leftLiftButton.setAutonomousAuthority(360);
-	rightLiftButton.setAutonomousAuthority(360);
+	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(leftNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
@@ -266,8 +238,7 @@ int skills() {
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(0);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -276,8 +247,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(farPlatformToNearPlatformIndex);
 	purePursuit.setFollowing(true);
@@ -291,8 +261,7 @@ int skills() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
 	while (!purePursuit.isDone(0.5)) {
@@ -301,8 +270,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(nearPlatformViaLeftNeutralToFarPlatformIndex);
 	purePursuit.setFollowing(true);
@@ -316,8 +284,7 @@ int skills() {
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	leftLiftButton.setAutonomousAuthority(1500);
-	rightLiftButton.setAutonomousAuthority(1500);
+	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
 	while (!purePursuit.isDone(0.5)) {
@@ -326,8 +293,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	leftLiftButton.setAutonomousAuthority(0);
-	rightLiftButton.setAutonomousAuthority(0);
+	liftButton.setAutonomousAuthority(0);
 
 	purePursuit.setCurrentPathIndex(nearPlatformToMidIndex);
 	purePursuit.setFollowing(true);
@@ -364,8 +330,7 @@ int postAuton() {
 	purePursuit.setEnabled(false);
 	frontGrabberButton.setAutonomous(false);
 	backGrabberButton.setAutonomous(false);
-	leftLiftButton.setAutonomous(false);
-	rightLiftButton.setAutonomous(false);
+	liftButton.setAutonomous(false);
 	intakeButton.setAutonomous(false);
 
 	return 0;
@@ -408,8 +373,7 @@ void updateMotors() {
 	while (1) {
 		frontGrabberButton.update();
 		backGrabberButton.update();
-		leftLiftButton.update();
-		rightLiftButton.update();
+		liftButton.update();
 		intakeButton.update();
 
 		pros::Task::delay(20);
@@ -425,14 +389,12 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backGrabber.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
-
-	backGrabberButton.setSingleToggle(true);
-	backGrabberButton.setGoToImmediately(true);
+	lift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 
 	frontGrabberButton.setSolenoid(&frontGrabber);
+	frontGrabberButton.setSingleToggle(true);
+
+	frontGrabberButton.setSolenoid(&backGrabber);
 	frontGrabberButton.setSingleToggle(true);
 
 	intakeButton.setSingleToggle(true);
@@ -444,7 +406,6 @@ void initDrivetrain() {
 	printf("Init drivetrain");
 
 	// odometry.setUseImu(true);
-
 	leftOdomWheel.setRadius(3.25/2);
 	leftOdomWheel.setTuningFactor(1);
 	rightOdomWheel.setRadius(3.25/2);
@@ -452,11 +413,9 @@ void initDrivetrain() {
 	backOdomWheel.setRadius(3.25/2);
 	backOdomWheel.setTuningFactor(1);
 
-#ifdef VEX_ROTATION_ODOM
-	leftEncoder.set_reversed(true);
-	rightEncoder.set_reversed(false);
-	backEncoder.set_reversed(false);
-#endif // VEX_ROTATION_ODOM
+	//leftEncoder.set_reversed(true);
+	//rightEncoder.set_reversed(false);
+	//backEncoder.set_reversed(false);
 
 	odometry.setLeftOffset(3.25);
 	odometry.setRightOffset(3.25);
@@ -726,11 +685,6 @@ void opcontrol() {
 
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
-
-	const int runningAverageLength = 1;
-	RunningAverage<runningAverageLength> leftXAvg;
-	RunningAverage<runningAverageLength> leftYAvg;
-	RunningAverage<runningAverageLength> rightXAvg;
 
 	// Driver Control Loop
 	while (true) {

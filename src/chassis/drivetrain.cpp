@@ -2,28 +2,28 @@
 
 namespace Pronounce {
 
-    Drivetrain::Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu){
-        this->frontLeft = frontLeft;
-        this->frontRight = frontRight;
-        this->backLeft = backLeft;
-        this->backRight = backRight;
+    Drivetrain::Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) {
+		this->leftMotors = MotorGroup(frontLeft, backLeft);
+		this->rightMotors = MotorGroup(frontRight, backRight);
         this->imu = imu;
     }
 
+	Drivetrain::Drivetrain(MotorGroup leftMotors, MotorGroup rightMotors, pros::Imu* imu) {
+		this->leftMotors = leftMotors;
+		this->rightMotors = rightMotors;
+		this->imu = imu;
+	}
+
     double Drivetrain::getTemp() {
-        double total = this->frontLeft->get_temperature() +
-            this->frontRight->get_temperature() +
-            this->backLeft->get_temperature() +
-            this->backRight->get_temperature();
-        return total / 4;
+        double total = this->leftMotors.get_temperature() +
+						this->rightMotors.get_temperature();
+        return total / 2.0;
     }
     
     double Drivetrain::getSpeed() {
-        double total = this->frontLeft->get_voltage() +
-            this->frontRight->get_voltage() +
-            this->backLeft->get_voltage() +
-            this->backRight->get_voltage();
-        return total / 4;
+        double total = this->leftMotors.get_actual_velocity() + 
+						this->rightMotors.get_actual_velocity();
+        return total / 2.0;
     }
 
 } // namespace Pronounce

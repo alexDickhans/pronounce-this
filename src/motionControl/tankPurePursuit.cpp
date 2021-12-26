@@ -1,10 +1,6 @@
 #include "tankPurePursuit.hpp"
 
 namespace Pronounce {
-	TankPurePursuit::TankPurePursuit() : PurePursuit() {
-		drivetrain = new TankDrivetrain();
-	}
-
 	TankPurePursuit::TankPurePursuit(TankDrivetrain* drivetrain) : PurePursuit() {
 		this->drivetrain = drivetrain;
 	}

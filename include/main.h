@@ -96,6 +96,7 @@
 #include "utils/runningAverage.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
+#include "utils/motorGroup.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"

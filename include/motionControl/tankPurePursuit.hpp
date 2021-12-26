@@ -9,7 +9,6 @@ namespace Pronounce {
 	private:
 		TankDrivetrain* drivetrain;
 	public:
-		TankPurePursuit();
 		TankPurePursuit(TankDrivetrain* drivetrain);
 		TankPurePursuit(TankDrivetrain* drivetrain, double lookaheadDistance);
 		TankPurePursuit(TankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
