@@ -40,7 +40,7 @@ namespace Pronounce {
 		}
 
 		MotorGroup getRightMotors() {
-			return leftMotors;
+			return rightMotors;
 		}
 
 		void setRightMotors(MotorGroup rightMotors) {

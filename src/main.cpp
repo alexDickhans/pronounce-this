@@ -700,6 +700,8 @@ void opcontrol() {
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
+			printf("leftY: %d, rightY: %d \n", leftY, rightY);
+
 			drivetrain.tankSteerVelocity(leftY, rightY);
 		}
 

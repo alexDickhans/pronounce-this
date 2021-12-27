@@ -9,16 +9,6 @@ namespace Pronounce {
 		this->trackWidth = trackWidth;
 	}
 
-	void TankDrivetrain::skidSteerVelocity(double speed, double turn) {
-		this->getLeftMotors().move_velocity(speed - turn * this->trackWidth / 2);
-		this->getRightMotors().move_velocity(speed + turn * this->trackWidth / 2);
-	}
-
-	void TankDrivetrain::tankSteerVelocity(double leftSpeed, double rightSpeed) {
-		this->getLeftMotors().move_velocity(leftSpeed);
-		this->getRightMotors().move_velocity(rightSpeed);
-	}
-
 	TankDrivetrain::~TankDrivetrain() {
 	}
 } // namespace Pronounce

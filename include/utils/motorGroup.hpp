@@ -10,7 +10,6 @@ namespace Pronounce {
 	public:
 		MotorGroup();
 		MotorGroup(std::vector<pros::Motor*> motors);
-		MotorGroup(pros::Motor* motors ...);
 
 		void operator=(std::int32_t power) {
 			for (int i = 0; i < motors.size(); i++) {

@@ -3,8 +3,14 @@
 namespace Pronounce {
 
     Drivetrain::Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) {
-		this->leftMotors = MotorGroup(frontLeft, backLeft);
-		this->rightMotors = MotorGroup(frontRight, backRight);
+		std::vector<pros::Motor*> leftMotors;
+		std::vector<pros::Motor*> rightMotors;
+		leftMotors.emplace_back(frontLeft);
+		leftMotors.emplace_back(backLeft);
+		rightMotors.emplace_back(frontRight);
+		rightMotors.emplace_back(backRight);
+		this->leftMotors = MotorGroup(leftMotors);
+		this->rightMotors = MotorGroup(rightMotors);
         this->imu = imu;
     }
 
