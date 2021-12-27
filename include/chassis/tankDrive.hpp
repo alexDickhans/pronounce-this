@@ -13,8 +13,8 @@ namespace Pronounce {
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
 
 		void skidSteerVelocity(double speed, double turn) {
-			this->getLeftMotors().move_velocity(speed - turn * this->trackWidth / 2);
-			this->getRightMotors().move_velocity(speed + turn * this->trackWidth / 2);
+			this->getLeftMotors().move_velocity(speed + turn);
+			this->getRightMotors().move_velocity(speed - turn);
 		}
 
 		void tankSteerVelocity(double leftSpeed, double rightSpeed) {

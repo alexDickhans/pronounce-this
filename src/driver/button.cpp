@@ -30,6 +30,10 @@ namespace Pronounce {
                 printf("Button pressed\n");
                 buttonStatus = buttonStatus == ButtonStatus::POSITIVE ? ButtonStatus::NEUTRAL : ButtonStatus::POSITIVE;
                 printf("Button status: %d\n", buttonStatus);
+            } else if (controller->get_digital_new_press(negativeButton)) {
+                printf("Button pressed\n");
+                buttonStatus = buttonStatus == ButtonStatus::NEGATIVE ? ButtonStatus::NEUTRAL : ButtonStatus::NEGATIVE;
+                printf("Button status: %d\n", buttonStatus);
             }
             return;
         }

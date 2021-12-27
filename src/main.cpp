@@ -7,14 +7,14 @@ Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(1);
-pros::Motor frontRightMotor(2, true);
-pros::Motor backLeftMotor(9);
-pros::Motor backRightMotor(10, true);
+pros::Motor frontLeftMotor(1, true);
+pros::Motor frontRightMotor(2);
+pros::Motor backLeftMotor(9, true);
+pros::Motor backRightMotor(10);
 
-pros::Motor lift(3, true);
+pros::Motor lift(3, false);
 
-pros::Motor intake(11);
+pros::Motor intake(11, true);
 
 pros::ADIDigitalOut frontGrabber(1, false);
 pros::ADIDigitalOut backGrabber(2, false);
@@ -39,7 +39,7 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &ba
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
-MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_R2, 200, 0, 0, 0, 0);
+MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
 
 SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
 SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
@@ -94,7 +94,7 @@ int preAutonRun() {
 	backGrabberButton.setAutonomous(true);
 	liftButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
-	intakeButton.setAutonomousButton(true);
+	intakeButton.setAutonomous(true);
 
 	return 0;
 }
@@ -394,10 +394,12 @@ void initMotors() {
 	frontGrabberButton.setSolenoid(&frontGrabber);
 	frontGrabberButton.setSingleToggle(true);
 
-	frontGrabberButton.setSolenoid(&backGrabber);
-	frontGrabberButton.setSingleToggle(true);
+	backGrabberButton.setSolenoid(&backGrabber);
+	backGrabberButton.setSingleToggle(true);
 
 	intakeButton.setSingleToggle(true);
+
+	lift.set_current_limit(25000);
 
 	pros::Task updateButtons(updateMotors, "Update buttons");
 }
@@ -717,13 +719,9 @@ void opcontrol() {
 			driverMode = 0;
 		}
 		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
-			driverMode = 1;
-		}
-		else if (master.get_digital_new_press(DIGITAL_LEFT)) {
 			driverMode = 2;
 		}
 
-		// Prevent wasted resources
 		pros::delay(10);
 	}
 }
