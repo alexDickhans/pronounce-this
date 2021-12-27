@@ -732,7 +732,7 @@ void opcontrol() {
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
-			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(0, (leftY + rightY) / 2)), leftY - rightY);
+			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(0, (leftY + rightY))), leftY - rightY);
 		}
 
 		if (frontGrabberBumperSwitch.get_new_press()) {
