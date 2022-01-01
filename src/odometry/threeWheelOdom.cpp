@@ -2,12 +2,14 @@
 
 namespace Pronounce {
     ThreeWheelOdom::ThreeWheelOdom(/* args */) : Odometry() {
+		this->reset(new Position());
     }
 
     ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : Odometry() {
         this->leftWheel = leftWheel;
         this->rightWheel = rightWheel;
         this->backWheel = backWheel;
+		this->reset(new Position());
     }
 
     void ThreeWheelOdom::update() {
@@ -40,7 +42,12 @@ namespace Pronounce {
         lastPosition->add(localOffset.getCartesian());
         lastPosition->setTheta(fmod(currentAngle + M_PI * 2, M_PI * 2));
 
+		if (localOffset.getMagnitude() > maxMovement) {
+			return;
+		}
+
         // Print last position
+		printf("Left Change: %f, Right change: %f, Back change %f\n", deltaLeft, deltaRight, deltaBack);
         printf("Last position: %f, %f, %f\n", lastPosition->getX(), lastPosition->getY(), lastPosition->getTheta());
 
         // Update the position

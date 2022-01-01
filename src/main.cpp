@@ -8,9 +8,11 @@ Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 
 // Drive Motors
 pros::Motor frontLeftMotor(1, true);
-pros::Motor frontRightMotor(2);
+pros::Motor frontRightMotor(2, false);
+pros::Motor midLeftMotor(15, false);
+pros::Motor midRightMotor(16, true);
 pros::Motor backLeftMotor(9, true);
-pros::Motor backRightMotor(10);
+pros::Motor backRightMotor(10, false);
 
 pros::Motor lift(3, false);
 
@@ -34,7 +36,7 @@ Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
-TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 15.0);
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
@@ -78,15 +80,19 @@ int farPlatformToNearPlatformIndex;
 int nearPlatformViaLeftNeutralToFarPlatformIndex;
 int nearPlatformToMidIndex;
 
+void flipOut() {
+	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
+
+	pros::Task::delay(1000);
+
+	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+}
+
 /**
  * @brief Runs during auton period before auton
  *
  */
 int preAutonRun() {
-
-	while (imu.is_calibrating()) {
-		pros::Task::delay(50);
-	}
 
 	purePursuit.setEnabled(true);
 
@@ -95,6 +101,8 @@ int preAutonRun() {
 	liftButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
 	intakeButton.setAutonomous(true);
+
+	pros::Task flipOutTask(flipOut);
 
 	return 0;
 }
@@ -106,10 +114,11 @@ int preAutonRun() {
 int rightStealRight() {
 	odometry.reset(new Position(105.7, 16));
 
-	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
+	purePursuit.setInverted(false);
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
@@ -123,8 +132,8 @@ int rightStealRight() {
 	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
+	purePursuit.setInverted(true);
 	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(3.14);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -135,8 +144,8 @@ int rightStealRight() {
 	pros::Task::delay(500);
 
 	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
+	purePursuit.setInverted(true);
 	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(-M_PI_2);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -347,6 +356,7 @@ void renderThread() {
 void updateDrivetrain() {
 	lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_label_set_text(infoLabel, "drivetrain");
+
 	while (1) {
 		uint32_t startTime = pros::millis();
 		odometry.update();
@@ -412,23 +422,22 @@ void initDrivetrain() {
 	leftOdomWheel.setTuningFactor(1);
 	rightOdomWheel.setRadius(3.25/2);
 	rightOdomWheel.setTuningFactor(1);
-	backOdomWheel.setRadius(3.25/2);
+	backOdomWheel.setRadius(1.25);
 	backOdomWheel.setTuningFactor(1);
 
-	//leftEncoder.set_reversed(true);
-	//rightEncoder.set_reversed(false);
-	//backEncoder.set_reversed(false);
+	leftEncoder.set_reversed(true);
+	rightEncoder.set_reversed(true);
+	backEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(3.25);
-	odometry.setRightOffset(3.25);
-	odometry.setBackOffset(2);
+	odometry.setLeftOffset(4.5);
+	odometry.setRightOffset(4.5);
+	odometry.setBackOffset(1.5);
+
+	odometry.setMaxMovement(1);
 
 	purePursuit.setNormalizeDistance(10);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-
-	// delay to let time for settling
-	pros::Task::delay(200);
 
 	odometry.reset(new Position());
 
@@ -667,10 +676,10 @@ void competition_initialize() {
  */
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
-	// autonRoutines.hpp and the implementation is autonRoutines.cp
+	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftAwpLeft();
+	rightStealRight();
 	postAuton();
 }
 

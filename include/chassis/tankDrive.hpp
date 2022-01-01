@@ -11,6 +11,8 @@ namespace Pronounce {
 	public:
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
 
 		void skidSteerVelocity(double speed, double turn) {
 			this->getLeftMotors().move_velocity(speed + turn);
@@ -18,7 +20,6 @@ namespace Pronounce {
 		}
 
 		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
-			printf("leftSpeed: %f, leftSpeed: %f \n", leftSpeed, rightSpeed);
 			this->getLeftMotors().move_velocity(leftSpeed);
 			this->getRightMotors().move_velocity(rightSpeed);
 		}

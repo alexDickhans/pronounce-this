@@ -26,6 +26,7 @@ namespace Pronounce {
 
         // Returns if robot is close to target to prevent little wiggles
         if (pathVector.at(pathVector.size() - 1).distance(currentPoint) < stopDistance) {
+			this->atPoint = true;
             return;
         }
 
@@ -40,14 +41,12 @@ namespace Pronounce {
         double mappedMagnitude = std::clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
-		// Calculate curvature
-		double a = -tan(currentPosition->getTheta());
-		double b = 1;
-		double c = tan(currentPosition->getTheta());
+		Vector robotRelativeLookaheadVector = lookaheadVector;
+		
+		robotRelativeLookaheadVector.rotate(-currentPosition->getTheta());
 
-		double curvature = abs((a * lookaheadVector.getCartesian().getX()) + (b * lookaheadVector.getCartesian().getY()) + c) / sqrt(pow(a, 2) + pow(b, 2));
-		double side = signum_c((sin(currentPosition->getTheta()) * lookaheadVector.getCartesian().getX()) - (cos(currentPosition->getTheta()) * lookaheadVector.getCartesian().getY()));
-		double signedCurvature = curvature * side;
+		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
+		double signedCurvature = (2 * xDistance) / pow(lookahead, 2);
 
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;

@@ -14,8 +14,18 @@ namespace Pronounce {
 	}
 
 	void TankPurePursuit::updateDrivetrain() {
-		double velocity = 200;
-		drivetrain->tankSteerVelocity(200 * (2 + this->getPointData().curvature * this->drivetrain->getTrackWidth()), 200 * (2 - this->getPointData().curvature * this->drivetrain->getTrackWidth()));
+
+		if (isDone(this->getStopDistance())) {
+			return;
+		}
+
+		PurePursuitPointData pointData = this->getPointData();
+		printf("Curvature pointdata: %f\n", this->getPointData().curvature);
+		if (inverted) {
+			drivetrain->tankSteerVelocity(-speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), -speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
+		} else {
+			drivetrain->tankSteerVelocity(speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
+		}
 	}
 
 	void TankPurePursuit::stop() {

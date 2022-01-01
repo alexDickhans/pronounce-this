@@ -2,6 +2,10 @@
 
 namespace Pronounce {
 
+	Drivetrain::Drivetrain() {
+		
+	}
+
     Drivetrain::Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) {
 		std::vector<pros::Motor*> leftMotors;
 		std::vector<pros::Motor*> rightMotors;

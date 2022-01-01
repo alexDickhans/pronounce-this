@@ -3,11 +3,15 @@
 #include "api.h"
 #include "purePursuit.hpp"
 #include "chassis/tankDrive.hpp"
+#include <algorithm>
 
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {
 	private:
 		TankDrivetrain* drivetrain;
+
+		double speed = 100;
+		bool inverted = false;
 	public:
 		TankPurePursuit(TankDrivetrain* drivetrain);
 		TankPurePursuit(TankDrivetrain* drivetrain, double lookaheadDistance);
@@ -23,6 +27,22 @@ namespace Pronounce {
 
 		void setDrivetrain(TankDrivetrain* drivetrain) {
 			this->drivetrain = drivetrain;
+		}
+
+		double getSpeed() {
+			return speed;
+		}
+
+		void setSpeed(double speed) {
+			this->speed = speed;
+		}
+
+		bool getInverted() {
+			return inverted;
+		}
+
+		void setInverted(bool inverted) {
+			this->inverted = inverted;
 		}
 
 		~TankPurePursuit();

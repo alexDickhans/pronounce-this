@@ -61,6 +61,8 @@ namespace Pronounce {
 
 		bool enabled = false;
 		bool following = false;
+
+		bool atPoint = false;
 	public:
 		PurePursuit();
 		PurePursuit(double lookahead);
@@ -173,6 +175,14 @@ namespace Pronounce {
 
 		bool isDone(double maxDistance) {
 			return maxDistance > odometry->getPosition()->distance(paths.at(currentPath).getPoint(paths.at(currentPath).getPath().size() - 1));
+		}
+
+		double getStopDistance() {
+			return stopDistance;
+		}
+
+		void setStopDistance(double stopDistance) {
+			this->stopDistance = stopDistance;
 		}
 
 		~PurePursuit();

@@ -18,6 +18,10 @@ namespace Pronounce {
 			}
 		}
 
+		void addMotor(pros::Motor* motor) {
+			this->motors.emplace_back(motor);
+		} 
+
 		void move(double power) {
 			for (int i = 0; i < motors.size(); i++) {
 				pros::Motor* motor = this->motors.at(i);
