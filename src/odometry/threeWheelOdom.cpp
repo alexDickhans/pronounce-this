@@ -4,10 +4,11 @@ namespace Pronounce {
     ThreeWheelOdom::ThreeWheelOdom(/* args */) : Odometry() {
     }
 
-    ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : Odometry() {
+    ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel,pros::Imu* imu) : Odometry() {
         this->leftWheel = leftWheel;
         this->rightWheel = rightWheel;
         this->backWheel = backWheel;
+        this->imu = imu;
     }
 
     void ThreeWheelOdom::update() {
@@ -32,7 +33,7 @@ namespace Pronounce {
 
         // Calculate the local offset then translate it to the global offset
         Vector localOffset = Vector(new Point(deltaBack + (angleChange * backOffset), deltaRight + (angleChange * rightOffset)));
-
+        localOffset.scale(cos(asin(sin()*sin(pitch))))
         // Rotate vector
         localOffset.rotate(-averageOrientation);
 

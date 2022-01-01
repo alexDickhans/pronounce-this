@@ -13,7 +13,7 @@ namespace Pronounce
         double leftOffset, rightOffset, backOffset;
     public:
         ThreeWheelOdom();
-        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
+        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel,pros::Imu* imu);
 
         void update();
 
@@ -71,6 +71,14 @@ namespace Pronounce
 
         void setBackWheel(OdomWheel* backWheel) {
             this->backWheel = backWheel;
+        }
+
+        void setIMU(pros::Imu imu) {
+            this->imu = imu;
+        }
+
+        getIMU(){
+            return imu;
         }
 
         ~ThreeWheelOdom();
