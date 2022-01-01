@@ -12,6 +12,9 @@ namespace Pronounce {
     }
 
     void ThreeWheelOdom::update() {
+        //Plane adjustment toggle
+        bool planeAdjustment = true;
+
         // Update the wheel positions
         leftWheel->update();
         rightWheel->update();
@@ -33,7 +36,17 @@ namespace Pronounce {
 
         // Calculate the local offset then translate it to the global offset
         Vector localOffset = Vector(new Point(deltaBack + (angleChange * backOffset), deltaRight + (angleChange * rightOffset)));
-        localOffset.scale(cos(asin(sin()*sin(pitch))))
+        
+        //Calculate the difference between the plane the robot is on and the flat plane and change that
+        if (planeAdjustment){
+            //Formula doesn't work if pitch or roll are 0
+            if (this->imu->getRoll() != 0 && this->imu->getPitch() != 0){
+                localOffset.scale(cos(asin(sin(abs(this->imu->getRoll()))*sin(abs(this->imu->getPitch())))));
+            //Just Pitch without roll
+            }else (this->imu->getPitch() != 0){
+                localOffset.scale(cos(this->imu->getPitch()));
+            }
+        }
         // Rotate vector
         localOffset.rotate(-averageOrientation);
 
