@@ -1,7 +1,5 @@
 #include "main.h"
 
-// Auton Selector object
-autonSelector* autonomousSel = nullptr;
 
 // Controllers
 Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
@@ -17,6 +15,8 @@ pros::Motor backRightMotor(10, true);
 pros::Motor rightLift(3, true);
 pros::Motor leftLift(4, false);
 
+pros::Motor intake(11);
+
 pros::Motor backGrabber(6);
 
 pros::ADIDigitalOut frontGrabber(1, false);
@@ -25,16 +25,30 @@ pros::ADIDigitalIn frontGrabberBumperSwitch(2);
 // Inertial Measurement Unit
 pros::Imu imu(5);
 
-Pronounce::MotorOdom wheel1(&frontLeftMotor, 2);
-Pronounce::MotorOdom wheel2(&frontRightMotor, 2);
-Pronounce::MotorOdom wheel3(&backLeftMotor, 2);
-Pronounce::MotorOdom wheel4(&backRightMotor, 2);
+pros::Rotation leftEncoder(12);
+pros::Rotation rightEncoder(14);
+pros::Rotation backEncoder(13);
 
-Pronounce::MecanumOdometry odometry(&wheel1, &wheel2, &wheel3, &wheel4, &imu, 14/2, 10.5/2);
+// Odom wheels
+Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
+Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
+Pronounce::TrackingWheel backOdomWheel(&backEncoder);
+
+ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 MecanumDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor, &imu, &odometry);
 
 Pronounce::PurePursuit purePursuit(&drivetrain, 10);
+
+MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
+MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
+MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R1, 200, 200, 200, 0, 450 * 3);
+MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_R2, 200, 0, 0, 0, 0);
+
+SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
+
+// Autonomous Selector
+Pronounce::AutonSelector autonomousSelector;
 
 bool relativeMovement = false;
 bool driveOdomEnabled = true;
@@ -45,12 +59,32 @@ bool driveOdomEnabled = true;
 
 bool preDriverTasksDone = false;
 
+int driverMode = 0;
+
+// Test path
 int testPathIndex;
+
+// Right steal right
 int rightHomeToGoalNeutralIndex;
 int rightNeutralToMidNeutralIndex;
 int midNeutralToRightAllianceIndex;
-int rightAllianceToRightRingIndex;
-int rightRingToLeftHomeZoneIndex;
+int midNeutralToMidHomeZoneIndex;
+int rightNeutralToRightHomeIndex;
+
+// Right awp right
+int farRightHomeZoneToRightAllianceIndex;
+int rightAllianceToRightHomeZoneIndex;
+
+// Left steal left
+int leftAllianceToLeftNeutralIndex;
+int leftNeutralToMidNeutralIndex;
+int midNeutralToLeftHomeZoneIndex;
+
+// Skills
+int rightNeutralToFarPlatformIndex;
+int farPlatformToNearPlatformIndex;
+int nearPlatformViaLeftNeutralToFarPlatformIndex;
+int nearPlatformToMidIndex;
 
 /**
  * @brief Runs during auton period before auton
@@ -64,6 +98,13 @@ int preAutonRun() {
 
 	purePursuit.setEnabled(true);
 
+	frontGrabberButton.setAutonomous(true);
+	backGrabberButton.setAutonomous(true);
+	leftLiftButton.setAutonomous(true);
+	rightLiftButton.setAutonomous(true);
+	backGrabberButton.setAutonomousButton(true);
+	intakeButton.setAutonomousButton(true);
+
 	return 0;
 }
 
@@ -72,68 +113,211 @@ int preAutonRun() {
  *
  */
 int rightStealRight() {
-	odometry.reset(new Position(105.7, 8));
+	odometry.reset(new Position(105.7, 16));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
 
 	// Collect front goal
-	frontGrabber.set_value(true);
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	leftLiftButton.setAutonomousAuthority(360);
+	rightLiftButton.setAutonomousAuthority(360);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToMidNeutralIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(3.14);
 
-	while (odometry.getPosition()->getY() < 46.8) {
-		pros::Task::delay(50);
-	}
-	
-	// Let go of front goal and get ready to collect again
-	frontGrabber.set_value(false);
-	purePursuit.setTurnTarget(0);
-
 	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
 
-	// Collect front goal
-	frontGrabber.set_value(true);
-
-	purePursuit.setCurrentPathIndex(midNeutralToRightAllianceIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(2.355);
-
-	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
-		pros::Task::delay(50);
-	}
-
-	backGrabber.move_velocity(200);
-
-	purePursuit.setTurnTarget(0);
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	pros::Task::delay(500);
 
-	purePursuit.setCurrentPathIndex(rightAllianceToRightRingIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(0);
-
-	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
-		pros::Task::delay(50);
-	}
-
-	purePursuit.setCurrentPathIndex(rightRingToLeftHomeZoneIndex);
+	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(-M_PI_2);
 
 	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	return 0;
+}
+
+int rightAwpRight() {
+	odometry.reset(new Position(129.9, 16));
+
+	purePursuit.setCurrentPathIndex(farRightHomeZoneToRightAllianceIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	leftLiftButton.setAutonomousAuthority(360);
+	rightLiftButton.setAutonomousAuthority(360);
+
+	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	return 0;
+}
+
+int leftAwpLeft() {
+	odometry.reset(new Position(20.5, 16));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	leftLiftButton.setAutonomousAuthority(360);
+	rightLiftButton.setAutonomousAuthority(360);
+
+	purePursuit.setCurrentPathIndex(leftNeutralToMidNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(3.14);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	pros::Task::delay(500);
+
+	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI_2);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	return 0;
+}
+
+int skills() {
+	odometry.reset(new Position(105.7, 16));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	purePursuit.setCurrentPathIndex(rightNeutralToFarPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(farPlatformToNearPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI);
+
+	// Wait until gets to goal
+	while (odometry.getPosition()->getY() > 80) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(nearPlatformViaLeftNeutralToFarPlatformIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(0);
+
+	// Wait until gets to goal
+	while (odometry.getPosition()->getY() < 61) {
+		pros::Task::delay(50);
+	}
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	leftLiftButton.setAutonomousAuthority(1500);
+	rightLiftButton.setAutonomousAuthority(1500);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	leftLiftButton.setAutonomousAuthority(0);
+	rightLiftButton.setAutonomousAuthority(0);
+
+	purePursuit.setCurrentPathIndex(nearPlatformToMidIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
 
@@ -146,15 +330,15 @@ int rightStealRight() {
  * @return 0
  */
 int testAuton() {
+
+	printf("Test Auton\n");
+
 	odometry.reset(new Position());
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	// Wait until it is done
-	while (purePursuit.isDone(0.5)) {
-		pros::Task::delay(50);
-	}
+	pros::Task::delay(10000);
 
 	return 0;
 }
@@ -162,6 +346,12 @@ int testAuton() {
 int postAuton() {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
+	frontGrabberButton.setAutonomous(false);
+	backGrabberButton.setAutonomous(false);
+	leftLiftButton.setAutonomous(false);
+	rightLiftButton.setAutonomous(false);
+	intakeButton.setAutonomous(false);
+
 	return 0;
 }
 
@@ -193,8 +383,20 @@ void initSensors() {
 	imu.reset();
 
 	// Wait until IMU is calibrated
-	while (imu.is_calibrating()) {
-		pros::delay(20);
+	// while (imu.is_calibrating()) {
+	// 	pros::delay(20);
+	// }
+}
+
+void updateMotors() {
+	while (1) {
+		frontGrabberButton.update();
+		backGrabberButton.update();
+		leftLiftButton.update();
+		rightLiftButton.update();
+		intakeButton.update();
+
+		pros::Task::delay(20);
 	}
 }
 
@@ -210,18 +412,46 @@ void initMotors() {
 	backGrabber.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	leftLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	rightLift.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
+
+	backGrabberButton.setSingleToggle(true);
+	backGrabberButton.setGoToImmediately(true);
+
+	frontGrabberButton.setSolenoid(&frontGrabber);
+	frontGrabberButton.setSingleToggle(true);
+
+	intakeButton.setSingleToggle(true);
+
+	pros::Task updateButtons(updateMotors, "Update buttons");
 }
 
 void initDrivetrain() {
 	printf("Init drivetrain");
 
-	odometry.setUseImu(true);
+	// odometry.setUseImu(true);
+
+	leftOdomWheel.setRadius(3.25/2);
+	leftOdomWheel.setTuningFactor(1);
+	rightOdomWheel.setRadius(3.25/2);
+	rightOdomWheel.setTuningFactor(1);
+	backOdomWheel.setRadius(3.25/2);
+	backOdomWheel.setTuningFactor(1);
+
+	leftEncoder.set_reversed(true);
+	rightEncoder.set_reversed(false);
+	backEncoder.set_reversed(false);
+
+	odometry.setLeftOffset(3.25);
+	odometry.setRightOffset(3.25);
+	odometry.setBackOffset(2);
 
 	purePursuit.setNormalizeDistance(10);
 
 	purePursuit.setOdometry(&odometry);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
+
+	// delay to let time for settling
+	pros::Task::delay(200);
 
 	odometry.reset(new Position());
 
@@ -238,32 +468,21 @@ void initController() {
 
 // Run selector as task
 void runSelector() {
-	autonomousSel->choose();
+	autonomousSelector.choose();
 }
 
 /**
  * Initialize the Auton Selector
  */
 void initSelector() {
-	// Create a button descriptor string array w/ no repeat "\224"
-	static char* btnm_map[] = { (char*)"Test", (char*)"\n",
-								(char*)"Right steal right",
-								(char*)"" };
+	autonomousSelector.addAuton(Auton("Right steal right", rightStealRight));
+	autonomousSelector.addAuton(Auton("Test", testAuton));
+	autonomousSelector.setDefaultAuton(Auton("Right steal right", rightStealRight));
+	autonomousSelector.setPreAuton(Auton("Pre auton", preAutonRun));
+	autonomousSelector.setPreAuton(Auton("Post auton", postAuton));
 
-	autonomousSel = new autonSelector(btnm_map, lv_scr_act());
+	pros::Task selectorTask(runSelector, "Auton Selector");
 
-	// Set pre and post run
-	autonomousSel->setPreRun(preAutonRun);
-	autonomousSel->setPostAuton(postAuton);
-
-	// Set functions
-	autonomousSel->setFunction(0, testAuton);
-	autonomousSel->setFunction(1, rightStealRight);
-
-	autonomousSel->setSelection(0);
-
-	// Start the task
-	// pros::Task selectorTask(runSelector, "Auton Selector");
 }
 
 /**
@@ -282,7 +501,7 @@ void initLogger() {
 
 void autoPaths() {
 	// Default pure pursuit profile
-	PurePursuitProfile defaultProfile(new PID(20, 0.0, 0.0), new PID(30, 0.0, 0.0), 10.0);
+	PurePursuitProfile defaultProfile(new PID(20, 0.0, 2.0), new PID(60.0, 0.0, 5.0), 10.0);
 	purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
 
 	// Test path
@@ -297,45 +516,108 @@ void autoPaths() {
 
 	testPathIndex = purePursuit.addPath(testPath);
 
+	Path rightNeutralToRightHomeZone;
+
+	rightNeutralToRightHomeZone.addPoint(105.7, 60);
+	rightNeutralToRightHomeZone.addPoint(105.7, 16);
+
+	rightNeutralToRightHomeIndex = purePursuit.addPath(rightNeutralToRightHomeZone);
+
 	// Right Steal Right
 	Path rightHomeToGoalNeutral;
 
-	rightHomeToGoalNeutral.addPoint(105.7, 8);
-	rightHomeToGoalNeutral.addPoint(105.7, 60);
+	rightHomeToGoalNeutral.addPoint(105.7, 16);
+	rightHomeToGoalNeutral.addPoint(105.7, 61);
 
 	rightHomeToGoalNeutralIndex = purePursuit.addPath(rightHomeToGoalNeutral);
 
 	Path rightNeutralToMidNeutral;
 
-	rightNeutralToMidNeutral.addPoint(105.7, 60);
-	rightNeutralToMidNeutral.addPoint(82.3, 40);
-	rightNeutralToMidNeutral.addPoint(70.3, 60);
+	rightNeutralToMidNeutral.addPoint(105.7, 62);
+	rightNeutralToMidNeutral.addPoint(75.3, 40);
+	rightNeutralToMidNeutral.addPoint(60.3, 65);
 
 	rightNeutralToMidNeutralIndex = purePursuit.addPath(rightNeutralToMidNeutral);
 
 	Path midNeutralToRightAlliance;
 
-	midNeutralToRightAlliance.addPoint(70.3, 60);
-	midNeutralToRightAlliance.addPoint(120.1, 36);
+	midNeutralToRightAlliance.addPoint(70.3, 65);
+	midNeutralToRightAlliance.addPoint(120.1, 28);
 
 	midNeutralToRightAllianceIndex = purePursuit.addPath(midNeutralToRightAlliance);
 
-	Path rightAllianceToRightRing;
+	Path midNeutralToMidHomeZone;
 
-	rightAllianceToRightRing.addPoint(120.1, 36);
-	rightAllianceToRightRing.addPoint(117.5, 46.8);
-	rightAllianceToRightRing.addPoint(117.5, 70.3);
-	rightAllianceToRightRing.addPoint(117.5, 70.3);
+	midNeutralToMidHomeZone.addPoint(70.3, 70.3);
+	midNeutralToMidHomeZone.addPoint(70.3, 36);
 
-	rightAllianceToRightRingIndex = purePursuit.addPath(rightAllianceToRightRing);
+	midNeutralToMidHomeZoneIndex = purePursuit.addPath(midNeutralToMidHomeZone);
 
-	Path rightRingToLeftHomeZone;
+	Path farRightHomeZoneToRightAlliance;
 
-	rightRingToLeftHomeZone.addPoint(117.5, 70.3);
-	rightRingToLeftHomeZone.addPoint(105, 35);
-	rightRingToLeftHomeZone.addPoint(35, 35);
+	farRightHomeZoneToRightAlliance.addPoint(127.9, 16);
+	farRightHomeZoneToRightAlliance.addPoint(127.9, 24);
 
-	rightRingToLeftHomeZoneIndex = purePursuit.addPath(rightRingToLeftHomeZone);
+	farRightHomeZoneToRightAllianceIndex = purePursuit.addPath(farRightHomeZoneToRightAlliance);
+
+	Path rightAllianceToRightHomeZone;
+
+	rightAllianceToRightHomeZone.addPoint(127.9, 24);
+	rightAllianceToRightHomeZone.addPoint(105.7, 16);
+
+	rightAllianceToRightHomeZoneIndex = purePursuit.addPath(rightAllianceToRightHomeZone);
+
+	Path leftAllianceToLeftNeutral;
+
+	leftAllianceToLeftNeutral.addPoint(29, 11.4);
+	leftAllianceToLeftNeutral.addPoint(32, 67);
+
+	leftAllianceToLeftNeutralIndex = purePursuit.addPath(leftAllianceToLeftNeutral);
+
+	Path leftNeutralToMidNeutral;
+
+	leftNeutralToMidNeutral.addPoint(32, 67);
+	leftNeutralToMidNeutral.addPoint(65.3, 40);
+	leftNeutralToMidNeutral.addPoint(70.3, 65);
+
+	leftNeutralToMidNeutralIndex = purePursuit.addPath(leftNeutralToMidNeutral);
+
+	// mid neutral to mid home zone
+
+	Path rightNeutralToFarPlatform;
+
+	rightNeutralToFarPlatform.addPoint(105.7, 61);
+	rightNeutralToFarPlatform.addPoint(75, 76.5);
+	rightNeutralToFarPlatform.addPoint(75, 100);
+	rightNeutralToFarPlatform.addPoint(60.3, 115);
+
+	rightNeutralToFarPlatformIndex = purePursuit.addPath(rightNeutralToFarPlatform);
+
+	Path farPlatformToNearPlatform;
+
+	farPlatformToNearPlatform.addPoint(70.3, 107);
+	farPlatformToNearPlatform.addPoint(60, 70.3);
+	farPlatformToNearPlatform.addPoint(58.6, 64.1);
+	farPlatformToNearPlatform.addPoint(58.6, 45);
+	farPlatformToNearPlatform.addPoint(70.3, 30.7);
+
+	farPlatformToNearPlatformIndex = purePursuit.addPath(farPlatformToNearPlatform);
+
+	Path nearPlatformViaLeftNeutralToFarPlatform;
+
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(70.3, 30.7);
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(35, 61);
+	nearPlatformViaLeftNeutralToFarPlatform.addPoint(70.3, 115);
+
+	nearPlatformViaLeftNeutralToFarPlatformIndex = purePursuit.addPath(nearPlatformViaLeftNeutralToFarPlatform);
+
+	Path nearPlatformToMid;
+
+	nearPlatformToMid.addPoint(70.3, 115);
+	nearPlatformToMid.addPoint(70.3, 70.3);
+
+	nearPlatformToMidIndex = purePursuit.addPath(nearPlatformToMid);
+
 }
 
 /**
@@ -369,10 +651,10 @@ void initialize() {
 	initSensors();
 	initMotors();
 	initDrivetrain();
-	initController();
-	initSelector();
-	initLogger();
 	autoPaths();
+	initController();
+	initLogger();
+	// initSelector();
 }
 
 /**
@@ -399,7 +681,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	//autonomousSel->choose();
+	// autonomousSelector.choose();
 
 }
 
@@ -408,8 +690,11 @@ void competition_initialize() {
  */
 void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
-	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	autonomousSel->runSelection();
+	// autonRoutines.hpp and the implementation is autonRoutines.cp
+	// autonomousSelector.run();
+	preAutonRun();
+	leftAwpLeft();
+	postAuton();
 }
 
 
@@ -421,6 +706,8 @@ void opcontrol() {
 	printf("OpControl");
 	lv_obj_clean(lv_scr_act());
 
+	postAuton();
+
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
 
@@ -429,51 +716,59 @@ void opcontrol() {
 	RunningAverage<runningAverageLength> leftYAvg;
 	RunningAverage<runningAverageLength> rightXAvg;
 
-	MotorButton leftLiftButton(&master, &leftLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
-	MotorButton rightLiftButton(&master, &rightLift, DIGITAL_L1, DIGITAL_L2, 127, 0, -127, 0, 0);
-	MotorButton backGrabberButton(&master, &backGrabber, DIGITAL_R1, DIGITAL_R2, 200, 200, 200, 0, 450*3);
-	backGrabberButton.setSingleToggle(true);
-	backGrabberButton.setGoToImmediately(true);
-
-	SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
-	frontGrabberButton.setSolenoid(&frontGrabber);
-	frontGrabberButton.setSingleToggle(true);
-
 	// Driver Control Loop
 	while (true) {
 
-		// Filter and calculate magnitudes
-		int leftY = filterAxis(master, ANALOG_LEFT_Y);
-		int leftX = filterAxis(master, ANALOG_LEFT_X);
-		int rightX = filterAxis(master, ANALOG_RIGHT_X);
+		if (driverMode > 0) {
+			// Filter and calculate magnitudes
+			int leftY = filterAxis(master, ANALOG_LEFT_Y);
+			int leftX = filterAxis(master, ANALOG_LEFT_X);
+			int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
-		leftXAvg.add(leftX);
-		leftYAvg.add(leftY);
-		rightXAvg.add(rightX);
+			leftXAvg.add(leftX);
+			leftYAvg.add(leftY);
+			rightXAvg.add(rightX);
 
-		leftX = leftXAvg.getAverage();
-		leftY = leftYAvg.getAverage();
-		rightX = rightXAvg.getAverage();
+			leftX = leftXAvg.getAverage();
+			leftY = leftYAvg.getAverage();
+			rightX = rightXAvg.getAverage();
 
-		Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
-		driveVector.setAngle((driveVector.getAngle()));// + threeWheelOdom.getPosition()->getTheta());
+			Vector driveVector = Vector(new Pronounce::Point(leftX, leftY));
+			if (driverMode == 1) {
+				driveVector.setAngle(driveVector.getAngle());
+			}
+			else {
+				driveVector.setAngle(driveVector.getAngle() + toRadians(imu.get_rotation()));
+			}
 
-		// Send variables to motors
-		drivetrain.setDriveVectorVelocity(driveVector, rightX);
+			// Send variables to motors
+			drivetrain.setDriveVectorVelocity(driveVector, rightX);
+		}
+		else {
+			int leftX = filterAxis(master, ANALOG_LEFT_X);
+			int leftY = filterAxis(master, ANALOG_LEFT_Y);
+			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
+
+			drivetrain.setDriveVectorVelocity(Vector(new Pronounce::Point(leftX, (leftY + rightY) / 2)), leftY - rightY);
+		}
 
 		if (frontGrabberBumperSwitch.get_new_press()) {
 			frontGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 		}
 
-		leftLiftButton.update();
-		rightLiftButton.update();
-		frontGrabberButton.update();
-		backGrabberButton.update();
 		if (master.get_digital_new_press(DIGITAL_X)) {
 			odometry.reset(new Position());
 		}
 
-		odometry.update();
+		if (master.get_digital_new_press(DIGITAL_UP)) {
+			driverMode = 0;
+		}
+		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
+			driverMode = 1;
+		}
+		else if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			driverMode = 2;
+		}
 
 		// Prevent wasted resources
 		pros::delay(10);

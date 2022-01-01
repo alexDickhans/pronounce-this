@@ -20,7 +20,7 @@ namespace Pronounce {
         pros::controller_digital_e_t positiveButton, negativeButton;
 
         bool singleToggle = false;
-        bool retainOnNeutral = true;
+        bool retainOnNeutral = false;
 
     public:
         Button(pros::Controller* cotroller);
@@ -60,6 +60,14 @@ namespace Pronounce {
 
         void setRetainOnNeutral(bool retainOnNeutral) {
             this->retainOnNeutral = retainOnNeutral;
+        }
+
+        bool getAutonomous() {
+            return this->autonomous;
+        }
+
+        void setAutonomous(bool autonomous) {
+            this->autonomous = autonomous;
         }
 
         ~Button();

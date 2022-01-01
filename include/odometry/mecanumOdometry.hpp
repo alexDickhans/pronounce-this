@@ -37,7 +37,7 @@ namespace Pronounce {
             wheel2->reset();
             wheel3->reset();
             wheel4->reset();
-            imu->set_rotation(position->getTheta());
+            // imu->set_rotation(position->getTheta());
         }
 
         /**
