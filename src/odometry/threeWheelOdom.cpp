@@ -14,7 +14,7 @@ namespace Pronounce {
     void ThreeWheelOdom::update() {
         //Plane adjustment toggle
         bool planeAdjustment = getPlaneAdjustment();
-        if (this->imu != nullptr){
+        if (planeAdjustment && imu != nullptr){
             planeAdjustment = false;
             setPlaneAdjustment(false);
         }
