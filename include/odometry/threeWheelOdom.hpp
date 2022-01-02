@@ -12,6 +12,7 @@ namespace Pronounce
         OdomWheel* leftWheel, * rightWheel, * backWheel;
         double leftOffset, rightOffset, backOffset;
         pros::Imu* imu;
+        bool planeAdjustment;
     public:
         ThreeWheelOdom();
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel,pros::Imu* imu);
@@ -25,7 +26,7 @@ namespace Pronounce
             this->rightWheel->reset();
             this->backWheel->reset();
         }
-
+        
         double getLeftOffset() {
             return leftOffset;
         }
@@ -78,8 +79,12 @@ namespace Pronounce
             this->imu = imu;
         }
 
-        getIMU(){
-            return imu;
+        bool getPlaneAdjustment(){
+            return planeAdjustment;
+        }
+
+        void setPlaneAdjustment(bool planeAdjust){
+            this->planeAdjustment = planeAdjust;
         }
 
         ~ThreeWheelOdom();

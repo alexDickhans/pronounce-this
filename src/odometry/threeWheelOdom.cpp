@@ -13,7 +13,11 @@ namespace Pronounce {
 
     void ThreeWheelOdom::update() {
         //Plane adjustment toggle
-        bool planeAdjustment = true;
+        bool planeAdjustment = getPlaneAdjustment();
+        if (this->imu != nullptr){
+            planeAdjustment = false;
+            setPlaneAdjustment(false);
+        }
 
         // Update the wheel positions
         leftWheel->update();
@@ -40,11 +44,11 @@ namespace Pronounce {
         //Calculate the difference between the plane the robot is on and the flat plane and change that
         if (planeAdjustment){
             //Formula doesn't work if pitch or roll are 0
-            if (this->imu->getRoll() != 0 && this->imu->getPitch() != 0){
-                localOffset.scale(cos(asin(sin(abs(this->imu->getRoll()))*sin(abs(this->imu->getPitch())))));
+            if (this->imu->get_roll() != 0 && this->imu->get_pitch() != 0){
+                localOffset.scale(cos(asin(sin(abs(this->imu->get_roll()))*sin(abs(this->imu->get_pitch())))));
             //Just Pitch without roll
-            }else (this->imu->getPitch() != 0){
-                localOffset.scale(cos(this->imu->getPitch()));
+            }else (this->imu->get_pitch() != 0){
+                localOffset.scale(cos(this->imu->get_pitch()));
             }
         }
         // Rotate vector
