@@ -47,6 +47,7 @@
  * User defined imports
  */
 
+#include "autoPaths.hpp"
 #include "defines.h"
 
 // Auton

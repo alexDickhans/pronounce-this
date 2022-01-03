@@ -46,7 +46,7 @@ namespace Pronounce {
 		robotRelativeLookaheadVector.rotate(-currentPosition->getTheta());
 
 		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
-		double signedCurvature = (2 * xDistance) / pow(lookahead, 2);
+		double signedCurvature = (2 * xDistance) / pow(lookaheadVector.getMagnitude(), 2);
 
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;
