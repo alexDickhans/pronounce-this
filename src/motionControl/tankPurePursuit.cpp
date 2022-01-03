@@ -1,15 +1,15 @@
 #include "tankPurePursuit.hpp"
 
 namespace Pronounce {
-	TankPurePursuit::TankPurePursuit(TankDrivetrain* drivetrain) : PurePursuit() {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain) : PurePursuit() {
 		this->drivetrain = drivetrain;
 	}
 
-	TankPurePursuit::TankPurePursuit(TankDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 
-	TankPurePursuit::TankPurePursuit(TankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 

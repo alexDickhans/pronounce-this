@@ -18,6 +18,9 @@
 #include "src/utils/runningAverage.cpp"
 #include "include/utils/utils.hpp"
 #include "src/utils/utils.cpp"
+#include "include/utils/position.hpp"
+#include "src/utils/position.cpp"
+
 
 using namespace Pronounce;
 

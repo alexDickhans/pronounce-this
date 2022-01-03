@@ -54,6 +54,7 @@
 #include "auton/autonSelector.hpp"
 
 // Chassis
+#include "chassis/abstractDrivetrain.hpp"
 #include "chassis/drivetrain.hpp"
 #include "chassis/mecanumDrivetrain.hpp"
 #include "chassis/omniDrivetrain.hpp"

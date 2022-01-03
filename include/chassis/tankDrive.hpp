@@ -2,12 +2,13 @@
 
 #include "api.h"
 #include "drivetrain.hpp"
+#include "abstractTankDrivetrain.hpp"
 #include "utils/motorGroup.hpp"
 
 namespace Pronounce {
-	class TankDrivetrain : public Drivetrain {
+	class TankDrivetrain : public AbstractTankDrivetrain, public Drivetrain {
 	private:
-		double trackWidth;
+
 	public:
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
@@ -22,14 +23,6 @@ namespace Pronounce {
 		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
 			this->getLeftMotors().move_velocity(leftSpeed);
 			this->getRightMotors().move_velocity(rightSpeed);
-		}
-
-		double getTrackWidth() {
-			return this->trackWidth;
-		}
-
-		void setTrackWidth(double trackWidth) {
-			this->trackWidth = trackWidth;
 		}
 
 		~TankDrivetrain();
