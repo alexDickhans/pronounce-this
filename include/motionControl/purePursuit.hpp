@@ -20,6 +20,7 @@ namespace Pronounce {
 	struct PurePursuitPointData {
 		Point lookaheadPoint;
 		Vector lookaheadVector;
+		Vector localLookaheadVector;
 		Vector normalizedLookaheadVector;
 		double curvature;
 	};

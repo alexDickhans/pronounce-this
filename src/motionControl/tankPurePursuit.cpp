@@ -22,6 +22,12 @@ namespace Pronounce {
 		PurePursuitPointData pointData = this->getPointData();
 		printf("Curvature pointdata: %f\n", this->getPointData().curvature);
 
+		pointData.localLookaheadVector.normalize();
+
+		double dotProduct = pointData.localLookaheadVector.dot(Vector(1, 0));
+
+		double speed = this->getSpeed() * dotProduct;
+
 		// Drive backwards
 		if (inverted) {
 			pointData.curvature = -pointData.curvature;

@@ -214,6 +214,10 @@ int main() {
 
 	int loopcount = 0;
 
+	Vector vector(1, 0);
+
+	printf("%f\n", vector.getCartesian().getX());
+
 	// Create path
 	std::vector<Path> paths = std::vector<Path>();
 

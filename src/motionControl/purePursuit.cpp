@@ -50,6 +50,7 @@ namespace Pronounce {
 
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;
+		this->pointData.localLookaheadVector = robotRelativeLookaheadVector;
 		this->pointData.normalizedLookaheadVector = normalizedLookaheadVector;
 		this->pointData.curvature = signedCurvature;
     }
