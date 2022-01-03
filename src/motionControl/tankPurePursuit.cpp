@@ -21,7 +21,10 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 		printf("Curvature pointdata: %f\n", this->getPointData().curvature);
+
+		// Drive backwards
 		if (inverted) {
+			pointData.curvature = -pointData.curvature;
 			drivetrain->tankSteerVelocity(-speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), -speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
 		} else {
 			drivetrain->tankSteerVelocity(speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
