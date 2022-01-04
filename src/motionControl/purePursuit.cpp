@@ -3,6 +3,7 @@
 namespace Pronounce {
     PurePursuit::PurePursuit() {
         this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->paths = std::vector<Path>();
 		this->odometry = new Odometry();
     }
 
@@ -12,6 +13,7 @@ namespace Pronounce {
 
 	PurePursuit::PurePursuit(Odometry* odometry, double lookahead) {
 		this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->paths = std::vector<Path>();
 		this->odometry = odometry;
 		this->lookahead = lookahead;
 	}

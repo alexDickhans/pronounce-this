@@ -26,7 +26,7 @@ namespace Pronounce {
 
 		double dotProduct = pointData.localLookaheadVector.dot(Vector(1, 0));
 
-		double speed = this->getSpeed();// * dotProduct;
+		double speed = this->getSpeed() * dotProduct;
 		
 		bool inverted = signum_c(speed);
 
