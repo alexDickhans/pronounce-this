@@ -28,23 +28,5 @@ namespace Pronounce {
 		}
 
 		~SimOdometry();
-	};
-	
-	SimOdometry::SimOdometry() {
-		this->drivetrain = new SimDrivetrain();
-		this->reset(new Position());
-	}
-
-	SimOdometry::SimOdometry(SimDrivetrain* drivetrain) {
-		this->drivetrain = drivetrain;
-		this->reset(new Position());
-	}
-
-	void SimOdometry::update() {
-		this->getPosition()->operator=(this->getDrivetrain()->getPosition());
-	}
-	
-	SimOdometry::~SimOdometry() {
-	}
-	
+	};	
 } // namespace Pronounce

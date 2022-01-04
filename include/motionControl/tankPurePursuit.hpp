@@ -1,9 +1,8 @@
 #pragma once
 
-#include "api.h"
 #include "purePursuit.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
-#include <algorithm>
+#include <iostream>
 
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {

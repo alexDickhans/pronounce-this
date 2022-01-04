@@ -1,2 +1,2 @@
-g++ pathTest.cpp -opathTest -lgraph -Iinclude/utils/
+g++ pathTest.cpp -opathTest -lgraph -Iinclude/ -Iinclude/utils/ -Iinclude/chassis/ -Iinclude/odometry/ -Iinclude/motionControl/ -Iinclude/pid/
 ./pathTest

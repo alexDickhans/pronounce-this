@@ -3,6 +3,7 @@
 #include "abstractTankDrivetrain.hpp"
 #include "simDrivetrain.hpp"
 #include "utils/vector.hpp"
+#include "utils/utils.hpp"
 #include <algorithm>
 
 namespace Pronounce {
@@ -12,6 +13,7 @@ namespace Pronounce {
 		double maxSpeed;
 		double leftVelocity = 0.0, rightVelocity = 0.0;
 		double leftVelocityTarget = 0.0, rightVelocityTarget = 0.0;
+		double leftDistance = 0.0, rightDistance = 0.0;
 	public:
 		SimTankDrivetrain();
 		SimTankDrivetrain(double trackWidth);

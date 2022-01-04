@@ -14,7 +14,8 @@ namespace Pronounce {
 	}
 
 	void SimTankDrivetrain::update() {
-		SimDrivetrain::update();
+
+		Position* oldPosition = this->getPosition();
 		
 		// Update the wheel velocities
 		double leftChange = std::clamp(leftVelocityTarget - leftVelocity, -maxAcceleration, maxAcceleration);
@@ -24,16 +25,24 @@ namespace Pronounce {
 		rightVelocity = std::clamp(rightVelocity + rightChange, -maxSpeed, maxSpeed);
 
 		// Calculate the local offset
-		double offset = (leftVelocity + rightVelocity) / 2;
-		double angle = (rightVelocity - leftVelocity) / this->getTrackWidth();
+		double offset = (leftVelocity + rightVelocity) / 2.0;
+		double angle = (leftVelocity - rightVelocity) / this->getTrackWidth();
+
+		leftDistance += leftVelocity;
+		rightDistance += rightVelocity;
+
+		double relativeAngle = (leftDistance - rightDistance) / this->getTrackWidth();
 
 		// Calculate a vector
-		Vector localOffset(offset, angle);
+		Vector localOffset(offset, relativeAngle);
 
-		// Update the position
-		this->getPosition()->add(localOffset.getCartesian());
+		Position* newPosition = new Position();
+		newPosition->operator=(oldPosition);
+		
+		newPosition->add(localOffset.getCartesian());
+		newPosition->setTheta(relativeAngle);
 
-		this->getPosition()->setTheta(this->getPosition()->getTheta() + angle);
+		this->setPosition(newPosition);
 	}
 	
 	SimTankDrivetrain::~SimTankDrivetrain() {

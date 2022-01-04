@@ -20,13 +20,15 @@ namespace Pronounce {
 		}
 
 		PurePursuitPointData pointData = this->getPointData();
-		printf("Curvature pointdata: %f\n", this->getPointData().curvature);
+		std::cout << "Curvature pointdata: " << this->getPointData().curvature << std::endl;
 
 		pointData.localLookaheadVector.normalize();
 
 		double dotProduct = pointData.localLookaheadVector.dot(Vector(1, 0));
 
-		double speed = this->getSpeed() * dotProduct;
+		double speed = this->getSpeed();// * dotProduct;
+		
+		bool inverted = signum_c(speed);
 
 		// Drive backwards
 		if (inverted) {

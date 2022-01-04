@@ -28,8 +28,8 @@ namespace Pronounce {
 
         // Calculate the change in orientation
         double lastAngle = lastPosition->getTheta();
-        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (rightOffset + rightOffset);
-        double angleChange = angleDifference(currentAngle, lastAngle); // fmod(currentAngle + M_PI * 2, M_PI * 2) - fmod(lastAngle + M_PI * 2, M_PI * 2);
+        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
+        double angleChange = angleDifference(currentAngle, lastAngle);
         double averageOrientation = lastAngle + (angleChange / 2);
 
         // Calculate the local offset then translate it to the global offset
