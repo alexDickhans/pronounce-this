@@ -5,6 +5,7 @@
 #include "utils/vector.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
+#include <iostream>
 
 namespace Pronounce {
 	class SimTankDrivetrain : public AbstractTankDrivetrain, public SimDrivetrain {

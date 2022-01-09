@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <cmath>
+#include <algorithm>
 
 namespace Pronounce
 {
@@ -28,6 +29,8 @@ namespace Pronounce
 	double clamp(double value, double min, double max) {
 		return std::min(std::max(value, min), max);
 	}
+#else
+	using std::clamp;
 #endif // SIM
 
 	template<typename ... Args>

@@ -18,29 +18,32 @@ namespace Pronounce {
 		Position* oldPosition = this->getPosition();
 		
 		// Update the wheel velocities
-		double leftChange = std::clamp(leftVelocityTarget - leftVelocity, -maxAcceleration, maxAcceleration);
-		double rightChange = std::clamp(rightVelocityTarget - rightVelocity, -maxAcceleration, maxAcceleration);
+		double leftChange = clamp(leftVelocityTarget - leftVelocity, -maxAcceleration, maxAcceleration);
+		double rightChange = clamp(rightVelocityTarget - rightVelocity, -maxAcceleration, maxAcceleration);
 
-		leftVelocity = std::clamp(leftVelocity + leftChange, -maxSpeed, maxSpeed);
-		rightVelocity = std::clamp(rightVelocity + rightChange, -maxSpeed, maxSpeed);
+		leftVelocity = clamp(leftVelocity + leftChange, -maxSpeed, maxSpeed);
+		rightVelocity = clamp(rightVelocity + rightChange, -maxSpeed, maxSpeed);
 
 		// Calculate the local offset
 		double offset = (leftVelocity + rightVelocity) / 2.0;
-		double angle = (leftVelocity - rightVelocity) / this->getTrackWidth();
+		double angle = (rightVelocity - leftVelocity) / this->getTrackWidth();
 
 		leftDistance += leftVelocity;
 		rightDistance += rightVelocity;
 
-		double relativeAngle = (leftDistance - rightDistance) / this->getTrackWidth();
+		double relativeAngle = (rightDistance - leftDistance) / this->getTrackWidth();
 
 		// Calculate a vector
-		Vector localOffset(offset, relativeAngle);
+		Vector localOffset(offset, relativeAngle+M_PI_2);
 
 		Position* newPosition = new Position();
 		newPosition->operator=(oldPosition);
 		
 		newPosition->add(localOffset.getCartesian());
-		newPosition->setTheta(relativeAngle);
+		newPosition->setTheta(relativeAngle - (angle / 2.0));
+
+		std::cout << "Left Velocity Target: " << leftVelocityTarget << " Right Velocity Target: " << rightVelocityTarget << std::endl;
+		std::cout << "X: " << newPosition->getX() << " Y: " << newPosition->getY() << " Theta: " << newPosition->getTheta() << std::endl;
 
 		this->setPosition(newPosition);
 	}

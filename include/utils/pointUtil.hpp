@@ -73,6 +73,11 @@ namespace Pronounce {
             this->setY(point.getY());
         }
 
+		void operator=(Point* point) {
+            this->setX(point->getX());
+            this->setY(point->getY());
+        }
+
         void add(Point point) {
             this->setX(this->getX() + point.getX());
             this->setY(this->getY() + point.getY());

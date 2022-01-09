@@ -46,10 +46,6 @@ namespace Pronounce {
 			return;
 		}
 
-        // Print last position
-		printf("Left Change: %f, Right change: %f, Back change %f\n", deltaLeft, deltaRight, deltaBack);
-        printf("Last position: %f, %f, %f\n", lastPosition->getX(), lastPosition->getY(), lastPosition->getTheta());
-
         // Update the position
         this->setPosition(lastPosition);
     }

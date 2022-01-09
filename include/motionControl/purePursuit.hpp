@@ -186,6 +186,14 @@ namespace Pronounce {
 			this->stopDistance = stopDistance;
 		}
 
+		double getLookahead() {
+			return lookahead;
+		}
+
+		void setLookahead(double lookahead) {
+			this->lookahead = lookahead;
+		}
+
 		~PurePursuit();
 	};
 } // Pronounce

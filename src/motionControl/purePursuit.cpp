@@ -40,7 +40,7 @@ namespace Pronounce {
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
         // PID controller behaves the same for different lookahead paths
         double magnitude = lookaheadVector.getMagnitude();
-        double mappedMagnitude = std::clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
+        double mappedMagnitude = clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
 		Vector robotRelativeLookaheadVector = lookaheadVector;

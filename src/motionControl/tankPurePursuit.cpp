@@ -15,28 +15,31 @@ namespace Pronounce {
 
 	void TankPurePursuit::updateDrivetrain() {
 
+		if(!this->isEnabled()) {
+			return;
+		}
+
 		if (isDone(this->getStopDistance())) {
 			return;
 		}
 
 		PurePursuitPointData pointData = this->getPointData();
-		std::cout << "Curvature pointdata: " << this->getPointData().curvature << std::endl;
 
-		pointData.localLookaheadVector.normalize();
+		double side = signum_c(pointData.localLookaheadVector.getCartesian().getY());
 
-		double dotProduct = pointData.localLookaheadVector.dot(Vector(1, 0));
+		double scalar = pointData.lookaheadVector.getMagnitude() / this->getLookahead();
 
-		double speed = this->getSpeed() * dotProduct;
-		
-		bool inverted = signum_c(speed);
+		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
+
+		std::cout << "Curvature: " << pointData.curvature << std::endl;
+		std::cout << "Speed: " << speed << std::endl;
 
 		// Drive backwards
-		if (inverted) {
+		if (speed < 0) {
 			pointData.curvature = -pointData.curvature;
-			drivetrain->tankSteerVelocity(-speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), -speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
-		} else {
-			drivetrain->tankSteerVelocity(speed * ((2 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2), speed * ((2 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2));
 		}
+
+		drivetrain->tankSteerVelocity(speed * ((2.0 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2.0), speed * ((2.0 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2.0));
 	}
 
 	void TankPurePursuit::stop() {

@@ -6,6 +6,8 @@
 
 #include <chrono>
 
+#define SIM 0
+
 #include "include/utils/vector.hpp"
 #include "src/utils/vector.cpp"
 #include "include/utils/pointUtil.hpp"
@@ -57,7 +59,7 @@ int fps = 60;
 
 #define starting_point_random 1
 
-#define PRINT_LIVE true
+#define PRINT_LIVE false
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
@@ -78,9 +80,10 @@ void printRobot(Odometry odometry, double trackWidth) {
 	circle(point->getY() * multiplier, point->getX() * multiplier, 1);
 	circle(point->getY() * multiplier, point->getX() * multiplier, lookahead * multiplier);
 
-	Vector forwardVector(20, point->getTheta());
+	Vector forwardVector(20, point->getTheta() + M_PI_2);
 
 	Point forwardPoint;
+	forwardPoint.operator=(point);
 	forwardPoint.add(Point(forwardVector.getCartesian().getX(), forwardVector.getCartesian().getY()));
 
 	line(point->getY() * multiplier, point->getX() * multiplier, forwardPoint.getY() * multiplier, forwardPoint.getX() * multiplier);
@@ -259,12 +262,14 @@ int main() {
 
 	TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
+	purePursuit.setSpeed(1.0);
+
 	// Test path
 	Path testPath = Path();
 
-	testPath.addPoint(0, 0);
-	testPath.addPoint(0, 24);
-	testPath.addPoint(24, 24);
+	testPath.addPoint(40, 40);
+	testPath.addPoint(40, 64);
+	testPath.addPoint(64, 64);
 
 	testPathIndex = purePursuit.addPath(testPath);
 
@@ -278,8 +283,9 @@ int main() {
 	delay(1000);
 	//printPath(path);
 #endif
-	// Set random robot starting position
-	Position startingPosition(0, 0, -M_PI_2);
+	Position startingPosition(40, 40, -M_PI_2);
+
+	drivetrain.setPosition(&startingPosition);
 
 #if GRAPH
 	std::vector<Point> robotPositions;
