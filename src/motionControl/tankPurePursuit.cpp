@@ -25,16 +25,20 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double side = clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1, 1);
+		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1.0, 1.0))) * signum_c(pointData.localLookaheadVector.getCartesian().getY());
 
-		side = side < 0.3 ? 1 : side;
+		side = side < 0.5 ? 1.0 : side;
 
-		double scalar = pointData.lookaheadVector.getMagnitude() / this->getLookahead();
+		// Redundant scalar, could be used in the future
+		// Found that using the Y values got the same affect when this was wanted and a better affect when it wasn't
+		// Using the same equation with Y instead.
+		// Time difference on test path(In sim)
+		// Before change: 3.4667
+		// After change: 3.08
+		// 12% improvement, mostly in speed up and slow down.
+		double scalar = 1; // pointData.lookaheadVector.getMagnitude() / this->getLookahead(); 
 
 		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
-
-		std::cout << "Curvature: " << pointData.curvature << std::endl;
-		std::cout << "Speed: " << speed << std::endl;
 
 		// Drive backwards
 		if (speed < 0) {

@@ -1,8 +1,8 @@
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
-#include<stdlib.h>
-#include<graphics.h>
+#include <stdlib.h>
+#include <graphics.h>
 
 #include <chrono>
 
@@ -50,6 +50,7 @@ using namespace Pronounce;
 int testPathIndex;
 
 int fps = 60;
+double playbackMultiplier = 0.5;
 
 #define xOffset 30
 #define yOffset 30
@@ -306,9 +307,9 @@ int main() {
 
 	QuadraticSplinePath quadraticSplineTestPath = QuadraticSplinePath();
 
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(24.0, 24.0), Vector(0.0, 50.0)));
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(70.3, 70.3), Vector(0.0, 50.0)));
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(24, 120.3), Vector(0.0, 50.0)));
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(24.0, 24.0), Vector(30.0, 0.0)));
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(70.3, 70.3), Vector(30.0, 0.0)));
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(24, 120.3), Vector(30.0, 0.0)));
 
 	testPathIndex = purePursuit.addPath(quadraticSplineTestPath.getPath(0.1));
 
@@ -375,12 +376,12 @@ int main() {
 			line(odometry.getPosition()->getY() * multiplier, odometry.getPosition()->getX() * multiplier, purePursuit.getPointData().lookaheadPoint.getY() * multiplier, purePursuit.getPointData().lookaheadPoint.getX() * multiplier);
 			printRobot(odometry, 15, purePursuit.getPointData().curvature);
 
-			delay(1000/fps);
+			delay(1000/fps/playbackMultiplier);
 #endif // PRINT_LIVE
 
 			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
-			if (loopcount > 2*fps * purePursuit.getPaths().size()) {
+			if (loopcount > 5*fps * purePursuit.getPaths().size()) {
 				break;
 			}
 		}
@@ -411,7 +412,7 @@ int main() {
 	printRobot(odometry, 15, purePursuit.getPointData().curvature);
 
 	// Print loopcount
-	std::cout << "Loopcount: " << loopcount << std::endl;
+	std::cout << "Time: " << loopcount/(double) fps << std::endl;
 
 	delay(500000);
 	closegraph();

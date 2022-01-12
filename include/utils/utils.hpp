@@ -29,7 +29,12 @@ namespace Pronounce
 	double clamp(double value, double min, double max) {
 		return std::min(std::max(value, min), max);
 	}
+
+	double max(double a, double b) {
+		return a > b ? a : b;
+	}
 #else
+	using std::max;
 	using std::clamp;
 #endif // SIM
 

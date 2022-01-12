@@ -1,6 +1,7 @@
 #pragma once
 
 #include "abstractDrivetrain.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce {
 	class AbstractTankDrivetrain : public AbstractDrivetrain {
@@ -22,7 +23,7 @@ namespace Pronounce {
 			double leftSpeed = speed * (2 - curvature * trackWidth) / 2;
 			double rightSpeed = speed * (2 + curvature * trackWidth) / 2;
 
-			double maxSpeed = std::max(leftSpeed, rightSpeed);
+			double maxSpeed = max(leftSpeed, rightSpeed);
 
 			if (maxSpeed > speed) {
 				double multiplier = speed / maxSpeed;

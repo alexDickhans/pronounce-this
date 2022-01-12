@@ -50,13 +50,6 @@ namespace Pronounce {
 		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
 		double signedCurvature = (2 * xDistance) / pow(lookaheadVector.getMagnitude(), 2);
 
-		std::cout << "X Distance: " << xDistance << std::endl;
-		std::cout << "Y Distance: " << robotRelativeLookaheadVector.getCartesian().getY() << std::endl;
-		std::cout << "Angle: " << robotRelativeLookaheadVector.getAngle() << std::endl;
-		std::cout << "Lookahead Angle: " << lookaheadVector.getAngle() << std::endl;
-		std::cout << "Other Angle: " << robotRelativeLookaheadVector.getAngle() + currentPosition->getTheta() << std::endl;
-		std::cout << "Robot Angle: " << currentPosition->getTheta() << std::endl;
-
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;
 		this->pointData.localLookaheadVector = robotRelativeLookaheadVector;

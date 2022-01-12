@@ -3,6 +3,7 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
+#include <iostream>
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"

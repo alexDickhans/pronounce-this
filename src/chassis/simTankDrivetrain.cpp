@@ -41,8 +41,6 @@ namespace Pronounce {
 		
 		newPosition->add(localOffset.getCartesian());
 		newPosition->setTheta(relativeAngle - (angle / 2.0));
-		
-		std::cout << "X: " << newPosition->getX() << " Y: " << newPosition->getY() << " Theta: " << newPosition->getTheta() << std::endl;
 
 		this->setPosition(newPosition);
 	}
