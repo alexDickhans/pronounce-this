@@ -81,8 +81,6 @@ int preAutonRun() {
 
 	pros::Task flipOutTask(flipOut);
 
-	printf("Array size: %d\n", purePursuit.getPaths().size());
-
 	return 0;
 }
 

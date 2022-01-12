@@ -18,6 +18,21 @@ namespace Pronounce {
 			this->trackWidth = trackWidth;
 		}
 
+		void driveCurvature(double speed, double curvature) {
+			double leftSpeed = speed * (2 - curvature * trackWidth) / 2;
+			double rightSpeed = speed * (2 + curvature * trackWidth) / 2;
+
+			double maxSpeed = std::max(leftSpeed, rightSpeed);
+
+			if (maxSpeed > speed) {
+				double multiplier = speed / maxSpeed;
+				leftSpeed *= multiplier;
+				rightSpeed *= multiplier;
+			}
+
+			this->tankSteerVelocity(leftSpeed, rightSpeed);
+		}
+
 		virtual void skidSteerVelocity(double speed, double turn) {}
 
 		virtual void tankSteerVelocity(double leftSpeed, double rightSpeed) {}

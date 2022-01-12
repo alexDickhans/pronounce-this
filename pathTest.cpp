@@ -59,7 +59,9 @@ int fps = 60;
 
 #define starting_point_random 1
 
-#define PRINT_LIVE false
+// ANCHOR Printing variables
+
+#define PRINT_LIVE true
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
@@ -87,6 +89,31 @@ void printRobot(Odometry odometry, double trackWidth) {
 	forwardPoint.add(Point(forwardVector.getCartesian().getX(), forwardVector.getCartesian().getY()));
 
 	line(point->getY() * multiplier, point->getX() * multiplier, forwardPoint.getY() * multiplier, forwardPoint.getX() * multiplier);
+}
+
+void printRobot(Odometry odometry, double trackWidth, double curvature) {
+	printRobot(odometry, trackWidth);
+
+	setcolor(GREEN);
+
+	double radius = 1.0/curvature;
+
+	if (abs(radius) > 100) {
+		return;
+	}
+
+	Vector curvatureVector(radius, odometry.getPosition()->getTheta());
+
+	// Make sure the radius is positive
+	radius = abs(radius);
+
+	Point curvaturePoint;
+	curvaturePoint.operator=(odometry.getPosition());
+	curvaturePoint.add(curvatureVector.getCartesian());
+
+	circle(curvaturePoint.getY() * multiplier, curvaturePoint.getX() * multiplier, radius * multiplier);
+
+	setcolor(BLACK);
 }
 
 void printPath(Path path) {
@@ -262,16 +289,29 @@ int main() {
 
 	TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
 
+	double trackWidth = drivetrain.getTrackWidth(); 
+
 	purePursuit.setSpeed(1.0);
 
 	// Test path
-	Path testPath = Path();
+	/*
+	SplinePath testPath = SplinePath();
 
 	testPath.addPoint(40, 40);
 	testPath.addPoint(40, 64);
 	testPath.addPoint(64, 64);
 
-	testPathIndex = purePursuit.addPath(testPath);
+	testPathIndex = purePursuit.addPath(testPath.getPath(0.1));
+	*/
+
+	QuadraticSplinePath quadraticSplineTestPath = QuadraticSplinePath();
+
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(24.0, 24.0), Vector(0.0, 50.0)));
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(70.3, 70.3), Vector(0.0, 50.0)));
+	quadraticSplineTestPath.addPoint(SplinePoint(Point(24, 120.3), Vector(0.0, 50.0)));
+
+	testPathIndex = purePursuit.addPath(quadraticSplineTestPath.getPath(0.1));
+
 
 #if GRAPH
 	int gd = DETECT, gm;
@@ -283,7 +323,7 @@ int main() {
 	delay(1000);
 	//printPath(path);
 #endif
-	Position startingPosition(40, 40, -M_PI_2);
+	Position startingPosition(24, 24, 0);
 
 	drivetrain.setPosition(&startingPosition);
 
@@ -293,6 +333,8 @@ int main() {
 #endif
 
 	purePursuit.setEnabled(true);
+
+	double curvature = 0.1;
 
 	// Loop through paths
 	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
@@ -308,6 +350,7 @@ int main() {
 			loopcount++;
 
 			odometry.update();
+			//drivetrain.driveCurvature(1, (1.0 / 24.0));
 			purePursuit.update();
 			drivetrain.update();
 
@@ -330,7 +373,7 @@ int main() {
 			setcolor(LIGHTGRAY);
 			setlinestyle(SOLID_LINE, 5, 2);
 			line(odometry.getPosition()->getY() * multiplier, odometry.getPosition()->getX() * multiplier, purePursuit.getPointData().lookaheadPoint.getY() * multiplier, purePursuit.getPointData().lookaheadPoint.getX() * multiplier);
-			printRobot(odometry, 15);
+			printRobot(odometry, 15, purePursuit.getPointData().curvature);
 
 			delay(1000/fps);
 #endif // PRINT_LIVE
@@ -343,6 +386,8 @@ int main() {
 		}
 	}
 #if GRAPH
+
+	cleardevice();
 
 	printField();
 
@@ -361,6 +406,9 @@ int main() {
 
 	setcolor(LIGHTGRAY);
 	printPath(robotPositions);
+
+	line(odometry.getPosition()->getY() * multiplier, odometry.getPosition()->getX() * multiplier, purePursuit.getPointData().lookaheadPoint.getY() * multiplier, purePursuit.getPointData().lookaheadPoint.getX() * multiplier);
+	printRobot(odometry, 15, purePursuit.getPointData().curvature);
 
 	// Print loopcount
 	std::cout << "Loopcount: " << loopcount << std::endl;

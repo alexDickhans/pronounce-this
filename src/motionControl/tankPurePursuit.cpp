@@ -15,7 +15,7 @@ namespace Pronounce {
 
 	void TankPurePursuit::updateDrivetrain() {
 
-		if(!this->isEnabled()) {
+		if (!this->isEnabled()) {
 			return;
 		}
 
@@ -25,7 +25,9 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double side = signum_c(pointData.localLookaheadVector.getCartesian().getY());
+		double side = clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1, 1);
+
+		side = side < 0.3 ? 1 : side;
 
 		double scalar = pointData.lookaheadVector.getMagnitude() / this->getLookahead();
 
@@ -39,7 +41,7 @@ namespace Pronounce {
 			pointData.curvature = -pointData.curvature;
 		}
 
-		drivetrain->tankSteerVelocity(speed * ((2.0 + pointData.curvature * this->drivetrain->getTrackWidth()) / 2.0), speed * ((2.0 - pointData.curvature * this->drivetrain->getTrackWidth()) / 2.0));
+		drivetrain->driveCurvature(speed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {

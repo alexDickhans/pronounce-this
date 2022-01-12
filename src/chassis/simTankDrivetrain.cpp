@@ -31,7 +31,7 @@ namespace Pronounce {
 		leftDistance += leftVelocity;
 		rightDistance += rightVelocity;
 
-		double relativeAngle = (rightDistance - leftDistance) / this->getTrackWidth();
+		double relativeAngle = (leftDistance - rightDistance) / this->getTrackWidth();
 
 		// Calculate a vector
 		Vector localOffset(offset, relativeAngle+M_PI_2);
@@ -41,8 +41,7 @@ namespace Pronounce {
 		
 		newPosition->add(localOffset.getCartesian());
 		newPosition->setTheta(relativeAngle - (angle / 2.0));
-
-		std::cout << "Left Velocity Target: " << leftVelocityTarget << " Right Velocity Target: " << rightVelocityTarget << std::endl;
+		
 		std::cout << "X: " << newPosition->getX() << " Y: " << newPosition->getY() << " Theta: " << newPosition->getTheta() << std::endl;
 
 		this->setPosition(newPosition);
