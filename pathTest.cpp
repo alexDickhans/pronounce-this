@@ -53,7 +53,7 @@ int rightHomeZoneToRightAllianceIndex;
 int rightAllianceToRightRingsIndex;
 
 int fps = 60;
-double playbackMultiplier = 0.5;
+double playbackMultiplier = 1;
 
 #define xOffset 30
 #define yOffset 30
