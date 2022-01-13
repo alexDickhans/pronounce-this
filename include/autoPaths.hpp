@@ -34,10 +34,10 @@ namespace Pronounce {
 	int nearPlatformViaLeftNeutralToFarPlatformIndex;
 	int nearPlatformToMidIndex;
 
-	void autoPaths(PurePursuit purePursuit) {
+	void autoPaths(PurePursuit* purePursuit) {
 		// Default pure pursuit profile
 		PurePursuitProfile defaultProfile(new PID(20, 0.0, 2.0), new PID(60.0, 0.0, 5.0), 10.0);
-		purePursuit.getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
+		purePursuit->getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
 
 		// Test path
 		Path testPath = Path();
@@ -49,14 +49,14 @@ namespace Pronounce {
 		testPath.addPoint(-24, 48);
 		testPath.addPoint(0, 24);
 
-		testPathIndex = purePursuit.addPath(testPath);
+		testPathIndex = purePursuit->addPath(testPath);
 
 		Path rightNeutralToRightHomeZone;
 
 		rightNeutralToRightHomeZone.addPoint(105.7, 60);
 		rightNeutralToRightHomeZone.addPoint(105.7, 16);
 
-		rightNeutralToRightHomeIndex = purePursuit.addPath(rightNeutralToRightHomeZone);
+		rightNeutralToRightHomeIndex = purePursuit->addPath(rightNeutralToRightHomeZone);
 
 		// Right Steal Right
 		Path rightHomeToGoalNeutral;
@@ -64,50 +64,50 @@ namespace Pronounce {
 		rightHomeToGoalNeutral.addPoint(105.7, 16);
 		rightHomeToGoalNeutral.addPoint(105.7, 61);
 
-		rightHomeToGoalNeutralIndex = purePursuit.addPath(rightHomeToGoalNeutral);
+		rightHomeToGoalNeutralIndex = purePursuit->addPath(rightHomeToGoalNeutral);
 
-		Path rightNeutralToMidNeutral;
+		SplinePath rightNeutralToMidNeutral;
 
 		rightNeutralToMidNeutral.addPoint(105.7, 62);
 		rightNeutralToMidNeutral.addPoint(75.3, 40);
 		rightNeutralToMidNeutral.addPoint(60.3, 65);
 
-		rightNeutralToMidNeutralIndex = purePursuit.addPath(rightNeutralToMidNeutral);
+		rightNeutralToMidNeutralIndex = purePursuit->addPath(rightNeutralToMidNeutral.getPath(0.1));
 
 		Path midNeutralToRightAlliance;
 
 		midNeutralToRightAlliance.addPoint(70.3, 65);
 		midNeutralToRightAlliance.addPoint(120.1, 28);
 
-		midNeutralToRightAllianceIndex = purePursuit.addPath(midNeutralToRightAlliance);
+		midNeutralToRightAllianceIndex = purePursuit->addPath(midNeutralToRightAlliance);
 
 		Path midNeutralToMidHomeZone;
 
 		midNeutralToMidHomeZone.addPoint(70.3, 70.3);
 		midNeutralToMidHomeZone.addPoint(70.3, 36);
 
-		midNeutralToMidHomeZoneIndex = purePursuit.addPath(midNeutralToMidHomeZone);
+		midNeutralToMidHomeZoneIndex = purePursuit->addPath(midNeutralToMidHomeZone);
 
 		Path farRightHomeZoneToRightAlliance;
 
 		farRightHomeZoneToRightAlliance.addPoint(127.9, 16);
 		farRightHomeZoneToRightAlliance.addPoint(127.9, 24);
 
-		farRightHomeZoneToRightAllianceIndex = purePursuit.addPath(farRightHomeZoneToRightAlliance);
+		farRightHomeZoneToRightAllianceIndex = purePursuit->addPath(farRightHomeZoneToRightAlliance);
 
 		Path rightAllianceToRightHomeZone;
 
 		rightAllianceToRightHomeZone.addPoint(127.9, 24);
 		rightAllianceToRightHomeZone.addPoint(105.7, 16);
 
-		rightAllianceToRightHomeZoneIndex = purePursuit.addPath(rightAllianceToRightHomeZone);
+		rightAllianceToRightHomeZoneIndex = purePursuit->addPath(rightAllianceToRightHomeZone);
 
 		Path leftAllianceToLeftNeutral;
 
 		leftAllianceToLeftNeutral.addPoint(29, 11.4);
 		leftAllianceToLeftNeutral.addPoint(32, 67);
 
-		leftAllianceToLeftNeutralIndex = purePursuit.addPath(leftAllianceToLeftNeutral);
+		leftAllianceToLeftNeutralIndex = purePursuit->addPath(leftAllianceToLeftNeutral);
 
 		Path leftNeutralToMidNeutral;
 
@@ -115,7 +115,7 @@ namespace Pronounce {
 		leftNeutralToMidNeutral.addPoint(65.3, 40);
 		leftNeutralToMidNeutral.addPoint(70.3, 65);
 
-		leftNeutralToMidNeutralIndex = purePursuit.addPath(leftNeutralToMidNeutral);
+		leftNeutralToMidNeutralIndex = purePursuit->addPath(leftNeutralToMidNeutral);
 
 		// mid neutral to mid home zone
 
@@ -126,7 +126,7 @@ namespace Pronounce {
 		rightNeutralToFarPlatform.addPoint(75, 100);
 		rightNeutralToFarPlatform.addPoint(60.3, 115);
 
-		rightNeutralToFarPlatformIndex = purePursuit.addPath(rightNeutralToFarPlatform);
+		rightNeutralToFarPlatformIndex = purePursuit->addPath(rightNeutralToFarPlatform);
 
 		Path farPlatformToNearPlatform;
 
@@ -136,7 +136,7 @@ namespace Pronounce {
 		farPlatformToNearPlatform.addPoint(58.6, 45);
 		farPlatformToNearPlatform.addPoint(70.3, 30.7);
 
-		farPlatformToNearPlatformIndex = purePursuit.addPath(farPlatformToNearPlatform);
+		farPlatformToNearPlatformIndex = purePursuit->addPath(farPlatformToNearPlatform);
 
 		Path nearPlatformViaLeftNeutralToFarPlatform;
 
@@ -144,14 +144,16 @@ namespace Pronounce {
 		nearPlatformViaLeftNeutralToFarPlatform.addPoint(35, 61);
 		nearPlatformViaLeftNeutralToFarPlatform.addPoint(70.3, 115);
 
-		nearPlatformViaLeftNeutralToFarPlatformIndex = purePursuit.addPath(nearPlatformViaLeftNeutralToFarPlatform);
+		nearPlatformViaLeftNeutralToFarPlatformIndex = purePursuit->addPath(nearPlatformViaLeftNeutralToFarPlatform);
 
 		Path nearPlatformToMid;
 
 		nearPlatformToMid.addPoint(70.3, 115);
 		nearPlatformToMid.addPoint(70.3, 70.3);
 
-		nearPlatformToMidIndex = purePursuit.addPath(nearPlatformToMid);
+		nearPlatformToMidIndex = purePursuit->addPath(nearPlatformToMid);
+
+		printf("Array size: %d\n", purePursuit->getPaths().size());
 	}
 
 } // Namespace Prononce

@@ -3,6 +3,7 @@
 namespace Pronounce {
     PurePursuit::PurePursuit() {
         this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->paths = std::vector<Path>();
 		this->odometry = new Odometry();
     }
 
@@ -12,6 +13,7 @@ namespace Pronounce {
 
 	PurePursuit::PurePursuit(Odometry* odometry, double lookahead) {
 		this->setPurePursuitProfileManager(PurePursuitProfileManager());
+		this->paths = std::vector<Path>();
 		this->odometry = odometry;
 		this->lookahead = lookahead;
 	}
@@ -38,18 +40,19 @@ namespace Pronounce {
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
         // PID controller behaves the same for different lookahead paths
         double magnitude = lookaheadVector.getMagnitude();
-        double mappedMagnitude = std::clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
+        double mappedMagnitude = clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
-		Vector robotRelativeLookaheadVector = lookaheadVector;
+		Vector robotRelativeLookaheadVector(&currentPoint, &lookaheadPoint);
 		
-		robotRelativeLookaheadVector.rotate(-currentPosition->getTheta());
+		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() - currentPosition->getTheta());
 
 		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
 		double signedCurvature = (2 * xDistance) / pow(lookaheadVector.getMagnitude(), 2);
 
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;
+		this->pointData.localLookaheadVector = robotRelativeLookaheadVector;
 		this->pointData.normalizedLookaheadVector = normalizedLookaheadVector;
 		this->pointData.curvature = signedCurvature;
     }

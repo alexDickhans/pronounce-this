@@ -38,7 +38,7 @@ ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 15.0);
 
-Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 10);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 20);
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
@@ -99,7 +99,7 @@ int rightStealRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -113,11 +113,11 @@ int rightStealRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 	pros::Task::delay(500);
 
 	purePursuit.setCurrentPathIndex(midNeutralToMidHomeZoneIndex);
@@ -125,7 +125,7 @@ int rightStealRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -139,7 +139,7 @@ int rightAwpRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -152,7 +152,7 @@ int rightAwpRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -170,7 +170,7 @@ int leftAwpLeft() {
 	purePursuit.setTurnTarget(0);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -183,7 +183,7 @@ int leftAwpLeft() {
 	purePursuit.setTurnTarget(3.14);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -195,7 +195,7 @@ int leftAwpLeft() {
 	purePursuit.setTurnTarget(M_PI_2);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -213,7 +213,7 @@ int skills() {
 	purePursuit.setTurnTarget(0);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -227,7 +227,7 @@ int skills() {
 	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -250,7 +250,7 @@ int skills() {
 	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -273,7 +273,7 @@ int skills() {
 	liftButton.setAutonomousAuthority(1500);
 
 	// Wait until done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -285,7 +285,7 @@ int skills() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
@@ -397,9 +397,9 @@ void initDrivetrain() {
 	printf("Init drivetrain");
 
 	// odometry.setUseImu(true);
-	leftOdomWheel.setRadius(3.25/2);
+	leftOdomWheel.setRadius(3.25 / 2);
 	leftOdomWheel.setTuningFactor(1);
-	rightOdomWheel.setRadius(3.25/2);
+	rightOdomWheel.setRadius(3.25 / 2);
 	rightOdomWheel.setTuningFactor(1);
 	backOdomWheel.setRadius(1.25);
 	backOdomWheel.setTuningFactor(1);
@@ -415,6 +415,7 @@ void initDrivetrain() {
 	odometry.setMaxMovement(1);
 
 	purePursuit.setNormalizeDistance(10);
+	purePursuit.setSpeed(250);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -496,7 +497,7 @@ void initialize() {
 	initSensors();
 	initMotors();
 	initDrivetrain();
-	autoPaths(purePursuit);
+	autoPaths(&purePursuit);
 	initController();
 	initLogger();
 	// initSelector();

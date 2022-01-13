@@ -3,6 +3,7 @@
 #include "path.hpp"
 #include "pointUtil.hpp"
 #include <vector>
+#include <string>
 
 namespace Pronounce {
 	/**
@@ -64,6 +65,17 @@ namespace Pronounce {
 
 		Point getPoint(int i) {
 			return points.at(i);
+		}
+
+		std::string to_string() {
+			std::string str = "";
+			for (int i = 0; i < points.size(); i++) {
+				str += points.at(i).to_string();
+				if (i != points.size() - 1) {
+					str += ", ";
+				}
+			}
+			return str;
 		}
 
 		~SplinePath();

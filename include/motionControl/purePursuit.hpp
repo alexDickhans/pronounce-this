@@ -3,6 +3,7 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
+#include <iostream>
 #include "pid/pid.hpp"
 #include "utils/path.hpp"
 #include "utils/position.hpp"
@@ -20,6 +21,7 @@ namespace Pronounce {
 	struct PurePursuitPointData {
 		Point lookaheadPoint;
 		Vector lookaheadVector;
+		Vector localLookaheadVector;
 		Vector normalizedLookaheadVector;
 		double curvature;
 	};
@@ -183,6 +185,14 @@ namespace Pronounce {
 
 		void setStopDistance(double stopDistance) {
 			this->stopDistance = stopDistance;
+		}
+
+		double getLookahead() {
+			return lookahead;
+		}
+
+		void setLookahead(double lookahead) {
+			this->lookahead = lookahead;
 		}
 
 		~PurePursuit();

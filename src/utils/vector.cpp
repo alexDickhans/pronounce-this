@@ -7,6 +7,10 @@ namespace Pronounce {
     }
 
     Vector::Vector(double magnitude, double angle) {
+		if (magnitude < 0) {
+			this->magnitude = -magnitude;
+			this->angle = angle + M_PI;
+		}
         this->magnitude = magnitude;
         this->angle = angle;
     }

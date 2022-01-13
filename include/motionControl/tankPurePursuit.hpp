@@ -1,31 +1,30 @@
 #pragma once
 
-#include "api.h"
 #include "purePursuit.hpp"
-#include "chassis/tankDrive.hpp"
-#include <algorithm>
+#include "chassis/abstractTankDrivetrain.hpp"
+#include <iostream>
 
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {
 	private:
-		TankDrivetrain* drivetrain;
+		AbstractTankDrivetrain* drivetrain;
 
 		double speed = 100;
 		bool inverted = false;
 	public:
-		TankPurePursuit(TankDrivetrain* drivetrain);
-		TankPurePursuit(TankDrivetrain* drivetrain, double lookaheadDistance);
-		TankPurePursuit(TankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
 
 		void updateDrivetrain();
 
 		void stop();
 
-		TankDrivetrain* getDrivetrain() {
+		AbstractTankDrivetrain* getDrivetrain() {
 			return drivetrain;
 		}
 
-		void setDrivetrain(TankDrivetrain* drivetrain) {
+		void setDrivetrain(AbstractTankDrivetrain* drivetrain) {
 			this->drivetrain = drivetrain;
 		}
 
