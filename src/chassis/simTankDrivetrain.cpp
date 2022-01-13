@@ -31,7 +31,7 @@ namespace Pronounce {
 		leftDistance += leftVelocity;
 		rightDistance += rightVelocity;
 
-		double relativeAngle = (leftDistance - rightDistance) / this->getTrackWidth();
+		double relativeAngle = ((leftDistance - rightDistance) / this->getTrackWidth()) + this->getResetOrientation();
 
 		// Calculate a vector
 		Vector localOffset(offset, relativeAngle+M_PI_2);

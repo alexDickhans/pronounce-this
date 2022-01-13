@@ -48,6 +48,9 @@
 using namespace Pronounce;
 
 int testPathIndex;
+int leftAllianceToRightHomeZoneIndex;
+int rightHomeZoneToRightAllianceIndex;
+int rightAllianceToRightRingsIndex;
 
 int fps = 60;
 double playbackMultiplier = 0.5;
@@ -305,13 +308,37 @@ int main() {
 	testPathIndex = purePursuit.addPath(testPath.getPath(0.1));
 	*/
 
-	QuadraticSplinePath quadraticSplineTestPath = QuadraticSplinePath();
 
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(24.0, 24.0), Vector(30.0, 0.0)));
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(70.3, 70.3), Vector(30.0, 0.0)));
-	quadraticSplineTestPath.addPoint(SplinePoint(Point(24, 120.3), Vector(30.0, 0.0)));
+	QuadraticSplinePath leftAllianceToRightHomeZone = QuadraticSplinePath();
 
-	testPathIndex = purePursuit.addPath(quadraticSplineTestPath.getPath(0.1));
+	leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(15.0, M_PI_2)));
+	leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(15.2, 35.0), Vector(15.0, 0.0)));
+	leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(46.4, 46.4), Vector(15.0, M_PI_2)));
+	leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(93.9, 46.4), Vector(15.0, M_PI_2)));
+
+	leftAllianceToRightHomeZoneIndex = purePursuit.addPath(leftAllianceToRightHomeZone.getPath(0.1));
+
+	QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
+
+	rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(93.9, 46.4), Vector(15.0, -M_PI_2)));
+	rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(123.0, 40.0), Vector(15.0, - M_PI_2 - M_PI_4)));
+
+	rightHomeZoneToRightAllianceIndex = purePursuit.addPath(rightHomeZoneToRightAlliance.getPath(0.1));
+
+	QuadraticSplinePath rightAllianceToRightRings = QuadraticSplinePath();
+
+	rightAllianceToRightRings.addPoint(SplinePoint(Point(123.0, 40.0), Vector(15.0, - M_PI_2 - M_PI_4)));
+	rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 46.8), Vector(0.0, 0.0)));
+	rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, 0.0)));
+
+	rightAllianceToRightRingsIndex = purePursuit.addPath(rightAllianceToRightRings.getPath(0.1));
+
+	QuadraticSplinePath rightRingsToRightHomeZone = QuadraticSplinePath();
+
+	rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
+	rightAllianceToRightRings.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
+
+	rightAllianceToRightRingsIndex = purePursuit.addPath(rightAllianceToRightRings.getPath(0.1));
 
 
 #if GRAPH
@@ -324,9 +351,9 @@ int main() {
 	delay(1000);
 	//printPath(path);
 #endif
-	Position startingPosition(24, 24, 0);
+	Position startingPosition(30.0, 11.4, -M_PI_2);
 
-	drivetrain.setPosition(&startingPosition);
+	drivetrain.reset(&startingPosition);
 
 #if GRAPH
 	std::vector<Point> robotPositions;
@@ -351,7 +378,7 @@ int main() {
 			loopcount++;
 
 			odometry.update();
-			//drivetrain.driveCurvature(1, (1.0 / 24.0));
+			// drivetrain.driveCurvature(-1.0, (1.0 / 24.0));
 			purePursuit.update();
 			drivetrain.update();
 
@@ -381,7 +408,8 @@ int main() {
 
 			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
-			if (loopcount > 5*fps * purePursuit.getPaths().size()) {
+
+			if (loopcount >= 5*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
 				break;
 			}
 		}

@@ -27,7 +27,7 @@ namespace Pronounce {
 
 		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1.0, 1.0))) * signum_c(pointData.localLookaheadVector.getCartesian().getY());
 
-		side = side < 0.5 ? 1.0 : side;
+		side = abs(side) < 0.5 ? signum_c(side) : side;
 
 		// Redundant scalar, could be used in the future
 		// Found that using the Y values got the same affect when this was wanted and a better affect when it wasn't
@@ -39,11 +39,6 @@ namespace Pronounce {
 		double scalar = 1; // pointData.lookaheadVector.getMagnitude() / this->getLookahead(); 
 
 		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
-
-		// Drive backwards
-		if (speed < 0) {
-			pointData.curvature = -pointData.curvature;
-		}
 
 		drivetrain->driveCurvature(speed, pointData.curvature);
 	}

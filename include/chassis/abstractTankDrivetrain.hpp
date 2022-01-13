@@ -20,13 +20,13 @@ namespace Pronounce {
 		}
 
 		void driveCurvature(double speed, double curvature) {
-			double leftSpeed = speed * (2 - curvature * trackWidth) / 2;
-			double rightSpeed = speed * (2 + curvature * trackWidth) / 2;
+			double leftSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
+			double rightSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
 
-			double maxSpeed = max(leftSpeed, rightSpeed);
+			double maxSpeed = max(abs(leftSpeed), abs(rightSpeed));
 
-			if (maxSpeed > speed) {
-				double multiplier = speed / maxSpeed;
+			if (maxSpeed > abs(speed)) {
+				double multiplier = abs(speed) / maxSpeed;
 				leftSpeed *= multiplier;
 				rightSpeed *= multiplier;
 			}
