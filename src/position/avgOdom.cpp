@@ -1,13 +1,13 @@
 #include "avgOdom.hpp"
 
 namespace Pronounce {
-    AvgOdom::AvgOdom(std::list<OdomWheel> odomWheels) {
-        this->odomWheels = odomWheels;
-    }
+    AvgOdom::AvgOdom() {
 
-    AvgOdom::AvgOdom(std::list<OdomWheel>* odomWheels) {
-        this->odomWheels = *odomWheels;
-    }
+	}
+
+	AvgOdom::AvgOdom(std::vector<OdomWheel> odomWheels) {
+		this->odomWheels = odomWheels;
+	}
 
     AvgOdom::~AvgOdom() {
     }

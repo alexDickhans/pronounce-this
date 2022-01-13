@@ -10,7 +10,7 @@ namespace Pronounce
      * Omnidirectional drive type, used for X-Drive/Mecanum drive
      */
     class OmniDrivetrain : public Drivetrain {
-    protected:
+    private:
         
     public:
         OmniDrivetrain();

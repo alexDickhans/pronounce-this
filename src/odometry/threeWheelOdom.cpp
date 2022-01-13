@@ -2,12 +2,14 @@
 
 namespace Pronounce {
     ThreeWheelOdom::ThreeWheelOdom(/* args */) : Odometry() {
+		this->reset(new Position());
     }
 
     ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : Odometry() {
         this->leftWheel = leftWheel;
         this->rightWheel = rightWheel;
         this->backWheel = backWheel;
+		this->reset(new Position());
     }
 
     void ThreeWheelOdom::update() {
@@ -26,8 +28,8 @@ namespace Pronounce {
 
         // Calculate the change in orientation
         double lastAngle = lastPosition->getTheta();
-        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (rightOffset + rightOffset);
-        double angleChange = angleDifference(currentAngle, lastAngle); // fmod(currentAngle + M_PI * 2, M_PI * 2) - fmod(lastAngle + M_PI * 2, M_PI * 2);
+        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
+        double angleChange = angleDifference(currentAngle, lastAngle);
         double averageOrientation = lastAngle + (angleChange / 2);
 
         // Calculate the local offset then translate it to the global offset
@@ -40,8 +42,9 @@ namespace Pronounce {
         lastPosition->add(localOffset.getCartesian());
         lastPosition->setTheta(fmod(currentAngle + M_PI * 2, M_PI * 2));
 
-        // Print last position
-        printf("Last position: %f, %f, %f\n", lastPosition->getX(), lastPosition->getY(), lastPosition->getTheta());
+		if (localOffset.getMagnitude() > maxMovement) {
+			return;
+		}
 
         // Update the position
         this->setPosition(lastPosition);

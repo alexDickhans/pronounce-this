@@ -11,6 +11,8 @@ namespace Pronounce
     private:
         OdomWheel* leftWheel, * rightWheel, * backWheel;
         double leftOffset, rightOffset, backOffset;
+
+		double maxMovement = 100;
     public:
         ThreeWheelOdom();
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
@@ -24,6 +26,14 @@ namespace Pronounce
             this->rightWheel->reset();
             this->backWheel->reset();
         }
+
+		double getMaxMovement() {
+			return maxMovement;
+		}
+
+		void setMaxMovement(double maxMovement) {
+			this->maxMovement = maxMovement;
+		}
 
         double getLeftOffset() {
             return leftOffset;

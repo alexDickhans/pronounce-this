@@ -27,7 +27,6 @@ namespace Pronounce {
 
         if (this->getAutonomous() && !this->autonomousButton) {
             this->motor->move_absolute(this->autonomousAuthority, abs(this->positiveAuthority));
-            printf("MotorButton: autonomous authority: %d\n", this->autonomousAuthority);
             return;
         }
 

@@ -8,16 +8,12 @@ namespace Pronounce
 
 		this->setPosition(new Position());
 	}
-	
-	void TankOdom::reset() {
-		this->imu->reset();
-	}
 
 	void TankOdom::update() {
 		odomWheel->update();
 
 		double average = odomWheel->getChange();
-		double angle = toRadians(imu->get_heading());
+		double angle = toRadians(imu->get_heading()) + this->getResetPosition()->getTheta();
 
 		double magnitude = average;
 
