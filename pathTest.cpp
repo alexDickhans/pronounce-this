@@ -349,9 +349,8 @@ int main() {
 	setcolor(DARKGRAY);
 
 	delay(1000);
-	//printPath(path);
 #endif
-	Position startingPosition(30.0, 11.4, -M_PI_2);
+	Position startingPosition(30.0, 11.4, M_PI_2);
 
 	drivetrain.reset(&startingPosition);
 

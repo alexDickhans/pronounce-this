@@ -11,10 +11,14 @@ namespace Pronounce {
 
 		double speed = 100;
 		bool inverted = false;
+
+		bool orientationControl = false;
+		PID* turnPid;
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, PID* turnPid, double lookaheadDistance);
 
 		void updateDrivetrain();
 
@@ -42,6 +46,22 @@ namespace Pronounce {
 
 		void setInverted(bool inverted) {
 			this->inverted = inverted;
+		}
+
+		PID* getTurnPid() {
+			return turnPid;
+		}
+
+		void setTurnPid(PID* turnPid) {
+			this->turnPid = turnPid;
+		}
+
+		double getTargetOrientation() {
+			return this->turnPid->getTarget();
+		}
+
+		void setTargetOrientation(double orientation) {
+			this->turnPid->setTarget(orientation);
 		}
 
 		~TankPurePursuit();
