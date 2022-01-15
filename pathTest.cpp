@@ -296,6 +296,7 @@ int main() {
 	double trackWidth = drivetrain.getTrackWidth(); 
 
 	purePursuit.setSpeed(1.0);
+	purePursuit.setTurnPid(new PID(1, 0, 0));
 
 	// Test path
 	/*
@@ -360,14 +361,11 @@ int main() {
 #endif
 
 	purePursuit.setEnabled(true);
-
-	double curvature = 0.1;
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(3.14);
 
 	// Loop through paths
 	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
-
-		std::vector<Point> pathVector = purePursuit.getPath(i).getPath();
-		Path path = purePursuit.getPath(i);
 
 		purePursuit.setCurrentPathIndex(i);
 		purePursuit.setFollowing(true);

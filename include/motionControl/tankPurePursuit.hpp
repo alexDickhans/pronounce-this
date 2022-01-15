@@ -64,6 +64,14 @@ namespace Pronounce {
 			this->turnPid->setTarget(orientation);
 		}
 
+		bool getOrientationControl() {
+			return orientationControl;
+		}
+
+		void setOrientationControl(bool orientationControl) {
+			this->orientationControl = orientationControl;
+		}
+
 		~TankPurePursuit();
 	};
 } // namespace Pronounce
