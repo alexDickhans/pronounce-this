@@ -51,6 +51,7 @@ int testPathIndex;
 int leftAllianceToRightHomeZoneIndex;
 int rightHomeZoneToRightAllianceIndex;
 int rightAllianceToRightRingsIndex;
+int rightRingsToRightHomeZoneIndex;
 
 int fps = 60;
 double playbackMultiplier = 1;
@@ -336,10 +337,10 @@ int main() {
 
 	QuadraticSplinePath rightRingsToRightHomeZone = QuadraticSplinePath();
 
-	rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
-	rightAllianceToRightRings.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
+	rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
+	rightRingsToRightHomeZone.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
 
-	rightAllianceToRightRingsIndex = purePursuit.addPath(rightAllianceToRightRings.getPath(0.1));
+	rightRingsToRightHomeZoneIndex = purePursuit.addPath(rightRingsToRightHomeZone.getPath(0.1));
 
 
 #if GRAPH
