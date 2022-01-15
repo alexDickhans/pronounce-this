@@ -406,7 +406,7 @@ int main() {
 			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
 
-			if (loopcount >= 5*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
+			if (loopcount >= 20 * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
 				break;
 			}
 		}

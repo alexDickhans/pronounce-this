@@ -54,6 +54,7 @@ namespace Pronounce {
 
 		void setTurnPid(PID* turnPid) {
 			this->turnPid = turnPid;
+			this->turnPid->setTurnPid(true);
 		}
 
 		double getTargetOrientation() {
@@ -70,6 +71,14 @@ namespace Pronounce {
 
 		void setOrientationControl(bool orientationControl) {
 			this->orientationControl = orientationControl;
+		}
+
+		bool isDone(double maxDistance) {
+			return maxDistance > this->getOdometry()->getPosition()->distance(this->getPath(this->getCurrentPathIndex()).getPoint(this->getPath(this->getCurrentPathIndex()).getPath().size() - 1));
+		}
+
+		bool isDoneOrientation(double maxDifference) {
+			return maxDifference > angleDifference(this->getOdometry()->getPosition()->getTheta(), this->getTurnPid()->getTarget());
 		}
 
 		~TankPurePursuit();

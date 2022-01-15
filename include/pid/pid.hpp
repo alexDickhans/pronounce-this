@@ -26,9 +26,11 @@ namespace Pronounce {
         double maxIntegral = 0.3;
 
         double power;
+
+		bool turnPid = false;
     public:
         PID();
-        PID(double kP, double kI, double kD, double target = 0, double position = 0);
+        PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false);
 
         double update();
 
@@ -119,6 +121,14 @@ namespace Pronounce {
         void setMaxIntegral(double maxIntegral) {
             this->maxIntegral = maxIntegral;
         }
+
+		bool getTurnPid() {
+			return turnPid;
+		}
+
+		void setTurnPid(bool turnPid) {
+			this->turnPid = turnPid;
+		}
 
         ~PID();
     };
