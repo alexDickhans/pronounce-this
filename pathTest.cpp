@@ -361,8 +361,6 @@ int main() {
 #endif
 
 	purePursuit.setEnabled(true);
-	purePursuit.setOrientationControl(true);
-	purePursuit.setTargetOrientation(3.14);
 
 	// Loop through paths
 	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
@@ -406,7 +404,7 @@ int main() {
 			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
 
-			if (loopcount >= 20 * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
+			if (loopcount >= 4*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
 				break;
 			}
 		}
