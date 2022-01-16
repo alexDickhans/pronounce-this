@@ -10,17 +10,18 @@ namespace Pronounce
         return radians * 180 / M_PI;
     }
 
-    double angleDifference(double angle1, double angle2) {
-        double difference = angle1 - angle2;
-        while (difference < -M_PI) difference += M_PI * 2.0;
-        while (difference > M_PI) difference -= M_PI * 2.0;
-        return difference;
-    }
-    
     double signum_c(double x) {
         if (x > 0.0) return 1.0;
         if (x < 0.0) return -1.0;
         return x;
+    }
+
+    double angleDifference(double angle1, double angle2) {
+        while (abs(angle1) > M_PI) angle1 += M_PI * 2.0 * -signum_c(angle1);
+        while (abs(angle2) > M_PI) angle2 += M_PI * 2.0 * -signum_c(angle2);
+        double difference = angle1 - angle2;
+        while (abs(difference) > M_PI) difference += M_PI * 2.0 * -signum_c(difference);
+        return difference;
     }
 
     double map(double value, double start1, double stop1, double start2, double stop2) {

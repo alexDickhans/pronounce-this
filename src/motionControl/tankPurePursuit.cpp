@@ -3,14 +3,26 @@
 namespace Pronounce {
 	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain) : PurePursuit() {
 		this->drivetrain = drivetrain;
+		this->turnPid = new PID();
+		this->turnPid->setTurnPid(true);
 	}
 
 	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
 		this->drivetrain = drivetrain;
+		this->turnPid = new PID();
+		this->turnPid->setTurnPid(true);
 	}
 
 	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
+		this->turnPid = new PID();
+		this->turnPid->setTurnPid(true);
+	}
+
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+		this->drivetrain = drivetrain;
+		this->turnPid = turnPid;
+		this->turnPid->setTurnPid(true);
 	}
 
 	void TankPurePursuit::updateDrivetrain() {
@@ -20,6 +32,18 @@ namespace Pronounce {
 		}
 
 		if (isDone(this->getStopDistance())) {
+			return;
+		}
+
+		if (orientationControl) {
+			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
+			this->turnPid->setPosition(angleDifference(0, currentOrientation));
+			double spinSpeed = this->turnPid->update();
+
+			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
+
+			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
+
 			return;
 		}
 

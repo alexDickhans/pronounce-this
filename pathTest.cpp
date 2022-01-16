@@ -51,6 +51,7 @@ int testPathIndex;
 int leftAllianceToRightHomeZoneIndex;
 int rightHomeZoneToRightAllianceIndex;
 int rightAllianceToRightRingsIndex;
+int rightRingsToRightHomeZoneIndex;
 
 int fps = 60;
 double playbackMultiplier = 1;
@@ -296,6 +297,7 @@ int main() {
 	double trackWidth = drivetrain.getTrackWidth(); 
 
 	purePursuit.setSpeed(1.0);
+	purePursuit.setTurnPid(new PID(1, 0, 0));
 
 	// Test path
 	/*
@@ -335,10 +337,10 @@ int main() {
 
 	QuadraticSplinePath rightRingsToRightHomeZone = QuadraticSplinePath();
 
-	rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
-	rightAllianceToRightRings.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
+	rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
+	rightRingsToRightHomeZone.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
 
-	rightAllianceToRightRingsIndex = purePursuit.addPath(rightAllianceToRightRings.getPath(0.1));
+	rightRingsToRightHomeZoneIndex = purePursuit.addPath(rightRingsToRightHomeZone.getPath(0.1));
 
 
 #if GRAPH
@@ -349,9 +351,8 @@ int main() {
 	setcolor(DARKGRAY);
 
 	delay(1000);
-	//printPath(path);
 #endif
-	Position startingPosition(30.0, 11.4, -M_PI_2);
+	Position startingPosition(30.0, 11.4, M_PI_2);
 
 	drivetrain.reset(&startingPosition);
 
@@ -362,13 +363,8 @@ int main() {
 
 	purePursuit.setEnabled(true);
 
-	double curvature = 0.1;
-
 	// Loop through paths
 	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
-
-		std::vector<Point> pathVector = purePursuit.getPath(i).getPath();
-		Path path = purePursuit.getPath(i);
 
 		purePursuit.setCurrentPathIndex(i);
 		purePursuit.setFollowing(true);
@@ -409,7 +405,7 @@ int main() {
 			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
 
-			if (loopcount >= 5*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
+			if (loopcount >= 4*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
 				break;
 			}
 		}

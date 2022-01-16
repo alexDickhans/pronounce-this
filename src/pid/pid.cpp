@@ -10,21 +10,28 @@ namespace Pronounce {
 		this->position = 0.0;
 	}
 
-	PID::PID(double kP, double kI, double kD, double target, double position) {
+	PID::PID(double kP, double kI, double kD, double target, double position, bool turnPid) {
 		this->kP = kP;
 		this->kI = kI;
 		this->kD = kD;
 		this->target = target;
 		this->position = position;
+		this->turnPid = turnPid;
 	}
 
 	double PID::update() {
-		this->error = target - position;
+		if (turnPid) {
+			this->error = angleDifference(target, position);
+		}
+		else {
+			this->error = target - position;
+		}
 		this->derivitive = error - prevError;
 
 		if (abs(error) < integralBound) {
 			totalError += error;
-		} else {
+		}
+		else {
 			totalError = 0;
 		}
 
@@ -32,7 +39,7 @@ namespace Pronounce {
 
 		this->power = error * kP + derivitive * kD + totalError * kI;
 
-		return this->power; 
+		return this->power;
 	}
 
 	PID::~PID() {
