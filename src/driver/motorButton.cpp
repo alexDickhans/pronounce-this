@@ -1,7 +1,5 @@
 #include "motorButton.hpp"
 
-
-
 namespace Pronounce {
     MotorButton::MotorButton(pros::Controller* controller, pros::Motor* motor,
             pros::controller_digital_e_t positiveButton,
@@ -25,7 +23,7 @@ namespace Pronounce {
             return;
         }
 
-        if (this->getAutonomous() && !this->autonomousButton) {
+        if (this->getAutonomous() && !this->autonomousPosition) {
             this->motor->move_absolute(this->autonomousAuthority, abs(this->positiveAuthority));
             return;
         }
@@ -36,9 +34,9 @@ namespace Pronounce {
                 this->motor->move_absolute(min, negativeAuthority);
             }
             else if (this->motor->get_position() > this->min && this->min < this->max) {
-                this->motor->move(negativeAuthority);
+                this->motor->move_velocity(negativeAuthority);
             } else if (this->min >= this->max) {
-                this->motor->move(negativeAuthority);
+                this->motor->move_velocity(negativeAuthority);
             }
             else {
                 this->motor->move_velocity(neutralAuthority);
@@ -49,9 +47,9 @@ namespace Pronounce {
                 this->motor->move_absolute(max, positiveAuthority);
             }
             else if (this->motor->get_position() < this->max && this->min < this->max) {
-                this->motor->move(positiveAuthority);
+                this->motor->move_velocity(positiveAuthority);
             }else if (this->min >= this->max) {
-                this->motor->move(positiveAuthority);
+                this->motor->move_velocity(positiveAuthority);
             }
             else {
                 this->motor->move_velocity(neutralAuthority);
@@ -67,6 +65,26 @@ namespace Pronounce {
             this->motor->move_velocity(neutralAuthority);
             break;
         }
+
+		double speed = this->motor->get_actual_velocity();
+		double jammed = jammed;
+
+		// set jammed to true if the speed of the motor indicates that it is jammed
+		if (speed < dejamSpeed && this->getButtonStatus() != NEUTRAL) {
+			this->jammed = true;
+		} else {
+			this->jammed = false;
+		}
+
+		// Debounce to start the time
+		if (jammed && !this->jammed) {
+			this->dejamStartTime = pros::millis();
+		}
+
+		// If the timer is greater than the jam time, then dejam the motor
+		if (this->dejamStartTime - pros::millis() > dejamTime && jammed) {
+			this->motor->move_velocity(dejamAuthority);
+		}
     }
 
     MotorButton::~MotorButton() {
