@@ -76,6 +76,7 @@ int preAutonRun() {
 	frontGrabberButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
 	liftButton.setAutonomous(true);
+	liftButton.setAutonomousPosition(true);
 	backGrabberButton.setAutonomous(true);
 	intakeButton.setAutonomous(true);
 
@@ -387,6 +388,10 @@ void initMotors() {
 	backGrabberButton.setSingleToggle(true);
 
 	intakeButton.setSingleToggle(true);
+	intakeButton.setDejam(true);
+	intakeButton.setDejamAuthority(-100);
+	intakeButton.setDejamSpeed(5);
+	intakeButton.setDejamTime(500);
 
 	lift.set_current_limit(25000);
 
