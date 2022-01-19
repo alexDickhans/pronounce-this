@@ -1,7 +1,5 @@
 #include "motorButton.hpp"
 
-
-
 namespace Pronounce {
 	MotorButton::MotorButton(pros::Controller* controller, pros::Motor* motor,
 		pros::controller_digital_e_t positiveButton,
