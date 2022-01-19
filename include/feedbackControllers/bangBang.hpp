@@ -9,6 +9,7 @@ namespace Pronounce {
 		bool reversable;
 		double outputStrength;
 		double setPoint = 0;
+		double lastInput = 0;
 	public:
 		BangBang();
 		BangBang(double minimumDifference);
@@ -53,6 +54,10 @@ namespace Pronounce {
 
 		void setOutputStrength(double outputStrength) {
 			this->outputStrength = outputStrength;
+		}
+
+		bool isInRange() {
+			return abs(this->setPoint - this->lastInput) > minimumDifference;
 		}
 
 		~BangBang();
