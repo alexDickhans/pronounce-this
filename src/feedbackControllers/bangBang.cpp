@@ -21,7 +21,8 @@ namespace Pronounce {
 		double difference = setPoint - input;
 
 		// Set the lastInput variable to this loop's input.
-		this->lastInput = intput;
+		this->lastInput = input;
+		
 		// Change behavior if the controller is not reversable
 		if (reversable) {
 			if (abs(difference) > minimumDifference) {
