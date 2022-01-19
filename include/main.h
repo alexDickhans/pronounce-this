@@ -73,6 +73,7 @@
 #include "feedbackControllers/pid.hpp"
 
 // Motion control
+#include "motionControl/balance.hpp"
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
