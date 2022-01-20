@@ -23,7 +23,7 @@ namespace Pronounce {
 			return;
 		}
 
-		if (this->getAutonomous() && !this->autonomousButton) {
+		if (this->getAutonomous() && !this->autonomousPosition) {
 			if (this->goToHeight) {
 				// Use autonomous authority to calculate the angle that the lift needs to be at. 
 				double angle = asin((this->autonomousAuthority - this->height) / this->length) * this->gearRatio;

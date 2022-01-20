@@ -50,7 +50,7 @@ namespace Pronounce {
         
         void updateActuator();
 
-		double resetPosition(double currentPosition) {
+		void resetPosition(double currentPosition) {
 			this->motor->set_zero_position(-currentPosition);
 		}
 
@@ -108,6 +108,8 @@ namespace Pronounce {
 
 		void setGearRatio(double gearRatio) {
 			this->gearRatio = gearRatio;
+		}
+		
 		bool getJammed() {
 			return this->jammed;
 		}
@@ -156,4 +158,3 @@ namespace Pronounce {
     };
 
 } // namespace Pronounce
-
