@@ -75,8 +75,9 @@ namespace Pronounce {
 		void updatePointData();
 
 		void update() {
-			if (!enabled)
+			if (!enabled) {
 				return;
+			}
 
 			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following) {
 				this->stop();

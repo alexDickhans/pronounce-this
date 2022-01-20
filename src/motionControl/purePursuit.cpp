@@ -20,6 +20,10 @@ namespace Pronounce {
 
 	void PurePursuit::updatePointData() {
 
+		if (!enabled) {
+			return;
+		}
+
         // Set position and path variables
         Path path = paths.at(currentPath);
         std::vector<Point> pathVector = path.getPath();
