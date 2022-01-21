@@ -3,6 +3,8 @@
 #include "utils/pointUtil.hpp"
 #include "utils/path.hpp"
 #include "utils/splinePath.hpp"
+#include "utils/quadraticSplinePath.hpp"
+#include "utils/splinePoint.hpp"
 #include "motionControl/purePursuit.hpp"
 #include "utils/purePursuitProfile.hpp"
 #include "utils/purePursuitProfileManager.hpp"
@@ -33,6 +35,12 @@ namespace Pronounce {
 	int farPlatformToNearPlatformIndex;
 	int nearPlatformViaLeftNeutralToFarPlatformIndex;
 	int nearPlatformToMidIndex;
+
+	// Left AWP
+	int leftAllianceToRightHomeZoneIndex;
+	int rightHomeZoneToRightAllianceIndex;
+	int rightAllianceToRightRingsIndex;
+	int rightRingsToRightHomeZoneIndex;
 
 	void autoPaths(PurePursuit* purePursuit) {
 		// Default pure pursuit profile
@@ -152,6 +160,37 @@ namespace Pronounce {
 		nearPlatformToMid.addPoint(70.3, 70.3);
 
 		nearPlatformToMidIndex = purePursuit->addPath(nearPlatformToMid);
+
+		QuadraticSplinePath leftAllianceToRightHomeZone = QuadraticSplinePath();
+
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(15.0, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(15.2, 35.0), Vector(15.0, 0.0)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(46.4, 46.4), Vector(15.0, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(93.9, 46.4), Vector(15.0, M_PI_2)));
+
+		leftAllianceToRightHomeZoneIndex = purePursuit->addPath(leftAllianceToRightHomeZone.getPath(0.1));
+
+		QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
+
+		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(93.9, 46.4), Vector(15.0, -M_PI_2)));
+		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(123.0, 40.0), Vector(15.0, -M_PI_2 - M_PI_4)));
+
+		rightHomeZoneToRightAllianceIndex = purePursuit->addPath(rightHomeZoneToRightAlliance.getPath(0.1));
+
+		QuadraticSplinePath rightAllianceToRightRings = QuadraticSplinePath();
+
+		rightAllianceToRightRings.addPoint(SplinePoint(Point(123.0, 40.0), Vector(15.0, -M_PI_2 - M_PI_4)));
+		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 46.8), Vector(0.0, 0.0)));
+		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, 0.0)));
+
+		rightAllianceToRightRingsIndex = purePursuit->addPath(rightAllianceToRightRings.getPath(0.1));
+
+		QuadraticSplinePath rightRingsToRightHomeZone = QuadraticSplinePath();
+
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
+
+		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone.getPath(0.1));
 
 		printf("Array size: %d\n", purePursuit->getPaths().size());
 	}

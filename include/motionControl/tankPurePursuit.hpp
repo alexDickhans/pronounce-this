@@ -9,7 +9,7 @@ namespace Pronounce {
 	private:
 		AbstractTankDrivetrain* drivetrain;
 
-		double speed = 100;
+		double speed = 250;
 		bool inverted = false;
 
 		bool orientationControl = false;

@@ -205,6 +205,52 @@ int leftAwpLeft() {
 	return 0;
 }
 
+int leftAwp() {
+	odometry.reset(new Position(30.0, 11.4, M_PI_2));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(leftAllianceToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setTurnTarget(M_PI_2 + M_PI_4);
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(rightAllianceToRightRingsIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI_2);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setTurnTarget(M_PI_2);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	return 0;
+}
+
 int skills() {
 	odometry.reset(new Position(105.7, 16));
 
@@ -407,18 +453,18 @@ void initDrivetrain() {
 
 	// odometry.setUseImu(true);
 	leftOdomWheel.setRadius(3.25 / 2);
-	leftOdomWheel.setTuningFactor(1);
+	leftOdomWheel.setTuningFactor(0.89380531);
 	rightOdomWheel.setRadius(3.25 / 2);
-	rightOdomWheel.setTuningFactor(1);
+	rightOdomWheel.setTuningFactor(0.89380531);
 	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(1);
+	backOdomWheel.setTuningFactor(0.89380531);
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(true);
 	backEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(4.5);
-	odometry.setRightOffset(4.5);
+	odometry.setLeftOffset(4.5 * 1.05);
+	odometry.setRightOffset(4.5 * 1.05);
 	odometry.setBackOffset(1.5);
 
 	odometry.setMaxMovement(1);
@@ -558,7 +604,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRight();
+	leftAwp();
 	postAuton();
 }
 
