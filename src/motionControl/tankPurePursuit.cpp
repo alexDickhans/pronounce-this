@@ -63,11 +63,10 @@ namespace Pronounce {
 		double scalar = 1; // pointData.lookaheadVector.getMagnitude() / this->getLookahead(); 
 
 		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
-
-		std::cout << "Speed: " << speed << std::endl;
+		
 		std::cout << "Lookahead vector: " << pointData.localLookaheadVector.getCartesian().to_string() << std::endl;
 		std::cout << "Lookahead position: " << pointData.lookaheadPoint.to_string() << std::endl;
-		std::cout << "Lookahead distance: " << pointData.localLookaheadVector.getAngle() << std::endl;
+		std::cout << "Lookahead angle: " << pointData.localLookaheadVector.getAngle() << std::endl;
 
 		drivetrain->driveCurvature(speed, pointData.curvature);
 	}

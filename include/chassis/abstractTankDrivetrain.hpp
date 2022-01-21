@@ -23,8 +23,8 @@ namespace Pronounce {
 		void driveCurvature(double speed, double curvature) {
 			std::cout << "Speed: " << speed << " Curvature: " << curvature << std::endl;
 			
-			double leftSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
-			double rightSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
+			double leftSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
+			double rightSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
 
 			double maxSpeed = max(abs(leftSpeed), abs(rightSpeed));
 
@@ -33,8 +33,6 @@ namespace Pronounce {
 				leftSpeed *= multiplier;
 				rightSpeed *= multiplier;
 			}
-
-			std::cout << "Left speed: " << leftSpeed << " Right speed: " << rightSpeed << std::endl;
 
 			this->tankSteerVelocity(leftSpeed, rightSpeed);
 		}

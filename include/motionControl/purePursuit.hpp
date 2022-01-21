@@ -91,6 +91,7 @@ namespace Pronounce {
 
 		int addPath(Path path) {
 			paths.emplace_back(path);
+			// printf(path.to_string().c_str());
 			return paths.size() - 1;
 		}
 

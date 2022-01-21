@@ -451,13 +451,15 @@ void initMotors() {
 void initDrivetrain() {
 	printf("Init drivetrain");
 
+	printf("Vector: %s\n", Vector(1, M_PI_2).getCartesian().to_string().c_str());
+
 	// odometry.setUseImu(true);
-	leftOdomWheel.setRadius(3.25 / 2);
-	leftOdomWheel.setTuningFactor(0.89380531);
-	rightOdomWheel.setRadius(3.25 / 2);
-	rightOdomWheel.setTuningFactor(0.89380531);
+	leftOdomWheel.setRadius(2.75 / 2);
+	leftOdomWheel.setTuningFactor(1);
+	rightOdomWheel.setRadius(2.75 / 2);
+	rightOdomWheel.setTuningFactor(1);
 	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(0.89380531);
+	backOdomWheel.setTuningFactor(1);
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(true);
@@ -470,8 +472,8 @@ void initDrivetrain() {
 	odometry.setMaxMovement(1);
 
 	purePursuit.setNormalizeDistance(10);
-	purePursuit.setSpeed(100);
-	purePursuit.setLookahead(8);
+	purePursuit.setSpeed(150);
+	purePursuit.setLookahead(15);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -552,8 +554,8 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initMotors();
-	initDrivetrain();
 	autoPaths(&purePursuit);
+	initDrivetrain();
 	initController();
 	initLogger();
 	// initSelector();
@@ -605,7 +607,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftAwp();
+	testAuton();
 	postAuton();
 }
 

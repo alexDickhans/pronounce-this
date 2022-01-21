@@ -126,6 +126,14 @@ namespace Pronounce {
 			}
 		}
 
+		std::string to_string() {
+			std::string str = "";
+			for (Point point : path) {
+				str += point.to_string() + "\n";
+			}
+			return str;
+		}
+
 		~Path();
 	};
 } // namespace Pronounce

@@ -51,11 +51,7 @@ namespace Pronounce {
 		Path testPath = Path();
 
 		testPath.addPoint(0, 0);
-		testPath.addPoint(24, 0);
-		testPath.addPoint(24, 24);
-		testPath.addPoint(24, 48);
-		testPath.addPoint(-24, 48);
-		testPath.addPoint(0, 24);
+		testPath.addPoint(0, 100);
 
 		testPathIndex = purePursuit->addPath(testPath);
 
@@ -163,10 +159,10 @@ namespace Pronounce {
 
 		QuadraticSplinePath leftAllianceToRightHomeZone = QuadraticSplinePath();
 
-		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(15.0, M_PI_2)));
-		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(15.2, 35.0), Vector(15.0, 0.0)));
-		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(46.4, 46.4), Vector(15.0, M_PI_2)));
-		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(93.9, 46.4), Vector(15.0, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(0, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(15.2, 35.0), Vector(0, 0.0)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(46.4, 46.4), Vector(0, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(93.9, 46.4), Vector(0, M_PI_2)));
 
 		leftAllianceToRightHomeZoneIndex = purePursuit->addPath(leftAllianceToRightHomeZone.getPath(0.1));
 
