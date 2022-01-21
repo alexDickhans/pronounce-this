@@ -206,7 +206,7 @@ int leftAwpLeft() {
 }
 
 int leftAwp() {
-	odometry.reset(new Position(30.0, 11.4, M_PI_2));
+	odometry.reset(new Position(30.0, 11.4, -M_PI_2));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -470,7 +470,8 @@ void initDrivetrain() {
 	odometry.setMaxMovement(1);
 
 	purePursuit.setNormalizeDistance(10);
-	purePursuit.setSpeed(250);
+	purePursuit.setSpeed(100);
+	purePursuit.setLookahead(8);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -638,8 +639,6 @@ void opcontrol() {
 		else {
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
-
-			printf("leftY: %d, rightY: %d \n", leftY, rightY);
 
 			drivetrain.tankSteerVelocity(leftY, rightY);
 		}
