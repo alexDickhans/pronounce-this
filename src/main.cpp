@@ -432,6 +432,14 @@ int skills() {
 
 	purePursuit.setOrientationControl(false);
 
+	liftButton.setAutonomousAuthority(700);
+
+	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
+
+	while (purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
 	pros::Task::delay(500);
 
 	liftButton.setAutonomousAuthority(500);
@@ -450,7 +458,7 @@ int skills() {
 		pros::Task::delay(50);
 	}
 
-
+	
 
 	return 0;
 }
