@@ -11,6 +11,14 @@ namespace Pronounce {
         this->backWheel = backWheel;
 		this->reset(new Position());
     }
+	
+	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, pros::Imu* imu) : Odometry() {
+        this->leftWheel = leftWheel;
+        this->rightWheel = rightWheel;
+        this->backWheel = backWheel;
+		this->imu = imu;
+		this->reset(new Position());
+    }
 
     void ThreeWheelOdom::update() {
         // Update the wheel positions
@@ -28,7 +36,14 @@ namespace Pronounce {
 
         // Calculate the change in orientation
         double lastAngle = lastPosition->getTheta();
-        double currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
+		double currentAngle = 0;
+
+		if (useImu && imu != nullptr) {
+			currentAngle = toRadians(imu->get_rotation());
+		} else {
+        	currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
+		}
+
         double angleChange = angleDifference(currentAngle, lastAngle);
         double averageOrientation = lastAngle + (angleChange / 2);
 

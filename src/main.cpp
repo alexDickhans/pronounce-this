@@ -34,11 +34,11 @@ Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
 Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
 Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 
-ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel);
+ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 15.0);
 
-Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 20);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(60, 0, 0), 20);
 
 Balance balance(&drivetrain, &imu, new BangBang(15, true, 200), new PID(20, 0, 0));
 
@@ -60,11 +60,9 @@ int driverMode = 0;
 // SECTION Auton
 
 void flipOut() {
-	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
+	pros::Task::delay(500);
 
-	pros::Task::delay(1000);
-
-	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 }
 
 /**
@@ -78,9 +76,8 @@ int preAutonRun() {
 	frontGrabberButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
 	liftButton.setAutonomous(true);
-	liftButton.setAutonomousPosition(true);
-	backGrabberButton.setAutonomous(true);
 	intakeButton.setAutonomous(true);
+	liftButton.setAutonomousPosition(true);
 
 	pros::Task flipOutTask(flipOut);
 
@@ -96,6 +93,7 @@ int rightStealRight() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
 
 	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
 	purePursuit.setInverted(false);
@@ -165,7 +163,7 @@ int rightAwpRight() {
 int leftAwpLeft() {
 	odometry.reset(new Position(20.5, 16));
 
-	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
@@ -206,11 +204,37 @@ int leftAwpLeft() {
 }
 
 int leftAwp() {
-	odometry.reset(new Position(30.0, 11.4, -M_PI_2));
+	odometry.reset(new Position(29.0, 11.4, -M_PI_2));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	drivetrain.skidSteerVelocity(-150, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	liftButton.setAutonomousAuthority(600);
+
+	purePursuit.setSpeed(65);
+
+	purePursuit.setLookahead(8);
+
+	// Run pure pursuit paths, ewwww
 	purePursuit.setCurrentPathIndex(leftAllianceToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
 
@@ -219,6 +243,14 @@ int leftAwp() {
 		pros::Task::delay(50);
 	}
 
+	purePursuit.setLookahead(10);
+
+	pros::delay(1000);
+
+	// purePursuit.setSpeed(75);
+
+	liftButton.setAutonomousAuthority(0);
+
 	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
 	purePursuit.setFollowing(true);
 
@@ -226,10 +258,40 @@ int leftAwp() {
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
+	
+	frontGrabberButton.setButtonStatus(POSITIVE);
+	
+	pros::delay(300);
 
-	purePursuit.setTurnTarget(M_PI_2 + M_PI_4);
-	purePursuit.setOrientationControl(false);
+	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
 
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	/*
+
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	drivetrain.skidSteerVelocity(-150, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+/*
 	purePursuit.setCurrentPathIndex(rightAllianceToRightRingsIndex);
 	purePursuit.setFollowing(true);
 	purePursuit.setTurnTarget(M_PI_2);
@@ -247,7 +309,7 @@ int leftAwp() {
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
-
+*/
 	return 0;
 }
 
@@ -355,7 +417,10 @@ int testAuton() {
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	pros::Task::delay(10000);
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
 
 	return 0;
 }
@@ -363,6 +428,7 @@ int testAuton() {
 int postAuton() {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
+
 	frontGrabberButton.setAutonomous(false);
 	backGrabberButton.setAutonomous(false);
 	liftButton.setAutonomous(false);
@@ -455,11 +521,11 @@ void initDrivetrain() {
 
 	// odometry.setUseImu(true);
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1);
+	leftOdomWheel.setTuningFactor(1.097);
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(1);
+	rightOdomWheel.setTuningFactor(1.077);
 	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(1);
+	backOdomWheel.setTuningFactor(1.06);
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(true);
@@ -607,7 +673,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	testAuton();
+	leftAwp();
 	postAuton();
 }
 
@@ -658,6 +724,15 @@ void opcontrol() {
 		}
 		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
 			driverMode = 2;
+		}
+
+		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+			// drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			// drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+
+		if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			
 		}
 
 		pros::delay(10);

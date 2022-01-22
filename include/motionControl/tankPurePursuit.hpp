@@ -78,7 +78,7 @@ namespace Pronounce {
 		}
 
 		bool isDoneOrientation(double maxDifference) {
-			return maxDifference > angleDifference(this->getOdometry()->getPosition()->getTheta(), this->getTurnPid()->getTarget());
+			return maxDifference > angleDifference(this->getOdometry()->getPosition()->getTheta(), this->getTurnPid()->getTarget()) && this->turnPid->getDerivitive() < maxDifference/5.0;
 		}
 
 		~TankPurePursuit();

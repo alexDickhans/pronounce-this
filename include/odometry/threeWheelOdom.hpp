@@ -12,10 +12,14 @@ namespace Pronounce
         OdomWheel* leftWheel, * rightWheel, * backWheel;
         double leftOffset, rightOffset, backOffset;
 
+		pros::Imu* imu;
+		bool useImu = false;
+
 		double maxMovement = 100;
     public:
         ThreeWheelOdom();
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
+        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, pros::Imu* imu);
 
         void update();
 
