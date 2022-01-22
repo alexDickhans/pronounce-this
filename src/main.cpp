@@ -94,11 +94,6 @@ int rightStealRight() {
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-
-	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
-	purePursuit.setInverted(false);
-	purePursuit.setFollowing(true);
-
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
@@ -161,14 +156,32 @@ int rightAwpRight() {
 }
 
 int leftAwpLeft() {
-	odometry.reset(new Position(20.5, 16));
+	odometry.reset(new Position(30, 11.4, -M_PI_2));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	drivetrain.skidSteerVelocity(-150, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
 
 	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
 	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(0);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
@@ -228,8 +241,6 @@ int leftAwp() {
 	purePursuit.setFollowing(true);
 	purePursuit.setEnabled(true);
 
-	liftButton.setAutonomousAuthority(600);
-
 	purePursuit.setSpeed(65);
 
 	purePursuit.setLookahead(8);
@@ -238,8 +249,10 @@ int leftAwp() {
 	purePursuit.setCurrentPathIndex(leftAllianceToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
 
+	liftButton.setAutonomousAuthority(600);
+
 	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
+	while (!purePursuit.isDone(4)) {
 		pros::Task::delay(50);
 	}
 
@@ -247,7 +260,9 @@ int leftAwp() {
 
 	pros::delay(1000);
 
-	// purePursuit.setSpeed(75);
+	purePursuit.setSpeed(75);
+
+	pros::delay(2000);
 
 	liftButton.setAutonomousAuthority(0);
 
@@ -258,9 +273,9 @@ int leftAwp() {
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
-	
+
 	frontGrabberButton.setButtonStatus(POSITIVE);
-	
+
 	pros::delay(300);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightHomeZoneIndex);
@@ -732,7 +747,7 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(DIGITAL_LEFT)) {
-			
+
 		}
 
 		pros::delay(10);
