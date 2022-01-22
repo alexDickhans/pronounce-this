@@ -160,7 +160,7 @@ int leftAwpLeft() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	
+
 	// Move back
 	// Timed programming, our favorite!
 	// This is all the safegaurds I have to bypass
@@ -329,91 +329,128 @@ int leftAwp() {
 }
 
 int skills() {
-	odometry.reset(new Position(105.7, 16));
+	odometry.reset(new Position(29.0, 11.4, -M_PI_2));
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	drivetrain.skidSteerVelocity(-150, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
 
 	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	purePursuit.setCurrentPathIndex(rightHomeToGoalNeutralIndex);
 	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(0);
+	purePursuit.setEnabled(true);
+
+	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
+
+	while(odometry.getPosition()->getY() < 20) {
+		pros::Task::delay(50);
+	}
+
+	liftButton.setAutonomousAuthority(600);
+
+	while(odometry.getPosition()->getY() < 55) {
+		pros::Task::delay(50);
+	}
+
+	liftButton.setAutonomousAuthority(0);
+	
+	// Wait until it is done
+	while (!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(500);
+
+	purePursuit.setCurrentPathIndex(leftNeutralGoalToFarHomeZoneIndex);
+
+	liftButton.setAutonomousAuthority(700);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(500);
 
-	purePursuit.setCurrentPathIndex(rightNeutralToFarPlatformIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(0);
+	liftButton.setAutonomousAuthority(500);
 
-	liftButton.setAutonomousAuthority(1500);
+	pros::Task::delay(800);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	liftButton.setAutonomousAuthority(700);
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+
+	liftButton.setAutonomousAuthority(600);
+
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(500);
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+
+	liftButton.setAutonomousAuthority(0);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(M_PI);
 
-	liftButton.setAutonomousAuthority(0);
-
-	purePursuit.setCurrentPathIndex(farPlatformToNearPlatformIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(M_PI);
-
-	// Wait until gets to goal
-	while (odometry.getPosition()->getY() > 80) {
+	while(!purePursuit.isDoneOrientation(0.1)) {
 		pros::Task::delay(50);
 	}
 
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	purePursuit.setOrientationControl(false);
 
-	liftButton.setAutonomousAuthority(1500);
+	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	// Wait until done
-	while (!purePursuit.isDone(2)) {
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(0);
+
+	while(!purePursuit.isDoneOrientation(0.1)) {
 		pros::Task::delay(50);
 	}
 
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	purePursuit.setOrientationControl(false);
 
-	liftButton.setAutonomousAuthority(0);
+	pros::Task::delay(500);
 
-	purePursuit.setCurrentPathIndex(nearPlatformViaLeftNeutralToFarPlatformIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(0);
+	liftButton.setAutonomousAuthority(500);
 
-	// Wait until gets to goal
-	while (odometry.getPosition()->getY() < 61) {
-		pros::Task::delay(50);
-	}
+	pros::Task::delay(800);
 
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	liftButton.setAutonomousAuthority(700);
 
-	liftButton.setAutonomousAuthority(1500);
+	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
 
-	// Wait until done
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	liftButton.setAutonomousAuthority(0);
-
-	purePursuit.setCurrentPathIndex(nearPlatformToMidIndex);
-	purePursuit.setFollowing(true);
+	liftButton.setAutonomousAuthority(600);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
+
+
 
 	return 0;
 }

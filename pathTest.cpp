@@ -53,6 +53,21 @@ int rightHomeZoneToRightAllianceIndex;
 int rightAllianceToRightRingsIndex;
 int rightRingsToRightHomeZoneIndex;
 
+// Skills
+int leftHomeZoneToLeftNeutralGoalIndex;
+int leftNeutralGoalToFarHomeZoneIndex;
+int farHomeZoneToMidNeutralGoalIndex;
+int midNeutralGoalToPlatformIndex;
+int farPlatformToDropOffGoalIndex;
+int goalDropOffToFarLeftAllianceIndex;
+int farLeftAllianceToLeftRingsIndex;
+int leftRingsToGoalDropIndex;
+int farPlatformToEnterHomezoneIndex;
+int rightHomeZoneToFarRightAllianceGoalIndex;
+int farRightAllianceGoalToNearPreloadsIndex;
+int nearPlatformAlignIndex;
+int leftHomeZoneToPlatformIndex;
+
 int fps = 60;
 double playbackMultiplier = 1;
 
@@ -317,7 +332,7 @@ int main() {
 	leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(20, 0)));
 	leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 66), Vector(20, 0)));
 
-	int path = purePursuit.addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
+	int leftHomeZoneToLeftNeutralGoalIndex = purePursuit.addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
 
 	QuadraticSplinePath leftNeutralGoalToFarHomeZone;
 
@@ -325,42 +340,42 @@ int main() {
 	leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 93.9), Vector(30, 0)));
 	leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
 
-	int path2 = purePursuit.addPath(leftNeutralGoalToFarHomeZone.getPath(0.01));
+	int leftNeutralGoalToFarHomeZoneIndex = purePursuit.addPath(leftNeutralGoalToFarHomeZone.getPath(0.01));
 
 	QuadraticSplinePath farHomeZoneToMidNeutralGoal;
 
 	farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
 	farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
 
-	int path3 = purePursuit.addPath(farHomeZoneToMidNeutralGoal.getPath(0.01));
+	int farHomeZoneToMidNeutralGoalIndex = purePursuit.addPath(farHomeZoneToMidNeutralGoal.getPath(0.01));
 
 	QuadraticSplinePath midNeutralGoalToPlatform;
 
 	midNeutralGoalToPlatform.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
 	midNeutralGoalToPlatform.addPoint(SplinePoint(Point(75, 107), Vector(30, 0)));
 
-	int path4 = purePursuit.addPath(midNeutralGoalToPlatform.getPath(0.01));
+	int midNeutralGoalToPlatformIndex = purePursuit.addPath(midNeutralGoalToPlatform.getPath(0.01));
 
 	QuadraticSplinePath farPlatformToDropOffGoal;
 
 	farPlatformToDropOffGoal.addPoint(SplinePoint(Point(65, 107), Vector(5, 0)));
 	farPlatformToDropOffGoal.addPoint(SplinePoint(Point(65, 80), Vector(5, 0)));
 
-	int path5 = purePursuit.addPath(farPlatformToDropOffGoal.getPath(0.01));
+	int farPlatformToDropOffGoalIndex = purePursuit.addPath(farPlatformToDropOffGoal.getPath(0.01));
 
 	QuadraticSplinePath goalDropOffToFarLeftAlliance;
 
 	goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(65, 80), Vector(15, 0)));
 	goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4)));
 
-	int path6 = purePursuit.addPath(goalDropOffToFarLeftAlliance.getPath(0.01));
+	int goalDropOffToFarLeftAllianceIndex = purePursuit.addPath(goalDropOffToFarLeftAlliance.getPath(0.01));
 
 	QuadraticSplinePath farLeftAllianceToLeftRings;
 
 	farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4 + M_PI)));
 	farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, M_PI)));
 
-	int path7 = purePursuit.addPath(farLeftAllianceToLeftRings.getPath(0.01));
+	int farLeftAllianceToLeftRingsIndex = purePursuit.addPath(farLeftAllianceToLeftRings.getPath(0.01));
 
 	QuadraticSplinePath leftRingsToGoalDrop;
 
@@ -368,28 +383,28 @@ int main() {
 	leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(2, -M_PI_4)));
 	leftRingsToGoalDrop.addPoint(SplinePoint(Point(75, 107), Vector(10, 0)));
 
-	int path8 = purePursuit.addPath(leftRingsToGoalDrop.getPath(0.01));
+	int leftRingsToGoalDropIndex = purePursuit.addPath(leftRingsToGoalDrop.getPath(0.01));
 
 	QuadraticSplinePath farPlatformToEnterHomezone;
 
 	farPlatformToEnterHomezone.addPoint(SplinePoint(Point(75, 107), Vector(2, 0)));
 	farPlatformToEnterHomezone.addPoint(SplinePoint(Point(75, 95), Vector(2, 0)));
 
-	int path9 = purePursuit.addPath(farPlatformToEnterHomezone.getPath(0.01));
+	int farPlatformToEnterHomezoneIndex = purePursuit.addPath(farPlatformToEnterHomezone.getPath(0.01));
 
 	QuadraticSplinePath enterHomeZoneToRightHomeZone;
 
 	enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(75, 95), Vector(10, 0)));
 	enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, -M_PI_2)));
 
-	int path10 = purePursuit.addPath(enterHomeZoneToRightHomeZone.getPath(0.01));
+	int enterHomeZoneToRightHomeZoneIndex = purePursuit.addPath(enterHomeZoneToRightHomeZone.getPath(0.01));
 
 	QuadraticSplinePath rightHomeZoneToFarRightAllianceGoal;
 
 	rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, M_PI_2)));
 	rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(103, 125), Vector(10, M_PI_4)));
 
-	int path11 = purePursuit.addPath(rightHomeZoneToFarRightAllianceGoal.getPath(0.01));
+	int rightHomeZoneToFarRightAllianceGoalIndex = purePursuit.addPath(rightHomeZoneToFarRightAllianceGoal.getPath(0.01));
 
 	QuadraticSplinePath farRightAllianceGoalToNearPreloads;
 
@@ -397,7 +412,7 @@ int main() {
 	farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(129.2, 70.3), Vector(20, -M_PI)));
 	farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(117.5, 5), Vector(10, 0)));
 
-	int path12 = purePursuit.addPath(farRightAllianceGoalToNearPreloads.getPath(0.01));
+	int farRightAllianceGoalToNearPreloadsIndex = purePursuit.addPath(farRightAllianceGoalToNearPreloads.getPath(0.01));
 
 	SplinePath nearPlatformAlign;
 
@@ -405,14 +420,14 @@ int main() {
 	nearPlatformAlign.addPoint(117.5, 11.4);
 	nearPlatformAlign.addPoint(130, 11.4);
 
-	int path13 = purePursuit.addPath(nearPlatformAlign.getPath(0.01));
+	int nearPlatformAlignIndex = purePursuit.addPath(nearPlatformAlign.getPath(0.01));
 
 	QuadraticSplinePath leftHomeZoneToPlatform;
 
 	leftHomeZoneToPlatform.addPoint(SplinePoint(Point(130, 11.4), Vector(10, -M_PI_2)));
 	leftHomeZoneToPlatform.addPoint(SplinePoint(Point(80, 11.4), Vector(10, -M_PI_2)));
 
-	int path14 = purePursuit.addPath(leftHomeZoneToPlatform.getPath(0.01));
+	int leftHomeZoneToPlatformIndex = purePursuit.addPath(leftHomeZoneToPlatform.getPath(0.01));
 
 #if GRAPH
 	int gd = DETECT, gm;
