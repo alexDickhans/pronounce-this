@@ -2,6 +2,7 @@
 
 #include "abstractDrivetrain.hpp"
 #include "utils/utils.hpp"
+#include <iostream>
 
 namespace Pronounce {
 	class AbstractTankDrivetrain : public AbstractDrivetrain {
@@ -20,8 +21,10 @@ namespace Pronounce {
 		}
 
 		void driveCurvature(double speed, double curvature) {
-			double leftSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
-			double rightSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
+			std::cout << "Speed: " << speed << " Curvature: " << curvature << std::endl;
+			
+			double leftSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
+			double rightSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
 
 			double maxSpeed = max(abs(leftSpeed), abs(rightSpeed));
 

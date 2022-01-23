@@ -91,6 +91,7 @@ namespace Pronounce {
 
 		int addPath(Path path) {
 			paths.emplace_back(path);
+			// printf(path.to_string().c_str());
 			return paths.size() - 1;
 		}
 
@@ -121,6 +122,7 @@ namespace Pronounce {
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
 			printf("Current Path: %d\n", currentPath);
+			printf("Current path tostring: ", paths.at(currentPath).to_string().c_str());
 			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 

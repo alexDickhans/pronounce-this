@@ -21,7 +21,6 @@ namespace Pronounce
 
 			Path path;
 			for (int i = 0; i < points.size() - 1; i++) {
-				printf("Index: %d\n", i);
 				SplinePoint startingSplinePoint = points.at(i);
 				SplinePoint endingSplinePoint = points.at(i + 1);
 
@@ -35,8 +34,6 @@ namespace Pronounce
 				currentPath.addPoint(startingControlPoint);
 				currentPath.addPoint(endingControlPoint);
 				currentPath.addPoint(endingPoint);
-
-				std::cout << "current path" << currentPath.to_string() << std::endl;
 				
 				path += currentPath.getPath(pointGranularity);
 			}

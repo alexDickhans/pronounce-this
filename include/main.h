@@ -90,12 +90,16 @@
 #include "position/trackingWheel.hpp"
 
 // Utils
+#include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"
 #include "utils/position.hpp"
 #include "utils/purePursuitProfile.hpp"
 #include "utils/purePursuitProfileManager.hpp"
+#include "utils/quadraticSplinePath.hpp"
 #include "utils/runningAverage.hpp"
+#include "utils/splinePath.hpp"
+#include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
 #include "utils/motorGroup.hpp"
