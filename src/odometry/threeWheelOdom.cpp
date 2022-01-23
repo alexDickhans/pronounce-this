@@ -61,8 +61,6 @@ namespace Pronounce {
 			return;
 		}
 
-		std::cout << "Position: " << this->getPosition()->to_string() << std::endl;
-
         // Update the position
         this->setPosition(lastPosition);
     }
