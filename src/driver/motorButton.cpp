@@ -76,7 +76,7 @@ namespace Pronounce {
 			this->motor->move_velocity(neutralAuthority);
 			break;
 		}
-	}
+
 
 		double speed = this->motor->get_actual_velocity();
 		double jammed = jammed;
@@ -84,7 +84,8 @@ namespace Pronounce {
 		// set jammed to true if the speed of the motor indicates that it is jammed
 		if (speed < dejamSpeed && this->getButtonStatus() != NEUTRAL) {
 			this->jammed = true;
-		} else {
+		}
+		else {
 			this->jammed = false;
 		}
 
@@ -97,7 +98,7 @@ namespace Pronounce {
 		if (this->dejamStartTime - pros::millis() > dejamTime && jammed) {
 			this->motor->move_velocity(dejamAuthority);
 		}
-  }
+	}
 
 	MotorButton::~MotorButton() {
 	}
