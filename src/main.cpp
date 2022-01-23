@@ -371,7 +371,7 @@ int skills() {
 	purePursuit.setCurrentPathIndex(leftAllianceToLeftNeutralIndex);
 
 	liftButton.setAutonomousAuthority(0);
-	
+
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
@@ -420,7 +420,7 @@ int skills() {
 	purePursuit.setOrientationControl(true);
 	purePursuit.setTargetOrientation(M_PI);
 
-	while(!purePursuit.isDoneOrientation(0.1)) {
+	while (!purePursuit.isDoneOrientation(0.1)) {
 		pros::Task::delay(50);
 	}
 
@@ -431,7 +431,7 @@ int skills() {
 	purePursuit.setOrientationControl(true);
 	purePursuit.setTargetOrientation(0);
 
-	while(!purePursuit.isDoneOrientation(0.1)) {
+	while (!purePursuit.isDoneOrientation(0.1)) {
 		pros::Task::delay(50);
 	}
 
