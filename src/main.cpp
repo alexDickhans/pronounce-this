@@ -76,8 +76,8 @@ int preAutonRun() {
 	frontGrabberButton.setAutonomous(true);
 	backGrabberButton.setAutonomous(true);
 	liftButton.setAutonomous(true);
-	intakeButton.setAutonomous(true);
 	liftButton.setAutonomousPosition(true);
+	intakeButton.setAutonomous(true);
 
 	pros::Task flipOutTask(flipOut);
 

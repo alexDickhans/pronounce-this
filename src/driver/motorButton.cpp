@@ -78,6 +78,27 @@ namespace Pronounce {
 		}
 	}
 
+		double speed = this->motor->get_actual_velocity();
+		double jammed = jammed;
+
+		// set jammed to true if the speed of the motor indicates that it is jammed
+		if (speed < dejamSpeed && this->getButtonStatus() != NEUTRAL) {
+			this->jammed = true;
+		} else {
+			this->jammed = false;
+		}
+
+		// Debounce to start the time
+		if (jammed && !this->jammed) {
+			this->dejamStartTime = pros::millis();
+		}
+
+		// If the timer is greater than the jam time, then dejam the motor
+		if (this->dejamStartTime - pros::millis() > dejamTime && jammed) {
+			this->motor->move_velocity(dejamAuthority);
+		}
+  }
+
 	MotorButton::~MotorButton() {
 	}
 } // namespace Pronounce
