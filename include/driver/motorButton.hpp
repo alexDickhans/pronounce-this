@@ -10,7 +10,16 @@ namespace Pronounce {
     private:
         bool goToImmediately = false;
 
-        bool autonomousButton = false;
+        bool autonomousPosition = false;
+
+		bool dejam = false;
+		double dejamTime = 0;
+		double dejamSpeed = 0;
+		double dejamAuthority = 0;
+		double dejamStartTime = 0;
+		double jamSpeed = 50;
+
+		bool jammed = false;
 
         int positiveAuthority = 0;
         int neutralAuthority = 0;
@@ -51,13 +60,57 @@ namespace Pronounce {
             this->autonomousAuthority = autonomousAuthority;
         }
 
-        bool getAutonomousButton() {
-            return this->autonomousButton;
+        bool getAutonomousPosition() {
+            return this->autonomousPosition;
         }
 
-        void setAutonomousButton(bool autonomousButton) {
-            this->autonomousButton = autonomousButton;
+        void setAutonomousPosition(bool autonomousPosition) {
+            this->autonomousPosition = autonomousPosition;
         }
+
+		bool getJammed() {
+			return this->jammed;
+		}
+
+		void setJammed(bool jammed) {
+			this->jammed = jammed;
+		}
+
+		bool getDejam() {
+			return this->dejam;
+		}
+
+		void setDejam(bool dejam) {
+			this->dejam = dejam;
+		}
+
+		double getDejamTime() {
+			return this->dejamTime;
+		}
+
+		void setDejamTime(double dejamTime) {
+			this->dejamTime = dejamTime;
+		}
+
+		double getDejamAuthority() {
+			return this->dejamAuthority;
+		}
+
+		void setDejamAuthority(double dejamAuthority) {
+			this->dejamAuthority = dejamAuthority;
+		}
+
+		double getDejamSpeed() {
+			return this->dejamSpeed;
+		}
+
+		void setDejamSpeed(double dejamSpeed) {
+			this->dejamSpeed = dejamSpeed;
+		}
+
+		double getDejamStartTime() {
+			return this->dejamStartTime;
+		}
 
         ~MotorButton();
     };
