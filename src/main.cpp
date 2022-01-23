@@ -40,6 +40,8 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, 20);
 
+Balance balance(&drivetrain, &imu, new BangBang(15, true, 200), new PID(20, 0, 0));
+
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
 
@@ -318,6 +320,8 @@ int postAuton() {
 	backGrabberButton.setAutonomous(false);
 	liftButton.setAutonomous(false);
 	intakeButton.setAutonomous(false);
+
+	balance.setEnabled(false);
 
 	return 0;
 }

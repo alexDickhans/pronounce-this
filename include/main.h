@@ -68,7 +68,12 @@
 #include "driver/motorButton.hpp"
 #include "driver/solenoidButton.hpp"
 
+// FeedbackControllers
+#include "feedbackControllers/bangBang.hpp"
+#include "feedbackControllers/pid.hpp"
+
 // Motion control
+#include "motionControl/balance.hpp"
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
@@ -78,9 +83,6 @@
 #include "odometry/odometry.hpp"
 #include "odometry/threeWheelOdom.hpp"
 #include "odometry/tankOdom.hpp"
-
-// PID
-#include "pid/pid.hpp"
 
 // Position
 #include "position/motorOdom.hpp"
