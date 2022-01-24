@@ -48,7 +48,7 @@ namespace Pronounce {
 		double lookahead;
 		std::vector<Path> paths;
 		int currentPath = -1;
-		double stopDistance;
+		double stopDistance = 0;
 		double normalizeDistance = 1;
 
 		PurePursuitProfile currentProfile;
@@ -78,7 +78,7 @@ namespace Pronounce {
 			if (!enabled)
 				return;
 
-			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following) {
+			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following || this->isDone(stopDistance)) {
 				this->stop();
 				return;
 			}

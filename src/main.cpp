@@ -477,6 +477,7 @@ void initDrivetrain() {
 	purePursuit.setNormalizeDistance(10);
 	purePursuit.setSpeed(150);
 	purePursuit.setLookahead(15);
+	purePursuit.setStopDistance(2);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
