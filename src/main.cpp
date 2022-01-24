@@ -176,22 +176,24 @@ int leftAwp() {
 	liftButton.setAutonomousAuthority(600);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(4)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setLookahead(10);
+	purePursuit.setLookahead(15);
+
+	purePursuit.setFollowing(false);
 
 	pros::delay(1000);
 
 	purePursuit.setSpeed(75);
 
+	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
+	purePursuit.setFollowing(true);
+
 	pros::delay(2000);
 
 	liftButton.setAutonomousAuthority(0);
-
-	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
-	purePursuit.setFollowing(true);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
@@ -212,43 +214,6 @@ int leftAwp() {
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	/*
-
-	// Move back
-	// Timed programming, our favorite!
-	// This is all the safegaurds I have to bypass
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
-
-	drivetrain.skidSteerVelocity(-150, 0);
-
-	pros::Task::delay(250);
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	purePursuit.setFollowing(true);
-	purePursuit.setEnabled(true);
-
-	frontGrabberButton.setButtonStatus(NEUTRAL);
-/*
-	purePursuit.setCurrentPathIndex(rightAllianceToRightRingsIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(M_PI_2);
-
-	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-
-	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setTurnTarget(M_PI_2);
-
-	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-*/
 	return 0;
 }
 
