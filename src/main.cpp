@@ -88,7 +88,7 @@ int preAutonRun() {
  * @brief Runs the Right Steal Right Auton
  *
  */
-int rightStealRight() {
+int leftStealLeft() {
 	odometry.reset(new Position(0, 16, 0));
 
 	purePursuit.setSpeed(250);
@@ -140,7 +140,7 @@ int rightStealRight() {
 	return 0;
 }
 
-int leftAwp() {
+int leftAwpRight() {
 	odometry.reset(new Position(29.0, 11.4, -M_PI_2));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -337,8 +337,6 @@ int skills() {
 		pros::Task::delay(50);
 	}
 
-
-
 	return 0;
 }
 
@@ -395,7 +393,9 @@ void updateDrivetrain() {
 	while (1) {
 		uint32_t startTime = pros::millis();
 		odometry.update();
-		purePursuit.update();
+		if (purePursuit.isEnabled()) {
+			purePursuit.update();
+		}
 		lv_label_set_text(infoLabel, odometry.getPosition()->to_string().c_str());
 		pros::Task::delay_until(&startTime, 15);
 	}
@@ -405,6 +405,7 @@ void updateDrivetrain() {
  * Initialize all sensors
  */
 void initSensors() {
+	printf("Initializing sensors\n");
 
 	imu.reset();
 
@@ -412,6 +413,10 @@ void initSensors() {
 	// while (imu.is_calibrating()) {
 	// 	pros::delay(20);
 	// }
+
+	//	printf("IMU calibrated\n");
+
+	printf("Sensors initialized\n");
 }
 
 void updateMotors() {
@@ -483,7 +488,7 @@ void initDrivetrain() {
 
 	odometry.reset(new Position());
 
-	printf("Init done");
+	printf("Drivetrain Init done");
 }
 
 /**
@@ -503,14 +508,14 @@ void runSelector() {
  * Initialize the Auton Selector
  */
 void initSelector() {
-	autonomousSelector.addAuton(Auton("Right steal right", rightStealRight));
+	autonomousSelector.addAuton(Auton("Left AWP Right", leftAwpRight));
+	autonomousSelector.addAuton(Auton("Right steal right", leftStealLeft));
 	autonomousSelector.addAuton(Auton("Test", testAuton));
-	autonomousSelector.setDefaultAuton(Auton("Right steal right", rightStealRight));
+	autonomousSelector.setDefaultAuton(0);
 	autonomousSelector.setPreAuton(Auton("Pre auton", preAutonRun));
 	autonomousSelector.setPreAuton(Auton("Post auton", postAuton));
 
 	pros::Task selectorTask(runSelector, "Auton Selector");
-
 }
 
 /**
@@ -562,7 +567,9 @@ void initialize() {
 	initDrivetrain();
 	initController();
 	initLogger();
-	// initSelector();
+	initSelector();
+	
+	printf("Init done");
 }
 
 // !SECTION
@@ -610,9 +617,11 @@ void autonomous() {
 	// This calls the user selection, all the functions prototypes are in 
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
-	preAutonRun();
-	rightStealRight();
-	postAuton();
+	// preAutonRun();
+	// leftAwpRight();
+	// postAuton();
+
+	autonomousSelector.run();
 }
 
 // !SECTION
