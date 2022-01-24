@@ -19,8 +19,8 @@ namespace Pronounce {
 		int autonIndex = -1;
 	public:
 		AutonSelector();
-		AutonSelector(std::vector<Auton> autons, Auton defaultAuton);
-		AutonSelector(std::vector<Auton> autons, Auton defaultAuton, Pronounce::Controller* controller);
+		AutonSelector(std::vector<Auton> autons, int defaultAuton);
+		AutonSelector(std::vector<Auton> autons, int defaultAuton, Pronounce::Controller* controller);
 
 		void choose();
 
