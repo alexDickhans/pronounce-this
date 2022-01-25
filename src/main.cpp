@@ -58,11 +58,38 @@ bool preDriverTasksDone = false;
 int driverMode = 0;
 
 // SECTION Auton
-
 void flipOut() {
 	pros::Task::delay(500);
 
 	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
+}
+
+void placeOnPlatform(int afterPath) {
+	pros::Task::delay(500);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	while(!purePursuit.isDone(2)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setFollowing(false);
+
+	liftButton.setAutonomousAuthority(1500);
+
+	pros::Task::delay(200);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+
+	pros::Task::delay(200);
+
+	purePursuit.setFollowing(true);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	purePursuit.setCurrentPathIndex(afterPath);
+
+	pros::Task::delay(500);
 }
 
 /**
@@ -94,7 +121,7 @@ int leftStealLeft() {
 	purePursuit.setSpeed(250);
 	purePursuit.setLookahead(15);
 
-	printf("Right Steal Right\n");
+	printf("Left Steal Left\n");
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -114,7 +141,7 @@ int leftStealLeft() {
 
 	purePursuit.setFollowing(true);
 
-	printf("Right Steal Right: Collected front goal\n");
+	printf("Left steal left: Collected front goal\n");
 
 	purePursuit.setCurrentPathIndex(backwardIndex);
 	purePursuit.setFollowing(true);
@@ -256,26 +283,9 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(leftNeutralGoalToFarHomeZoneIndex);
 
-	liftButton.setAutonomousAuthority(2000);
-
-	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-
-	pros::Task::delay(500);
-
-	liftButton.setAutonomousAuthority(1500);
-
-	pros::Task::delay(800);
-
-	frontGrabberButton.setButtonStatus(NEUTRAL);
-	liftButton.setAutonomousAuthority(2000);
-
-	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+	placeOnPlatform(farHomeZoneToMidNeutralGoalIndex);
 
 	liftButton.setAutonomousAuthority(600);
-
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
@@ -317,17 +327,8 @@ int skills() {
 	while (purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
-
-	pros::Task::delay(500);
-
-	liftButton.setAutonomousAuthority(1500);
-
-	pros::Task::delay(800);
-
-	frontGrabberButton.setButtonStatus(NEUTRAL);
-	liftButton.setAutonomousAuthority(2000);
-
-	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+	
+	placeOnPlatform(farHomeZoneToMidNeutralGoalIndex);
 
 	liftButton.setAutonomousAuthority(600);
 
@@ -335,6 +336,8 @@ int skills() {
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
+
+	printf("Skills path done\n");
 
 	return 0;
 }
