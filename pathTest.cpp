@@ -81,7 +81,7 @@ double playbackMultiplier = 1;
 
 // ANCHOR Printing variables
 
-#define PRINT_LIVE false
+#define PRINT_LIVE true
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6

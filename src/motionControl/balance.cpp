@@ -26,7 +26,7 @@ namespace Pronounce {
 		double speed = linearController->update(imu->get_pitch());
 
 		// Calculate the turing force with the orientation PID
-		this->orientationController->setPosition(this->imu->get_heading());
+		this->orientationController->setPosition(toRadians(this->imu->get_heading()));
 		double turn = this->orientationController->update();
 
 		// Send the calculated values to the drivetrain

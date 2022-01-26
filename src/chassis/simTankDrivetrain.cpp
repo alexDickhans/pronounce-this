@@ -26,7 +26,7 @@ namespace Pronounce {
 
 		// Calculate the local offset
 		double offset = (leftVelocity + rightVelocity) / 2.0;
-		double angle = (rightVelocity - leftVelocity) / this->getTrackWidth();
+		double angle = (leftVelocity - rightVelocity) / this->getTrackWidth();
 
 		leftDistance += leftVelocity;
 		rightDistance += rightVelocity;

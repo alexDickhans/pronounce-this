@@ -98,9 +98,9 @@ namespace Pronounce {
 		// Left home zone to left neutral goal
 		QuadraticSplinePath leftHomeZoneToLeftNeutralGoal;
 
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(23.2, 11.4), Vector(30, M_PI_4 * 1.5)));
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(20, 0)));
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 66), Vector(20, 0)));
+		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(23.2, 11.4), Vector(25, M_PI_4 * 1.5)));
+		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(15, 0)));
+		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 78), Vector(35, M_PI_4 * 0.75)));
 
 		leftHomeZoneToLeftNeutralGoalIndex = purePursuit->addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
 
