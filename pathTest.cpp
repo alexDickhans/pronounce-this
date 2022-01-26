@@ -304,9 +304,11 @@ int main() {
 
 	int loopcount = 0;
 
+	// Sim code
 	SimTankDrivetrain drivetrain(15.0, 15.0/fps, 60.0/fps);
 	SimOdometry odometry(&drivetrain);
 
+	// Shared code
 	TankPurePursuit purePursuit(&drivetrain, &odometry, lookahead);
 
 	double trackWidth = drivetrain.getTrackWidth(); 
