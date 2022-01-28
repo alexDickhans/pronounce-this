@@ -45,9 +45,8 @@ namespace Pronounce {
 			printf("Spin speed: %f\n", spinSpeed);
 
 			return;
-		}
-
-		if (isDone(this->getStopDistance())) {
+		} else if (isDone(this->getStopDistance())) {
+			this->stop();
 			return;
 		}
 

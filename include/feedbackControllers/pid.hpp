@@ -130,6 +130,12 @@ namespace Pronounce {
 			this->turnPid = turnPid;
 		}
 
+		void reset() {
+			this->prevError = 0;
+			this->error = 0;
+			this->derivitive = 0;
+		}
+
         ~PID();
     };
 } // namespace Pronounce

@@ -63,6 +63,7 @@ namespace Pronounce {
 
 		void setTargetOrientation(double orientation) {
 			this->turnPid->setTarget(orientation);
+			this->turnPid->reset();
 		}
 
 		bool getOrientationControl() {

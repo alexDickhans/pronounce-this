@@ -78,7 +78,7 @@ namespace Pronounce {
 			if (!enabled)
 				return;
 
-			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following || this->isDone(stopDistance)) {
+			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following) {
 				this->stop();
 				return;
 			}

@@ -25,6 +25,7 @@ namespace Pronounce {
 	int leftHomeZoneToLeftNeutralGoalIndex;
 	int leftNeutralGoalToFarHomeZoneIndex;
 	int farHomeZoneToMidNeutralGoalIndex;
+	int farHomeZoneToEnterFarHomeZoneIndex;
 	int midNeutralGoalToPlatformIndex;
 	int farPlatformToDropOffGoalIndex;
 	int goalDropOffToFarLeftAllianceIndex;
@@ -99,30 +100,37 @@ namespace Pronounce {
 		QuadraticSplinePath leftHomeZoneToLeftNeutralGoal;
 
 		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(23.2, 11.4), Vector(25, M_PI_4 * 1.5)));
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(15, 0)));
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 78), Vector(35, M_PI_4 * 0.75)));
+		// leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(15, 0)));
+		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(37, 70), Vector(35, 0)));
 
 		leftHomeZoneToLeftNeutralGoalIndex = purePursuit->addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
 
 		QuadraticSplinePath leftNeutralGoalToFarHomeZone;
 
-		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(35, 66), Vector(30, -M_PI_4)));
-		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 93.9), Vector(30, 0)));
-		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
+		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(35, 78), Vector(30, 0)));
+		// leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 98), Vector(10, 0)));
+		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(85, 112), Vector(25, 0)));
 
 		leftNeutralGoalToFarHomeZoneIndex = purePursuit->addPath(leftNeutralGoalToFarHomeZone.getPath(0.01));
 
 		QuadraticSplinePath farHomeZoneToMidNeutralGoal;
 
-		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
-		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
+		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(85, 112), Vector(20, 0)));
+		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(78, 76), Vector(20, M_PI_4 * -0.5)));
 
 		farHomeZoneToMidNeutralGoalIndex = purePursuit->addPath(farHomeZoneToMidNeutralGoal.getPath(0.01));
 
+		QuadraticSplinePath farHomeZoneToEnterFarHomeZone;
+
+		farHomeZoneToEnterFarHomeZone.addPoint(SplinePoint(Point(83, 107), Vector(20, 0)));
+		farHomeZoneToEnterFarHomeZone.addPoint(SplinePoint(Point(83, 98), Vector(30, 0)));
+
+		farHomeZoneToEnterFarHomeZoneIndex = purePursuit->addPath(farHomeZoneToEnterFarHomeZone.getPath(0.01));
+
 		QuadraticSplinePath midNeutralGoalToPlatform;
 
-		midNeutralGoalToPlatform.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
-		midNeutralGoalToPlatform.addPoint(SplinePoint(Point(75, 107), Vector(30, 0)));
+		midNeutralGoalToPlatform.addPoint(SplinePoint(Point(78, 75), Vector(30, 0)));
+		midNeutralGoalToPlatform.addPoint(SplinePoint(Point(88, 115), Vector(30, 0)));
 
 		midNeutralGoalToPlatformIndex = purePursuit->addPath(midNeutralGoalToPlatform.getPath(0.01));
 

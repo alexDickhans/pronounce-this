@@ -40,7 +40,7 @@ namespace Pronounce {
 		newPosition->operator=(oldPosition);
 		
 		newPosition->add(localOffset.getCartesian());
-		newPosition->setTheta(relativeAngle - M_PI_2);
+		newPosition->setTheta(relativeAngle + M_PI_2);
 
 		this->setPosition(newPosition);
 	}

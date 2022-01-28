@@ -36,9 +36,9 @@ Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 
-TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 15.0);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 11.0);
 
-Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.5, 0, 0), 20);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
 
 Balance balance(&drivetrain, &imu, new BangBang(15, true, 200), new PID(10, 0, 0));
 
@@ -61,41 +61,13 @@ int driverMode = 0;
 void flipOut() {
 	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
 
-	pros::Task::delay(200);
+	pros::Task::delay(100);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	pros::Task::delay(300);
 
 	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	pros::Task::delay(500);
-}
-
-void placeOnPlatform(int afterPath) {
-	pros::Task::delay(500);
-
-	liftButton.setAutonomousAuthority(2000);
-
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-
-	purePursuit.setFollowing(false);
-
-	liftButton.setAutonomousAuthority(1500);
-
-	pros::Task::delay(200);
-
-	frontGrabberButton.setButtonStatus(NEUTRAL);
-
-	pros::Task::delay(200);
-
-	purePursuit.setFollowing(true);
-
-	liftButton.setAutonomousAuthority(2000);
-
-	purePursuit.setCurrentPathIndex(afterPath);
 
 	pros::Task::delay(500);
 }
@@ -107,11 +79,55 @@ void waitForDone() {
 void waitForDoneOrientation() {
 	pros::Task::delay(100);
 
-	while (!purePursuit.isDoneOrientation(0.1)) {
+	uint32_t startTime = pros::millis();
+
+	pros::Task::delay(100);
+
+	while (!purePursuit.isDoneOrientation(0.1) && pros::millis() - startTime < 3000) {
 		pros::Task::delay(50);
 	}
 
 	pros::Task::delay(200);
+}
+
+void placeOnPlatform(int afterPath, double orientation) {
+	pros::Task::delay(500);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	uint32_t startTime = pros::millis();
+
+	while (!purePursuit.isDone(6) && pros::millis() - startTime < 8000) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setTargetOrientation(orientation);
+	purePursuit.setOrientationControl(true);
+
+	waitForDoneOrientation();
+
+	pros::Task::delay(800);
+
+	purePursuit.setFollowing(false);
+
+	liftButton.setAutonomousAuthority(1500);
+
+	pros::Task::delay(1000);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+
+	pros::Task::delay(300);
+
+	purePursuit.setOrientationControl(false);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setCurrentPathIndex(afterPath);
+
+	pros::Task::delay(800);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	pros::Task::delay(800);
 }
 
 /**
@@ -302,63 +318,81 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	purePursuit.setSpeed(150);
+	purePursuit.setSpeed(100);
 
-	purePursuit.setLookahead(10);
+	purePursuit.setLookahead(8);
 
 	pros::Task::delay(300);
 
 	purePursuit.setCurrentPathIndex(leftNeutralGoalToFarHomeZoneIndex);
 
-	placeOnPlatform(farHomeZoneToMidNeutralGoalIndex);
-
-	liftButton.setAutonomousAuthority(600);
-
-	frontGrabberButton.setButtonStatus(POSITIVE);
+	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex, 0);
 
 	pros::Task::delay(500);
 
-	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
-
 	liftButton.setAutonomousAuthority(0);
 
-/*
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
 
 	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
+
 	purePursuit.setTargetOrientation(M_PI);
 
 	waitForDoneOrientation();
 
 	purePursuit.setOrientationControl(false);
 
+	pros::Task::delay(300);
+
+	purePursuit.setLookahead(12);
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(10)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setFollowing(false);
+
+	pros::Task::delay(800);
+
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	purePursuit.setOrientationControl(true);
-	purePursuit.setTargetOrientation(0);
-
-	waitForDoneOrientation();
-
-	purePursuit.setOrientationControl(false);
+	pros::Task::delay(600);
 
 	liftButton.setAutonomousAuthority(2000);
 
+	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setTargetOrientation(0);
+
+	pros::Task::delay(1500);
+
+	purePursuit.setOrientationControl(false);
+
+	pros::Task::delay(300);
+
+	purePursuit.setLookahead(10);
+	
 	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
 
-	placeOnPlatform(farHomeZoneToMidNeutralGoalIndex);
+	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex, 0);
 
 	liftButton.setAutonomousAuthority(600);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
+	while (!purePursuit.isDone(4)) {
 		pros::Task::delay(50);
 	}
 
 	printf("Skills path done\n");
-*/
+
 	return 0;
 }
 
@@ -371,39 +405,28 @@ int testOrientationAuton() {
 
 	printf("Test Auton\n");
 
-	odometry.reset(new Position(0, 0, -M_PI_2));
+	odometry.reset(new Position(0, 0, 0));
 
 	purePursuit.setCurrentPathIndex(0);
 
 	purePursuit.setOrientationControl(true);
 	purePursuit.setFollowing(true);
 	
-	purePursuit.setTargetOrientation(M_PI_2);
+	purePursuit.setTargetOrientation(M_PI);
 
 	waitForDoneOrientation();
 
-	printf("Orientation set to M_PI_2\n");
+	printf("Orientation set to M_PI\n");
 	pros::Task::delay(1000);
 
-	purePursuit.setTargetOrientation(-M_PI_2);
+	purePursuit.setTargetOrientation(0);
 
-	printf("Orientation set to -M_PI_2\n");
+	printf("Orientation set to 0\n");
 
 	waitForDoneOrientation();
 
 	purePursuit.setOrientationControl(false);
-
-	/*
-	odometry.reset(new Position());
-
-	purePursuit.setCurrentPathIndex(testPathIndex);
-	purePursuit.setFollowing(true);
-
-	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
-		pros::Task::delay(50);
-	}
-	*/
+	purePursuit.setFollowing(false);
 
 	return 0;
 }
@@ -684,6 +707,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
+	// testOrientationAuton();
 	skills();
 	postAuton();
 
