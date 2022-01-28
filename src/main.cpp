@@ -298,7 +298,7 @@ int skills() {
 	purePursuit.setFollowing(true);
 	purePursuit.setEnabled(true);
 
-	purePursuit.setLookahead(8);
+	purePursuit.setLookahead(12);
 	purePursuit.setSpeed(65);
 
 	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralGoalIndex);
@@ -320,7 +320,7 @@ int skills() {
 
 	purePursuit.setSpeed(100);
 
-	purePursuit.setLookahead(8);
+	purePursuit.setLookahead(12);
 
 	pros::Task::delay(300);
 
@@ -378,7 +378,7 @@ int skills() {
 
 	pros::Task::delay(300);
 
-	purePursuit.setLookahead(10);
+	purePursuit.setLookahead(8);
 	
 	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
 
@@ -390,6 +390,50 @@ int skills() {
 	while (!purePursuit.isDone(4)) {
 		pros::Task::delay(50);
 	}
+
+	backGrabberButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setTargetOrientation(M_PI_2);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(enterFarHomeZoneToRightNeutralGoalIndex);
+
+	// TODO When it gets close to the goal put down arm
+
+	// Wait until it is done
+	while (!purePursuit.isDone(4)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	// TODO Raise arm
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setTargetOrientation(M_PI);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(rightNeutralToPlatformIndex);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(4)) {
+		pros::Task::delay(50);
+	}
+
+	// TODO lower arm
+
+	// TODO Climb
 
 	printf("Skills path done\n");
 
@@ -707,8 +751,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	// testOrientationAuton();
-	skills();
+	testBalanceAuton();
+	// skills();
 	postAuton();
 
 	// autonomousSelector.run();

@@ -24,11 +24,22 @@ namespace Pronounce {
 
 		void update();
 
-		void balance(double waitTime) {
-			while(!this->isBalanced()) {
+		void balance(int waitTime) {
+
+			this->enabled = true;
+			
+			this->update();
+
+			uint32_t startTime = pros::millis();
+
+			while (!this->isBalanced()) {// && pros::millis() - startTime < 2000) {
+				printf("Is balanced: %d\n", this->isBalanced());
+				
 				this->update();
 				pros::Task::delay(waitTime);
 			}
+
+			this->enabled = false;
 		}
 
 		bool isBalanced() {
