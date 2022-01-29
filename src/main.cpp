@@ -130,6 +130,24 @@ void placeOnPlatform(int afterPath, double orientation) {
 	pros::Task::delay(800);
 }
 
+void balanceRobot() {
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	drivetrain.skidSteerVelocity(200, 0);
+
+	pros::Task::delay(2000);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	int startTime = pros::millis();
+
+	while (pros::millis() - startTime < 20000 || !balance.isBalanced()) {
+		balance.update();
+		pros::Task::delay(15);
+	}
+}
+
 /**
  * @brief Runs during auton period before auton
  *
@@ -236,8 +254,6 @@ int leftAwpRight() {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setLookahead(15);
-
 	purePursuit.setFollowing(false);
 
 	pros::delay(800);
@@ -264,11 +280,12 @@ int leftAwpRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(2)) {
+	while (!purePursuit.isDone(4)) {
 		pros::Task::delay(50);
 	}
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	return 0;
 }
@@ -404,25 +421,27 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(enterFarHomeZoneToRightNeutralGoalIndex);
 
-	// TODO When it gets close to the goal put down arm
+	// Wait until close to goal to put arm down
+	while (odometry.getPosition()->getY() > 85) {
+		pros::Task::delay(50);
+	}
+
+	// Lower arm
+	liftButton.setAutonomousAuthority(0);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(4)) {
 		pros::Task::delay(50);
 	}
 
+	pros::Task::delay(500);
+
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	// TODO Raise arm
+	pros::Task::delay(500);
 
-	purePursuit.setOrientationControl(true);
-	purePursuit.setFollowing(true);
-
-	purePursuit.setTargetOrientation(M_PI);
-
-	waitForDoneOrientation();
-
-	purePursuit.setOrientationControl(false);
+	// Raise arm for lowing platform
+	liftButton.setAutonomousAuthority(2000);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToPlatformIndex);
 
@@ -431,9 +450,24 @@ int skills() {
 		pros::Task::delay(50);
 	}
 
-	// TODO lower arm
+	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
 
-	// TODO Climb
+	// Turn to position
+	purePursuit.setTargetOrientation(-M_PI_2);
+
+	waitForDoneOrientation();
+
+	// Lower arm
+	liftButton.setAutonomousAuthority(100);
+
+	pros::Task::delay(2000);
+
+	purePursuit.setOrientationControl(false);
+	
+	// Balance on the platform
+	balance.getOrientationController()->setTarget(-M_PI_2);
+	balanceRobot();
 
 	printf("Skills path done\n");
 
@@ -581,9 +615,9 @@ void initMotors() {
 
 	intakeButton.setSingleToggle(true);
 	intakeButton.setDejam(true);
-	intakeButton.setDejamAuthority(-100);
-	intakeButton.setDejamSpeed(5);
-	intakeButton.setDejamTime(500);
+	intakeButton.setDejamAuthority(-250);
+	intakeButton.setDejamSpeed(50);
+	intakeButton.setDejamTime(250);
 
 	lift.set_current_limit(25000);
 
@@ -751,8 +785,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	testBalanceAuton();
-	// skills();
+	// testBalanceAuton();
+	leftAwpRight();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -808,8 +842,11 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
-			// drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-			// drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		} else if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
 
 		if (master.get_digital_new_press(DIGITAL_LEFT)) {

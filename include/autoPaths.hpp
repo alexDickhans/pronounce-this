@@ -73,14 +73,14 @@ namespace Pronounce {
 		QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
 
 		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(80, 46.4), Vector(15.0, -M_PI_2 - M_PI_4)));
-		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(125.0, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
+		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(127.0, 28), Vector(15.0, -M_PI_2 - M_PI_4)));
 
 		rightHomeZoneToRightAllianceIndex = purePursuit->addPath(rightHomeZoneToRightAlliance.getPath(0.1));
 
 		QuadraticSplinePath rightAllianceToRightHomeZone = QuadraticSplinePath();
 
 		rightAllianceToRightHomeZone.addPoint(SplinePoint(Point(130.0, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
-		rightAllianceToRightHomeZone.addPoint(SplinePoint(Point(80, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
+		rightAllianceToRightHomeZone.addPoint(SplinePoint(Point(100, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
 
 		rightAllianceToRightHomeZoneIndex = purePursuit->addPath(rightAllianceToRightHomeZone.getPath(0.1));
 
