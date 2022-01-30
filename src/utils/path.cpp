@@ -31,7 +31,7 @@ namespace Pronounce {
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
 
-                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1) {
+                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1)) {
                     if (t2 < t1) {
                         pointFound = true;
                         Vector resultVector = d.scale(t1);
@@ -77,6 +77,9 @@ namespace Pronounce {
     Point Path::getClosestPoint(Point currentPosition) {
         Point closestPoint;
         double closestDistance = INT32_MAX;
+		double closestT = INT32_MAX;
+
+		double totalT = 0;
 
         // Returns the largest item in list
         // If two items are the same distance apart, will return first one
@@ -88,13 +91,13 @@ namespace Pronounce {
             Vector positionMinusLast(&currentPosition, &lastPoint);
 
             // https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
-            double lambdaS = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
+            double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
 
-            if (0 < lambdaS && lambdaS < 1) {
-                lastPoint += Vector(&lastPoint, &thisPoint).scale(lambdaS).getCartesian();
-            } else if (lambdaS > 1) {
+            if (0 < t && t < 1) {
+                lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+            } else if (t > 1) {
                 lastPoint = thisPoint;
-            } else if (lambdaS < 0) {
+            } else if (t < 0) {
                 lastPoint = lastPoint;
             }
 
@@ -102,7 +105,10 @@ namespace Pronounce {
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestPoint = lastPoint;
+				closestT = totalT;
             }
+
+			totalT += 1;
         }
 
         return closestPoint;

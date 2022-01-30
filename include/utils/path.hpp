@@ -14,6 +14,7 @@ namespace Pronounce {
 	class Path {
 	private:
 		std::vector<Point> path;
+		bool continuePath = true;
 	public:
 		Path();
 
@@ -37,14 +38,14 @@ namespace Pronounce {
 				path.emplace_back(oldPath.at(i + 1));
 			}
 		}
-		
+
 		/**
 		 * @brief Smooth the path
-		 * 
+		 *
 		 * @deprecated Not working yet
-		 * 
-		 * @param weightSmooth 
-		 * @param tolerance 
+		 *
+		 * @param weightSmooth
+		 * @param tolerance
 		 */
 		void smooth(double weightSmooth, double tolerance) {
 			double weightData = 1 - weightSmooth;
@@ -55,26 +56,26 @@ namespace Pronounce {
 
 			while (change >= tolerance) {
 				change = 0.0;
-				for (int i = 1; i < oldPath.size()-1; i++) {
+				for (int i = 1; i < oldPath.size() - 1; i++) {
 					Point oldPoint = oldPath.at(i);
 					Point newPoint = path.at(i);
 
 					// x
 					double aux = path.at(i).getX();
 					path.at(i).setX(path.at(i).getX()
-									 + (weightData * (oldPoint.getX() - newPoint.getX()))
-									 + (weightSmooth * (path.at(i-1).getX() + path.at(i+1).getX() - 2.0 * newPoint.getX()))
-									 );
+						+ (weightData * (oldPoint.getX() - newPoint.getX()))
+						+ (weightSmooth * (path.at(i - 1).getX() + path.at(i + 1).getX() - 2.0 * newPoint.getX()))
+					);
 
 					change += abs(aux - newPoint.getX());
 
 					// y
 					aux = path.at(i).getY();
 					path.at(i).setY(path.at(i).getY()
-									 + (weightData * (oldPoint.getY() - newPoint.getY()))
-									 + (weightSmooth * (path.at(i-1).getY() + path.at(i+1).getY() - 2.0 * newPoint.getY()))
-									 );
-					
+						+ (weightData * (oldPoint.getY() - newPoint.getY()))
+						+ (weightSmooth * (path.at(i - 1).getY() + path.at(i + 1).getY() - 2.0 * newPoint.getY()))
+					);
+
 					change += abs(aux - newPoint.getY());
 				}
 			}
@@ -109,6 +110,100 @@ namespace Pronounce {
 		 * @return Point The closest point
 		 */
 		Point getClosestPoint(Point currentPosition);
+
+		double getTValue(Point currentPosition) {
+			Point closestPoint;
+			double closestDistance = INT32_MAX;
+			double closestT = INT32_MAX;
+
+			double totalT = 0;
+
+			// Returns the largest item in list
+			// If two items are the same distance apart, will return first one
+			for (int i = 1; i < path.size(); i++) {
+				Point lastPoint = path.at(i - 1);
+				Point thisPoint = path.at(i);
+
+				Vector thisMinusLast(&thisPoint, &lastPoint);
+				Vector positionMinusLast(&currentPosition, &lastPoint);
+
+				// https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
+				double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
+
+				if (0 < t && t < 1) {
+					lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+				}
+				else if (t > 1) {
+					lastPoint = thisPoint;
+				}
+				else if (t < 0) {
+					lastPoint = lastPoint;
+				}
+
+				double distance = lastPoint.distance(currentPosition);
+				if (distance < closestDistance) {
+					closestDistance = distance;
+					closestPoint = lastPoint;
+					closestT = totalT;
+				}
+
+				totalT += 1;
+			}
+
+			return closestT;
+		}
+
+		double distanceFromEnd(Point currentPosition) {
+			double t = this->path.size() - 1 - this->getTValue(currentPosition);
+
+			double total = 0;
+
+			for (int i = path.size() - 1; i > 0 && t > 0; i ++) {
+				Point startPoint = path.at(i);
+				Point endPoint = path.at(i - 1);
+
+				total += startPoint.distance(endPoint);
+
+				if (t > 1) {
+					t --;
+				}
+				else {
+					t -= fmod(t, 1);
+				}
+			}
+
+			return total;
+		}
+
+		double distanceFromStart(Point currentPosition) {
+			double t = this->getTValue(currentPosition);
+
+			double total = 0;
+
+			for (int i = 1; i < path.size() - 1 && t > 0; i ++) {
+				Point startPoint = path.at(i);
+				Point endPoint = path.at(i - 1);
+
+				total += startPoint.distance(endPoint);
+
+				if (t > 1) {
+					t --;
+				}
+				else {
+					t -= fmod(t, 1);
+				}
+			}
+
+			return total;
+		}
+
+		bool isContinuePath() {
+			return continuePath;
+		}
+
+		void setContinuePath(bool continuePath) {
+			this->continuePath = continuePath;
+		}
 
 		void operator+= (Point point) {
 			this->path.emplace_back(point);
