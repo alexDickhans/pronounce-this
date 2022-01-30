@@ -73,7 +73,7 @@ namespace Pronounce {
 		QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
 
 		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(80, 46.4), Vector(15.0, -M_PI_2 - M_PI_4)));
-		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(127.0, 28), Vector(15.0, -M_PI_2 - M_PI_4)));
+		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(129.0, 32), Vector(15.0, -M_PI_2 - M_PI_4)));
 
 		rightHomeZoneToRightAllianceIndex = purePursuit->addPath(rightHomeZoneToRightAlliance.getPath(0.1));
 
@@ -121,7 +121,7 @@ namespace Pronounce {
 		QuadraticSplinePath farHomeZoneToMidNeutralGoal;
 
 		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(81, 117), Vector(20, 0)));
-		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(78, 76), Vector(20, M_PI_4 * -0.5)));
+		farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(78, 78), Vector(20, M_PI_4 * -0.5)));
 
 		farHomeZoneToMidNeutralGoalIndex = purePursuit->addPath(farHomeZoneToMidNeutralGoal.getPath(0.01));
 
@@ -142,14 +142,14 @@ namespace Pronounce {
 		QuadraticSplinePath enterFarHomeZoneToRightNeutralGoal;
 
 		enterFarHomeZoneToRightNeutralGoal.addPoint(SplinePoint(Point(92, 115), Vector(20, -M_PI_2)));
-		enterFarHomeZoneToRightNeutralGoal.addPoint(SplinePoint(Point(107, 76), Vector(20, 0)));
+		enterFarHomeZoneToRightNeutralGoal.addPoint(SplinePoint(Point(100, 76), Vector(20, 0)));
 
 		enterFarHomeZoneToRightNeutralGoalIndex = purePursuit->addPath(enterFarHomeZoneToRightNeutralGoal.getPath(0.01));
 
 		QuadraticSplinePath rightNeutralToPlatform;
 
 		rightNeutralToPlatform.addPoint(SplinePoint(Point(107, 76), Vector(20, 0)));
-		rightNeutralToPlatform.addPoint(SplinePoint(Point(100, 12), Vector(30, M_PI_2)));
+		rightNeutralToPlatform.addPoint(SplinePoint(Point(90, 0), Vector(30, M_PI_2)));
 
 		rightNeutralToPlatformIndex = purePursuit->addPath(rightNeutralToPlatform.getPath(0.01));
 
@@ -234,6 +234,11 @@ namespace Pronounce {
 		forwardIndex = purePursuit->addPath(forward);
 
 		Path backward;
+
+		backward.addPoint(0, 60);
+		backward.addPoint(0, 24);
+
+		backwardIndex = purePursuit->addPath(backward);
 
 		//!SECTION
 

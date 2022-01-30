@@ -40,7 +40,7 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(15, true, 200), new PID(10, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(20, true, 100), new PID(10, 0, 0));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
@@ -192,7 +192,7 @@ int leftStealLeft() {
 
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-	pros::Task::delay(300);
+	pros::Task::delay(200);
 	liftButton.setAutonomousAuthority(360);
 
 	purePursuit.setFollowing(true);
@@ -203,9 +203,13 @@ int leftStealLeft() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(4)) {
+	while (!purePursuit.isDone(6)) {
 		pros::Task::delay(50);
 	}
+
+	purePursuit.setFollowing(false);
+	
+	pros::Task::delay(500);
 
 	return 0;
 }
@@ -363,7 +367,7 @@ int skills() {
 
 	purePursuit.setOrientationControl(false);
 
-	pros::Task::delay(300);
+	pros::Task::delay(1000);
 
 	purePursuit.setLookahead(12);
 
@@ -380,7 +384,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	pros::Task::delay(600);
+	pros::Task::delay(1200);
 
 	liftButton.setAutonomousAuthority(2000);
 
@@ -517,7 +521,7 @@ int testBalanceAuton() {
 
 	drivetrain.skidSteerVelocity(150, 0);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(500);
 
 	drivetrain.skidSteerVelocity(0, 0);
 
@@ -786,7 +790,7 @@ void autonomous() {
 	// autonomousSelector.run();
 	preAutonRun();
 	// testBalanceAuton();
-	leftAwpRight();
+	leftStealLeft();
 	postAuton();
 
 	// autonomousSelector.run();
