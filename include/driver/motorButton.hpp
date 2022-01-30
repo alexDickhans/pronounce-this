@@ -15,6 +15,7 @@ namespace Pronounce {
 		bool dejam = false;
 		double dejamTime = 0;
 		double dejamSpeed = 0;
+		double dejamDuration = 1200;
 		double dejamAuthority = 0;
 		double dejamStartTime = 0;
 		double jamSpeed = 50;

@@ -31,19 +31,22 @@ namespace Pronounce {
 			return;
 		}
 
-		if (isDone(this->getStopDistance())) {
-			return;
-		}
+		std::cout << "Orientation control: " << this->orientationControl << std::endl;
 
 		if (orientationControl) {
 			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
-			this->turnPid->setPosition(angleDifference(0, currentOrientation));
+			this->turnPid->setPosition(angleDifference(currentOrientation, 0));
 			double spinSpeed = this->turnPid->update();
 
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
 
 			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
 
+			printf("Spin speed: %f\n", spinSpeed);
+
+			return;
+		} else if (isDone(this->getStopDistance())) {
+			this->stop();
 			return;
 		}
 

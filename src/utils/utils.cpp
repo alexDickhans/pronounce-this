@@ -15,6 +15,12 @@ namespace Pronounce
         if (x < 0.0) return -1.0;
         return x;
     }
+	
+	double signnum_c(double x) {
+        if (x > 0.0) return 1.0;
+        if (x < 0.0) return -1.0;
+        return x;
+    }
 
     double angleDifference(double angle1, double angle2) {
         while (abs(angle1) > M_PI) angle1 += M_PI * 2.0 * -signum_c(angle1);

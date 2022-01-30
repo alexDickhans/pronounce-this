@@ -5,15 +5,15 @@ namespace Pronounce {
         controller = new Pronounce::Controller(pros::E_CONTROLLER_MASTER);
         preAuton = Auton();
         postAuton = Auton();
-        defaultAuton = Auton();
+        defaultAuton = 0;
     }
 
-    AutonSelector::AutonSelector(std::vector<Auton> autons, Auton defaultAuton) : AutonSelector() {
+    AutonSelector::AutonSelector(std::vector<Auton> autons, int defaultAuton) : AutonSelector() {
         this->autons = autons;
         this->defaultAuton = defaultAuton;
     }
 
-    AutonSelector::AutonSelector(std::vector<Auton> autons, Auton defaultAuton, Pronounce::Controller* controller) {
+    AutonSelector::AutonSelector(std::vector<Auton> autons, int defaultAuton, Pronounce::Controller* controller) {
         this->autons = autons;
         this->defaultAuton = defaultAuton;
         this->controller = controller;

@@ -57,7 +57,7 @@ namespace Pronounce {
 		}
 
 		bool isInRange() {
-			return abs(this->setPoint - this->lastInput) > minimumDifference;
+			return abs(this->setPoint - this->lastInput) < minimumDifference;
 		}
 
 		~BangBang();

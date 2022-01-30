@@ -63,6 +63,7 @@ namespace Pronounce {
 
 		void setTargetOrientation(double orientation) {
 			this->turnPid->setTarget(orientation);
+			this->turnPid->reset();
 		}
 
 		bool getOrientationControl() {
@@ -78,7 +79,7 @@ namespace Pronounce {
 		}
 
 		bool isDoneOrientation(double maxDifference) {
-			return maxDifference > angleDifference(this->getOdometry()->getPosition()->getTheta(), this->getTurnPid()->getTarget()) && this->turnPid->getDerivitive() < maxDifference/5.0;
+			return maxDifference > turnPid->getError();
 		}
 
 		~TankPurePursuit();

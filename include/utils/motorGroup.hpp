@@ -136,7 +136,12 @@ namespace Pronounce {
 			return stopped / motors.size();
 		}
 
-
+		void set_brake_mode(pros::motor_brake_mode_e_t mode) {
+			for (int i = 0; i < motors.size(); i++) {
+				pros::Motor* motor = this->motors.at(i);
+				motor->set_brake_mode(mode);
+			}
+		}
 
 		~MotorGroup();
 	};	

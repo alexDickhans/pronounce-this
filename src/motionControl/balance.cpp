@@ -19,15 +19,17 @@ namespace Pronounce {
 	}
 
 	void Balance::update() {
-		if (imu == nullptr || drivetrain == nullptr)
+		if (imu == nullptr || drivetrain == nullptr || !enabled)
 			return;
 
 		// Set the speed with the bang bang controller
 		double speed = linearController->update(imu->get_pitch());
 
 		// Calculate the turing force with the orientation PID
-		this->orientationController->setPosition(this->imu->get_heading());
+		this->orientationController->setPosition(toRadians(this->imu->get_heading()));
 		double turn = this->orientationController->update();
+
+		printf("Speed: %f, Turn: %f\n", speed, turn);
 
 		// Send the calculated values to the drivetrain
 		this->drivetrain->skidSteerVelocity(speed, turn);

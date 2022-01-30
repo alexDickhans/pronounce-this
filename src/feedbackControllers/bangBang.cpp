@@ -27,7 +27,7 @@ namespace Pronounce {
 		if (reversable) {
 			if (abs(difference) > minimumDifference) {
 				// Return the opisite of the way that we are so we go that way
-				return outputStrength * -signnum_c(difference);
+				return outputStrength * signnum_c(difference);
 			} else {
 				// Don't return anything if the value is null.
 				return 0;
@@ -35,7 +35,7 @@ namespace Pronounce {
 		} else {
 			if (difference < -minimumDifference) {
 				// Return the opisite of the way that we are so we go that way	
-				return outputStrength * -1;
+				return outputStrength;
 			} else {
 				return 0;
 			}

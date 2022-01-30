@@ -26,7 +26,7 @@ namespace Pronounce {
 
 		// Calculate the local offset
 		double offset = (leftVelocity + rightVelocity) / 2.0;
-		double angle = (rightVelocity - leftVelocity) / this->getTrackWidth();
+		double angle = (leftVelocity - rightVelocity) / this->getTrackWidth();
 
 		leftDistance += leftVelocity;
 		rightDistance += rightVelocity;
@@ -34,13 +34,13 @@ namespace Pronounce {
 		double relativeAngle = ((leftDistance - rightDistance) / this->getTrackWidth()) + this->getResetOrientation();
 
 		// Calculate a vector
-		Vector localOffset(offset, relativeAngle+M_PI_2);
+		Vector localOffset(offset, relativeAngle - (angle / 2.0) - M_PI_2);
 
 		Position* newPosition = new Position();
 		newPosition->operator=(oldPosition);
 		
 		newPosition->add(localOffset.getCartesian());
-		newPosition->setTheta(relativeAngle - (angle / 2.0));
+		newPosition->setTheta(relativeAngle + M_PI_2);
 
 		this->setPosition(newPosition);
 	}

@@ -48,7 +48,7 @@ namespace Pronounce {
 		double lookahead;
 		std::vector<Path> paths;
 		int currentPath = -1;
-		double stopDistance;
+		double stopDistance = 0;
 		double normalizeDistance = 1;
 
 		PurePursuitProfile currentProfile;
