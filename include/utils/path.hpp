@@ -154,22 +154,17 @@ namespace Pronounce {
 		}
 
 		double distanceFromEnd(Point currentPosition) {
-			double t = this->path.size() - 1 - this->getTValue(currentPosition);
+			double t = this->getTValue(currentPosition);
+			double t2 = t;
 
 			double total = 0;
 
-			for (int i = path.size() - 1; i > 0 && t > 0; i ++) {
-				Point startPoint = path.at(i);
-				Point endPoint = path.at(i - 1);
+			for (int i = path.size() - 1; i > floor(t); i --) {
+				Point startPoint = path.at(i-1);
+				Point endPoint = path.at(i);
 
-				total += startPoint.distance(endPoint);
-
-				if (t > 1) {
-					t --;
-				}
-				else {
-					t -= fmod(t, 1);
-				}
+				total += startPoint.distance(endPoint) * std::clamp(t2, 0.0, 1.0);
+				t2--;
 			}
 
 			return total;
@@ -177,21 +172,16 @@ namespace Pronounce {
 
 		double distanceFromStart(Point currentPosition) {
 			double t = this->getTValue(currentPosition);
+			double t2 = t;
 
 			double total = 0;
 
-			for (int i = 1; i < path.size() - 1 && t > 0; i ++) {
-				Point startPoint = path.at(i);
-				Point endPoint = path.at(i - 1);
+			for (int i = 1; i <= ceil(t); i ++) {
+				Point startPoint = path.at(i-1);
+				Point endPoint = path.at(i);
 
-				total += startPoint.distance(endPoint);
-
-				if (t > 1) {
-					t --;
-				}
-				else {
-					t -= fmod(t, 1);
-				}
+				total += startPoint.distance(endPoint) * std::clamp(t2, 0.0, 1.0);
+				t2--;
 			}
 
 			return total;
