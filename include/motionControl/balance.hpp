@@ -6,8 +6,7 @@
 #include "api.h"
 
 namespace Pronounce {
-	class Balance
-	{
+	class Balance {
 	private:
 		BangBang* linearController;
 		PID* orientationController;

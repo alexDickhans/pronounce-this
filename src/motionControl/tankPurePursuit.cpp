@@ -31,8 +31,6 @@ namespace Pronounce {
 			return;
 		}
 
-		std::cout << "Orientation control: " << this->orientationControl << std::endl;
-
 		if (orientationControl) {
 			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
 			this->turnPid->setPosition(angleDifference(currentOrientation, 0));
@@ -41,8 +39,6 @@ namespace Pronounce {
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
 
 			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
-
-			printf("Spin speed: %f\n", spinSpeed);
 
 			return;
 		} else if (isDone(this->getStopDistance())) {
@@ -67,10 +63,6 @@ namespace Pronounce {
 
 		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
 		
-		std::cout << "Lookahead vector: " << pointData.localLookaheadVector.getCartesian().to_string() << std::endl;
-		std::cout << "Lookahead position: " << pointData.lookaheadPoint.to_string() << std::endl;
-		std::cout << "Lookahead angle: " << pointData.localLookaheadVector.getAngle() << std::endl;
-
 		drivetrain->driveCurvature(speed, pointData.curvature);
 	}
 

@@ -21,7 +21,6 @@ namespace Pronounce {
 		}
 
 		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
-			// std::cout << "2Left speed: " << leftSpeed << " Right speed: " << rightSpeed << std::endl;
 			this->getLeftMotors().move_velocity(leftSpeed);
 			this->getRightMotors().move_velocity(rightSpeed);
 		}

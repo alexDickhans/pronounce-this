@@ -31,7 +31,7 @@ namespace Pronounce {
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
 
-                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1)) {
+                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1 && this->getTValue(currentPosition) > this->path.size() - 2)) {
                     if (t2 < t1) {
                         pointFound = true;
                         Vector resultVector = d.scale(t1);

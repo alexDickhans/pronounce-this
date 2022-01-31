@@ -44,10 +44,6 @@ namespace Pronounce {
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
 		Vector robotRelativeLookaheadVector(&currentPoint, &lookaheadPoint);
-
-		std::cout << "Lookahead vector: " << robotRelativeLookaheadVector.to_string();
-		std::cout << " Lookahead point: " << lookaheadPoint.to_string();
-		std::cout << " Robot angle: " << currentPosition->getTheta() << std::endl;
 		
 		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPosition->getTheta());
 

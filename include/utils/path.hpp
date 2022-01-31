@@ -153,25 +153,20 @@ namespace Pronounce {
 			return closestT;
 		}
 
-		double distanceFromEnd(Point currentPosition) {
-			double t = this->getTValue(currentPosition);
-			double t2 = t;
-
+		double distance() {
 			double total = 0;
 
-			for (int i = path.size() - 1; i > floor(t); i --) {
+			for (int i = 1; i < path.size(); i++) {
 				Point startPoint = path.at(i-1);
 				Point endPoint = path.at(i);
 
-				total += startPoint.distance(endPoint) * std::clamp(t2, 0.0, 1.0);
-				t2--;
+				total += startPoint.distance(endPoint);
 			}
 
 			return total;
 		}
 
-		double distanceFromStart(Point currentPosition) {
-			double t = this->getTValue(currentPosition);
+		double distanceFromStart(double t) {
 			double t2 = t;
 
 			double total = 0;
@@ -185,6 +180,17 @@ namespace Pronounce {
 			}
 
 			return total;
+		}
+
+		double distanceFromStart(Point currentPosition) {
+			return this->distanceFromStart(this->getTValue(currentPosition));
+		}
+
+		double distanceFromEnd(Point currentPosition) {
+			printf("Start: %f\n", this->distanceFromStart(currentPosition));
+			printf("End: %f\n", this->distance());
+			printf("Result: %f\n", this->distance() - this->distanceFromStart(currentPosition));
+			return this->distance() - this->distanceFromStart(currentPosition);
 		}
 
 		bool isContinuePath() {

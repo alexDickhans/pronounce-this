@@ -40,7 +40,7 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(20, true, 100), new PID(10, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(20, true, 25), new PID(10, 0, 0));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
@@ -136,16 +136,16 @@ void balanceRobot() {
 
 	drivetrain.skidSteerVelocity(200, 0);
 
-	pros::Task::delay(2000);
+	pros::Task::delay(1500);
 
-	drivetrain.skidSteerVelocity(0, 0);
+	drivetrain.getLeftMotors().set_brake_mode(MOTOR_BRAKE_HOLD);
+	drivetrain.getRightMotors().set_brake_mode(MOTOR_BRAKE_HOLD);
 
-	int startTime = pros::millis();
+	balance.setEnabled(true);
 
-	while (pros::millis() - startTime < 20000 || !balance.isBalanced()) {
-		balance.update();
-		pros::Task::delay(15);
-	}
+	pros::Task::delay(50000);
+
+	balance.setEnabled(false);
 }
 
 /**
@@ -267,7 +267,7 @@ int leftAwpRight() {
 	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
 	purePursuit.setFollowing(true);
 
-	pros::delay(1800);
+	pros::delay(1500);
 
 	liftButton.setAutonomousAuthority(0);
 
@@ -516,18 +516,17 @@ int testOrientationAuton() {
 int testBalanceAuton() {
 	odometry.reset(new Position(0, 0, -M_PI_2));
 
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
+	pros::Task::delay(200);
 
-	drivetrain.skidSteerVelocity(150, 0);
+	frontGrabberButton.setButtonStatus(POSITIVE);
 
 	pros::Task::delay(500);
 
-	drivetrain.skidSteerVelocity(0, 0);
+	backGrabberButton.setButtonStatus(POSITIVE);
 
-	balance.balance(15);
+	pros::Task::delay(500);
 
-	// Hope it works
+	balanceRobot();
 
 	return 0;
 }
@@ -565,6 +564,8 @@ void updateDrivetrain() {
 		odometry.update();
 		if (purePursuit.isEnabled()) {
 			purePursuit.update();
+		} else if (balance.isEnabled()) {
+			balance.update();
 		}
 		lv_label_set_text(infoLabel, odometry.getPosition()->to_string().c_str());
 		pros::Task::delay_until(&startTime, 15);
@@ -789,8 +790,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	// testBalanceAuton();
-	leftStealLeft();
+	testBalanceAuton();
+	// leftAwpRight();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -816,14 +817,14 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 
-		if (driverMode > 0) {
+		if (driverMode > 0 && !balance.isBalanced()) {
 			// Filter and calculate magnitudes
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
 			drivetrain.skidSteerVelocity(leftY, rightX);
 		}
-		else {
+		else if (!balance.isEnabled()) {
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
@@ -843,6 +844,10 @@ void opcontrol() {
 		}
 		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
 			driverMode = 2;
+		}
+
+		if (master.get_digital_new_press(DIGITAL_B)) {
+			balance.setEnabled(!balance.isEnabled());
 		}
 
 		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
