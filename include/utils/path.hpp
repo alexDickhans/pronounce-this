@@ -4,6 +4,7 @@
 #include <vector>
 #include "pointUtil.hpp"
 #include "vector.hpp"
+#include "utils.hpp"
 
 namespace Pronounce {
 
@@ -144,7 +145,7 @@ namespace Pronounce {
 				if (distance < closestDistance) {
 					closestDistance = distance;
 					closestPoint = lastPoint;
-					closestT = totalT;
+					closestT = totalT + t;
 				}
 
 				totalT += 1;
@@ -175,7 +176,7 @@ namespace Pronounce {
 				Point startPoint = path.at(i-1);
 				Point endPoint = path.at(i);
 
-				total += startPoint.distance(endPoint) * std::clamp(t2, 0.0, 1.0);
+				total += startPoint.distance(endPoint) * clamp(t2, 0.0, 1.0);
 				t2--;
 			}
 

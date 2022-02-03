@@ -276,6 +276,8 @@ int leftAwpRight() {
 		pros::Task::delay(50);
 	}
 
+	printf("Done");
+
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
 	pros::delay(300);
@@ -284,9 +286,13 @@ int leftAwpRight() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(4)) {
+	while (!purePursuit.isDone(2)) {
 		pros::Task::delay(50);
 	}
+
+	printf("Left Awp Right: Finished\n");
+
+	purePursuit.setFollowing(false);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -513,6 +519,31 @@ int testOrientationAuton() {
 	return 0;
 }
 
+/**
+ * @brief Test auton
+ *
+ * @return 0
+ */
+int tuneOdom() {
+
+	printf("Test Auton\n");
+
+	odometry.reset(new Position(0, 0, 0));
+
+	purePursuit.setCurrentPathIndex(0);
+
+	purePursuit.setCurrentPathIndex(testPathIndex);
+	purePursuit.setFollowing(true);
+
+	while (purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setFollowing(false);
+
+	return 0;
+}
+
 int testBalanceAuton() {
 	odometry.reset(new Position(0, 0, -M_PI_2));
 
@@ -646,7 +677,7 @@ void initDrivetrain() {
 
 	odometry.setLeftOffset(4.5 * 1.05);
 	odometry.setRightOffset(4.5 * 1.05);
-	odometry.setBackOffset(1.5);
+	odometry.setBackOffset(2.5);
 
 	odometry.setMaxMovement(1);
 
@@ -654,6 +685,7 @@ void initDrivetrain() {
 	purePursuit.setSpeed(150);
 	purePursuit.setLookahead(15);
 	purePursuit.setStopDistance(2);
+	purePursuit.setMaxAcceleration(7.5);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -790,8 +822,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	testBalanceAuton();
-	// leftAwpRight();
+	// testBalanceAuton();
+	leftAwpRight();
 	postAuton();
 
 	// autonomousSelector.run();

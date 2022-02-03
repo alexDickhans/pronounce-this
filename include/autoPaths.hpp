@@ -61,6 +61,7 @@ namespace Pronounce {
 
 		// !SECTION
 
+		// SECTION Left AWP
 		QuadraticSplinePath leftAllianceToRightHomeZone = QuadraticSplinePath();
 
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(0, M_PI_2)));
@@ -73,7 +74,7 @@ namespace Pronounce {
 		QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
 
 		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(80, 46.4), Vector(15.0, -M_PI_2 - M_PI_4)));
-		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(129.0, 32), Vector(15.0, -M_PI_2 - M_PI_4)));
+		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(129.0, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
 
 		rightHomeZoneToRightAllianceIndex = purePursuit->addPath(rightHomeZoneToRightAlliance.getPath(0.1));
 
@@ -98,6 +99,8 @@ namespace Pronounce {
 		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
 
 		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone.getPath(0.1));
+
+		// !SECTION
 
 		//SECTION Skills
 
@@ -226,6 +229,10 @@ namespace Pronounce {
 
 		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.01));
 
+		//!SECTION
+
+		// SECTION Left Steal Left
+
 		Path forward;
 
 		forward.addPoint(0, 16);
@@ -240,7 +247,7 @@ namespace Pronounce {
 
 		backwardIndex = purePursuit->addPath(backward);
 
-		//!SECTION
+		// !SECTION
 
 		printf("Array size: %d\n", purePursuit->getPaths().size());
 	}

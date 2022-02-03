@@ -41,7 +41,8 @@ namespace Pronounce {
 			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
 
 			return;
-		} else if (isDone(this->getStopDistance())) {
+		}
+		else if (isDone(this->getStopDistance())) {
 			this->stop();
 			return;
 		}
@@ -59,10 +60,23 @@ namespace Pronounce {
 		// Before change: 3.4667
 		// After change: 3.08
 		// 12% improvement, mostly in speed up and slow down.
-		double scalar = 1; // pointData.lookaheadVector.getMagnitude() / this->getLookahead(); 
+		double maxSpeed = this->getSpeed();
 
-		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
-		
+		Path currentPath = this->getPath(this->getCurrentPathIndex());
+		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
+
+		if (this->getMaxAcceleration() != 0) {
+			if (currentPath.distanceFromStart(Point(currentPoint)) > currentPath.distance() / 2) {
+				maxSpeed = this->getMaxAcceleration()*pow(currentPath.distanceFromStart(currentPoint), 2.0);
+				maxSpeed = abs(maxSpeed) < 20 ? 20 * signum_c(maxSpeed) : maxSpeed;
+			} else {
+				maxSpeed = this->getMaxAcceleration()*pow(currentPath.distanceFromEnd(currentPoint), 2.0);
+				maxSpeed = abs(maxSpeed) < 20 ? 20 * signum_c(maxSpeed) : maxSpeed;
+			}
+		}
+
+		double speed = clamp(clamp(this->getSpeed() * side, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
+
 		drivetrain->driveCurvature(speed, pointData.curvature);
 	}
 

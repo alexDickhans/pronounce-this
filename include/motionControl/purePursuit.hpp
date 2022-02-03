@@ -51,6 +51,8 @@ namespace Pronounce {
 		double stopDistance = 0;
 		double normalizeDistance = 1;
 
+		double maxAcceleration = 0;
+
 		PurePursuitProfile currentProfile;
 
 		PurePursuitProfileManager purePursuitProfileManager;
@@ -195,6 +197,14 @@ namespace Pronounce {
 
 		void setLookahead(double lookahead) {
 			this->lookahead = lookahead;
+		}
+
+		double getMaxAcceleration() {
+			return maxAcceleration;
+		}
+
+		void setMaxAcceleration(double maxAcceleration) {
+			this->maxAcceleration = maxAcceleration;
 		}
 
 		~PurePursuit();

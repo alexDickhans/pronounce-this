@@ -7,7 +7,8 @@ namespace Pronounce {
         Point lookaheadPoint = Point();
         bool pointFound = false;
 
-        if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance) {
+        if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance && !continuePath) {
+			printf("Returning end point\n");
             return path.at(path.size() - 1);
         }
 
@@ -31,7 +32,7 @@ namespace Pronounce {
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
 
-                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1 && this->getTValue(currentPosition) > this->path.size() - 2)) {
+                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1 && (t1 >= 1 || t2 >= 1))) {
                     if (t2 < t1) {
                         pointFound = true;
                         Vector resultVector = d.scale(t1);
@@ -46,6 +47,7 @@ namespace Pronounce {
                         tempLookaheadPoint += resultVector.getCartesian();
                         lookaheadPoint = tempLookaheadPoint;
                     }
+					break;
                 }
                 if (0 <= t1 && t1 <= 1) {
                     pointFound = true;
@@ -105,7 +107,7 @@ namespace Pronounce {
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestPoint = lastPoint;
-				closestT = totalT;
+				closestT = totalT + clamp(t, 0.0, 1.0);
             }
 
 			totalT += 1;
