@@ -3,6 +3,7 @@
 #include "purePursuit.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include <iostream>
+#include "api.h"
 
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {
@@ -14,6 +15,8 @@ namespace Pronounce {
 
 		bool orientationControl = false;
 		PID* turnPid;
+
+		double lastUpdateTime = 0;
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);

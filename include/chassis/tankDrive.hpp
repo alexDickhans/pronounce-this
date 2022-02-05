@@ -15,6 +15,10 @@ namespace Pronounce {
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
 		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
 
+		double getSpeed() override {
+			return (this->getLeftMotors().get_target_velocity() + this->getRightMotors().get_target_velocity()) / 2;
+		}
+
 		void skidSteerVelocity(double speed, double turn) {
 			this->getLeftMotors().move_velocity(speed + turn);
 			this->getRightMotors().move_velocity(speed - turn);

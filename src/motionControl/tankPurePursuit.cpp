@@ -60,24 +60,33 @@ namespace Pronounce {
 		// Before change: 3.4667
 		// After change: 3.08
 		// 12% improvement, mostly in speed up and slow down.
-		double maxSpeed = this->getSpeed();
+		double lastSpeed = this->drivetrain->getSpeed();
 
 		Path currentPath = this->getPath(this->getCurrentPathIndex());
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		if (this->getMaxAcceleration() != 0) {
-			if (currentPath.distanceFromStart(Point(currentPoint)) > currentPath.distance() / 2) {
-				maxSpeed = this->getMaxAcceleration()*pow(currentPath.distanceFromStart(currentPoint), 2.0);
-				maxSpeed = abs(maxSpeed) < 20 ? 20 * signum_c(maxSpeed) : maxSpeed;
-			} else {
-				maxSpeed = this->getMaxAcceleration()*pow(currentPath.distanceFromEnd(currentPoint), 2.0);
-				maxSpeed = abs(maxSpeed) < 20 ? 20 * signum_c(maxSpeed) : maxSpeed;
-			}
+		double accelTime = 200 / this->getMaxAcceleration();
+		double accelDistance = 0.5 * this->getMaxAcceleration() * accelTime * accelTime;
+		double multiplier = 200 / sqrt(accelDistance * 3.33);
+		double maxSpeed = multiplier * sqrt(this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())));
+
+		double updateTime = pros::millis() - lastUpdateTime;
+		lastUpdateTime = updateTime;
+		double maxAccelerationFrame = this->getMaxAcceleration() * updateTime / 1000;
+		double speed = 0;
+		if (maxSpeed > speed) {
+			speed = std::clamp(this->getSpeed() * side, this->getSpeed() - maxAccelerationFrame, this->getSpeed() + maxAccelerationFrame);
+		} else {
+			speed = this->getSpeed() * side;
 		}
 
-		double speed = clamp(clamp(this->getSpeed() * side, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
+		printf("Max speed: %f\n", maxSpeed);
+		printf("Multiplier: %f\n", multiplier);
+		printf("AccelDistance: %f\n", accelDistance);
 
-		drivetrain->driveCurvature(speed, pointData.curvature);
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
+
+		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {

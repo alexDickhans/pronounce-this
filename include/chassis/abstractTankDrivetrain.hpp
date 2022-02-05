@@ -12,6 +12,8 @@ namespace Pronounce {
 		AbstractTankDrivetrain();
 		AbstractTankDrivetrain(double trackWidth);
 
+		virtual double getSpeed() { return 0; }
+
 		double getTrackWidth() {
 			return trackWidth;
 		}

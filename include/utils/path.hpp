@@ -172,7 +172,7 @@ namespace Pronounce {
 
 			double total = 0;
 
-			for (int i = 1; i <= ceil(t); i ++) {
+			for (int i = 1; i <= std::min(ceil(t), path.size()-1.0); i ++) {
 				Point startPoint = path.at(i-1);
 				Point endPoint = path.at(i);
 
@@ -188,9 +188,6 @@ namespace Pronounce {
 		}
 
 		double distanceFromEnd(Point currentPosition) {
-			printf("Start: %f\n", this->distanceFromStart(currentPosition));
-			printf("End: %f\n", this->distance());
-			printf("Result: %f\n", this->distance() - this->distanceFromStart(currentPosition));
 			return this->distance() - this->distanceFromStart(currentPosition);
 		}
 

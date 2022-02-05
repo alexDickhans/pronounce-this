@@ -52,6 +52,7 @@ namespace Pronounce {
 		double normalizeDistance = 1;
 
 		double maxAcceleration = 0;
+		double maxDecelleration = 0;
 
 		PurePursuitProfile currentProfile;
 

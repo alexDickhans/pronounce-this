@@ -164,6 +164,9 @@ int preAutonRun() {
 
 	pros::Task flipOutTask(flipOut);
 
+	drivetrain.getLeftMotors().set_brake_mode(MOTOR_BRAKE_HOLD);
+	drivetrain.getRightMotors().set_brake_mode(MOTOR_BRAKE_HOLD);
+
 	return 0;
 }
 
@@ -186,7 +189,7 @@ int leftStealLeft() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(4)) {
+	while (!purePursuit.isDone(1)) {
 		pros::Task::delay(50);
 	}
 
@@ -203,7 +206,7 @@ int leftStealLeft() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(6)) {
+	while (!purePursuit.isDone(1)) {
 		pros::Task::delay(50);
 	}
 
@@ -531,15 +534,18 @@ int tuneOdom() {
 	odometry.reset(new Position(0, 0, 0));
 
 	purePursuit.setCurrentPathIndex(0);
+	purePursuit.setSpeed(50);
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	while (purePursuit.isDone(0.5)) {
+	while (!purePursuit.isDone(0)) {
 		pros::Task::delay(50);
 	}
 
 	purePursuit.setFollowing(false);
+
+	pros::Task::delay(500);
 
 	return 0;
 }
@@ -573,6 +579,9 @@ int postAuton() {
 
 	balance.setEnabled(false);
 
+	drivetrain.getLeftMotors().set_brake_mode(MOTOR_BRAKE_COAST);
+	drivetrain.getRightMotors().set_brake_mode(MOTOR_BRAKE_COAST);
+
 	return 0;
 }
 
@@ -599,7 +608,7 @@ void updateDrivetrain() {
 			balance.update();
 		}
 		lv_label_set_text(infoLabel, odometry.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 15);
+		pros::Task::delay_until(&startTime, 7);
 	}
 }
 
@@ -685,7 +694,7 @@ void initDrivetrain() {
 	purePursuit.setSpeed(150);
 	purePursuit.setLookahead(15);
 	purePursuit.setStopDistance(2);
-	purePursuit.setMaxAcceleration(7.5);
+	purePursuit.setMaxAcceleration(500);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -822,8 +831,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	// testBalanceAuton();
-	leftAwpRight();
+	leftStealLeft();
+	// tuneOdom();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -849,7 +858,7 @@ void opcontrol() {
 	// Driver Control Loop
 	while (true) {
 
-		if (driverMode > 0 && !balance.isBalanced()) {
+		if (driverMode > 0 && !balance.isEnabled()) {
 			// Filter and calculate magnitudes
 			int leftY = filterAxis(master, ANALOG_LEFT_Y);
 			int rightX = filterAxis(master, ANALOG_RIGHT_X);
@@ -874,7 +883,7 @@ void opcontrol() {
 		if (master.get_digital_new_press(DIGITAL_UP)) {
 			driverMode = 0;
 		}
-		else if (master.get_digital_new_press(DIGITAL_DOWN)) {
+		if (master.get_digital_new_press(DIGITAL_DOWN)) {
 			driverMode = 2;
 		}
 
