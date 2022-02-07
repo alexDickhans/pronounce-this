@@ -33,8 +33,10 @@ pros::Rotation backEncoder(13);
 Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
 Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
 Pronounce::TrackingWheel backOdomWheel(&backEncoder);
+OdomWheel nullOdomWheel;
 
-ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
+// ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
+ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &nullOdomWheel, &imu);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 11.0);
 
@@ -189,9 +191,11 @@ int leftStealLeft() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(1)) {
+	while (!purePursuit.isDone(0.1)) {
 		pros::Task::delay(50);
 	}
+
+	drivetrain.skidSteerVelocity(0, 0);
 
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
@@ -206,9 +210,11 @@ int leftStealLeft() {
 	purePursuit.setFollowing(true);
 
 	// Wait until it is done
-	while (!purePursuit.isDone(1)) {
+	while (!purePursuit.isDone(0.1)) {
 		pros::Task::delay(50);
 	}
+
+	drivetrain.skidSteerVelocity(0, 0);
 
 	purePursuit.setFollowing(false);
 	
@@ -539,7 +545,7 @@ int tuneOdom() {
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	while (!purePursuit.isDone(0)) {
+	while (!purePursuit.isDone(0.1)) {
 		pros::Task::delay(50);
 	}
 
@@ -674,19 +680,20 @@ void initDrivetrain() {
 
 	// odometry.setUseImu(true);
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1.097);
+	leftOdomWheel.setTuningFactor(1.005);
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(1.077);
+	rightOdomWheel.setTuningFactor(1.0017);
 	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(1.06);
+	backOdomWheel.setTuningFactor(1.003);
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(true);
 	backEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(4.5 * 1.05);
-	odometry.setRightOffset(4.5 * 1.05);
-	odometry.setBackOffset(2.5);
+	odometry.setLeftOffset(4.5 * 0.957);
+	odometry.setRightOffset(4.5 * 0.957);
+	odometry.setBackOffset(0);
+	// odometry.setBackOffset(2.5);
 
 	odometry.setMaxMovement(1);
 
@@ -694,7 +701,7 @@ void initDrivetrain() {
 	purePursuit.setSpeed(150);
 	purePursuit.setLookahead(15);
 	purePursuit.setStopDistance(2);
-	purePursuit.setMaxAcceleration(500);
+	purePursuit.setMaxAcceleration(300);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
 
@@ -831,8 +838,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftStealLeft();
-	// tuneOdom();
+	// leftStealLeft();
+	tuneOdom();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -848,7 +855,6 @@ void autonomous() {
 void opcontrol() {
 
 	printf("OpControl");
-	lv_obj_clean(lv_scr_act());
 
 	postAuton();
 

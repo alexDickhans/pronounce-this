@@ -67,15 +67,16 @@ namespace Pronounce {
 
 		double accelTime = 200 / this->getMaxAcceleration();
 		double accelDistance = 0.5 * this->getMaxAcceleration() * accelTime * accelTime;
-		double multiplier = 200 / sqrt(accelDistance * 3.33);
-		double maxSpeed = multiplier * sqrt(this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())));
+		double multiplier = 200 / sqrt(accelDistance / 3.33);
+		double maxSpeed = multiplier * sqrt(this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
+		maxSpeed = maxSpeed > 20 ? maxSpeed : 20;
 
 		double updateTime = pros::millis() - lastUpdateTime;
 		lastUpdateTime = updateTime;
 		double maxAccelerationFrame = this->getMaxAcceleration() * updateTime / 1000;
 		double speed = 0;
 		if (maxSpeed > speed) {
-			speed = std::clamp(this->getSpeed() * side, this->getSpeed() - maxAccelerationFrame, this->getSpeed() + maxAccelerationFrame);
+			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
 		} else {
 			speed = this->getSpeed() * side;
 		}
