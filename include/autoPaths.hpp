@@ -42,6 +42,11 @@ namespace Pronounce {
 	int enterFarHomeZoneToRightNeutralGoalIndex;
 	int rightNeutralToPlatformIndex;
 
+	// Right steal right
+	int rightHomeZoneToRightNeutralIndex = -1;
+	int rightNeutralToRightAllianceGoalIndex = -1;
+	int rightAllianceGoalToRightRingsIndex = -1;
+	int rightRingsToRightHomeZoneIndex = -1;
 
 	int forwardIndex = -1;
 	int backwardIndex = -1;
@@ -228,6 +233,38 @@ namespace Pronounce {
 		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(80, 11.4), Vector(10, -M_PI_2)));
 
 		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.01));
+
+		//!SECTION
+
+		// SECTION Right Steal Right
+
+		QuadraticSplinePath rightHomeZoneToRightNeutral;
+
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 16), Vector(10, 0)));
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 58), Vector(10, 0)));
+
+		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral.getPath(0.01));
+
+		QuadraticSplinePath rightNeutralToRightAllianceGoal;
+
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(20, 0)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(125, 37), Vector(10, M_PI_4)));
+
+		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.01));
+
+		QuadraticSplinePath rightAllianceGoalToRightRings;
+
+		rightAllianceGoalToRightRings.addPoint(SplinePoint(Point(125, 37), Vector(10, M_PI_4)));
+		rightAllianceGoalToRightRings.addPoint(SplinePoint(Point(117.5, 70), Vector(10, M_PI_4)));
+
+		rightAllianceGoalToRightRingsIndex = purePursuit->addPath(rightAllianceGoalToRightRings.getPath(0.01));
+
+		QuadraticSplinePath rightRingsToRightHomeZone;
+
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70), Vector(10, M_PI_4)));
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(90, 45), Vector(10, 0)));
+
+		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone.getPath(0.01));
 
 		//!SECTION
 
