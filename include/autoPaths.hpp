@@ -19,7 +19,6 @@ namespace Pronounce {
 	int rightHomeZoneToRightAllianceIndex;
 	int rightAllianceToRightHomeZoneIndex;
 	int rightAllianceToRightRingsIndex;
-	int rightRingsToRightHomeZoneIndex;
 
 	// Skills
 	int leftHomeZoneToLeftNeutralGoalIndex;
@@ -97,13 +96,6 @@ namespace Pronounce {
 		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, 0.0)));
 
 		rightAllianceToRightRingsIndex = purePursuit->addPath(rightAllianceToRightRings.getPath(0.1));
-
-		QuadraticSplinePath rightRingsToRightHomeZone = QuadraticSplinePath();
-
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(20.0, M_PI)));
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(85, 36), Vector(20.0, M_PI_2)));
-
-		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone.getPath(0.1));
 
 		// !SECTION
 
