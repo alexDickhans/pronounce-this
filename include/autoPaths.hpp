@@ -107,7 +107,7 @@ namespace Pronounce {
 		Path farHomeZoneToEnterFarHomeZone("Far Home Zone to Enter Far Home Zone");
 
 		farHomeZoneToEnterFarHomeZone.addPoint(70.3, 110);
-		farHomeZoneToEnterFarHomeZone.addPoint(70.3, 95);
+		farHomeZoneToEnterFarHomeZone.addPoint(70.3, 100);
 
 		farHomeZoneToEnterFarHomeZoneIndex = purePursuit->addPath(farHomeZoneToEnterFarHomeZone);
 

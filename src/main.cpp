@@ -446,8 +446,39 @@ int skills() {
 		pros::Task::delay(50);
 	}
 	
-	pros::Task::delay(1000);
+	purePursuit.setFollowing(true);
+	purePursuit.setOrientationControl(true);
 
+	purePursuit.setTargetOrientation(M_PI);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+
+	pros::Task::delay(500);
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(400);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setTargetOrientation(0);
+
+	pros::Task::delay(1500);
+
+	purePursuit.setOrientationControl(false);
+
+	pros::Task::delay(300);
+
+	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
+
+	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex);
 /*
 	purePursuit.setOrientationControl(false);
 
