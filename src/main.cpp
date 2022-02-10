@@ -14,7 +14,7 @@ pros::Motor midRightMotor(16, true);
 pros::Motor backLeftMotor(9, true);
 pros::Motor backRightMotor(10, false);
 
-pros::Motor lift(3, false);
+pros::Motor lift(3, true);
 
 pros::Motor intake(11, true);
 
