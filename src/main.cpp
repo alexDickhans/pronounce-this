@@ -445,6 +445,8 @@ int skills() {
 	while (!purePursuit.isDone(0.5)) {
 		pros::Task::delay(50);
 	}
+
+	liftButton.setAutonomousAuthority(0);
 	
 	purePursuit.setFollowing(true);
 	purePursuit.setOrientationControl(true);
@@ -456,6 +458,19 @@ int skills() {
 	purePursuit.setOrientationControl(false);
 
 	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
+
+	while (odometry.getPosition()->getY() > 90) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(60);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(150);
 
 	pros::Task::delay(500);
 
@@ -479,6 +494,8 @@ int skills() {
 	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
 
 	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex);
+
+	
 /*
 	purePursuit.setOrientationControl(false);
 
