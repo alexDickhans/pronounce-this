@@ -56,8 +56,9 @@ namespace Pronounce {
 		if (!continueRendering) {
 			return;
 		}
+
 		this->clear();
-		pros::Task::delay(100);
+		pros::Task::delay(120);
 
 
 		// During disabled
@@ -69,25 +70,28 @@ namespace Pronounce {
 		}
 		else {
 			this->print(0, 0, "DT: %fC", this->drivetrain->getTemp());
-			pros::Task::delay(100);
+			pros::Task::delay(120);
 			this->print(1, 0, "DT: %f%", this->drivetrain->getSpeed());
+			pros::Task::delay(120);
+		}
+		
+		this->print(2, 0, "Battery: %f%", pros::battery::get_capacity());
+		pros::Task::delay(120);
+
+		if (pros::battery::get_capacity() < 20.0) {
+			this->rumble(".");
+			pros::Task::delay(120);
 		}
 
-		if (lastState != pros::competition::get_status())
-			this->rumble(". . .");
-
-		lastState = pros::competition::get_status();
+		pros::Task::delay(200);
 	}
 
 	void Controller::renderFunc() {
 		while (true) {
-			if (!continueRendering) {
-				break;
-			}
 			this->render();
 
 			// Prevent wasted resources
-			pros::Task::delay(300);
+			pros::Task::delay(100);
 		}
 	}
 
