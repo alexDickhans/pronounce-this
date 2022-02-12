@@ -3,11 +3,11 @@
 namespace Pronounce {
 
 	Controller::Controller(pros::controller_id_e_t id) : pros::Controller(id) {
-		this->robotPosition = nullptr;
+		this->odometry = nullptr;
 	}
 
-	Controller::Controller(pros::controller_id_e_t id, Position* robotPosition) : pros::Controller(id) {
-		this->robotPosition = robotPosition;
+	Controller::Controller(pros::controller_id_e_t id, Odometry* odometry) : pros::Controller(id) {
+		this->odometry = odometry;
 	}
 
 	double Controller::getMagnitude(int joystick) {
@@ -53,6 +53,8 @@ namespace Pronounce {
 	}
 
 	void Controller::render() {
+		count++;
+
 		if (!continueRendering) {
 			return;
 		}
@@ -64,21 +66,27 @@ namespace Pronounce {
 		// During disabled
 		if (pros::competition::is_disabled() && pros::competition::is_connected()) {
 			this->print(0, 0, "Robot disabled");
+			pros::Task::delay(120);
 		}
 		else if (pros::competition::is_autonomous() && pros::competition::is_connected()) {
 			this->print(0, 0, "Auton Period");
+			pros::Task::delay(120);
 		}
 		else {
-			this->print(0, 0, "DT: %fC", this->drivetrain->getTemp());
+			this->print(0, 0, "Temp: %fC", this->drivetrain->getTemp());
 			pros::Task::delay(120);
-			this->print(1, 0, "DT: %f%", this->drivetrain->getSpeed());
+			this->print(1, 0, "Speed: %f%", this->drivetrain->getSpeed());
 			pros::Task::delay(120);
+			if (this->odometry != nullptr) {
+				this->print(2, 0, "Position: %f, %f", this->odometry->getPosition()->getX(), this->odometry->getPosition()->getY());
+				pros::Task::delay(120);
+			}
 		}
-		
-		this->print(2, 0, "Battery: %f%", pros::battery::get_capacity());
+
+		this->print(3, 0, "Battery: %f%", pros::battery::get_capacity());
 		pros::Task::delay(120);
 
-		if (pros::battery::get_capacity() < 20.0) {
+		if (pros::battery::get_capacity() < 20.0 && count % 5 == 0) {
 			this->rumble(".");
 			pros::Task::delay(120);
 		}

@@ -731,6 +731,7 @@ void initDrivetrain() {
  */
 void initController() {
 	master.setDrivetrain(&drivetrain);
+	master.setOdometry(&odometry);
 	pros::Task renderTask(renderThread);
 }
 
