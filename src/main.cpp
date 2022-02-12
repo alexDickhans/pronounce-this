@@ -56,11 +56,14 @@ Pronounce::AutonSelector autonomousSelector;
 #define DRIFT_MIN 7.0
 
 bool preDriverTasksDone = false;
+bool disableIntake = true;
 
 int driverMode = 0;
 
 // SECTION Auton
 void flipOut() {
+	disableIntake = false;
+
 	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
 
 	pros::Task::delay(100);
@@ -72,6 +75,8 @@ void flipOut() {
 	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 
 	pros::Task::delay(500);
+
+	disableIntake = true;
 }
 
 void waitForDone() {
@@ -657,6 +662,13 @@ void updateMotors() {
 		frontGrabberButton.update();
 		backGrabberButton.update();
 		liftButton.update();
+
+		if (lift.get_position() < 200 && disableIntake) {
+			intakeButton.setEnabled(false);
+		} else {
+			intakeButton.setEnabled(true);
+		}
+		
 		intakeButton.update();
 
 		pros::Task::delay(20);
