@@ -59,10 +59,10 @@ namespace Pronounce {
         //Calculate the difference between the plane the robot is on and the flat plane and change that
         if (planeAdjustment){
             //Formula doesn't work if pitch or roll are 0
-            if (this->imu->get_roll() != 0 && this->imu->get_pitch() != 0){
+            if (this->imu->get_roll() != 0 && this->imu->get_pitch() != 0) {
                 localOffset.scale(cos(asin(sin(abs(this->imu->get_roll()))*sin(abs(this->imu->get_pitch())))));
             //Just Pitch without roll
-            }else (this->imu->get_pitch() != 0){
+            } else if (this->imu->get_pitch() != 0) {
                 localOffset.scale(cos(this->imu->get_pitch()));
             }
         }
