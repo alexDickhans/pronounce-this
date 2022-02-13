@@ -1,119 +1,36 @@
 #pragma once
 
-#include <algorithm>
-#include <list>
+#include "api.h"
 #include "drivetrain.hpp"
-#include "odometry/tankOdom.hpp"
-#include "pid/pid.hpp"
-#include "okapi/api.hpp"
-#include "utils/utils.hpp"
-#include "position/avgOdom.hpp"
+#include "abstractTankDrivetrain.hpp"
+#include "utils/motorGroup.hpp"
 
 namespace Pronounce {
-    class TankDrivetrain : public Drivetrain {
-    private:
-        bool enabled = false;
+	class TankDrivetrain : public AbstractTankDrivetrain, public Drivetrain {
+	private:
 
-        TankOdom* tankOdom;
+	public:
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
 
-        Position* targetPosition;
-        Position* startingPosition;
+		double getSpeed() override {
+			return (this->getLeftMotors().get_target_velocity() + this->getRightMotors().get_target_velocity()) / 2;
+		}
 
-        PID* turnPid;
-        PID* movePid;
+		void skidSteerVelocity(double speed, double turn) {
+			this->getLeftMotors().move_velocity(speed + turn);
+			this->getRightMotors().move_velocity(speed - turn);
+		}
 
-        double angle;
-        double prevAngle;
+		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
+			this->getLeftMotors().move_velocity(leftSpeed);
+			this->getRightMotors().move_velocity(rightSpeed);
+		}
 
-        double nullRotationDistance = 10.0;
-        double maxVoltage = 127.0;
-
-        double speedThreshhold = 2.0;
-        double errorThreshhold = 0.5;
-
-        double turnThreshhold = 2.0;
-        double turnErrorThreshhold = 5.0;
-    public:
-        TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-        void reset();
-
-        void update();
-
-        void waitForStop();
-
-        bool getStopped();
-
-        void setAngle(double angle) {
-            this->angle = angle;
-        }
-
-        double getMaxVoltage() {
-            return this->maxVoltage;
-        }
-
-        void setMaxVoltage(double maxVoltage) {
-            this->maxVoltage = maxVoltage;
-        }
-
-        bool getEnabled() {
-            return enabled;
-        }
-
-        void setEnabled(bool enabled) {
-            this->enabled = enabled;
-        }
-
-        TankOdom* getTankOdom() {
-            return tankOdom;
-        }
-
-        void setTankOdom(TankOdom* tankOdom) {
-            this->tankOdom = tankOdom;
-        }
-
-        PID* getTurnPid() {
-            return turnPid;
-        }
-
-        void setTurnPid(PID* turnPid) {
-            this->turnPid = turnPid;
-        }
-
-        PID* getMovePid() {
-            return movePid;
-        }
-
-        void setMovePid(PID* movePid) {
-            this->movePid = movePid;
-        }
-
-        Position* getPosition() {
-            return this->tankOdom->getPosition();
-        }
-
-        void setStartingPosition(Position* position) {
-            this->tankOdom->setPosition(position);
-            this->startingPosition = startingPosition;
-            this->imu->set_rotation(position->getTheta());
-            angle = NAN;
-        }
-
-        void setPosition(Position* position) {
-            this->tankOdom->setPosition(position);
-        }
-
-        Position* getTargetPosition() {
-            return targetPosition;
-        }
-
-        void setTargetPosition(Position* targetPosition) {
-            this->startingPosition = this->getPosition();
-            angle = NAN;
-            this->targetPosition = targetPosition;
-        }
-
-        ~TankDrivetrain();
-    };
+		~TankDrivetrain();
+	};
 } // namespace Pronounce
 
 

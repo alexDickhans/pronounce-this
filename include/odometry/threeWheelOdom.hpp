@@ -13,9 +13,13 @@ namespace Pronounce
         double leftOffset, rightOffset, backOffset;
         pros::Imu* imu;
         bool planeAdjustment;
+		bool useImu = false;
+
+		double maxMovement = 100;
     public:
         ThreeWheelOdom();
-        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel,pros::Imu* imu);
+        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
+        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, pros::Imu* imu);
 
         void update();
 
@@ -26,7 +30,15 @@ namespace Pronounce
             this->rightWheel->reset();
             this->backWheel->reset();
         }
-        
+
+		double getMaxMovement() {
+			return maxMovement;
+		}
+
+		void setMaxMovement(double maxMovement) {
+			this->maxMovement = maxMovement;
+		}
+
         double getLeftOffset() {
             return leftOffset;
         }

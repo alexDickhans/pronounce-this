@@ -1,10 +1,12 @@
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
-#include<stdlib.h>
-#include<graphics.h>
+#include <stdlib.h>
+#include <graphics.h>
 
 #include <chrono>
+
+#define SIM 0
 
 #include "include/utils/vector.hpp"
 #include "src/utils/vector.cpp"
@@ -18,18 +20,68 @@
 #include "src/utils/runningAverage.cpp"
 #include "include/utils/utils.hpp"
 #include "src/utils/utils.cpp"
+#include "include/utils/position.hpp"
+#include "src/utils/position.cpp"
+#include "include/utils/purePursuitProfile.hpp"
+#include "src/utils/purePursuitProfile.cpp"
+#include "include/utils/purePursuitProfileManager.hpp"
+#include "src/utils/purePursuitProfileManager.cpp"
+#include "include/feedbackControllers/pid.hpp"
+#include "src/feedbackControllers/pid.cpp"
+#include "include/chassis/abstractDrivetrain.hpp"
+#include "src/chassis/abstractDrivetrain.cpp"
+#include "include/chassis/abstractTankDrivetrain.hpp"
+#include "src/chassis/abstractTankDrivetrain.cpp"
+#include "include/chassis/simDrivetrain.hpp"
+#include "src/chassis/simDrivetrain.cpp"
+#include "include/chassis/simTankDrivetrain.hpp"
+#include "src/chassis/simTankDrivetrain.cpp"
+#include "include/odometry/odometry.hpp"
+#include "src/odometry/odometry.cpp"
+#include "include/odometry/simOdometry.hpp"
+#include "src/odometry/simOdometry.cpp"
+#include "include/motionControl/purePursuit.hpp"
+#include "src/motionControl/purePursuit.cpp"
+#include "include/motionControl/tankPurePursuit.hpp"
+#include "src/motionControl/tankPurePursuit.cpp"
 
 using namespace Pronounce;
 
-#define xOffset 0
-#define yOffset 0
+int testPathIndex;
+int leftAllianceToRightHomeZoneIndex;
+int rightHomeZoneToRightAllianceIndex;
+int rightAllianceToRightRingsIndex;
+int rightRingsToRightHomeZoneIndex;
+
+// Skills
+int leftHomeZoneToLeftNeutralGoalIndex;
+int leftNeutralGoalToFarHomeZoneIndex;
+int farHomeZoneToMidNeutralGoalIndex;
+int midNeutralGoalToPlatformIndex;
+int farPlatformToDropOffGoalIndex;
+int goalDropOffToFarLeftAllianceIndex;
+int farLeftAllianceToLeftRingsIndex;
+int leftRingsToGoalDropIndex;
+int farPlatformToEnterHomezoneIndex;
+int rightHomeZoneToFarRightAllianceGoalIndex;
+int farRightAllianceGoalToNearPreloadsIndex;
+int nearPlatformAlignIndex;
+int leftHomeZoneToPlatformIndex;
+
+int fps = 60;
+double playbackMultiplier = 1;
+
+#define xOffset 30
+#define yOffset 30
 #define multiplier 3
 
-#define lookahead 10
+#define lookahead 8
 
 #define starting_point_random 1
 
-#define PRINT_LIVE false
+// ANCHOR Printing variables
+
+#define PRINT_LIVE true
 #define GRAPH true
 
 #define FIELD_WIDTH 140.6
@@ -41,6 +93,47 @@ void printRobot(Point point) {
 void printRobotWithLookahead(Point point) {
 	circle(point.getY() * multiplier, point.getX() * multiplier, 1);
 	circle(point.getY() * multiplier, point.getX() * multiplier, lookahead * multiplier);
+}
+
+void printRobot(Odometry odometry, double trackWidth) {
+	trackWidth /= 2;
+
+	Position* point = odometry.getPosition();
+	circle(point->getY() * multiplier, point->getX() * multiplier, 1);
+	circle(point->getY() * multiplier, point->getX() * multiplier, lookahead * multiplier);
+
+	Vector forwardVector(20, point->getTheta() + M_PI_2);
+
+	Point forwardPoint;
+	forwardPoint.operator=(point);
+	forwardPoint.add(Point(forwardVector.getCartesian().getX(), forwardVector.getCartesian().getY()));
+
+	line(point->getY() * multiplier, point->getX() * multiplier, forwardPoint.getY() * multiplier, forwardPoint.getX() * multiplier);
+}
+
+void printRobot(Odometry odometry, double trackWidth, double curvature) {
+	printRobot(odometry, trackWidth);
+
+	setcolor(GREEN);
+
+	double radius = 1.0/curvature;
+
+	if (abs(radius) > 100) {
+		return;
+	}
+
+	Vector curvatureVector(radius, odometry.getPosition()->getTheta());
+
+	// Make sure the radius is positive
+	radius = abs(radius);
+
+	Point curvaturePoint;
+	curvaturePoint.operator=(odometry.getPosition());
+	curvaturePoint.add(curvatureVector.getCartesian());
+
+	circle(curvaturePoint.getY() * multiplier, curvaturePoint.getX() * multiplier, radius * multiplier);
+
+	setcolor(BLACK);
 }
 
 void printPath(Path path) {
@@ -211,52 +304,132 @@ int main() {
 
 	int loopcount = 0;
 
-	// Create path
-	std::vector<Path> paths = std::vector<Path>();
+	// Sim code
+	SimTankDrivetrain drivetrain(15.0, 15.0/fps, 60.0/fps);
+	SimOdometry odometry(&drivetrain);
 
+	// Shared code
+	TankPurePursuit purePursuit(&drivetrain, &odometry, lookahead);
 
-	// Right Steal Right
-	Path rightHomeToGoalNeutral;
+	double trackWidth = drivetrain.getTrackWidth(); 
 
-	rightHomeToGoalNeutral.addPoint(105.7, 8);
-	rightHomeToGoalNeutral.addPoint(105.7, 60);
+	purePursuit.setSpeed(1.0);
+	purePursuit.setTurnPid(new PID(1, 0, 0));
 
-	paths.emplace_back(rightHomeToGoalNeutral);
+	// Test path
+	/*
+	SplinePath testPath = SplinePath();
 
-	SplinePath rightNeutralToMidNeutral;
+	testPath.addPoint(40, 40);
+	testPath.addPoint(40, 64);
+	testPath.addPoint(64, 64);
 
-	rightNeutralToMidNeutral.addPoint(105.7, 60);
-	rightNeutralToMidNeutral.addPoint(82.3, 40);
-	rightNeutralToMidNeutral.addPoint(70.3, 60);
+	testPathIndex = purePursuit.addPath(testPath.getPath(0.1));
+	*/
 
-	paths.emplace_back(rightNeutralToMidNeutral.getPath(0.1));
+	// Left home zone to left neutral goal
+	QuadraticSplinePath leftHomeZoneToLeftNeutralGoal;
 
-	Path midNeutralToRightAlliance;
+	leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(23.2, 11.4), Vector(30, M_PI_4*1.5)));
+	leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(48, 46.8), Vector(20, 0)));
+	leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 66), Vector(20, 0)));
 
-	midNeutralToRightAlliance.addPoint(70.3, 60);
-	midNeutralToRightAlliance.addPoint(120.1, 36);
+	int leftHomeZoneToLeftNeutralGoalIndex = purePursuit.addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
 
-	paths.emplace_back(midNeutralToRightAlliance);
+	QuadraticSplinePath leftNeutralGoalToFarHomeZone;
 
-	SplinePath rightAllianceToRightRing;
+	leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(35, 66), Vector(30, -M_PI_4)));
+	leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 93.9), Vector(30, 0)));
+	leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
 
-	// Turn to negative 90 degrees
+	int leftNeutralGoalToFarHomeZoneIndex = purePursuit.addPath(leftNeutralGoalToFarHomeZone.getPath(0.01));
 
-	rightAllianceToRightRing.addPoint(120.1, 36);
-	rightAllianceToRightRing.addPoint(117.5, 46.8);
-	rightAllianceToRightRing.addPoint(117.5, 70.3);
-	rightAllianceToRightRing.addPoint(117.5, 70.3);
+	QuadraticSplinePath farHomeZoneToMidNeutralGoal;
 
-	paths.emplace_back(rightAllianceToRightRing.getPath(0.1));
+	farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 107), Vector(20, 0)));
+	farHomeZoneToMidNeutralGoal.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
 
-	QuadraticSplinePath rightRingToLeftHomeZone;
+	int farHomeZoneToMidNeutralGoalIndex = purePursuit.addPath(farHomeZoneToMidNeutralGoal.getPath(0.01));
 
-	rightRingToLeftHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(50, M_PI_2)));
-	rightRingToLeftHomeZone.addPoint(SplinePoint(Point(70.3, 35), Vector(50, M_PI_2)));
+	QuadraticSplinePath midNeutralGoalToPlatform;
 
-	paths.emplace_back(rightRingToLeftHomeZone.getPath(0.1));
+	midNeutralGoalToPlatform.addPoint(SplinePoint(Point(70.3, 75), Vector(30, 0)));
+	midNeutralGoalToPlatform.addPoint(SplinePoint(Point(75, 107), Vector(30, 0)));
 
-	srand(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+	int midNeutralGoalToPlatformIndex = purePursuit.addPath(midNeutralGoalToPlatform.getPath(0.01));
+
+	QuadraticSplinePath farPlatformToDropOffGoal;
+
+	farPlatformToDropOffGoal.addPoint(SplinePoint(Point(65, 107), Vector(5, 0)));
+	farPlatformToDropOffGoal.addPoint(SplinePoint(Point(65, 80), Vector(5, 0)));
+
+	int farPlatformToDropOffGoalIndex = purePursuit.addPath(farPlatformToDropOffGoal.getPath(0.01));
+
+	QuadraticSplinePath goalDropOffToFarLeftAlliance;
+
+	goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(65, 80), Vector(15, 0)));
+	goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4)));
+
+	int goalDropOffToFarLeftAllianceIndex = purePursuit.addPath(goalDropOffToFarLeftAlliance.getPath(0.01));
+
+	QuadraticSplinePath farLeftAllianceToLeftRings;
+
+	farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4 + M_PI)));
+	farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, M_PI)));
+
+	int farLeftAllianceToLeftRingsIndex = purePursuit.addPath(farLeftAllianceToLeftRings.getPath(0.01));
+
+	QuadraticSplinePath leftRingsToGoalDrop;
+
+	leftRingsToGoalDrop.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, 0)));
+	leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(2, -M_PI_4)));
+	leftRingsToGoalDrop.addPoint(SplinePoint(Point(75, 107), Vector(10, 0)));
+
+	int leftRingsToGoalDropIndex = purePursuit.addPath(leftRingsToGoalDrop.getPath(0.01));
+
+	QuadraticSplinePath farPlatformToEnterHomezone;
+
+	farPlatformToEnterHomezone.addPoint(SplinePoint(Point(75, 107), Vector(2, 0)));
+	farPlatformToEnterHomezone.addPoint(SplinePoint(Point(75, 95), Vector(2, 0)));
+
+	int farPlatformToEnterHomezoneIndex = purePursuit.addPath(farPlatformToEnterHomezone.getPath(0.01));
+
+	QuadraticSplinePath enterHomeZoneToRightHomeZone;
+
+	enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(75, 95), Vector(10, 0)));
+	enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, -M_PI_2)));
+
+	int enterHomeZoneToRightHomeZoneIndex = purePursuit.addPath(enterHomeZoneToRightHomeZone.getPath(0.01));
+
+	QuadraticSplinePath rightHomeZoneToFarRightAllianceGoal;
+
+	rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, M_PI_2)));
+	rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(103, 125), Vector(10, M_PI_4)));
+
+	int rightHomeZoneToFarRightAllianceGoalIndex = purePursuit.addPath(rightHomeZoneToFarRightAllianceGoal.getPath(0.01));
+
+	QuadraticSplinePath farRightAllianceGoalToNearPreloads;
+
+	farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(103, 125), Vector(40, M_PI_4)));
+	farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(129.2, 70.3), Vector(20, -M_PI)));
+	farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(117.5, 5), Vector(10, 0)));
+
+	int farRightAllianceGoalToNearPreloadsIndex = purePursuit.addPath(farRightAllianceGoalToNearPreloads.getPath(0.01));
+
+	SplinePath nearPlatformAlign;
+
+	nearPlatformAlign.addPoint(117.5, 5);
+	nearPlatformAlign.addPoint(117.5, 11.4);
+	nearPlatformAlign.addPoint(130, 11.4);
+
+	int nearPlatformAlignIndex = purePursuit.addPath(nearPlatformAlign.getPath(0.01));
+
+	QuadraticSplinePath leftHomeZoneToPlatform;
+
+	leftHomeZoneToPlatform.addPoint(SplinePoint(Point(130, 11.4), Vector(10, -M_PI_2)));
+	leftHomeZoneToPlatform.addPoint(SplinePoint(Point(80, 11.4), Vector(10, -M_PI_2)));
+
+	int leftHomeZoneToPlatformIndex = purePursuit.addPath(leftHomeZoneToPlatform.getPath(0.01));
 
 #if GRAPH
 	int gd = DETECT, gm;
@@ -266,50 +439,32 @@ int main() {
 	setcolor(DARKGRAY);
 
 	delay(1000);
-	//printPath(path);
 #endif
-	// Set random robot starting position
-	Point firstPosition = paths.at(0).getPath().at(0);
+	Position startingPosition(23.2, 11.4, M_PI_2);
 
-	firstPosition.setX(firstPosition.getX() + ((rand() / 1073741823) - 1) * starting_point_random);
-	firstPosition.setY(firstPosition.getY() + ((rand() / 1073741823) - 1) * starting_point_random);
-	Point robot = firstPosition;
-	Vector robotMovement = Vector();
+	drivetrain.reset(&startingPosition);
 
 #if GRAPH
 	std::vector<Point> robotPositions;
-	robotPositions.emplace_back(paths.at(0).getPath().at(0));
+	robotPositions.emplace_back(startingPosition);
 #endif
 
-	// Use a running average to estimate momentum
-	const int runningAverageLength = 10;
-
-	RunningAverage<runningAverageLength> runningAverageX;
-	RunningAverage<runningAverageLength> runningAverageY;
+	purePursuit.setEnabled(true);
 
 	// Loop through paths
-	for (int i = 0; i < paths.size(); i++) {
+	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
 
-		std::vector<Point> pathVector = paths.at(i).getPath();
-		Path path = paths.at(i);
+		purePursuit.setCurrentPathIndex(i);
+		purePursuit.setFollowing(true);
 
 		// Loop until you get to the last point
-		while (pathVector.at(pathVector.size() - 1).distance(robot) > 1) {
+		while (!purePursuit.isDone(1)) {
 			loopcount++;
 
-			// Get the lookahead point 
-			Point lookaheadPoint = path.getLookAheadPoint(robot, lookahead);
-			robotMovement = Vector(&robot, &lookaheadPoint);
-			if (robotMovement.getMagnitude() > 1) {
-				robotMovement.normalize();
-			}
-			robotMovement = robotMovement.scale(1);
-			runningAverageX.add(robotMovement.getCartesian().getX());
-			runningAverageY.add(robotMovement.getCartesian().getY());
-
-			// Move robot
-			Point runningAveragePosition(runningAverageX.getAverage(), runningAverageY.getAverage());
-			robot += runningAveragePosition;
+			odometry.update();
+			// drivetrain.driveCurvature(-1.0, (1.0 / 24.0));
+			purePursuit.update();
+			drivetrain.update();
 
 #if GRAPH
 #if PRINT_LIVE
@@ -320,29 +475,32 @@ int main() {
 
 			printPath(robotPositions);
 
-			robotPositions.emplace_back(robot);
+			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 
 			setlinestyle(DASHED_LINE, 5, 2);
-			for (int i = 0; i < paths.size(); i++) {
-				printPath(paths.at(i).getPath());
+			for (int i = 0; i < purePursuit.getPaths().size(); i++) {
+				printPath(purePursuit.getPath(i).getPath());
 			}
 
 			setcolor(LIGHTGRAY);
 			setlinestyle(SOLID_LINE, 5, 2);
-			line(robot.getY() * multiplier, robot.getX() * multiplier, lookaheadPoint.getY() * multiplier, lookaheadPoint.getX() * multiplier);
-			printRobotWithLookahead(robot);
+			line(odometry.getPosition()->getY() * multiplier, odometry.getPosition()->getX() * multiplier, purePursuit.getPointData().lookaheadPoint.getY() * multiplier, purePursuit.getPointData().lookaheadPoint.getX() * multiplier);
+			printRobot(odometry, 15, purePursuit.getPointData().curvature);
 
-			delay(3);
+			delay(1000/fps/playbackMultiplier);
 #endif // PRINT_LIVE
 
-			robotPositions.emplace_back(robot);
+			robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 #endif
-			if (loopcount > 1000*paths.size()) {
+
+			if (loopcount >= 4*fps * purePursuit.getPaths().size() || (odometry.getPosition()->getX() < 0 || odometry.getPosition()->getX() > 144 || odometry.getPosition()->getY() < 0 || odometry.getPosition()->getY() > 144)) {
 				break;
 			}
 		}
 	}
 #if GRAPH
+
+	cleardevice();
 
 	printField();
 
@@ -351,19 +509,22 @@ int main() {
 	setlinestyle(DASHED_LINE, 5, 2);
 
 	// Print all paths in the vector paths
-	for (int i = 0; i < paths.size(); i++) {
-		printPath(paths.at(i).getPath());
+	for (int i = 0; i < purePursuit.getPaths().size(); i++) {
+		printPath(purePursuit.getPaths().at(i).getPath());
 	}
 
-	robotPositions.emplace_back(robot);
+	robotPositions.emplace_back(Point(odometry.getPosition()->getX(), odometry.getPosition()->getY()));
 
 	setlinestyle(SOLID_LINE, 5, 2);
 
 	setcolor(LIGHTGRAY);
 	printPath(robotPositions);
 
+	line(odometry.getPosition()->getY() * multiplier, odometry.getPosition()->getX() * multiplier, purePursuit.getPointData().lookaheadPoint.getY() * multiplier, purePursuit.getPointData().lookaheadPoint.getX() * multiplier);
+	printRobot(odometry, 15, purePursuit.getPointData().curvature);
+
 	// Print loopcount
-	std::cout << "Loopcount: " << loopcount << std::endl;
+	std::cout << "Time: " << loopcount/(double) fps << std::endl;
 
 	delay(500000);
 	closegraph();

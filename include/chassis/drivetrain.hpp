@@ -2,25 +2,28 @@
 
 #include "api.h"
 #include "utils/utils.hpp"
+#include "utils/motorGroup.hpp"
+#include "abstractDrivetrain.hpp"
 
 namespace Pronounce {
     /**
      * Abstract class as a structure for different drivetrains assuming there are 4 motors
      */
-    class Drivetrain {
+    class Drivetrain : public AbstractDrivetrain {
     protected:
-        pros::Motor* frontLeft;
-        pros::Motor* frontRight;
-        pros::Motor* backLeft;
-        pros::Motor* backRight;
+
+		MotorGroup leftMotors;
+		MotorGroup rightMotors;
 
         pros::Imu* imu;
 
     public:
-
+		Drivetrain();
         Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+        Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+		Drivetrain(MotorGroup leftMotors, MotorGroup rightMotors, pros::Imu* imu);
 
-        /**
+		/**
          * Get average temperature of all the motors.
          */
         double getTemp();
@@ -30,80 +33,41 @@ namespace Pronounce {
          */
         double getSpeed();
 
-        virtual void update() {}        
+		pros::Imu* getImu() {
+			return imu;
+		}
 
-        /**
-         * Get frontLeft motor
-         * 
-         * @return frontLeft motor pointer
-         */
-        pros::Motor* getFrontLeft() {
-            return this->frontLeft;
-        }
+		void setImu(pros::Imu* imu) {
+			this->imu = imu;
+		}
 
-        /**
-         * Set frontLeft motor
-         * 
-         * @param frontLeft Motor pointer
-         */
-        void setFrontLeft(pros::Motor* frontLeft) {
-            this->frontLeft = frontLeft;
-        }
-        
-        /**
-         * Get frontRight motor
-         * 
-         * @return frontRight motor pointer
-         */
-        pros::Motor* getFrontRight() {
-            return this->frontRight;
-        }
+		MotorGroup getLeftMotors() {
+			return leftMotors;
+		}
 
-        /**
-         * Set frontRight motor
-         * 
-         * @param frontRight Motor pointer
-         */
-        void setFrontRight(pros::Motor* frontRight) {
-            this->frontRight = frontRight;
-        }
+		void setLeftMotors(MotorGroup leftMotors) {
+			this->leftMotors = leftMotors;
+		}
 
-        /**
-         * Get backLeft motor
-         * 
-         * @return backLeft motor pointer
-         */
-        pros::Motor* getBackLeft() {
-            return this->backLeft;
-        }
+		void addLeftMotor(pros::Motor* motor) {
+			this->leftMotors.addMotor(motor);
+		}
 
-        /**
-         * Set backLeft motor
-         * 
-         * @param backLeft Motor pointer
-         */
-        void setBackLeft(pros::Motor* backLeft) {
-            this->backLeft = backLeft;
-        }
+		MotorGroup getRightMotors() {
+			return rightMotors;
+		}
 
-        /**
-         * Get backRight motor
-         * 
-         * @return backRight motor pointer
-         */
-        pros::Motor* getBackRight() {
-            return this->backRight;
-        }
+		void setRightMotors(MotorGroup rightMotors) {
+			this->rightMotors = rightMotors;
+		}
 
-        /**
-         * Set backRight motor
-         * 
-         * @param backRight Motor pointer
-         */
-        void setBackRight(pros::Motor* backRight) {
-            this->backRight = backRight;
-        }
+		void addRightMotor(pros::Motor* motor) {
+			this->rightMotors.addMotor(motor);
+		}
 
+		~Drivetrain() {
+			
+		}
     };
 } // namespace Pronounce
 

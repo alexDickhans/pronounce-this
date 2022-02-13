@@ -47,6 +47,7 @@
  * User defined imports
  */
 
+#include "autoPaths.hpp"
 #include "defines.h"
 
 // Auton
@@ -54,6 +55,7 @@
 #include "auton/autonSelector.hpp"
 
 // Chassis
+#include "chassis/abstractDrivetrain.hpp"
 #include "chassis/drivetrain.hpp"
 #include "chassis/mecanumDrivetrain.hpp"
 #include "chassis/omniDrivetrain.hpp"
@@ -66,8 +68,15 @@
 #include "driver/motorButton.hpp"
 #include "driver/solenoidButton.hpp"
 
+// FeedbackControllers
+#include "feedbackControllers/bangBang.hpp"
+#include "feedbackControllers/pid.hpp"
+
 // Motion control
+#include "motionControl/balance.hpp"
 #include "motionControl/purePursuit.hpp"
+#include "motionControl/omniPurePursuit.hpp"
+#include "motionControl/tankPurePursuit.hpp"
 
 // Odometry
 #include "odometry/mecanumOdometry.hpp"
@@ -75,25 +84,25 @@
 #include "odometry/threeWheelOdom.hpp"
 #include "odometry/tankOdom.hpp"
 
-// PID
-#include "pid/pid.hpp"
-
 // Position
-#include "position/threeWireOdomWheel.hpp"
-#include "position/avgOdom.hpp"
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
 #include "position/trackingWheel.hpp"
 
 // Utils
+#include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"
 #include "utils/position.hpp"
 #include "utils/purePursuitProfile.hpp"
 #include "utils/purePursuitProfileManager.hpp"
+#include "utils/quadraticSplinePath.hpp"
 #include "utils/runningAverage.hpp"
+#include "utils/splinePath.hpp"
+#include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
+#include "utils/motorGroup.hpp"
 
 // Vision
 #include "vision/tippingVision.hpp"

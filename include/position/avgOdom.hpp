@@ -1,7 +1,7 @@
 #pragma once
 
 #include "odomWheel.hpp"
-#include <list>
+#include <vector>
 
 namespace Pronounce {
 
@@ -14,20 +14,18 @@ namespace Pronounce {
      */
     class AvgOdom : public OdomWheel {
     private:
-        std::list<OdomWheel> odomWheels;
+        std::vector<OdomWheel> odomWheels;
     public:
         AvgOdom();
-        AvgOdom(OdomWheel odomWheels[]);
-        AvgOdom(std::list<OdomWheel> odomWheels);
-        AvgOdom(std::list<OdomWheel>* odomWheels);
+		AvgOdom(std::vector<OdomWheel> odomWheels);
 
         /**
          * Get the distance at the current moment
          */
         double getPosition() {
             double total = 0;
-            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
-                total += it->getPosition();
+            for (int i = 0; i < odomWheels.size(); i++) {
+                total += odomWheels.at(i).getPosition();
             }
             return total / odomWheels.size();
         }
@@ -35,24 +33,30 @@ namespace Pronounce {
          * Set the distance
          */
         void setPosition(double position) {
-            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
-                it->setPosition(position);
+			for (int i = 0; i < odomWheels.size(); i++) {
+                odomWheels.at(i).setPosition(position);
             }
         }
 
         double getChange() {
             double total = 0;
-            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
-                total += it->getChange();
+			for (int i = 0; i < odomWheels.size(); i++) {
+                total += odomWheels.at(i).getChange();
             }
             return total / odomWheels.size();
         }
 
         void update() {
-            for (std::list<OdomWheel>::iterator it = odomWheels.begin(); it != odomWheels.end(); it++) {
-                it->update();
+			for (int i = 0; i < odomWheels.size(); i++) {
+                odomWheels.at(i).update();
             }
         }
+
+		void reset() {
+			for (int i = 0; i < odomWheels.size(); i++) {
+                odomWheels.at(i).reset();
+            }
+		}
 
         ~AvgOdom();
     };
