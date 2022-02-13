@@ -5,6 +5,7 @@
 #include "pointUtil.hpp"
 #include "vector.hpp"
 #include "utils.hpp"
+#include <string>
 
 namespace Pronounce {
 
@@ -16,8 +17,10 @@ namespace Pronounce {
 	private:
 		std::vector<Point> path;
 		bool continuePath = true;
+		std::string name = "";
 	public:
 		Path();
+		Path(std::string name);
 
 		void fill(double spacing) {
 			std::vector<Point> oldPath = path;
@@ -199,6 +202,14 @@ namespace Pronounce {
 			this->continuePath = continuePath;
 		}
 
+		std::string getName() {
+			return name;
+		}
+
+		void setName(std::string name) {
+			this->name = name;
+		}
+
 		void operator+= (Point point) {
 			this->path.emplace_back(point);
 		}
@@ -216,9 +227,9 @@ namespace Pronounce {
 		}
 
 		std::string to_string() {
-			std::string str = "";
+			std::string str = "Name: " + name + ",\n Path: \n";
 			for (Point point : path) {
-				str += point.to_string() + "\n";
+				str += " " + point.to_string() + "\n";
 			}
 			return str;
 		}

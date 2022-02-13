@@ -11,7 +11,7 @@ namespace Pronounce {
 
     class Auton {
     private:
-        std::string name;
+        std::string name = "";
         AutonFunction func;
     public:
         Auton();

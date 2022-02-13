@@ -3,6 +3,7 @@
 #include "api.h"
 #include "chassis/drivetrain.hpp"
 #include "utils/position.hpp"
+#include "odometry/odometry.hpp"
 #include "utils/vector.hpp"
 
 #define STATE_AUTON 0
@@ -17,7 +18,7 @@ namespace Pronounce {
     private:
         uint8_t lastState;
 
-        Position* robotPosition;
+        Odometry* odometry;
 
         // Path to be implemented later.
         
@@ -27,6 +28,8 @@ namespace Pronounce {
 
         bool continueRendering = true;
 
+		uint32_t count;
+
         // Going to be implemented when the robot is ready
         // pros::Motor* ringMotor;
         // pros::Motor* goalMotor;
@@ -35,7 +38,7 @@ namespace Pronounce {
 
     public:
         Controller(pros::controller_id_e_t id);
-        Controller(pros::controller_id_e_t id, Position* robotPosition);
+        Controller(pros::controller_id_e_t id, Odometry* odometry);
 
         /**
          * Get the degrees that the controller is pointing at
@@ -82,6 +85,14 @@ namespace Pronounce {
         void setDrivetrain(Drivetrain* drivetrain) {
             this->drivetrain = drivetrain;
         }
+
+		Odometry* getOdometry() {
+			return odometry;
+		}
+
+		void setOdometry(Odometry* odometry) {
+			this->odometry = odometry;
+		}
 
         ~Controller();
     };
