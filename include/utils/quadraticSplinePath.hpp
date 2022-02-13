@@ -10,16 +10,19 @@ namespace Pronounce
 	class QuadraticSplinePath {
 	private:
 		std::vector<SplinePoint> points;
+		std::string name = "";
 	public:
 		QuadraticSplinePath();
 		QuadraticSplinePath(std::vector<SplinePoint> points);
+		QuadraticSplinePath(std::string name);
 
 		Path getPath(double pointGranularity) {
 			if (points.size() < 2) {
 				throw "Not enough points";
 			}
 
-			Path path;
+			Path path(name);
+			
 			for (int i = 0; i < points.size() - 1; i++) {
 				SplinePoint startingSplinePoint = points.at(i);
 				SplinePoint endingSplinePoint = points.at(i + 1);
@@ -53,6 +56,10 @@ namespace Pronounce
 	};
 	
 	QuadraticSplinePath::QuadraticSplinePath(/* args */) {
+	}
+
+	QuadraticSplinePath::QuadraticSplinePath(std::string name) {
+		this->name = name;
 	}
 
 	QuadraticSplinePath::QuadraticSplinePath(std::vector<SplinePoint> points) {

@@ -31,8 +31,6 @@ namespace Pronounce {
 			return;
 		}
 
-		std::cout << "Orientation control: " << this->orientationControl << std::endl;
-
 		if (orientationControl) {
 			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
 			this->turnPid->setPosition(angleDifference(currentOrientation, 0));
@@ -42,10 +40,9 @@ namespace Pronounce {
 
 			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
 
-			printf("Spin speed: %f\n", spinSpeed);
-
 			return;
-		} else if (isDone(this->getStopDistance())) {
+		}
+		else if (isDone(this->getStopDistance())) {
 			this->stop();
 			return;
 		}
@@ -63,15 +60,40 @@ namespace Pronounce {
 		// Before change: 3.4667
 		// After change: 3.08
 		// 12% improvement, mostly in speed up and slow down.
-		double scalar = 1; // pointData.lookaheadVector.getMagnitude() / this->getLookahead(); 
+		double lastSpeed = this->drivetrain->getSpeed();
 
-		double speed = clamp(this->getSpeed() * side * scalar, -this->getSpeed(), this->getSpeed());
-		
-		std::cout << "Lookahead vector: " << pointData.localLookaheadVector.getCartesian().to_string() << std::endl;
-		std::cout << "Lookahead position: " << pointData.lookaheadPoint.to_string() << std::endl;
-		std::cout << "Lookahead angle: " << pointData.localLookaheadVector.getAngle() << std::endl;
+		Path currentPath = this->getPath(this->getCurrentPathIndex());
+		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		drivetrain->driveCurvature(speed, pointData.curvature);
+		double accelTime = 200 / this->getMaxAcceleration();
+		double accelDistance = 0.5 * this->getMaxAcceleration() * accelTime * accelTime;
+		double multiplier = 200 / sqrt(accelDistance / 3.33);
+		double maxSpeed = multiplier * sqrt(this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
+		maxSpeed = maxSpeed > 20 ? maxSpeed : 20;
+
+		double updateTime = pros::millis() - lastUpdateTime;
+		lastUpdateTime = updateTime;
+		double maxAccelerationFrame = this->getMaxAcceleration() * updateTime / 1000;
+		double speed = 0;
+		if (maxSpeed > speed) {
+			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
+		} else {
+			speed = this->getSpeed() * side;
+		}
+
+		printf("Max speed: %f\n", maxSpeed);
+		printf("Speed: %f\n", speed);
+		printf("Side: %f\n", side);
+		printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
+		printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
+		printf("Lookahead Point: %f, %f\n", pointData.lookaheadPoint.getX(), pointData.lookaheadPoint.getY());
+		printf(std::string("Path: " + currentPath.getName()).c_str());
+		printf("\n\n");
+
+
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
+
+		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {

@@ -12,6 +12,8 @@ namespace Pronounce {
 		AbstractTankDrivetrain();
 		AbstractTankDrivetrain(double trackWidth);
 
+		virtual double getSpeed() { return 0; }
+
 		double getTrackWidth() {
 			return trackWidth;
 		}
@@ -20,9 +22,7 @@ namespace Pronounce {
 			this->trackWidth = trackWidth;
 		}
 
-		void driveCurvature(double speed, double curvature) {
-			std::cout << "Speed: " << speed << " Curvature: " << curvature << std::endl;
-			
+		void driveCurvature(double speed, double curvature) {			
 			double leftSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
 			double rightSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
 

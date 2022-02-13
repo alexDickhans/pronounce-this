@@ -19,9 +19,6 @@ namespace Pronounce {
 	double BangBang::update(double input) {
 		// Get the difference between the set point and the current value
 		double difference = setPoint - input;
-
-		// Set the lastInput variable to this loop's input.
-		this->lastInput = input;
 		
 		// Change behavior if the controller is not reversable
 		if (reversable) {

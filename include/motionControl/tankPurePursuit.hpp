@@ -3,6 +3,7 @@
 #include "purePursuit.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include <iostream>
+#include "api.h"
 
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {
@@ -14,6 +15,8 @@ namespace Pronounce {
 
 		bool orientationControl = false;
 		PID* turnPid;
+
+		double lastUpdateTime = 0;
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);
@@ -75,11 +78,11 @@ namespace Pronounce {
 		}
 
 		bool isDone(double maxDistance) {
-			return maxDistance > this->getOdometry()->getPosition()->distance(this->getPath(this->getCurrentPathIndex()).getPoint(this->getPath(this->getCurrentPathIndex()).getPath().size() - 1));
+			return maxDistance > this->getPaths().at(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY()));
 		}
 
 		bool isDoneOrientation(double maxDifference) {
-			return maxDifference > turnPid->getError();
+			return maxDifference > turnPid->getError() && this->turnPid->getDerivitive() * 100 < maxDifference;
 		}
 
 		~TankPurePursuit();

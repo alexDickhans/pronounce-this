@@ -51,6 +51,9 @@ namespace Pronounce {
 		double stopDistance = 0;
 		double normalizeDistance = 1;
 
+		double maxAcceleration = 0;
+		double maxDecelleration = 0;
+
 		PurePursuitProfile currentProfile;
 
 		PurePursuitProfileManager purePursuitProfileManager;
@@ -122,7 +125,7 @@ namespace Pronounce {
 		void setCurrentPathIndex(int index) {
 			currentPath = index;
 			printf("Current Path: %d\n", currentPath);
-			printf("Current path tostring: ", paths.at(currentPath).to_string().c_str());
+			printf("Current path tostring: %s\n", paths.at(currentPath).to_string().c_str());
 			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 
@@ -195,6 +198,14 @@ namespace Pronounce {
 
 		void setLookahead(double lookahead) {
 			this->lookahead = lookahead;
+		}
+
+		double getMaxAcceleration() {
+			return maxAcceleration;
+		}
+
+		void setMaxAcceleration(double maxAcceleration) {
+			this->maxAcceleration = maxAcceleration;
 		}
 
 		~PurePursuit();

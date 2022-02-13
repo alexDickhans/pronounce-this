@@ -4,6 +4,8 @@
 #include <vector>
 #include "pointUtil.hpp"
 #include "vector.hpp"
+#include "utils.hpp"
+#include <string>
 
 namespace Pronounce {
 
@@ -14,8 +16,11 @@ namespace Pronounce {
 	class Path {
 	private:
 		std::vector<Point> path;
+		bool continuePath = true;
+		std::string name = "";
 	public:
 		Path();
+		Path(std::string name);
 
 		void fill(double spacing) {
 			std::vector<Point> oldPath = path;
@@ -37,14 +42,14 @@ namespace Pronounce {
 				path.emplace_back(oldPath.at(i + 1));
 			}
 		}
-		
+
 		/**
 		 * @brief Smooth the path
-		 * 
+		 *
 		 * @deprecated Not working yet
-		 * 
-		 * @param weightSmooth 
-		 * @param tolerance 
+		 *
+		 * @param weightSmooth
+		 * @param tolerance
 		 */
 		void smooth(double weightSmooth, double tolerance) {
 			double weightData = 1 - weightSmooth;
@@ -55,26 +60,26 @@ namespace Pronounce {
 
 			while (change >= tolerance) {
 				change = 0.0;
-				for (int i = 1; i < oldPath.size()-1; i++) {
+				for (int i = 1; i < oldPath.size() - 1; i++) {
 					Point oldPoint = oldPath.at(i);
 					Point newPoint = path.at(i);
 
 					// x
 					double aux = path.at(i).getX();
 					path.at(i).setX(path.at(i).getX()
-									 + (weightData * (oldPoint.getX() - newPoint.getX()))
-									 + (weightSmooth * (path.at(i-1).getX() + path.at(i+1).getX() - 2.0 * newPoint.getX()))
-									 );
+						+ (weightData * (oldPoint.getX() - newPoint.getX()))
+						+ (weightSmooth * (path.at(i - 1).getX() + path.at(i + 1).getX() - 2.0 * newPoint.getX()))
+					);
 
 					change += abs(aux - newPoint.getX());
 
 					// y
 					aux = path.at(i).getY();
 					path.at(i).setY(path.at(i).getY()
-									 + (weightData * (oldPoint.getY() - newPoint.getY()))
-									 + (weightSmooth * (path.at(i-1).getY() + path.at(i+1).getY() - 2.0 * newPoint.getY()))
-									 );
-					
+						+ (weightData * (oldPoint.getY() - newPoint.getY()))
+						+ (weightSmooth * (path.at(i - 1).getY() + path.at(i + 1).getY() - 2.0 * newPoint.getY()))
+					);
+
 					change += abs(aux - newPoint.getY());
 				}
 			}
@@ -110,6 +115,101 @@ namespace Pronounce {
 		 */
 		Point getClosestPoint(Point currentPosition);
 
+		double getTValue(Point currentPosition) {
+			Point closestPoint;
+			double closestDistance = INT32_MAX;
+			double closestT = INT32_MAX;
+
+			double totalT = 0;
+
+			// Returns the largest item in list
+			// If two items are the same distance apart, will return first one
+			for (int i = 1; i < path.size(); i++) {
+				Point lastPoint = path.at(i - 1);
+				Point thisPoint = path.at(i);
+
+				Vector thisMinusLast(&thisPoint, &lastPoint);
+				Vector positionMinusLast(&currentPosition, &lastPoint);
+
+				// https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
+				double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
+
+				if (0 < t && t < 1) {
+					lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+				}
+				else if (t > 1) {
+					lastPoint = thisPoint;
+				}
+				else if (t < 0) {
+					lastPoint = lastPoint;
+				}
+
+				double distance = lastPoint.distance(currentPosition);
+				if (distance < closestDistance) {
+					closestDistance = distance;
+					closestPoint = lastPoint;
+					closestT = totalT + t;
+				}
+
+				totalT += 1;
+			}
+
+			return closestT;
+		}
+
+		double distance() {
+			double total = 0;
+
+			for (int i = 1; i < path.size(); i++) {
+				Point startPoint = path.at(i-1);
+				Point endPoint = path.at(i);
+
+				total += startPoint.distance(endPoint);
+			}
+
+			return total;
+		}
+
+		double distanceFromStart(double t) {
+			double t2 = t;
+
+			double total = 0;
+
+			for (int i = 1; i <= std::min(ceil(t), path.size()-1.0); i ++) {
+				Point startPoint = path.at(i-1);
+				Point endPoint = path.at(i);
+
+				total += startPoint.distance(endPoint) * clamp(t2, 0.0, 1.0);
+				t2--;
+			}
+
+			return total;
+		}
+
+		double distanceFromStart(Point currentPosition) {
+			return this->distanceFromStart(this->getTValue(currentPosition));
+		}
+
+		double distanceFromEnd(Point currentPosition) {
+			return this->distance() - this->distanceFromStart(currentPosition);
+		}
+
+		bool isContinuePath() {
+			return continuePath;
+		}
+
+		void setContinuePath(bool continuePath) {
+			this->continuePath = continuePath;
+		}
+
+		std::string getName() {
+			return name;
+		}
+
+		void setName(std::string name) {
+			this->name = name;
+		}
+
 		void operator+= (Point point) {
 			this->path.emplace_back(point);
 		}
@@ -127,9 +227,9 @@ namespace Pronounce {
 		}
 
 		std::string to_string() {
-			std::string str = "";
+			std::string str = "Name: " + name + ",\n Path: \n";
 			for (Point point : path) {
-				str += point.to_string() + "\n";
+				str += " " + point.to_string() + "\n";
 			}
 			return str;
 		}

@@ -7,7 +7,8 @@ namespace Pronounce {
         Point lookaheadPoint = Point();
         bool pointFound = false;
 
-        if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance) {
+        if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance && !continuePath) {
+			printf("Returning end point\n");
             return path.at(path.size() - 1);
         }
 
@@ -31,8 +32,17 @@ namespace Pronounce {
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
 
-                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1) {
+				printf("index: %d\n", i);
+
+				if ((this->continuePath && i == path.size() - 1 && (t1 >= 1 || t2 >= 1))) {
+					printf("Returning end point\n");
+				}
+
+				printf("T1: %f, T2: %f\n", t1, t2);
+
+                if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1 && (t1 >= 1 || t2 >= 1))) {
                     if (t2 < t1) {
+						printf("T1\n");
                         pointFound = true;
                         Vector resultVector = d.scale(t1);
                         Point tempLookaheadPoint = pathStart;
@@ -40,12 +50,14 @@ namespace Pronounce {
                         lookaheadPoint = tempLookaheadPoint;
                     }
                     if (t1 < t2) {
+						printf("T2\n");
                         pointFound = true;
                         Vector resultVector = d.scale(t2);
                         Point tempLookaheadPoint = pathStart;
                         tempLookaheadPoint += resultVector.getCartesian();
                         lookaheadPoint = tempLookaheadPoint;
                     }
+					break;
                 }
                 if (0 <= t1 && t1 <= 1) {
                     pointFound = true;
@@ -71,12 +83,19 @@ namespace Pronounce {
         return lookaheadPoint;
     }
 
-    Path::Path(/* args */) {
+    Path::Path() : Path("") {
+    }
+
+	Path::Path(std::string name) {
+		this->name = name;
     }
 
     Point Path::getClosestPoint(Point currentPosition) {
         Point closestPoint;
         double closestDistance = INT32_MAX;
+		double closestT = INT32_MAX;
+
+		double totalT = 0;
 
         // Returns the largest item in list
         // If two items are the same distance apart, will return first one
@@ -88,13 +107,13 @@ namespace Pronounce {
             Vector positionMinusLast(&currentPosition, &lastPoint);
 
             // https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
-            double lambdaS = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
+            double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
 
-            if (0 < lambdaS && lambdaS < 1) {
-                lastPoint += Vector(&lastPoint, &thisPoint).scale(lambdaS).getCartesian();
-            } else if (lambdaS > 1) {
+            if (0 < t && t < 1) {
+                lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+            } else if (t > 1) {
                 lastPoint = thisPoint;
-            } else if (lambdaS < 0) {
+            } else if (t < 0) {
                 lastPoint = lastPoint;
             }
 
@@ -102,7 +121,10 @@ namespace Pronounce {
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestPoint = lastPoint;
+				closestT = totalT + clamp(t, 0.0, 1.0);
             }
+
+			totalT += 1;
         }
 
         return closestPoint;
