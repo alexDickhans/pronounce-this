@@ -165,11 +165,7 @@ int preAutonRun() {
 	return 0;
 }
 
-/**
- * @brief Runs the Right Steal Right Auton
- *
- */
-int leftStealLeft() {
+int steal() {
 	odometry.reset(new Position(0, 16, 0));
 
 	purePursuit.setSpeed(250);
@@ -208,6 +204,97 @@ int leftStealLeft() {
 	}
 
 	drivetrain.skidSteerVelocity(0, 0);
+
+	purePursuit.setFollowing(false);
+
+	pros::Task::delay(500);
+
+	return 0;
+}
+
+/**
+ * @brief Runs the Right Steal Right Auton
+ *
+ */
+int leftStealLeft() {
+	odometry.reset(new Position(25, 16, 0.2234));
+
+	purePursuit.setSpeed(250);
+	purePursuit.setLookahead(15);
+
+	printf("Left Steal Left\n");
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralIndex);
+	purePursuit.setFollowing(true);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	// Collect front goal
+	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	pros::Task::delay(200);
+	liftButton.setAutonomousAuthority(360);
+
+	purePursuit.setFollowing(true);
+
+	printf("Left steal left: Collected front goal\n");
+
+	purePursuit.setCurrentPathIndex(leftNeutralToLeftAllianceGoalIndex);
+	purePursuit.setFollowing(true);
+
+	
+	// Change to false if you don't want to let go of the alliance mobile goal after a certain amount of time
+	if (true) {
+		uint32_t startTime = pros::millis();
+
+		while (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 4000) {
+			pros::Task::delay(50);
+		}
+
+		if (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 4000) {
+			printf("Left steal right: Failed to get to the right alliance goal\n");
+			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+		}
+	} else {
+		while (odometry.getPosition()->getY() > 45) {
+			pros::Task::delay(50);
+		}
+	}
+
+	purePursuit.setSpeed(100);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setCurrentPathIndex(leftAllianceGoalToMidRingsIndex);
+	purePursuit.setFollowing(true);
+
+	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	purePursuit.setSpeed(100);
+
+	pros::Task::delay(2000);
+
+	purePursuit.setSpeed(65);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(1000);
+
+	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	purePursuit.setFollowing(false);
 
