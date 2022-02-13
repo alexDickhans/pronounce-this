@@ -27,12 +27,10 @@ pros::Imu imu(5);
 
 pros::Rotation leftEncoder(12);
 pros::Rotation rightEncoder(14);
-pros::Rotation backEncoder(13);
 
 // Odom wheels
 Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
 Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
-Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 OdomWheel nullOdomWheel;
 
 // ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
@@ -711,15 +709,13 @@ void initDrivetrain() {
 	leftOdomWheel.setTuningFactor(1.005);
 	rightOdomWheel.setRadius(2.75 / 2);
 	rightOdomWheel.setTuningFactor(1.0017);
-	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(1.003);
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(true);
 	backEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(4.5 * 0.957);
-	odometry.setRightOffset(4.5 * 0.957);
+	odometry.setLeftOffset(3.5 * 0.957);
+	odometry.setRightOffset(3.5 * 0.957);
 	odometry.setBackOffset(0);
 	// odometry.setBackOffset(2.5);
 
