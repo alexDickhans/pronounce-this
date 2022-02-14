@@ -22,8 +22,11 @@ namespace Pronounce {
         bool singleToggle = false;
         bool retainOnNeutral = false;
 
+		bool positiveOnly = false;
+
     public:
         Button(pros::Controller* cotroller);
+        Button(pros::Controller* cotroller, pros::controller_digital_e_t positiveButton);
         Button(pros::Controller* cotroller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton);
 
         void update();

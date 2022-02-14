@@ -42,12 +42,12 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(20, true, 25), new PID(10, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(40, true, 25), new PID(10, 0, 0));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
 
-SolenoidButton frontGrabberButton(&master, DIGITAL_A, DIGITAL_B);
+SolenoidButton frontGrabberButton(&master, DIGITAL_A);
 SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
 
 // Autonomous Selector
@@ -986,7 +986,7 @@ void initSelector() {
 	autonomousSelector.addAuton(Auton("Right steal right", leftStealLeft));
 	autonomousSelector.addAuton(Auton("Test Orientation", testOrientationAuton));
 	autonomousSelector.addAuton(Auton("Test Balance", testBalanceAuton));
-	
+
 	autonomousSelector.setDefaultAuton(0);
 	autonomousSelector.setPreAuton(Auton("Pre auton", preAutonRun));
 	autonomousSelector.setPreAuton(Auton("Post auton", postAuton));
