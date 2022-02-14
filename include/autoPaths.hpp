@@ -101,7 +101,7 @@ namespace Pronounce {
 
 		// !SECTION
 
-/*
+
 		//SECTION Skills
 
 		// Left home zone to left neutral goal
@@ -209,13 +209,13 @@ namespace Pronounce {
 		QuadraticSplinePath leftRingsToGoalDrop("Left Rings to Goal Drop");
 
 		leftRingsToGoalDrop.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, 0)));
-		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4*0.5)));
+		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4 * 0.5)));
 
 		leftRingsToGoalDropIndex = purePursuit->addPath(leftRingsToGoalDrop.getPath(0.05));
-		
+
 		QuadraticSplinePath goalDrop2ToFarPlatform("Goal drop to far platform");
 
-		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4*0.5)));
+		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4 * 0.5)));
 		goalDrop2ToFarPlatform.addPoint(SplinePoint(Point(75, 110), Vector(10, 0)));
 
 		goalDrop2ToFarPlatformIndex = purePursuit->addPath(goalDrop2ToFarPlatform.getPath(0.05));
@@ -253,12 +253,12 @@ namespace Pronounce {
 		QuadraticSplinePath leftHomeZoneToPlatform;
 
 		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(130, 11.4), Vector(10, -M_PI_2)));
-		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(80, 11.4), Vector(10, -M_PI_2)));
+		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(115.5, 11.4), Vector(10, -M_PI_2)));
 
 		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.05));
 
 		//!SECTION
-*/
+
 		// SECTION Right Steal Right
 
 		Path rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");

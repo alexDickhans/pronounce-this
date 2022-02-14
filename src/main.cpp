@@ -79,11 +79,16 @@ void flipOut() {
 	disableIntake = true;
 }
 
-void waitForDone() {
+
+void waitForDone(double distance) {
 	// Wait for done
-	while (!purePursuit.isDone(0.1)) {
+	while (!purePursuit.isDone(distance)) {
 		pros::Task::delay(50);
 	}
+}
+
+void waitForDone() {
+	waitForDone(0.1);
 }
 
 void waitForDoneOrientation() {
@@ -138,7 +143,9 @@ void placeOnPlatform() {
 	purePursuit.setFollowing(true);
 }
 
-void balanceRobot() {
+void balanceRobot(double angle) {
+	balance.getOrientationController()->setTarget(-M_PI_2);
+
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
 
@@ -157,7 +164,9 @@ void balanceRobot() {
 }
 
 void turn(double angle) {
+	purePursuit.setFollowing(true);
 	purePursuit.setOrientationControl(true);
+
 	purePursuit.setTargetOrientation(angle);
 
 	waitForDoneOrientation();
@@ -398,7 +407,7 @@ int rightStealRight() {
 		pros::Task::delay(50);
 	}
 	
-	turn(-M_PI_4 * 0.5);
+	turn(-M_PI_4);
 
 	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
@@ -562,14 +571,7 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(0);
 	
-	purePursuit.setFollowing(true);
-	purePursuit.setOrientationControl(true);
-
-	purePursuit.setTargetOrientation(M_PI);
-
-	waitForDoneOrientation();
-
-	purePursuit.setOrientationControl(false);
+	turn(M_PI);
 
 	purePursuit.setCurrentPathIndex(farHomeZoneToMidNeutralGoalIndex);
 
@@ -608,19 +610,21 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(farPlatformToDropOffGoalIndex);
 
+	waitForDone(5);
+
+	liftButton.setAutonomousAuthority(600);
+
 	waitForDone();
+
+	pros::Task::delay(500);
 
 	backGrabberButton.setButtonStatus(NEUTRAL);
 
 	pros::Task::delay(500);
 
-	liftButton.setAutonomousAuthority(600);
-
 	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
 
-	while (!purePursuit.isDone(20)) {
-		pros::Task::delay(50);
-	}
+	waitForDone(20);
 
 	purePursuit.setSpeed(50);
 
@@ -631,16 +635,9 @@ int skills() {
 
 	pros::Task::delay(1000);
 
-	purePursuit.setFollowing(true);
-	purePursuit.setOrientationControl(true);
+	turn(-M_PI_2);
 
-	purePursuit.setTargetOrientation(-M_PI_4);
-
-	waitForDoneOrientation();
-
-	purePursuit.setOrientationControl(false);
-
-	purePursuit.setSpeed(100);
+	purePursuit.setSpeed(80);
 
 	waitForDone();
 
@@ -650,12 +647,11 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightNeutralIndex);
 
+	liftButton.setAutonomousAuthority(0);
+
 	purePursuit.setSpeed(150);
 
-	// Wait until it is time to slow down
-	while (!purePursuit.isDone(5)) {
-		pros::Task::delay(50);
-	}
+	waitForDone(5);
 
 	purePursuit.setSpeed(65);
 
@@ -665,13 +661,16 @@ int skills() {
 
 	pros::Task::delay(300);
 
+	liftButton.setAutonomousAuthority(600);
+
 	purePursuit.setSpeed(150);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToFarPlatformIndex);
 
-	placeOnPlatform();
+	liftButton.setAutonomousAuthority(2000);
 
-	waitForDone();
+	placeOnPlatform();
+/*
 
 	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
 
@@ -680,7 +679,7 @@ int skills() {
 	pros::Task::delay(200);
 
 	purePursuit.setOrientationControl(true);
-	purePursuit.setTargetOrientation(-M_PI_4);
+	purePursuit.setTargetOrientation(-M_PI_2);
 
 	waitForDoneOrientation();
 
@@ -693,7 +692,7 @@ int skills() {
 	pros::Task::delay(200);
 
 	purePursuit.setOrientationControl(true);
-	purePursuit.setTargetOrientation(M_PI_4);
+	purePursuit.setTargetOrientation(M_PI_2);
 
 	waitForDoneOrientation();
 
@@ -727,7 +726,7 @@ int skills() {
 	purePursuit.setEnabled(true);
 
 	purePursuit.setOrientationControl(true);
-	purePursuit.setTargetOrientation(M_PI_4);
+	purePursuit.setTargetOrientation(M_PI_2);
 
 	waitForDoneOrientation();
 
@@ -775,14 +774,83 @@ int skills() {
 
 	waitForDone();
 
-	
+	turn(M_PI_2);
 
-/*
+	purePursuit.setCurrentPathIndex(enterHomeZoneToRightHomeZoneIndex);
+
+	waitForDone(10);
+
+	backGrabberButton.setButtonStatus(NEUTRAL);
+
+	waitForDone();
+
+	turn(M_PI);
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToFarRightAllianceGoalIndex);
+
+	waitForDone();
+
+	pros::Task::delay(500);
+
+	backGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(500);
+
+	purePursuit.setCurrentPathIndex(farRightAllianceGoalToNearPreloadsIndex);
+
+	waitForDone();
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(200);
+
+	purePursuit.setCurrentPathIndex(farRightAllianceGoalToNearPreloadsIndex);
+
+	while (odometry.getPosition()->getY() > 110) {
+		pros::Task::delay(50);
+	}
+
+	liftButton.setAutonomousAuthority(0);
+
+	purePursuit.setSpeed(50);
+
+	pros::Task::delay(1000);
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+	
+	pros::Task::delay(200);
+
+	purePursuit.setSpeed(150);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	while (odometry.getPosition()->getY() > 40) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(85);
+
+	waitForDone();
+
+	purePursuit.setCurrentPathIndex(nearPlatformAlignIndex);
+
+	waitForDone();
+
+	purePursuit.setCurrentPathIndex(leftHomeZoneToPlatformIndex);
+
+	waitForDone();
+
+	liftButton.setAutonomousAuthority(100);
+
+	pros::Task::delay(1000);
+
 	purePursuit.setOrientationControl(false);
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
 
 	// Balance on the platform
 	balance.getOrientationController()->setTarget(-M_PI_2);
-	balanceRobot();
+	balanceRobot(-M_PI_2);
 */
 	printf("Skills path done\n");
 
@@ -865,7 +933,7 @@ int testBalanceAuton() {
 
 	pros::Task::delay(500);
 
-	balanceRobot();
+	balanceRobot(-M_PI_2);
 
 	return 0;
 }
