@@ -80,7 +80,10 @@ void flipOut() {
 }
 
 void waitForDone() {
-
+	// Wait for done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
 }
 
 void waitForDoneOrientation() {
@@ -97,7 +100,7 @@ void waitForDoneOrientation() {
 	pros::Task::delay(200);
 }
 
-void placeOnPlatform(int afterPath) {
+void placeOnPlatform() {
 	pros::Task::delay(500);
 
 	liftButton.setAutonomousAuthority(2000);
@@ -116,13 +119,23 @@ void placeOnPlatform(int afterPath) {
 
 	pros::Task::delay(300);
 
-	purePursuit.setCurrentPathIndex(afterPath);
+	purePursuit.setEnabled(false);
+	purePursuit.setFollowing(false);
 
-	pros::Task::delay(800);
+	drivetrain.skidSteerVelocity(100, 0);
+
+	pros::Task::delay(300);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	pros::Task::delay(300);
 
 	liftButton.setAutonomousAuthority(2000);
 
-	pros::Task::delay(800);
+	pros::Task::delay(500);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
 }
 
 void balanceRobot() {
@@ -531,7 +544,9 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(leftNeutralGoalToFarHomeZoneIndex);
 
-	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex);
+	placeOnPlatform();
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(0.5)) {
@@ -585,9 +600,194 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(midNeutralGoalToPlatformIndex);
 
-	placeOnPlatform(farHomeZoneToEnterFarHomeZoneIndex);
+	placeOnPlatform();
 
+	purePursuit.setCurrentPathIndex(farPlatformToDropOffGoalIndex);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	backGrabberButton.setButtonStatus(NEUTRAL);
+
+	pros::Task::delay(500);
+
+	liftButton.setAutonomousAuthority(600);
+
+	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
+
+	while (!purePursuit.isDone(20)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(50);
+
+	pros::Task::delay(1000);
+
+	// Stop and turn before we get to the target to pick the goal up in the back.
+	purePursuit.setFollowing(false);
+
+	pros::Task::delay(1000);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setOrientationControl(true);
+
+	purePursuit.setTargetOrientation(-M_PI_4);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setSpeed(100);
+
+	// Wait until it is done
+	while (!purePursuit.isDone(0.5)) {
+		pros::Task::delay(50);
+	}
+
+	backGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(200);
+
+	purePursuit.setCurrentPathIndex(rightAllianceToRightNeutralIndex);
+
+	purePursuit.setSpeed(150);
+
+	// Wait until it is time to slow down
+	while (!purePursuit.isDone(5)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(65);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(300);
+
+	purePursuit.setSpeed(150);
+
+	purePursuit.setCurrentPathIndex(rightNeutralToFarPlatformIndex);
+
+	placeOnPlatform();
+
+	// Wait until done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(200);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(-M_PI_4);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(enterFarHomeZoneToGoalDropOffIndex);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(200);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(M_PI_4);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
 	
+	purePursuit.setCurrentPathIndex(goalDropOffToFarPlatformIndex);
+
+	placeOnPlatform();
+
+	purePursuit.setCurrentPathIndex(farPlatformToGoalDropOff2Index);
+
+	// Wait until done
+	while (!purePursuit.isDone(0.1)) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(300);
+
+	backGrabberButton.setButtonStatus(NEUTRAL);
+
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	drivetrain.skidSteerVelocity(150, 0);
+
+	pros::Task::delay(200);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(M_PI_4);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
+
+	liftButton.setAutonomousAuthority(600);
+
+	waitForDone();
+
+	purePursuit.setSpeed(100);
+
+	purePursuit.setCurrentPathIndex(farLeftAllianceToLeftRingsIndex);
+
+	waitForDone();
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	purePursuit.setOrientationControl(true);
+	purePursuit.setTargetOrientation(0);
+
+	waitForDoneOrientation();
+
+	purePursuit.setOrientationControl(false);
+
+	purePursuit.setCurrentPathIndex(leftRingsToGoalDropIndex);
+
+	liftButton.setAutonomousAuthority(0);
+
+	waitForDone();
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(500);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	purePursuit.setCurrentPathIndex(goalDrop2ToFarPlatformIndex);
+
+	placeOnPlatform();
+
 /*
 	purePursuit.setOrientationControl(false);
 
