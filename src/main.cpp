@@ -926,24 +926,6 @@ void updateDrivetrain() {
 	}
 }
 
-/**
- * Initialize all sensors
- */
-void initSensors() {
-	printf("Initializing sensors\n");
-
-	imu.reset();
-
-	// Wait until IMU is calibrated
-	// while (imu.is_calibrating()) {
-	// 	pros::delay(20);
-	// }
-
-	//	printf("IMU calibrated\n");
-
-	printf("Sensors initialized\n");
-}
-
 void updateMotors() {
 	while (1) {
 		frontGrabberButton.update();
@@ -990,50 +972,6 @@ void initMotors() {
 	pros::Task updateButtons(updateMotors, "Update buttons");
 }
 
-void initDrivetrain() {
-	printf("Init drivetrain\n");
-
-	// odometry.setUseImu(true);
-	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1.005);
-	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(1.0017);
-	backOdomWheel.setRadius(1.25);
-	backOdomWheel.setTuningFactor(1.003);
-
-	leftEncoder.set_reversed(true);
-	rightEncoder.set_reversed(true);
-	backEncoder.set_reversed(false);
-
-	odometry.setLeftOffset(4.5 * 0.957);
-	odometry.setRightOffset(4.5 * 0.957);
-	odometry.setBackOffset(0);
-	// odometry.setBackOffset(2.5);
-
-	odometry.setMaxMovement(1);
-
-	purePursuit.setNormalizeDistance(10);
-	purePursuit.setSpeed(150);
-	purePursuit.setLookahead(15);
-	purePursuit.setStopDistance(0.5);
-	purePursuit.setMaxAcceleration(300);
-
-	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-
-	odometry.reset(new Position());
-
-	printf("Drivetrain Init done\n");
-}
-
-/**
- * Initialize the controller
- */
-void initController() {
-	master.setDrivetrain(&drivetrain);
-	master.setOdometry(&odometry);
-	pros::Task renderTask(renderThread);
-}
-
 // Run selector as task
 void runSelector() {
 	pros::Task::delay(1000);
@@ -1048,26 +986,12 @@ void initSelector() {
 	autonomousSelector.addAuton(Auton("Right steal right", leftStealLeft));
 	autonomousSelector.addAuton(Auton("Test Orientation", testOrientationAuton));
 	autonomousSelector.addAuton(Auton("Test Balance", testBalanceAuton));
+	
 	autonomousSelector.setDefaultAuton(0);
 	autonomousSelector.setPreAuton(Auton("Pre auton", preAutonRun));
 	autonomousSelector.setPreAuton(Auton("Post auton", postAuton));
 
 	pros::Task selectorTask(runSelector, "Auton Selector");
-}
-
-/**
- * Initialize the logger for data collection after the match
- */
-void initLogger() {
-
-	Logger::setDefaultLogger(
-		std::make_shared<Logger>(
-			TimeUtilFactory::createDefault().getTimer(),
-			"/usd/log.txt",
-			Logger::LogLevel::debug // Show everything
-			)
-	);
-	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
 }
 
 /**
@@ -1098,12 +1022,11 @@ void initialize() {
 	printf("LVGL Init");
 
 	// Initialize functions
-	initSensors();
+	initSensors(imu);
 	initMotors();
 	autoPaths(&purePursuit);
-	initDrivetrain();
-	initController();
-	initLogger();
+	initDrivetrain(leftOdomWheel, rightOdomWheel, leftEncoder, rightEncoder, odometry, purePursuit, updateDrivetrain);
+	initController(master, &drivetrain, &odometry, renderThread);
 	// initSelector();
 
 	printf("Init done\n");
