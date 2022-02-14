@@ -1044,6 +1044,8 @@ void initMotors() {
 
 	lift.set_current_limit(25000);
 
+	liftButton.setMultiplier(1);
+
 	pros::Task updateButtons(updateMotors, "Update buttons");
 }
 

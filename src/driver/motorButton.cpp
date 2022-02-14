@@ -32,7 +32,7 @@ namespace Pronounce {
 				this->motor->move_absolute(angle, abs(this->positiveAuthority));
 			}
 			else {
-				this->motor->move_absolute(this->autonomousAuthority, abs(this->positiveAuthority));
+				this->motor->move_absolute(this->autonomousAuthority * multiplier, abs(this->positiveAuthority));
 			}
 			return;
 		}
