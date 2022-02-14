@@ -21,20 +21,28 @@ namespace Pronounce {
 	int rightAllianceToRightRingsIndex;
 
 	// Skills
-	int leftHomeZoneToLeftNeutralGoalIndex;
-	int leftNeutralGoalToFarHomeZoneIndex;
-	int farHomeZoneToMidNeutralGoalIndex;
-	int farHomeZoneToEnterFarHomeZoneIndex;
-	int midNeutralGoalToPlatformIndex;
-	int farPlatformToDropOffGoalIndex;
-	int goalDropOffToFarLeftAllianceIndex;
-	int farLeftAllianceToLeftRingsIndex;
-	int leftRingsToGoalDropIndex;
-	int rightHomeZoneToFarRightAllianceGoalIndex;
-	int farRightAllianceGoalToNearPreloadsIndex;
-	int nearPlatformAlignIndex;
-	int leftHomeZoneToPlatformIndex;
-	int enterHomeZoneToRightHomeZoneIndex;
+	int leftHomeZoneToLeftNeutralGoalIndex = -1;
+	int leftNeutralGoalToFarHomeZoneIndex = -1;
+	int farHomeZoneToMidNeutralGoalIndex = -1;
+	int farHomeZoneToEnterFarHomeZoneIndex = -1;
+	int midNeutralGoalToPlatformIndex = -1;
+	int farPlatformToDropOffGoalIndex = -1;
+	int dropOffGoalToRightAllianceIndex = -1;
+	int rightAllianceToRightNeutralIndex = -1;
+	int rightNeutralToFarPlatformIndex = -1;
+	int enterFarHomeZoneToGoalDropOffIndex = -1;
+	int goalDropOffToFarPlatformIndex = -1;
+	int goalDrop2ToFarPlatformIndex = -1;
+	int goalDropOffToFarLeftAllianceIndex = -1;
+	int farLeftAllianceToLeftRingsIndex = -1;
+	int leftRingsToGoalDropIndex = -1;
+	int rightHomeZoneToFarRightAllianceGoalIndex = -1;
+	int farRightAllianceGoalToNearPreloadsIndex = -1;
+	int nearPlatformAlignIndex = -1;
+	int leftHomeZoneToPlatformIndex = -1;
+	int enterHomeZoneToRightHomeZoneIndex = -1;
+
+	int farPlatformToGoalDropOff2Index = -1;
 
 	// Right steal right
 	int rightHomeZoneToRightNeutralIndex = -1;
@@ -42,10 +50,18 @@ namespace Pronounce {
 	int rightAllianceGoalToRightRingsIndex = -1;
 	int rightRingsToRightHomeZoneIndex = -1;
 
+	// Left steal Left
+	int leftHomeZoneToLeftNeutralIndex = -1;
+	int leftNeutralToLeftAllianceGoalIndex = -1;
+	int leftAllianceGoalToMidRingsIndex = -1;
+
+	// Legacy 
 	int forwardIndex = -1;
 	int backwardIndex = -1;
 
 	void autoPaths(PurePursuit* purePursuit) {
+		printf("Why the unknown error, is it in this function??\n");
+
 		// Default pure pursuit profile
 		PurePursuitProfile defaultProfile(new PID(20, 0.0, 2.0), new PID(60.0, 0.0, 5.0), 10.0);
 		purePursuit->getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
@@ -61,7 +77,7 @@ namespace Pronounce {
 		// !SECTION
 
 		// SECTION Left AWP
-		QuadraticSplinePath leftAllianceToRightHomeZone = QuadraticSplinePath();
+		QuadraticSplinePath leftAllianceToRightHomeZone("Left alliance to right home zone");
 
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(0, M_PI_2)));
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(15.2, 35.0), Vector(0, 0.0)));
@@ -70,14 +86,14 @@ namespace Pronounce {
 
 		leftAllianceToRightHomeZoneIndex = purePursuit->addPath(leftAllianceToRightHomeZone.getPath(0.1));
 
-		QuadraticSplinePath rightHomeZoneToRightAlliance = QuadraticSplinePath();
+		QuadraticSplinePath rightHomeZoneToRightAlliance("Right home zone to right alliance");
 
 		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(80, 46.4), Vector(15.0, -M_PI_2 - M_PI_4)));
 		rightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(129.0, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
 
 		rightHomeZoneToRightAllianceIndex = purePursuit->addPath(rightHomeZoneToRightAlliance.getPath(0.1));
 
-		QuadraticSplinePath rightAllianceToRightHomeZone = QuadraticSplinePath();
+		QuadraticSplinePath rightAllianceToRightHomeZone("Right alliance to right home zone");
 
 		rightAllianceToRightHomeZone.addPoint(SplinePoint(Point(130.0, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
 		rightAllianceToRightHomeZone.addPoint(SplinePoint(Point(100, 30), Vector(15.0, -M_PI_2 - M_PI_4)));
@@ -86,6 +102,7 @@ namespace Pronounce {
 
 		// !SECTION
 
+/*
 		//SECTION Skills
 
 		// Left home zone to left neutral goal
@@ -96,14 +113,14 @@ namespace Pronounce {
 		// leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(30, 70), Vector(20, M_PI_4*0.75)));
 		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(33, 61), Vector(20, 0)));
 
-		leftHomeZoneToLeftNeutralGoalIndex = purePursuit->addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.01));
+		leftHomeZoneToLeftNeutralGoalIndex = purePursuit->addPath(leftHomeZoneToLeftNeutralGoal.getPath(0.05));
 
 		QuadraticSplinePath leftNeutralGoalToFarHomeZone("Left Neutral Goal to Far Home Zone");
 
 		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(33, 68), Vector(10, 0)));
 		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(68, 110), Vector(30, 0)));
 
-		leftNeutralGoalToFarHomeZoneIndex = purePursuit->addPath(leftNeutralGoalToFarHomeZone.getPath(0.01));
+		leftNeutralGoalToFarHomeZoneIndex = purePursuit->addPath(leftNeutralGoalToFarHomeZone.getPath(0.05));
 
 		Path farHomeZoneToEnterFarHomeZone("Far Home Zone to Enter Far Home Zone");
 
@@ -129,45 +146,94 @@ namespace Pronounce {
 		QuadraticSplinePath farPlatformToDropOffGoal("Far Platform to Drop Off Goal");
 
 		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(75, 107), Vector(5, 0)));
-		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(75, 80), Vector(5, 0)));
+		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(50, 95), Vector(15, -M_PI_4)));
 
-		farPlatformToDropOffGoalIndex = purePursuit->addPath(farPlatformToDropOffGoal.getPath(0.01));
+		farPlatformToDropOffGoalIndex = purePursuit->addPath(farPlatformToDropOffGoal.getPath(0.05));
+
+		QuadraticSplinePath dropOffGoalToRightAlliance("Drop Off Goal to Right Alliance");
+
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(50, 95), Vector(15, -M_PI_4)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(70, 70), Vector(15, 0)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(125, 35), Vector(20, -M_PI_4)));
+
+		dropOffGoalToRightAllianceIndex = purePursuit->addPath(dropOffGoalToRightAlliance.getPath(0.05));
+
+		QuadraticSplinePath rightAllianceToRightNeutral("Right Alliance to Right Neutral");
+
+		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(125, 35), Vector(10, -M_PI_4)));
+		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(117.5, 65), Vector(10, 0)));
+
+		rightAllianceToRightNeutralIndex = purePursuit->addPath(rightAllianceToRightNeutral.getPath(0.05));
+
+		QuadraticSplinePath rightNeutralToFarPlatform("Right Neutral Goal to Far Platform");
+
+		rightNeutralToFarPlatform.addPoint(SplinePoint(Point(117.5, 65), Vector(10, 0)));
+		rightNeutralToFarPlatform.addPoint(SplinePoint(Point(70, 110), Vector(10, 0)));
+
+		rightNeutralToFarPlatformIndex = purePursuit->addPath(rightNeutralToFarPlatform.getPath(0.05));
+
+		QuadraticSplinePath enterFarHomeZoneToGoalDropOff("Enter Far Home Zone to Goal Drop Off");
+
+		enterFarHomeZoneToGoalDropOff.addPoint(SplinePoint(Point(70, 100), Vector(10, 0)));
+		enterFarHomeZoneToGoalDropOff.addPoint(SplinePoint(Point(50, 95), Vector(15, -M_PI_4)));
+
+		enterFarHomeZoneToGoalDropOffIndex = purePursuit->addPath(enterFarHomeZoneToGoalDropOff.getPath(0.1));
+
+		QuadraticSplinePath goalDropOffToFarPlatform("Goal drop off 1 to far platform");
+
+		goalDropOffToFarPlatform.addPoint(SplinePoint(Point(50, 95), Vector(15, -M_PI_4)));
+		goalDropOffToFarPlatform.addPoint(SplinePoint(Point(65, 110), Vector(15, 0)));
+
+		goalDropOffToFarPlatformIndex = purePursuit->addPath(goalDropOffToFarPlatform.getPath(0.1));
+
+		QuadraticSplinePath farPlatformToGoalDropOff2("Far platform to goal drop off 2");
+
+		farPlatformToGoalDropOff2.addPoint(SplinePoint(Point(65, 110), Vector(15, 0)));
+		farPlatformToGoalDropOff2.addPoint(SplinePoint(Point(60, 85), Vector(15, 0)));
+
+		farPlatformToGoalDropOff2Index = purePursuit->addPath(farPlatformToGoalDropOff2.getPath(0.1));
 
 		QuadraticSplinePath goalDropOffToFarLeftAlliance("Goal Drop Off to Far Left Alliance");
 
-		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(65, 80), Vector(15, 0)));
+		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(60, 90), Vector(15, M_PI_4)));
 		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4)));
 
-		goalDropOffToFarLeftAllianceIndex = purePursuit->addPath(goalDropOffToFarLeftAlliance.getPath(0.01));
+		goalDropOffToFarLeftAllianceIndex = purePursuit->addPath(goalDropOffToFarLeftAlliance.getPath(0.05));
 
 		QuadraticSplinePath farLeftAllianceToLeftRings("Far Left Alliance to Left Rings");
 
 		farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(18, 97), Vector(15, M_PI_4 + M_PI)));
 		farLeftAllianceToLeftRings.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, M_PI)));
 
-		farLeftAllianceToLeftRingsIndex = purePursuit->addPath(farLeftAllianceToLeftRings.getPath(0.01));
+		farLeftAllianceToLeftRingsIndex = purePursuit->addPath(farLeftAllianceToLeftRings.getPath(0.05));
 
 		QuadraticSplinePath leftRingsToGoalDrop("Left Rings to Goal Drop");
 
 		leftRingsToGoalDrop.addPoint(SplinePoint(Point(23.2, 70.3), Vector(15, 0)));
-		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(2, -M_PI_4)));
-		leftRingsToGoalDrop.addPoint(SplinePoint(Point(75, 107), Vector(10, 0)));
+		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4 * 0.5)));
 
-		leftRingsToGoalDropIndex = purePursuit->addPath(leftRingsToGoalDrop.getPath(0.01));
+		leftRingsToGoalDropIndex = purePursuit->addPath(leftRingsToGoalDrop.getPath(0.05));
+
+		QuadraticSplinePath goalDrop2ToFarPlatform("Goal drop to far platform");
+
+		leftRingsToGoalDrop.addPoint(SplinePoint(Point(60, 73), Vector(15, -M_PI_4 * 0.5)));
+		goalDrop2ToFarPlatform.addPoint(SplinePoint(Point(75, 110), Vector(10, 0)));
+
+		goalDrop2ToFarPlatformIndex = purePursuit->addPath(goalDrop2ToFarPlatform.getPath(0.05));
 
 		QuadraticSplinePath enterHomeZoneToRightHomeZone;
 
-		enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(75, 95), Vector(10, 0)));
+		enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(70, 95), Vector(10, 0)));
 		enterHomeZoneToRightHomeZone.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, -M_PI_2)));
 
-		enterHomeZoneToRightHomeZoneIndex = purePursuit->addPath(enterHomeZoneToRightHomeZone.getPath(0.01));
+		enterHomeZoneToRightHomeZoneIndex = purePursuit->addPath(enterHomeZoneToRightHomeZone.getPath(0.05));
 
 		QuadraticSplinePath rightHomeZoneToFarRightAllianceGoal;
 
 		rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, M_PI_2)));
 		rightHomeZoneToFarRightAllianceGoal.addPoint(SplinePoint(Point(103, 125), Vector(10, M_PI_4)));
 
-		rightHomeZoneToFarRightAllianceGoalIndex = purePursuit->addPath(rightHomeZoneToFarRightAllianceGoal.getPath(0.01));
+		rightHomeZoneToFarRightAllianceGoalIndex = purePursuit->addPath(rightHomeZoneToFarRightAllianceGoal.getPath(0.05));
 
 		QuadraticSplinePath farRightAllianceGoalToNearPreloads;
 
@@ -175,7 +241,7 @@ namespace Pronounce {
 		farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(129.2, 70.3), Vector(20, -M_PI)));
 		farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(117.5, 5), Vector(10, 0)));
 
-		farRightAllianceGoalToNearPreloadsIndex = purePursuit->addPath(farRightAllianceGoalToNearPreloads.getPath(0.01));
+		farRightAllianceGoalToNearPreloadsIndex = purePursuit->addPath(farRightAllianceGoalToNearPreloads.getPath(0.05));
 
 		SplinePath nearPlatformAlign;
 
@@ -183,50 +249,73 @@ namespace Pronounce {
 		nearPlatformAlign.addPoint(117.5, 11.4);
 		nearPlatformAlign.addPoint(130, 11.4);
 
-		nearPlatformAlignIndex = purePursuit->addPath(nearPlatformAlign.getPath(0.01));
+		nearPlatformAlignIndex = purePursuit->addPath(nearPlatformAlign.getPath(0.05));
 
 		QuadraticSplinePath leftHomeZoneToPlatform;
 
 		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(130, 11.4), Vector(10, -M_PI_2)));
-		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(80, 11.4), Vector(10, -M_PI_2)));
+		leftHomeZoneToPlatform.addPoint(SplinePoint(Point(115.5, 11.4), Vector(10, -M_PI_2)));
 
-		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.01));
+		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.05));
 
 		//!SECTION
-
+*/
 		// SECTION Right Steal Right
 
-		QuadraticSplinePath rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");
+		Path rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");
 
-		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 16), Vector(10, 0)));
-		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 58), Vector(10, 0)));
+		rightHomeZoneToRightNeutral.addPoint(105.7, 16);
+		rightHomeZoneToRightNeutral.addPoint(105.7, 55);
 
-		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral.getPath(0.01));
+		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral);
 
 		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
 		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(20, 0)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(125, 37), Vector(10, M_PI_4)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(125, 37), Vector(15, -M_PI_4)));
 
-		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.01));
+		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.05));
 
-		QuadraticSplinePath rightAllianceGoalToRightRings;
+		SplinePath rightAllianceGoalToRightRings;
 
-		rightAllianceGoalToRightRings.addPoint(SplinePoint(Point(125, 37), Vector(10, M_PI_4)));
-		rightAllianceGoalToRightRings.addPoint(SplinePoint(Point(117.5, 70), Vector(10, M_PI_4)));
+		rightAllianceGoalToRightRings.addPoint(125, 37);
+		rightAllianceGoalToRightRings.addPoint(117.5, 46.8);
+		rightAllianceGoalToRightRings.addPoint(117.5, 70);
 
-		rightAllianceGoalToRightRingsIndex = purePursuit->addPath(rightAllianceGoalToRightRings.getPath(0.01));
+		rightAllianceGoalToRightRingsIndex = purePursuit->addPath(rightAllianceGoalToRightRings.getPath(0.05));
 
-		QuadraticSplinePath rightRingsToRightHomeZone;
+		Path rightRingsToRightHomeZone;
 
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70), Vector(10, M_PI_4)));
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(90, 45), Vector(10, 0)));
+		rightRingsToRightHomeZone.addPoint(117.5, 70);
+		rightRingsToRightHomeZone.addPoint(117.5, 40);
 
-		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone.getPath(0.01));
+		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone);
 
 		//!SECTION
 
 		// SECTION Left Steal Left
+
+		Path leftHomeZoneToLeftNeutral("Left Home Zone to Left Neutral");
+
+		leftHomeZoneToLeftNeutral.addPoint(25, 15);
+		leftHomeZoneToLeftNeutral.addPoint(35, 63);
+
+		leftHomeZoneToLeftNeutralIndex = purePursuit->addPath(leftHomeZoneToLeftNeutral);
+
+		QuadraticSplinePath leftNeutralToLeftAllianceGoal;
+
+		leftNeutralToLeftAllianceGoal.addPoint(SplinePoint(Point(35, 63), Vector(20, -0.2234)));
+		leftNeutralToLeftAllianceGoal.addPoint(SplinePoint(Point(25, 11.4), Vector(10, M_PI_4)));
+
+		leftNeutralToLeftAllianceGoalIndex = purePursuit->addPath(leftNeutralToLeftAllianceGoal.getPath(0.01));
+
+		QuadraticSplinePath leftAllianceGoalToMidRings;
+
+		leftAllianceGoalToMidRings.addPoint(SplinePoint(Point(32, 11.4), Vector(10, M_PI_4)));
+		leftAllianceGoalToMidRings.addPoint(SplinePoint(Point(46.8, 46.8), Vector(10, -M_PI_4)));
+		leftAllianceGoalToMidRings.addPoint(SplinePoint(Point(85, 46.8), Vector(10, -M_PI_4)));
+
+		leftAllianceGoalToMidRingsIndex = purePursuit->addPath(leftAllianceGoalToMidRings.getPath(0.01));
 
 		Path forward;
 
@@ -244,7 +333,7 @@ namespace Pronounce {
 
 		// !SECTION
 
-		printf("Array size: %d\n", purePursuit->getPaths().size());
+		printf("It isn't: Array size: %d\n", purePursuit->getPaths().size());
 	}
 
 } // Namespace Prononce

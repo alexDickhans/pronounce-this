@@ -25,6 +25,8 @@ namespace Pronounce {
 		// Set the speed with the bang bang controller
 		double speed = linearController->update(imu->get_pitch());
 
+		printf("speed: %f, angle: %f. \n", speed, imu->get_pitch());
+
 		// Calculate the turing force with the orientation PID
 		this->orientationController->setPosition(toRadians(this->imu->get_heading()));
 		double turn = this->orientationController->update();

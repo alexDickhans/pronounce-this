@@ -94,6 +94,8 @@ namespace Pronounce {
 
 		int addPath(Path path) {
 			paths.emplace_back(path);
+			printf("%d\n", paths.size());
+			std::cout << "Name: " << path.getName() << std::endl;
 			// printf(path.to_string().c_str());
 			return paths.size() - 1;
 		}
