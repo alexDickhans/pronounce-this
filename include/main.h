@@ -48,7 +48,6 @@
  */
 
 #include "autoPaths.hpp"
-#include "init.hpp"
 
 // Auton
 #include "auton/auton.hpp"
