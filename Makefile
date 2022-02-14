@@ -26,11 +26,13 @@ EXCLUDE_COLD_LIBRARIES:=
 # Set this to 1 to add additional rules to compile your project as a PROS library template
 IS_LIBRARY:=0
 # TODO: CHANGE THIS!
-LIBNAME:=libbest
-VERSION:=1.0.0
+LIBNAME:=lib2654
+VERSION:=1.2.3
 # EXCLUDE_SRC_FROM_LIB= $(SRCDIR)/unpublishedfile.c
+# EXCLUDE_SRC_FROM_LIB+= $(SRCDIR)/main.cpp
+# EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/main.h
+# EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/autoPaths.hpp
 # this line excludes opcontrol.c and similar files
-EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/main,$(foreach cext,$(CEXTS),$(file).$(cext)) $(foreach cxxext,$(CXXEXTS),$(file).$(cxxext)))
 
 # files that get distributed to every user (beyond your source archive) - add
 # whatever files you want here. This line is configured to add all header files

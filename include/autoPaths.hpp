@@ -101,7 +101,7 @@ namespace Pronounce {
 
 		// !SECTION
 
-
+/*
 		//SECTION Skills
 
 		// Left home zone to left neutral goal
@@ -258,7 +258,7 @@ namespace Pronounce {
 		leftHomeZoneToPlatformIndex = purePursuit->addPath(leftHomeZoneToPlatform.getPath(0.05));
 
 		//!SECTION
-
+*/
 		// SECTION Right Steal Right
 
 		Path rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");

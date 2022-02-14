@@ -42,7 +42,7 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(40, true, 25), new PID(10, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(20, true, 25), new PID(60, 0, 4));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
@@ -144,7 +144,7 @@ void placeOnPlatform() {
 }
 
 void balanceRobot(double angle) {
-	balance.getOrientationController()->setTarget(-M_PI_2);
+	balance.getOrientationController()->setTarget(angle);
 
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
@@ -921,7 +921,7 @@ int tuneOdom() {
 }
 
 int testBalanceAuton() {
-	odometry.reset(new Position(0, 0, -M_PI_2));
+	odometry.reset(new Position(0, 0, M_PI_2));
 
 	pros::Task::delay(200);
 
@@ -933,7 +933,7 @@ int testBalanceAuton() {
 
 	pros::Task::delay(500);
 
-	balanceRobot(-M_PI_2);
+	balanceRobot(M_PI_2);
 
 	return 0;
 }
@@ -1213,8 +1213,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRight();
-	// tuneOdom();
+	// rightStealRight();
+	testBalanceAuton();
 	postAuton();
 
 	// autonomousSelector.run();
