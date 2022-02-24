@@ -983,6 +983,13 @@ void updateDrivetrain() {
 	while (1) {
 		uint32_t startTime = pros::millis();
 		odometry.update();
+		gpsOdometry.update();
+
+		// Change to true to use gps
+		if (gpsOdometry.goodFix() && false) {
+			odometry.setPosition(gpsOdometry.getPosition());
+		}
+
 		if (purePursuit.isEnabled()) {
 			purePursuit.update();
 		}
