@@ -454,9 +454,9 @@ int leftAwpRight() {
 
 	liftButton.setAutonomousAuthority(600);
 
-	pros::Task::delay(1500);
+	pros::Task::delay(2000);
 
-	purePursuit.setSpeed(65);
+	purePursuit.setSpeed(100);
 
 	// Wait until it is done
 	while (!purePursuit.isDone(2)) {
@@ -467,7 +467,7 @@ int leftAwpRight() {
 
 	pros::delay(800);
 
-	purePursuit.setSpeed(75);
+	purePursuit.setSpeed(100);
 
 	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
 	purePursuit.setFollowing(true);
