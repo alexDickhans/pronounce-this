@@ -147,7 +147,7 @@ namespace Pronounce {
 		QuadraticSplinePath farPlatformToDropOffGoal("Far Platform to Drop Off Goal");
 
 		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(80, 110), Vector(20, M_PI)));
-		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(40, 95), Vector(15, M_PI_2)));
+		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(40, 100), Vector(15, M_PI_2)));
 
 		farPlatformToDropOffGoalIndex = purePursuit->addPath(farPlatformToDropOffGoal.getPath(0.05));
 
@@ -155,7 +155,7 @@ namespace Pronounce {
 
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(40, 100), Vector(15, -M_PI_2)));
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(70, 70), Vector(15, M_PI)));
-		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(125, 35), Vector(40, -M_PI_2 * 0.9)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(120, 35), Vector(40, -M_PI_2 * 0.9)));
 
 		dropOffGoalToRightAllianceIndex = purePursuit->addPath(dropOffGoalToRightAlliance.getPath(0.05));
 
@@ -196,7 +196,7 @@ namespace Pronounce {
 
 		QuadraticSplinePath goalDropOffToFarLeftAlliance("Goal Drop Off to Far Left Alliance");
 
-		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(60, 100), Vector(20, M_PI_2)));
+		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(60, 105.7), Vector(20, M_PI_2)));
 		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(22, 105.7), Vector(20, M_PI_2)));
 
 		goalDropOffToFarLeftAllianceIndex = purePursuit->addPath(goalDropOffToFarLeftAlliance.getPath(0.1));
@@ -204,9 +204,8 @@ namespace Pronounce {
 		QuadraticSplinePath farLeftAllianceGoalToRightAllianceGoal("Far Left Alliance Goal to Right Alliance Goal");
 
 		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(18, 105.7), Vector(10, -M_PI_2)));
-		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(70, 80), Vector(30, -M_PI_2)));
-		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(129.2, 105.7), Vector(10, 0)));
-		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(103, 125), Vector(10, M_PI_4)));
+		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(90, 105.7), Vector(30, -M_PI_2)));
+		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(105, 123), Vector(10, M_PI_4)));
 
 		farLeftAllianceGoalToRightAllianceGoalIndex = purePursuit->addPath(farLeftAllianceGoalToRightAllianceGoal.getPath(0.05));
 
