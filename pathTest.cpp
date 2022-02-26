@@ -293,13 +293,12 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath farRightAllianceGoalToNearPreloads("Far Right Alliance Goal to Near Preloads");
+		QuadraticSplinePath rightRingsToRightHomeZone("Right rings to right home zone");
 
-		farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(103, 125), Vector(20, M_PI + M_PI_4)));
-		farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(117.5, 70.3), Vector(50, -M_PI)));
-		farRightAllianceGoalToNearPreloads.addPoint(SplinePoint(Point(105.7, 11.4), Vector(30, M_PI_2 - 0.1)));
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(15.0, M_PI)));
+		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 35), Vector(15.0, M_PI)));
 
-	Path smoothPath = farRightAllianceGoalToNearPreloads.getPath(0.1);
+	Path smoothPath = rightRingsToRightHomeZone.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);
