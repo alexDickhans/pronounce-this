@@ -38,6 +38,8 @@ namespace Pronounce {
         int max = 0;
         pros::Motor* motor;
 
+		double multiplier = 1.0;
+
     public:
         MotorButton();
         MotorButton(pros::Controller* controller, pros::Motor* motor,
@@ -58,6 +60,14 @@ namespace Pronounce {
         bool getGoToImmediately() {
             return this->goToImmediately;
         }
+
+		double getMultiplier() {
+			return multiplier;
+		}
+
+		void setMultiplier(double multiplier) {
+			this->multiplier = multiplier;
+		}
 
         void setGoToImmediately(bool goToImmediately) {
             this->goToImmediately = goToImmediately;

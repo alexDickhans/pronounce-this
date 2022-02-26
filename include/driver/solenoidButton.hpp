@@ -12,6 +12,7 @@ namespace Pronounce {
     public:
         SolenoidButton(pros::Controller* controller);
         SolenoidButton(pros::Controller* controller, pros::ADIDigitalOut* solenoid);
+        SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton);
         SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton);
 
         void updateActuator();

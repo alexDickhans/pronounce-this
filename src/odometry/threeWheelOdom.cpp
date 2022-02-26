@@ -57,7 +57,7 @@ namespace Pronounce {
         lastPosition->add(localOffset.getCartesian());
         lastPosition->setTheta(fmod(currentAngle + M_PI * 2, M_PI * 2));
 
-		if (localOffset.getMagnitude() > maxMovement) {
+		if (localOffset.getMagnitude() > maxMovement && maxMovement != 0) {
 			return;
 		}
 

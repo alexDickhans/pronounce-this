@@ -48,7 +48,6 @@
  */
 
 #include "autoPaths.hpp"
-#include "defines.h"
 
 // Auton
 #include "auton/auton.hpp"
@@ -79,6 +78,7 @@
 #include "motionControl/tankPurePursuit.hpp"
 
 // Odometry
+#include "odometry/gpsOdometry.hpp"
 #include "odometry/mecanumOdometry.hpp"
 #include "odometry/odometry.hpp"
 #include "odometry/threeWheelOdom.hpp"

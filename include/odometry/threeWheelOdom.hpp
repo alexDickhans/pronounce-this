@@ -15,7 +15,7 @@ namespace Pronounce
 		pros::Imu* imu;
 		bool useImu = false;
 
-		double maxMovement = 100;
+		double maxMovement = 0;
     public:
         ThreeWheelOdom();
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);

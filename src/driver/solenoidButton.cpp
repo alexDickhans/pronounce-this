@@ -8,6 +8,10 @@ namespace Pronounce {
         this->solenoid = solenoid;
     }
 
+	SolenoidButton::SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton) : Button(controller, positiveButton) {
+        this->solenoid = new pros::ADIDigitalOut(9);
+    }
+
     SolenoidButton::SolenoidButton(pros::Controller* controller, pros::controller_digital_e_t positiveButton, pros::controller_digital_e_t negativeButton) : Button(controller, positiveButton, negativeButton) {
         this->solenoid = new pros::ADIDigitalOut(9);
     }
