@@ -783,7 +783,7 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(farRightAllianceGoalToNearPreloadsIndex);
 
-	while(odometry.getPosition()->getY() > 110) {
+	while (odometry.getPosition()->getY() > 110) {
 		pros::Task::delay(50);
 	}
 
@@ -1258,10 +1258,10 @@ void opcontrol() {
 			backGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 		}
 
-		if (partner.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L1) && !master.get_digital(DIGITAL_L2)) {
+		if ((partner.get_digital(DIGITAL_L1) && !master.get_digital(DIGITAL_L2)) || master.get_digital(DIGITAL_L1)) {
 			liftButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 		}
-		else if (partner.get_digital(DIGITAL_L2) || master.get_digital(DIGITAL_L2) && !master.get_digital(DIGITAL_L1)) {
+		else if ((partner.get_digital(DIGITAL_L2) && !master.get_digital(DIGITAL_L1)) || master.get_digital(DIGITAL_L2)) {
 			liftButton.setButtonStatus(Pronounce::ButtonStatus::NEGATIVE);
 		}
 		else {
@@ -1279,7 +1279,7 @@ void opcontrol() {
 			driverMode = 2;
 		}
 
-		if (master.get_digital_new_press(DIGITAL_B)) {
+		if (master.get_digital_new_press(DIGITAL_B) || partner.get_digital_new_press(DIGITAL_B)) {
 			balance.setEnabled(!balance.isEnabled());
 			balance.getOrientationController()->setTarget(odometry.getPosition()->getTheta());
 			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
