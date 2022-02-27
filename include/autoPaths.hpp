@@ -83,17 +83,17 @@ namespace Pronounce {
 		QuadraticSplinePath leftAllianceToRightAlliance("Left alliance to right home zone");
 
 		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30.0, 11.4), Vector(20, M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30, 46.4), Vector(20, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(46.4, 46.4), Vector(15, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(80, 46.4), Vector(0, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(123.0, 35), Vector(15.0, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30, 43), Vector(20, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(46.4, 43), Vector(15, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(80, 43), Vector(0, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(123.0, 36.5), Vector(15.0, -M_PI_2)));
 
 		leftAllianceToRightAllianceIndex = purePursuit->addPath(leftAllianceToRightAlliance.getPath(0.1));
 
 		QuadraticSplinePath rightAllianceToRightRings("Right alliance to right rings");
 
 		rightAllianceToRightRings.addPoint(SplinePoint(Point(125, 35), Vector(5, M_PI_4)));
-		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 70), Vector(35, 0)));
+		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 73), Vector(35, 0)));
 
 		rightAllianceToRightRingsIndex = purePursuit->addPath(rightAllianceToRightRings.getPath(0.1));
 

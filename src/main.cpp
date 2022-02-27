@@ -439,7 +439,6 @@ int leftAwpRight() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 
 	// Move back
 	// Timed programming, our favorite!
@@ -462,27 +461,37 @@ int leftAwpRight() {
 
 	purePursuit.setSpeed(150);
 
-	purePursuit.setLookahead(8);
-
 	// Run pure pursuit paths, ewwww
 	purePursuit.setCurrentPathIndex(leftAllianceToRightAllianceIndex);
 	purePursuit.setFollowing(true);
 
 	liftButton.setAutonomousAuthority(600);
 
-	pros::Task::delay(2000);
+	pros::Task::delay(500);
 
-	purePursuit.setSpeed(75);
+	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	waitForDone(40);
+	pros::Task::delay(500);
+
+	purePursuit.setSpeed(45);
+
+	waitForDone(30);
 
 	purePursuit.setSpeed(30);
 
+	purePursuit.setFollowing(false);
+
+	pros::Task::delay(1000);
+
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	purePursuit.setFollowing(true);
 
 	pros::Task::delay(700);
 
 	purePursuit.setSpeed(150);
+
+	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	turn(-M_PI_2);
 
@@ -495,6 +504,8 @@ int leftAwpRight() {
 	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
 
 	pros::Task::delay(300);
+
+	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 
 	purePursuit.setCurrentPathIndex(rightAllianceGoalToRightRingsIndex);
 
@@ -1256,7 +1267,7 @@ void opcontrol() {
 
 		if (master.get_digital_new_press(DIGITAL_B) || partner.get_digital_new_press(DIGITAL_B)) {
 			balance.setEnabled(!balance.isEnabled());
-			balance.getOrientationController()->setTarget(imu.get_yaw());
+			balance.getOrientationController()->setTarget(imu.get_heading());
 			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
