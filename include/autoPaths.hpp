@@ -82,18 +82,17 @@ namespace Pronounce {
 
 		QuadraticSplinePath leftAllianceToRightAlliance("Left alliance to right home zone");
 
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30.0, 11.4), Vector(20, M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(28.0, 11.4), Vector(20, M_PI_2)));
 		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30, 43), Vector(20, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(46.4, 43), Vector(15, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(80, 43), Vector(0, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(123.0, 36.5), Vector(15.0, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(80, 43), Vector(15, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(123.0, 35), Vector(15.0, -M_PI_2)));
 
 		leftAllianceToRightAllianceIndex = purePursuit->addPath(leftAllianceToRightAlliance.getPath(0.1));
 
 		QuadraticSplinePath rightAllianceToRightRings("Right alliance to right rings");
 
 		rightAllianceToRightRings.addPoint(SplinePoint(Point(125, 35), Vector(5, M_PI_4)));
-		rightAllianceToRightRings.addPoint(SplinePoint(Point(117.5, 73), Vector(35, 0)));
+		rightAllianceToRightRings.addPoint(SplinePoint(Point(120, 73), Vector(35, 0)));
 
 		rightAllianceToRightRingsIndex = purePursuit->addPath(rightAllianceToRightRings.getPath(0.1));
 
@@ -281,17 +280,17 @@ namespace Pronounce {
 
 		// SECTION Right Steal Right
 
-		Path rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");
+		QuadraticSplinePath rightHomeZoneToRightNeutral("Right Home Zone to Right Neutral");
 
-		rightHomeZoneToRightNeutral.addPoint(105.7, 16);
-		rightHomeZoneToRightNeutral.addPoint(105.7, 55);
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 16.5), Vector(10, 0)));
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 55), Vector(10, 0)));
 
-		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral);
+		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral.getPath(0.1));
 
 		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(20, 0)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(122, 37), Vector(15, -M_PI_4)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(10, M_PI)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(125, 35), Vector(20, -M_PI_2*0.8)));
 
 		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.05));
 
@@ -306,7 +305,7 @@ namespace Pronounce {
 		Path rightRingsToRightHomeZone;
 
 		rightRingsToRightHomeZone.addPoint(117.5, 70);
-		rightRingsToRightHomeZone.addPoint(117.5, 40);
+		rightRingsToRightHomeZone.addPoint(117.5, 35);
 
 		rightRingsToRightHomeZoneIndex = purePursuit->addPath(rightRingsToRightHomeZone);
 

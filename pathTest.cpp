@@ -293,12 +293,12 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath rightRingsToRightHomeZone("Right rings to right home zone");
+		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 70.3), Vector(15.0, M_PI)));
-		rightRingsToRightHomeZone.addPoint(SplinePoint(Point(117.5, 35), Vector(15.0, M_PI)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(10, M_PI)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(122, 35), Vector(20, -M_PI_2*1.25)));
 
-	Path smoothPath = rightRingsToRightHomeZone.getPath(0.1);
+	Path smoothPath = rightNeutralToRightAllianceGoal.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);
