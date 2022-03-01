@@ -295,8 +295,8 @@ int main() {
 
 		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(10, M_PI)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(122, 35), Vector(20, -M_PI_2*1.25)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(100, 58), Vector(5, M_PI)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(123.0, 35), Vector(30, -M_PI_2*0.9)));
 
 	Path smoothPath = rightNeutralToRightAllianceGoal.getPath(0.1);
 

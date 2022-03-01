@@ -135,7 +135,7 @@ namespace Pronounce {
 		Path farHomeZoneToMidNeutralGoal("Far Home Zone to Mid Neutral Goal");
 
 		farHomeZoneToMidNeutralGoal.addPoint(60.3, 117);
-		farHomeZoneToMidNeutralGoal.addPoint(70.3, 78);
+		farHomeZoneToMidNeutralGoal.addPoint(68, 78);
 
 		farHomeZoneToMidNeutralGoalIndex = purePursuit->addPath(farHomeZoneToMidNeutralGoal);
 
@@ -149,7 +149,7 @@ namespace Pronounce {
 		QuadraticSplinePath farPlatformToDropOffGoal("Far Platform to Drop Off Goal");
 
 		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(80, 110), Vector(20, M_PI)));
-		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(40, 100), Vector(15, M_PI_2)));
+		farPlatformToDropOffGoal.addPoint(SplinePoint(Point(40, 97), Vector(15, M_PI_2)));
 
 		farPlatformToDropOffGoalIndex = purePursuit->addPath(farPlatformToDropOffGoal.getPath(0.05));
 
@@ -157,7 +157,7 @@ namespace Pronounce {
 
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(40, 100), Vector(15, -M_PI_2)));
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(70, 70), Vector(15, M_PI)));
-		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(120, 35), Vector(40, -M_PI_2 * 0.9)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(120, 32), Vector(40, -M_PI_2 * 0.9)));
 
 		dropOffGoalToRightAllianceIndex = purePursuit->addPath(dropOffGoalToRightAlliance.getPath(0.05));
 
@@ -289,16 +289,17 @@ namespace Pronounce {
 
 		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(105.7, 58), Vector(10, M_PI)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(125, 35), Vector(20, -M_PI_2*0.8)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(100, 58), Vector(5, M_PI)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(127.0, 41), Vector(30, -M_PI_2*0.9)));
 
 		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.05));
 
 		SplinePath rightAllianceGoalToRightRings;
 
-		rightAllianceGoalToRightRings.addPoint(125, 37);
+		rightAllianceGoalToRightRings.addPoint(123.0, 35);
 		rightAllianceGoalToRightRings.addPoint(117.5, 46.8);
-		rightAllianceGoalToRightRings.addPoint(117.5, 70);
+		rightAllianceGoalToRightRings.addPoint(117.5, 73);
+		rightAllianceGoalToRightRings.addPoint(135, 67);
 
 		rightAllianceGoalToRightRingsIndex = purePursuit->addPath(rightAllianceGoalToRightRings.getPath(0.05));
 
