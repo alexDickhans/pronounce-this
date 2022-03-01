@@ -293,12 +293,13 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath rightNeutralToRightAllianceGoal;
+		SplinePath leftNeutralToLeftAllianceGoal;
 
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(100, 58), Vector(5, M_PI)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(123.0, 35), Vector(30, -M_PI_2*0.9)));
+		leftNeutralToLeftAllianceGoal.addPoint(30, 58);
+		leftNeutralToLeftAllianceGoal.addPoint(10, 17);
+		leftNeutralToLeftAllianceGoal.addPoint(32, 17);
 
-	Path smoothPath = rightNeutralToRightAllianceGoal.getPath(0.1);
+	Path smoothPath = leftNeutralToLeftAllianceGoal.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);

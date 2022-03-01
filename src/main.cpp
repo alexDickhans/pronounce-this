@@ -279,11 +279,17 @@ int leftStealLeft() {
 	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralIndex);
 	purePursuit.setFollowing(true);
 
-	waitForDone(0.5);
+	waitForDone(1);
 
 	// Collect front goal
 	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	waitForDone(0.5);
+
+	purePursuit.setFollowing(false);
+
 	pros::Task::delay(200);
+
 	liftButton.setAutonomousAuthority(600);
 
 	purePursuit.setFollowing(true);
@@ -293,15 +299,15 @@ int leftStealLeft() {
 	purePursuit.setCurrentPathIndex(leftNeutralToLeftAllianceGoalIndex);
 	purePursuit.setFollowing(true);
 
-	// Change to false if you don't want to let go of the alliance mobile goal after a certain amount of time
+	// Change to false if you don't want to let go of the neutral mobile goal after a certain amount of time
 	if (true) {
 		uint32_t startTime = pros::millis();
 
-		while (odometry.getPosition()->getY() > 40 && pros::millis() - startTime < 4000) {
+		while (odometry.getPosition()->getY() > 40 && pros::millis() - startTime < 3000) {
 			pros::Task::delay(50);
 		}
 
-		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime < 4000) {
+		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime >= 3000) {
 			printf("Left steal right: Failed to get to the right alliance goal\n");
 			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 		}
@@ -338,7 +344,7 @@ int leftStealLeft() {
 		pros::Task::delay(50);
 	}
 
-	pros::Task::delay(1000);
+	pros::Task::delay(3000);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -388,11 +394,11 @@ int rightStealRight() {
 	if (true) {
 		uint32_t startTime = pros::millis();
 
-		while (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 4000) {
+		while (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 3000) {
 			pros::Task::delay(50);
 		}
 
-		if (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 4000) {
+		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime >= 3000) {
 			printf("Left steal right: Failed to get to the right alliance goal\n");
 			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 		}
@@ -505,15 +511,11 @@ int leftAwpRight() {
 
 	purePursuit.setSpeed(50);
 
-	purePursuit.setFollowing(false);
-
-	pros::Task::delay(1000);
+	pros::Task::delay(400);
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	purePursuit.setFollowing(true);
-
-	pros::Task::delay(700);
+	pros::Task::delay(400);
 
 	purePursuit.setSpeed(150);
 
@@ -523,30 +525,57 @@ int leftAwpRight() {
 
 	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
 
-	purePursuit.setSpeed(75);
+	purePursuit.setSpeed(100);
 
 	waitForDone(2);
 
-	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	backGrabberButton.setButtonStatus(POSITIVE);
 
 	waitForDone();
 
-	pros::Task::delay(300);
+	pros::Task::delay(200);
 
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	purePursuit.setCurrentPathIndex(rightAllianceGoalToRightRingsIndex);
-
-	waitForDone();
+	purePursuit.setSpeed(150);
+	
+	turn(-M_PI_4, 0.2);
 
 	purePursuit.setSpeed(100);
 
-	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZone2Index);
+	purePursuit.setCurrentPathIndex(rightAllianceGoalToRightRingsIndex);
+	purePursuit.setFollowing(true);
+
+	pros::Task::delay(500);
+
+	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+	waitForDone(20);
+
+	liftButton.setAutonomousAuthority(1600);
 
 	waitForDone();
 
+	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
+	purePursuit.setFollowing(true);
+	purePursuit.setSpeed(150);
+
+	pros::Task::delay(2000);
+
+	liftButton.setAutonomousAuthority(600);
+
+	waitForDone();
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	purePursuit.setFollowing(false);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	pros::Task::delay(500);
+
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+	pros::Task::delay(200);
 
 	return 0;
 }
@@ -1199,7 +1228,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRight();
+	leftStealLeft();
 	// tuneOdom();
 	postAuton();
 
