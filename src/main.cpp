@@ -741,13 +741,17 @@ int skills() {
 
 	pros::Task::delay(200);
 
+	purePursuit.setSpeed(150);
+
 	turn(-M_PI_4);
+
+	purePursuit.setSpeed(100);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightNeutralIndex);
 
 	liftButton.setAutonomousAuthority(0);
 
-	purePursuit.setSpeed(75);
+	purePursuit.setSpeed(100);
 
 	waitForDone(5);
 
