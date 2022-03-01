@@ -743,7 +743,7 @@ int skills() {
 
 	purePursuit.setSpeed(150);
 
-	turn(-M_PI_4);
+	turn(-M_PI_4*1.5);
 
 	purePursuit.setSpeed(100);
 
@@ -795,7 +795,7 @@ int skills() {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
 
-	drivetrain.skidSteerVelocity(50, 0);
+	drivetrain.skidSteerVelocity(100, 0);
 
 	pros::Task::delay(500);
 
@@ -848,7 +848,7 @@ int skills() {
 
 	turn(M_PI);
 
-	purePursuit.setSpeed(75);
+	purePursuit.setSpeed(100);
 
 	waitForDone(40);
 

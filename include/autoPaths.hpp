@@ -199,14 +199,14 @@ namespace Pronounce {
 		QuadraticSplinePath goalDropOffToFarLeftAlliance("Goal Drop Off to Far Left Alliance");
 
 		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(60, 105.7), Vector(20, M_PI_2)));
-		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(22, 105.7), Vector(20, M_PI_2)));
+		goalDropOffToFarLeftAlliance.addPoint(SplinePoint(Point(18, 105.7), Vector(20, M_PI_2)));
 
 		goalDropOffToFarLeftAllianceIndex = purePursuit->addPath(goalDropOffToFarLeftAlliance.getPath(0.1));
 
 		QuadraticSplinePath farLeftAllianceGoalToRightAllianceGoal("Far Left Alliance Goal to Right Alliance Goal");
 
 		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(18, 105.7), Vector(10, -M_PI_2)));
-		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(90, 105.7), Vector(30, -M_PI_2)));
+		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(95, 105.7), Vector(40, -M_PI_2)));
 		farLeftAllianceGoalToRightAllianceGoal.addPoint(SplinePoint(Point(105, 123), Vector(10, M_PI_4)));
 
 		farLeftAllianceGoalToRightAllianceGoalIndex = purePursuit->addPath(farLeftAllianceGoalToRightAllianceGoal.getPath(0.05));
