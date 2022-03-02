@@ -689,6 +689,8 @@ int skills() {
 	purePursuit.setFollowing(false);
 
 	placeOnPlatform();
+	
+	purePursuit.setSpeed(50);
 
 	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
 
@@ -790,9 +792,9 @@ int skills() {
 
 	purePursuit.setSpeed(100);
 
-	waitForDone(5);
+	waitForDone(20);
 
-	purePursuit.setSpeed(65);
+	purePursuit.setSpeed(35);
 
 	waitForDone();
 

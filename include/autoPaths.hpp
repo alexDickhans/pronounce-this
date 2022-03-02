@@ -133,7 +133,7 @@ namespace Pronounce {
 
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(40, 100), Vector(15, -M_PI_2)));
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(70, 70), Vector(15, M_PI)));
-		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(120, 35), Vector(40, -M_PI_2 * 0.9)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(120, 35), Vector(40, -M_PI_2)));
 
 		dropOffGoalToRightAllianceIndex = purePursuit->addPath(dropOffGoalToRightAlliance.getPath(0.05));
 
@@ -168,7 +168,7 @@ namespace Pronounce {
 		QuadraticSplinePath farPlatformToGoalDropOff2("Far platform to goal drop off 2");
 
 		farPlatformToGoalDropOff2.addPoint(SplinePoint(Point(65, 113), Vector(15, M_PI)));
-		farPlatformToGoalDropOff2.addPoint(SplinePoint(Point(65, 100), Vector(15, M_PI)));
+		farPlatformToGoalDropOff2.addPoint(SplinePoint(Point(65, 110), Vector(15, M_PI)));
 
 		farPlatformToGoalDropOff2Index = purePursuit->addPath(farPlatformToGoalDropOff2.getPath(0.1));
 
