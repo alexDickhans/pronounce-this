@@ -312,11 +312,11 @@ int leftStealLeft() {
 			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 			// Get mid goal if you don't get the main goal
-			if (true) {
+			if (false) {
 				purePursuit.setCurrentPathIndex(leftNeutralToEnterLeftHomeZoneIndex);
 				purePursuit.setFollowing(true);
 
-				liftButton.setAutonomousAuthority(0);
+				intakeButton.setButtonStatus(POSITIVE);
 
 				waitForDone(1);
 
@@ -326,6 +326,10 @@ int leftStealLeft() {
 
 				purePursuit.setCurrentPathIndex(enterLeftHomeZoneToMidGoalIndex);
 				purePursuit.setFollowing(true);
+
+				waitForDone(20);
+
+				liftButton.setAutonomousAuthority(0);
 
 				waitForDone(1);
 
@@ -814,17 +818,13 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(2000);
 
-	//purePursuit.setCurrentPathIndex(farPlatformToGoalDropOff2Index);
-
-	//waitForDone();
-
 	backGrabberButton.setButtonStatus(NEUTRAL);
 
 	pros::Task::delay(500);
 
 	purePursuit.setSpeed(150);
 
-	turn(M_PI_2);
+	turn(-M_PI_2);
 
 	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
 
@@ -832,7 +832,7 @@ int skills() {
 
 	waitForDone();
 
-	backGrabberButton.setButtonStatus(POSITIVE);
+	frontGrabberButton.setButtonStatus(POSITIVE);
 
 	pros::Task::delay(200);
 
@@ -881,6 +881,40 @@ int skills() {
 	balanceRobot(-M_PI_2);
 
 	printf("Skills path done\n");
+
+	return 0;
+}
+
+int farRightAllianceToPlatformTest() {
+	odometry.reset(new Position(24, 105.7, -M_PI_2));
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	purePursuit.setCurrentPathIndex(farLeftAllianceToPlatformIndex);
+	purePursuit.setFollowing(true);
+
+	turn(- M_PI_2 - M_PI_4);
+
+	purePursuit.setSpeed(150);
+
+	liftButton.setAutonomousAuthority(600);
+	intakeButton.setButtonStatus(POSITIVE);
+
+	waitForDone(40);
+
+	purePursuit.setSpeed(50);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	waitForDone();
+
+	liftButton.setAutonomousAuthority(200);
+
+	pros::Task::delay(2000);
+
+	turn(M_PI_2);
+
+	balanceRobot(M_PI_2);
 
 	return 0;
 }
@@ -1248,8 +1282,8 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
-	// tuneOdom();
+	leftStealLeft();
+	// farRightAllianceToPlatformTest();
 	postAuton();
 
 	// autonomousSelector.run();

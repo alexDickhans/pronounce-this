@@ -43,6 +43,7 @@ namespace Pronounce {
 	int farHomeZoneToEnterFarHomeZone2Index = -1;
 	int farPlatformToGoalDropOff2Index = -1;
 	int farLeftAllianceGoalToRightAllianceGoalIndex = -1;
+	int farLeftAllianceToPlatformIndex = -1;
 
 	// Right steal right
 	int rightHomeZoneToRightNeutralIndex = -1;
@@ -252,6 +253,14 @@ namespace Pronounce {
 
 		farHomeZoneToEnterFarHomeZone2Index = purePursuit->addPath(farHomeZoneToEnterFarHomeZone2);
 
+		QuadraticSplinePath farLeftAllianceToPlatform("Far platform to goal drop off 2");
+
+		farLeftAllianceToPlatform.addPoint(SplinePoint(Point(24, 105.7), Vector(15, M_PI_2)));
+		farLeftAllianceToPlatform.addPoint(SplinePoint(Point(11.4, 70.3), Vector(30, M_PI)));
+		farLeftAllianceToPlatform.addPoint(SplinePoint(Point(35, 14.4), Vector(30, -M_PI_2)));
+
+		farLeftAllianceToPlatformIndex = purePursuit->addPath(farLeftAllianceToPlatform.getPath(0.05));
+
 		//!SECTION
 
 		// SECTION Left AWP
@@ -333,15 +342,15 @@ namespace Pronounce {
 
 		QuadraticSplinePath enterLeftHomeZoneToMidGoal("Enter Right Home Zone to Mid Goal");
 
-		enterLeftHomeZoneToMidGoal.addPoint(SplinePoint(Point(30, 40), Vector(0.0, 0.0)));
-		enterLeftHomeZoneToMidGoal.addPoint(SplinePoint(Point(67, 67), Vector(0.0, 0.0)));
+		enterLeftHomeZoneToMidGoal.addPoint(SplinePoint(Point(30, 40), Vector(10, -M_PI_4)));
+		enterLeftHomeZoneToMidGoal.addPoint(SplinePoint(Point(65, 65), Vector(0.0, 0.0)));
 
 		enterLeftHomeZoneToMidGoalIndex = purePursuit->addPath(enterLeftHomeZoneToMidGoal.getPath(0.1));
 
 		QuadraticSplinePath midGoalToEnterLeftHomeZone("Mid Goal to Enter Left Home Zone");
 
 		midGoalToEnterLeftHomeZone.addPoint(SplinePoint(Point(30, 40), Vector(0.0, 0.0)));
-		midGoalToEnterLeftHomeZone.addPoint(SplinePoint(Point(67, 67), Vector(0.0, 0.0)));
+		midGoalToEnterLeftHomeZone.addPoint(SplinePoint(Point(65, 65), Vector(0.0, 0.0)));
 
 		midGoalToEnterLeftHomeZoneIndex = purePursuit->addPath(midGoalToEnterLeftHomeZone.getPath(0.1));
 
