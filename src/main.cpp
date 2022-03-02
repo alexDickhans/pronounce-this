@@ -310,6 +310,43 @@ int leftStealLeft() {
 		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime >= 3000) {
 			printf("Left steal right: Failed to get to the right alliance goal\n");
 			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
+			// Get mid goal if you don't get the main goal
+			if (true) {
+				purePursuit.setCurrentPathIndex(leftNeutralToEnterLeftHomeZoneIndex);
+				purePursuit.setFollowing(true);
+
+				liftButton.setAutonomousAuthority(0);
+
+				waitForDone(1);
+
+				purePursuit.setSpeed(200);
+
+				turn(M_PI_4);
+
+				purePursuit.setCurrentPathIndex(enterLeftHomeZoneToMidGoalIndex);
+				purePursuit.setFollowing(true);
+
+				waitForDone(1);
+
+				frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+
+				waitForDone(0.5);
+
+				purePursuit.setFollowing(false);
+
+				pros::Task::delay(200);
+
+				liftButton.setAutonomousAuthority(600);
+
+				purePursuit.setFollowing(true);
+
+				purePursuit.setCurrentPathIndex(midGoalToEnterLeftHomeZoneIndex);
+
+				waitForDone();
+
+				purePursuit.setCurrentPathIndex(leftNeutralToLeftAllianceGoalIndex);
+			}
 		}
 	}
 	else {
@@ -422,7 +459,7 @@ int rightStealRight() {
 	pros::Task::delay(200);
 
 	purePursuit.setSpeed(150);
-	
+
 	turn(-M_PI_4);
 
 	purePursuit.setSpeed(50);
@@ -536,7 +573,7 @@ int leftAwpRight() {
 	pros::Task::delay(200);
 
 	purePursuit.setSpeed(150);
-	
+
 	turn(-M_PI_4, 0.2);
 
 	purePursuit.setSpeed(100);
@@ -743,7 +780,7 @@ int skills() {
 
 	purePursuit.setSpeed(150);
 
-	turn(-M_PI_4*1.5);
+	turn(-M_PI_4 * 1.5);
 
 	purePursuit.setSpeed(100);
 
@@ -1232,7 +1269,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftStealLeft();
+	skills();
 	// tuneOdom();
 	postAuton();
 
@@ -1325,7 +1362,8 @@ void opcontrol() {
 				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			}
-		} else {
+		}
+		else {
 			if (master.get_digital(DIGITAL_L1) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
 				liftButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 			}
