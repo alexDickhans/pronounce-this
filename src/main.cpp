@@ -689,7 +689,7 @@ int skills() {
 	purePursuit.setFollowing(false);
 
 	placeOnPlatform();
-	
+
 	purePursuit.setSpeed(50);
 
 	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
@@ -727,7 +727,7 @@ int skills() {
 
 	turn(0);
 
-	purePursuit.setSpeed(75);
+	purePursuit.setSpeed(100);
 
 	pros::Task::delay(300);
 
@@ -792,7 +792,7 @@ int skills() {
 
 	purePursuit.setSpeed(100);
 
-	waitForDone(20);
+	waitForDone(10);
 
 	purePursuit.setSpeed(35);
 
@@ -812,48 +812,25 @@ int skills() {
 
 	placeOnPlatform();
 
-	purePursuit.setCurrentPathIndex(farHomeZoneToEnterFarHomeZoneIndex);
+	liftButton.setAutonomousAuthority(2000);
 
-	waitForDone();
+	//purePursuit.setCurrentPathIndex(farPlatformToGoalDropOff2Index);
 
-	pros::Task::delay(200);
-
-	purePursuit.setCurrentPathIndex(farPlatformToGoalDropOff2Index);
-
-	waitForDone();
-
-	pros::Task::delay(300);
+	//waitForDone();
 
 	backGrabberButton.setButtonStatus(NEUTRAL);
 
 	pros::Task::delay(500);
 
-	// Move back
-	// Timed programming, our favorite!
-	// This is all the safegaurds I have to bypass
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
-
-	drivetrain.skidSteerVelocity(100, 0);
-
-	pros::Task::delay(500);
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	purePursuit.setFollowing(true);
-	purePursuit.setEnabled(true);
+	purePursuit.setSpeed(150);
 
 	turn(M_PI_2);
-
-	purePursuit.setSpeed(150);
 
 	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
 
 	liftButton.setAutonomousAuthority(600);
 
 	waitForDone();
-
-	pros::Task::delay(200);
 
 	backGrabberButton.setButtonStatus(POSITIVE);
 
@@ -955,7 +932,7 @@ int tuneOdom() {
 	odometry.reset(new Position(0, 0, 0));
 
 	purePursuit.setCurrentPathIndex(0);
-	purePursuit.setSpeed(50);
+	purePursuit.setSpeed(150);
 
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
@@ -1112,9 +1089,9 @@ void initDrivetrain() {
 
 	// odometry.setUseImu(true);
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1.004);
+	leftOdomWheel.setTuningFactor(1.01906);
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(1.0017);
+	rightOdomWheel.setTuningFactor(1.0167255);
 
 	leftEncoder.set_reversed(false);
 	rightEncoder.set_reversed(true);
