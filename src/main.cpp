@@ -380,12 +380,9 @@ int leftStealLeft() {
 
 	purePursuit.setSpeed(65);
 
-	// Wait until it is done
-	while (!purePursuit.isDone(0.1)) {
-		pros::Task::delay(50);
-	}
+	waitForDone();
 
-	pros::Task::delay(3000);
+	pros::Task::delay(500);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -614,7 +611,6 @@ int leftAwpRight() {
 	pros::Task::delay(500);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	pros::Task::delay(200);
 
@@ -1282,7 +1278,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftStealLeft();
+	rightStealRight();
 	// farRightAllianceToPlatformTest();
 	postAuton();
 
@@ -1302,7 +1298,7 @@ void opcontrol() {
 
 	postAuton();
 
-	if (frontGrabberBumperSwitch.get_value() == 1) {
+	if (frontGrabberBumperSwitch.get_value() == 1 || !partner.is_connected()) {
 		frontGrabberButton.setButtonStatus(POSITIVE);
 	}
 	else {
