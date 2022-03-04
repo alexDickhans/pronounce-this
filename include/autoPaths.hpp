@@ -140,7 +140,7 @@ namespace Pronounce {
 
 		QuadraticSplinePath rightAllianceToRightNeutral("Right Alliance to Right Neutral");
 
-		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(125, 35), Vector(20, M_PI_4)));
+		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(125, 35), Vector(30, M_PI_4)));
 		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(102, 70), Vector(20, 0)));
 
 		rightAllianceToRightNeutralIndex = purePursuit->addPath(rightAllianceToRightNeutral.getPath(0.05));
