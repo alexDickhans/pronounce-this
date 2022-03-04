@@ -261,7 +261,7 @@ namespace Pronounce {
 
 		farLeftAllianceToPlatformIndex = purePursuit->addPath(farLeftAllianceToPlatform.getPath(0.05));
 
-		//!SECTION
+		// !SECTION
 
 		// SECTION Left AWP
 
@@ -270,7 +270,7 @@ namespace Pronounce {
 		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(28.0, 11.4), Vector(20, M_PI_2)));
 		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(30, 43), Vector(20, -M_PI_2)));
 		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(80, 43), Vector(15, -M_PI_2)));
-		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(123.0, 33), Vector(15.0, -M_PI_2)));
+		leftAllianceToRightAlliance.addPoint(SplinePoint(Point(125.0, 35), Vector(15.0, -M_PI_2)));
 
 		leftAllianceToRightAllianceIndex = purePursuit->addPath(leftAllianceToRightAlliance.getPath(0.1));
 
@@ -301,8 +301,8 @@ namespace Pronounce {
 
 		QuadraticSplinePath rightNeutralToRightAllianceGoal;
 
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(100, 58), Vector(5, M_PI)));
-		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(127.0, 41), Vector(30, -M_PI_2*0.9)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(100, 58), Vector(5, -M_PI*0.9)));
+		rightNeutralToRightAllianceGoal.addPoint(SplinePoint(Point(127.0, 41), Vector(35, -M_PI_2*0.9)));
 
 		rightNeutralToRightAllianceGoalIndex = purePursuit->addPath(rightNeutralToRightAllianceGoal.getPath(0.05));
 
@@ -358,13 +358,13 @@ namespace Pronounce {
 
 		leftNeutralToLeftAllianceGoal.addPoint(30, 58);
 		leftNeutralToLeftAllianceGoal.addPoint(6, 17);
-		leftNeutralToLeftAllianceGoal.addPoint(32, 17);
+		leftNeutralToLeftAllianceGoal.addPoint(34, 17);
 
 		leftNeutralToLeftAllianceGoalIndex = purePursuit->addPath(leftNeutralToLeftAllianceGoal.getPath(0.01));
 
 		QuadraticSplinePath leftAllianceToRightHomeZone;
 
-		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(20, M_PI_2)));
+		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30.0, 11.4), Vector(15, M_PI_2)));
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(30, 46.4), Vector(20, -M_PI_2)));
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(46.4, 46.4), Vector(15, -M_PI_2)));
 		leftAllianceToRightHomeZone.addPoint(SplinePoint(Point(80, 46.4), Vector(0, -M_PI_2)));

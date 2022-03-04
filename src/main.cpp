@@ -288,7 +288,7 @@ int leftStealLeft() {
 
 	purePursuit.setFollowing(false);
 
-	pros::Task::delay(200);
+	pros::Task::delay(300);
 
 	liftButton.setAutonomousAuthority(100);
 
@@ -361,6 +361,10 @@ int leftStealLeft() {
 
 	purePursuit.setSpeed(100);
 
+	waitForDone(5);
+
+	purePursuit.setSpeed(30);
+
 	waitForDone();
 
 	backGrabberButton.setButtonStatus(POSITIVE);
@@ -380,12 +384,15 @@ int leftStealLeft() {
 
 	purePursuit.setSpeed(65);
 
+	waitForDone(8);
+
+	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+
 	waitForDone();
 
 	pros::Task::delay(500);
 
 	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
 	purePursuit.setFollowing(false);
 
@@ -449,11 +456,13 @@ int rightStealRight() {
 
 	purePursuit.setSpeed(85);
 
+	liftButton.setAutonomousAuthority(600);
+
 	waitForDone(20);
 
 	purePursuit.setSpeed(50);
 
-	waitForDone();
+	waitForDone(0.1, 3000);
 
 	backGrabberButton.setButtonStatus(POSITIVE);
 
@@ -473,11 +482,11 @@ int rightStealRight() {
 
 	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
 
-	waitForDone(20);
+	waitForDone(30);
 
 	liftButton.setAutonomousAuthority(1600);
 
-	waitForDone();
+	waitForDone(0.1, 3000);
 
 	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
@@ -495,7 +504,24 @@ int rightStealRight() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 
-	pros::Task::delay(500);
+	pros::Task::delay(300);
+
+	// Move back
+	// Timed programming, our favorite!
+	// This is all the safegaurds I have to bypass
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	drivetrain.skidSteerVelocity(50, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	pros::Task::delay(200);
 
 	return 0;
 }
@@ -565,11 +591,9 @@ int leftAwpRight() {
 
 	purePursuit.setSpeed(100);
 
-	waitForDone(2);
+	waitForDone(0.1, 3000);
 
 	backGrabberButton.setButtonStatus(POSITIVE);
-
-	waitForDone();
 
 	pros::Task::delay(200);
 
@@ -1034,12 +1058,6 @@ void updateDrivetrain() {
 	while (1) {
 		uint32_t startTime = pros::millis();
 		odometry.update();
-		gpsOdometry.update();
-
-		// Change to true to use gps
-		if (gpsOdometry.goodFix() && false) {
-			odometry.setPosition(gpsOdometry.getPosition());
-		}
 
 		if (purePursuit.isEnabled()) {
 			purePursuit.update();
@@ -1048,7 +1066,7 @@ void updateDrivetrain() {
 			balance.update();
 		}
 		lv_label_set_text(infoLabel, odometry.getPosition()->to_string().c_str());
-		pros::Task::delay_until(&startTime, 7);
+		pros::Task::delay_until(&startTime, 10);
 	}
 }
 
@@ -1282,7 +1300,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
+	leftStealLeft();
 	// farRightAllianceToPlatformTest();
 	postAuton();
 
