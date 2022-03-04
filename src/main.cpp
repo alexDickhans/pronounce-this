@@ -774,7 +774,7 @@ int skills() {
 
 	purePursuit.setSpeed(80);
 
-	waitForDone(0.1, 2000);
+	waitForDone(0.1, 3000);
 
 	backGrabberButton.setButtonStatus(POSITIVE);
 
@@ -782,7 +782,7 @@ int skills() {
 
 	purePursuit.setSpeed(150);
 
-	turn(-M_PI_4 * 1.5);
+	turn(-M_PI_4);
 
 	purePursuit.setSpeed(100);
 
@@ -814,13 +814,17 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(2000);
 
-	backGrabberButton.setButtonStatus(NEUTRAL);
-
 	pros::Task::delay(500);
 
 	purePursuit.setSpeed(150);
 
 	turn(-M_PI_2);
+
+	pros::Task::delay(200);
+
+	backGrabberButton.setButtonStatus(NEUTRAL);
+
+	pros::Task::delay(500);
 /*
 	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
 
