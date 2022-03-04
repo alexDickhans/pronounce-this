@@ -290,7 +290,7 @@ int leftStealLeft() {
 
 	pros::Task::delay(200);
 
-	liftButton.setAutonomousAuthority(600);
+	liftButton.setAutonomousAuthority(100);
 
 	purePursuit.setFollowing(true);
 
@@ -419,7 +419,7 @@ int rightStealRight() {
 
 	pros::Task::delay(200);
 
-	liftButton.setAutonomousAuthority(600);
+	liftButton.setAutonomousAuthority(100);
 
 	printf("Right steal right: Collected front goal\n");
 
@@ -590,7 +590,7 @@ int leftAwpRight() {
 
 	liftButton.setAutonomousAuthority(1600);
 
-	waitForDone();
+	waitForDone(0.1, 3000);
 
 	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
 	purePursuit.setFollowing(true);
@@ -727,7 +727,7 @@ int skills() {
 
 	turn(0);
 
-	purePursuit.setSpeed(100);
+	purePursuit.setSpeed(50);
 
 	pros::Task::delay(300);
 
@@ -821,7 +821,7 @@ int skills() {
 	purePursuit.setSpeed(150);
 
 	turn(-M_PI_2);
-
+/*
 	purePursuit.setCurrentPathIndex(goalDropOffToFarLeftAllianceIndex);
 
 	liftButton.setAutonomousAuthority(600);
@@ -875,7 +875,7 @@ int skills() {
 
 	// Balance on the platform
 	balanceRobot(-M_PI_2);
-
+*/
 	printf("Skills path done\n");
 
 	return 0;
@@ -1119,15 +1119,15 @@ void initDrivetrain() {
 
 	// odometry.setUseImu(true);
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1.01906);
+	leftOdomWheel.setTuningFactor(1.0292506);
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(1.0167255);
+	rightOdomWheel.setTuningFactor(1.026892755);
 
 	leftEncoder.set_reversed(false);
 	rightEncoder.set_reversed(true);
 
-	odometry.setLeftOffset(3.75 * 1.063);
-	odometry.setRightOffset(3.75 * 1.063);
+	odometry.setLeftOffset(3.9);
+	odometry.setRightOffset(3.9);
 	odometry.setBackOffset(0);
 
 	odometry.setMaxMovement(0);
@@ -1278,7 +1278,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRight();
+	skills();
 	// farRightAllianceToPlatformTest();
 	postAuton();
 
@@ -1304,6 +1304,9 @@ void opcontrol() {
 	else {
 		frontGrabberButton.setButtonStatus(NEGATIVE);
 	}
+
+	liftButton.setAutonomous(true);
+	liftButton.setAutonomousPosition(false);
 
 	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
 	// lv_label_set_text(infoLabel, "");
