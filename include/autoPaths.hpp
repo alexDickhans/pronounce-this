@@ -59,6 +59,7 @@ namespace Pronounce {
 	int leftNeutralToEnterLeftHomeZoneIndex = -1;
 	int enterLeftHomeZoneToMidGoalIndex = -1;
 	int midGoalToEnterLeftHomeZoneIndex = -1;
+	int midRingsToRightHomeZoneIndex = -1;
 
 	// Legacy 
 	int forwardIndex = -1;
@@ -134,14 +135,14 @@ namespace Pronounce {
 
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(40, 100), Vector(15, -M_PI_2)));
 		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(70, 70), Vector(15, M_PI)));
-		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(127, 40), Vector(40, -M_PI_2)));
+		dropOffGoalToRightAlliance.addPoint(SplinePoint(Point(127, 35), Vector(40, -M_PI_2)));
 
 		dropOffGoalToRightAllianceIndex = purePursuit->addPath(dropOffGoalToRightAlliance.getPath(0.05));
 
 		QuadraticSplinePath rightAllianceToRightNeutral("Right Alliance to Right Neutral");
 
 		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(125, 35), Vector(30, M_PI_4)));
-		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(102, 70), Vector(20, 0)));
+		rightAllianceToRightNeutral.addPoint(SplinePoint(Point(101, 70), Vector(20, 0)));
 
 		rightAllianceToRightNeutralIndex = purePursuit->addPath(rightAllianceToRightNeutral.getPath(0.05));
 
@@ -358,7 +359,7 @@ namespace Pronounce {
 
 		leftNeutralToLeftAllianceGoal.addPoint(30, 58);
 		leftNeutralToLeftAllianceGoal.addPoint(6, 17);
-		leftNeutralToLeftAllianceGoal.addPoint(34, 17);
+		leftNeutralToLeftAllianceGoal.addPoint(34, 19);
 
 		leftNeutralToLeftAllianceGoalIndex = purePursuit->addPath(leftNeutralToLeftAllianceGoal.getPath(0.01));
 
@@ -379,6 +380,12 @@ namespace Pronounce {
 		leftAllianceGoalToMidRings.addPoint(SplinePoint(Point(80, 26), Vector(0, M_PI_2)));
 
 		leftAllianceGoalToMidRingsIndex = purePursuit->addPath(leftAllianceGoalToMidRings.getPath(0.01));
+
+		// SECTION Mid steal
+
+
+		// !SECTION
+
 
 		Path forward;
 
