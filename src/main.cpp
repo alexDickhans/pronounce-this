@@ -957,40 +957,6 @@ int skills() {
 	return 0;
 }
 
-int farRightAllianceToPlatformTest() {
-	odometry.reset(new Position(24, 105.7, -M_PI_2));
-
-	frontGrabberButton.setButtonStatus(POSITIVE);
-
-	purePursuit.setCurrentPathIndex(farLeftAllianceToPlatformIndex);
-	purePursuit.setFollowing(true);
-
-	turn(-M_PI_2 - M_PI_4);
-
-	purePursuit.setSpeed(150);
-
-	liftButton.setAutonomousAuthority(600);
-	intakeButton.setButtonStatus(POSITIVE);
-
-	waitForDone(40);
-
-	purePursuit.setSpeed(50);
-
-	liftButton.setAutonomousAuthority(2000);
-
-	waitForDone();
-
-	liftButton.setAutonomousAuthority(200);
-
-	pros::Task::delay(2000);
-
-	turn(M_PI_2);
-
-	balanceRobot(M_PI_2);
-
-	return 0;
-}
-
 /**
  * @brief Test auton
  *
@@ -1043,9 +1009,7 @@ int tuneOdom() {
 	purePursuit.setCurrentPathIndex(testPathIndex);
 	purePursuit.setFollowing(true);
 
-	while (!purePursuit.isDone(0.1)) {
-		pros::Task::delay(50);
-	}
+	waitForDone();
 
 	purePursuit.setFollowing(false);
 
@@ -1068,6 +1032,16 @@ int testBalanceAuton() {
 	pros::Task::delay(500);
 
 	balanceRobot(M_PI_2);
+
+	return 0;
+}
+
+int autonTemplate() {
+	odometry.reset(new Position(0, 0, 0));
+
+	purePursuit.setSpeed(100);
+
+	pros::Task::delay(500);
 
 	return 0;
 }
