@@ -293,13 +293,14 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		SplinePath leftNeutralToLeftAllianceGoal;
+		QuadraticSplinePath wiggle;
 
-		leftNeutralToLeftAllianceGoal.addPoint(30, 58);
-		leftNeutralToLeftAllianceGoal.addPoint(6, 17);
-		leftNeutralToLeftAllianceGoal.addPoint(32, 17);
+		wiggle.addPoint(SplinePoint(Point(20, 0), Vector(10.0, 0.0)));
+		wiggle.addPoint(SplinePoint(Point(0, 20), Vector(10.0, 0.0)));
+		wiggle.addPoint(SplinePoint(Point(20, 40), Vector(10.0, 0.0)));
+		wiggle.addPoint(SplinePoint(Point(0, 60), Vector(10.0, 0.0)));
 
-	Path smoothPath = leftNeutralToLeftAllianceGoal.getPath(0.1);
+	Path smoothPath = wiggle.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);
