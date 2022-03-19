@@ -673,7 +673,7 @@ int skills() {
 	purePursuit.setEnabled(true);
 
 	purePursuit.setLookahead(12);
-	purePursuit.setSpeed(150);
+	purePursuit.setSpeed(200);
 
 	pros::Task::delay(500);
 
@@ -695,7 +695,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	purePursuit.setSpeed(150);
+	purePursuit.setSpeed(200);
 
 	pros::Task::delay(300);
 
@@ -722,6 +722,8 @@ int skills() {
 	backGrabberButton.setButtonStatus(NEUTRAL);
 
 	waitForDone();
+
+	
 
 	pros::Task::delay(500);
 
