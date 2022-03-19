@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 // Controllers
 Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
 Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
@@ -8,18 +7,19 @@ Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
 // Motors
 
 // Drive Motors
-pros::Motor frontLeftMotor(1, true);
-pros::Motor frontRightMotor(2, false);
-pros::Motor midLeftMotor(15, false);
-pros::Motor midRightMotor(16, true);
-pros::Motor backLeftMotor(9, true);
-pros::Motor backRightMotor(10, false);
+pros::Motor frontRightMotor(3, true);
+pros::Motor midRightMotor(4, true);
+pros::Motor backRightMotor(5, false);
+pros::Motor frontLeftMotor(6, false);
+pros::Motor midLeftMotor(7, false);
+pros::Motor backLeftMotor(8, true);
 
-pros::Motor lift(3, true);
+pros::Motor lift(2, false);
 
-pros::Motor intake(11, true);
+pros::Motor intake(1, true);
 
 pros::ADIDigitalOut frontGrabber(1, false);
+pros::ADIDigitalOut backTilter(2, false);
 pros::ADIDigitalOut backGrabber(2, false);
 pros::ADIDigitalIn frontGrabberBumperSwitch(3);
 pros::ADIDigitalIn backGrabberBumperSwitch(5);
@@ -673,7 +673,7 @@ int skills() {
 	purePursuit.setEnabled(true);
 
 	purePursuit.setLookahead(12);
-	purePursuit.setSpeed(150);
+	purePursuit.setSpeed(200);
 
 	pros::Task::delay(500);
 
@@ -695,7 +695,7 @@ int skills() {
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	purePursuit.setSpeed(150);
+	purePursuit.setSpeed(200);
 
 	pros::Task::delay(300);
 
@@ -889,13 +889,6 @@ void updateMotors() {
 		frontGrabberButton.update();
 		backGrabberButton.update();
 		liftButton.update();
-
-		if (lift.get_position() < 200 && disableIntake) {
-			intakeButton.setEnabled(false);
-		}
-		else {
-			intakeButton.setEnabled(true);
-		}
 
 		intakeButton.update();
 

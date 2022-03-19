@@ -26,6 +26,7 @@ namespace Pronounce {
 		else {
 			this->error = target - position;
 		}
+
 		this->derivitive = error - prevError;
 
 		if (abs(error) < integralBound) {
@@ -35,9 +36,11 @@ namespace Pronounce {
 			totalError = 0;
 		}
 
-		totalError = abs(totalError) > maxIntegral ? signum_c(totalError) * maxIntegral : totalError;
+		totalError = abs(totalError) > maxIntegral ? signnum_c(totalError) * maxIntegral : totalError;
 
 		this->power = error * kP + derivitive * kD + totalError * kI;
+
+		prevError = error;
 
 		return this->power;
 	}

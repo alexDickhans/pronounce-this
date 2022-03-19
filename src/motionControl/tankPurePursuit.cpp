@@ -49,9 +49,9 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1.0, 1.0))) * signum_c(pointData.localLookaheadVector.getCartesian().getY());
+		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY());
 
-		side = abs(side) < 0.5 ? signum_c(side) : side;
+		side = abs(side) < 0.5 ? signnum_c(side) : side;
 
 		// Redundant scalar, could be used in the future
 		// Found that using the Y values got the same affect when this was wanted and a better affect when it wasn't
