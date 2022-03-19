@@ -39,6 +39,24 @@ namespace Pronounce {
 	int enterLeftHomeZoneToMidGoalIndex = -1;
 	int midGoalToEnterLeftHomeZoneIndex = -1;
 	int midRingsToRightHomeZoneIndex = -1;
+	int farRightDropOffToFarLeftAllianceGoalIndex = -1;
+	int farLeftAllianceToMidGoalIndex = -1;
+	int midGoalToFarPlatformIndex = -1;
+	int farPlatformToFarLeftAllianceDropOffIndex = -1;
+	int farLeftAllianceDropOffToFarRightDropOffIndex = -1;
+	int farRightDropOffToPlatformIndex = -1;
+	int platformToEnterFarRightHomeZoneIndex = -1;
+	int enterRightHomeZoneToFarRightAllianceIndex = -1;
+	int farRightAllianceToRightHomeZoneIndex = -1;
+	int rightHomeZoneToRightAllianceIndex = -1;
+	int rightAllianceToRightNeutralIndex = -1;
+	int rightNeutralToPlatformIndex = -1;
+	int rightPlatformToFarRightGoalDropOff2Index = -1;
+	int farRightGoalDropOff2ToFarLeftAllianceDropOffIndex = -1;
+	int farLeftAllianceDropOffToFarRightGoalDropOff2Index = -1;
+	int farLeftAllianceDropOffToPlatformIndex = -1;
+	int platformToEnterFarLeftHomeZoneIndex = -1;
+	int enterFarLeftHomeZoneToNearRightPlatformIndex = -1;
 
 	// Legacy 
 	int forwardIndex = -1;
