@@ -19,9 +19,9 @@ pros::Motor lift(2, false);
 pros::Motor intake(1, true);
 
 pros::ADIDigitalOut frontGrabber(1, false);
-pros::ADIDigitalOut backTilter(2, false);
 pros::ADIDigitalOut backGrabber(2, false);
-pros::ADIDigitalIn frontGrabberBumperSwitch(3);
+pros::ADIDigitalOut backTilter(3, false);
+pros::ADIDigitalIn frontGrabberBumperSwitch(4);
 pros::ADIDigitalIn backGrabberBumperSwitch(5);
 
 // Inertial Measurement Unit
@@ -53,6 +53,7 @@ MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 
 
 SolenoidButton frontGrabberButton(&master, DIGITAL_A);
 SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
+SolenoidButton backGrabberButton2(&master, DIGITAL_R1, DIGITAL_R1);
 
 // Autonomous Selector
 Pronounce::AutonSelector autonomousSelector;
@@ -64,7 +65,18 @@ bool disableIntake = true;
 
 int driverMode = 0;
 
+bool backButtonStatus = false;
+uint32_t lastChange = 0;
+
 // SECTION Auton
+
+void backGrabberChange(bool backButtonStatus2) {
+	if (backButtonStatus2 == backButtonStatus) {
+		return;
+	}
+	backButtonStatus = backButtonStatus2;
+	lastChange = pros::millis();
+}
 
 void waitForDone(double distance, double timeout) {
 	uint32_t startTime = pros::millis();
@@ -385,7 +397,7 @@ int rightStealRight() {
 	purePursuit.setSpeed(250);
 	purePursuit.setLookahead(15);
 
-	printf("Left Steal Left\n");
+	printf("Right Steal Right\n");
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -623,7 +635,7 @@ int leftAwpRight() {
 
 	liftButton.setAutonomousAuthority(600);
 
-	while(odometry.getPosition()->getY() > 48) {
+	while (odometry.getPosition()->getY() > 48) {
 		pros::Task::delay(50);
 	}
 
@@ -686,7 +698,7 @@ int skills() {
 	}
 
 	purePursuit.setSpeed(50);
-	
+
 	waitForDone(10);
 
 	liftButton.setAutonomousAuthority(0);
@@ -885,9 +897,34 @@ void initSensors() {
 }
 
 void updateMotors() {
+	backGrabberButton.setAutonomous(true);
+	backGrabberButton2.setAutonomous(true);
+
 	while (1) {
 		frontGrabberButton.update();
+
+		if (!((pros::c::competition_get_status() & COMPETITION_AUTONOMOUS) != 0)) {
+			if (master.get_digital_new_press(DIGITAL_R1)) {
+				backGrabberChange(!backButtonStatus);
+			}
+		}
+
+		if (backButtonStatus) {
+			backGrabberButton2.setButtonStatus(POSITIVE);
+			if (pros::millis() - lastChange > 100) {
+				backGrabberButton.setButtonStatus(POSITIVE);
+			}
+		}
+		else {
+			backGrabberButton.setButtonStatus(NEUTRAL);
+			if (pros::millis() - lastChange > 500) {
+				backGrabberButton2.setButtonStatus(NEUTRAL);
+			}
+		}
+
 		backGrabberButton.update();
+		backGrabberButton2.update();
+
 		liftButton.update();
 
 		intakeButton.update();
@@ -911,8 +948,11 @@ void initMotors() {
 	frontGrabberButton.setSingleToggle(true);
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	backGrabberButton.setSolenoid(&backGrabber);
+	backGrabberButton.setSolenoid(&backTilter);
 	backGrabberButton.setSingleToggle(true);
+
+	backGrabberButton2.setSolenoid(&backGrabber);
+	backGrabberButton2.setSingleToggle(true);
 
 	intakeButton.setSingleToggle(true);
 	intakeButton.setDejam(true);
@@ -934,7 +974,7 @@ void initDrivetrain() {
 	leftOdomWheel.setRadius(2.75 / 2);
 	leftOdomWheel.setTuningFactor(1.0252);
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(leftOdomWheel.getTuningFactor()*0.9862039);
+	rightOdomWheel.setTuningFactor(leftOdomWheel.getTuningFactor() * 0.9862039);
 
 	leftEncoder.set_reversed(false);
 	rightEncoder.set_reversed(true);
@@ -943,12 +983,12 @@ void initDrivetrain() {
 	odometry.setRightOffset(3.9);
 	odometry.setBackOffset(0);
 
-/*
-	// Used for tuning straight lines with pure pursuit
-	odometry.setLeftOffset(2000);
-	odometry.setRightOffset(2000);
-	odometry.setBackOffset(0);
-*/
+	/*
+		// Used for tuning straight lines with pure pursuit
+		odometry.setLeftOffset(2000);
+		odometry.setRightOffset(2000);
+		odometry.setBackOffset(0);
+	*/
 
 	odometry.setMaxMovement(0);
 
