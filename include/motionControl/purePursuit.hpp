@@ -51,6 +51,8 @@ namespace Pronounce {
 		double stopDistance = 0;
 		double normalizeDistance = 1;
 
+		double outputMultiplier = 1;
+
 		double maxAcceleration = 0;
 		double maxDecelleration = 0;
 
@@ -208,6 +210,14 @@ namespace Pronounce {
 
 		void setMaxAcceleration(double maxAcceleration) {
 			this->maxAcceleration = maxAcceleration;
+		}
+
+		double getOutputMultiplier() {
+			return outputMultiplier;
+		}
+
+		void setOutputMultiplier(double outputMultiplier) {
+			this->outputMultiplier;
 		}
 
 		~PurePursuit();

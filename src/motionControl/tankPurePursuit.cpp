@@ -65,10 +65,7 @@ namespace Pronounce {
 		Path currentPath = this->getPath(this->getCurrentPathIndex());
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		double accelTime = 200 / this->getMaxAcceleration();
-		double accelDistance = 0.5 * this->getMaxAcceleration() * accelTime * accelTime;
-		double multiplier = 200 / sqrt(accelDistance / 3.33);
-		double maxSpeed = multiplier * sqrt(this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
+		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
 		maxSpeed = maxSpeed > 20 ? maxSpeed : 20;
 
 		double updateTime = pros::millis() - lastUpdateTime;
@@ -81,19 +78,18 @@ namespace Pronounce {
 			speed = this->getSpeed() * side;
 		}
 
-		printf("Max speed: %f\n", maxSpeed);
-		printf("Speed: %f\n", speed);
-		printf("Side: %f\n", side);
-		printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
-		printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
-		printf("Lookahead Point: %f, %f\n", pointData.lookaheadPoint.getX(), pointData.lookaheadPoint.getY());
-		printf(std::string("Path: " + currentPath.getName()).c_str());
-		printf("\n\n");
-
+		// printf("Max speed: %f\n", maxSpeed);
+		// printf("Speed: %f\n", speed);
+		// printf("Side: %f\n", side);
+		// printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
+		// printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
+		// printf("Lookahead Point: %f, %f\n", pointData.lookaheadPoint.getX(), pointData.lookaheadPoint.getY());
+		// printf(std::string("Path: " + currentPath.getName()).c_str());
+		// printf("\n\n");
 
 		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
 
-		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		drivetrain->driveCurvature(motorSpeed * this->getOutputMultiplier(), pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {
