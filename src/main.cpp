@@ -737,7 +737,41 @@ int skills() {
 
 	waitForDone();
 
-	purePursuit.setCurrentPathIndex()
+	purePursuit.setCurrentPathIndex(farRightDropOffToFarLeftAllianceGoalIndex);
+
+	waitForDone(20);
+
+	turn(M_PI_2);
+
+	waitForDone();
+
+	backGrabberChange(true);
+
+	pros::Task::delay(100);
+
+	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
+
+	liftButton.setAutonomousAuthority(600);
+
+	intakeButton.setButtonStatus(POSITIVE);
+
+	waitForDone(20);
+
+	liftButton.setAutonomousAuthority(0);
+
+	waitForDone();
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(300);
+
+	purePursuit.setCurrentPathIndex(midGoalToFarPlatformIndex);
+
+	placeOnPlatform();
+
+	purePursuit.setCurrentPathIndex(platformToEnterFarRightHomeZoneIndex);
+
+	pros::Task::delay(500);
 
 	printf("Skills path done\n");
 
