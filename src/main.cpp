@@ -671,7 +671,7 @@ int skills() {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
 
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	backGrabberChange(false);
 
 	drivetrain.skidSteerVelocity(-50, 0);
 
@@ -679,7 +679,7 @@ int skills() {
 
 	drivetrain.skidSteerVelocity(0, 0);
 
-	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	backGrabberChange(true);
 
 	purePursuit.setFollowing(true);
 	purePursuit.setEnabled(true);
@@ -731,11 +731,13 @@ int skills() {
 
 	waitForDone(2);
 
-	backGrabberButton.setButtonStatus(NEUTRAL);
+	backGrabberChange(false);
+
+	pros::Task::delay(600);
 
 	waitForDone();
 
-	pros::Task::delay(500);
+	purePursuit.setCurrentPathIndex()
 
 	printf("Skills path done\n");
 
