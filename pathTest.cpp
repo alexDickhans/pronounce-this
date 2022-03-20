@@ -293,14 +293,14 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath wiggle;
+		QuadraticSplinePath enterFarLeftHomeZoneToNearRightPlatform("platformToEnterFarLeftHomeZone");
 
-		wiggle.addPoint(SplinePoint(Point(20, 0), Vector(10.0, 0.0)));
-		wiggle.addPoint(SplinePoint(Point(0, 20), Vector(10.0, 0.0)));
-		wiggle.addPoint(SplinePoint(Point(20, 40), Vector(10.0, 0.0)));
-		wiggle.addPoint(SplinePoint(Point(0, 60), Vector(10.0, 0.0)));
+		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(60, 105.7), Vector(25, -M_PI_2)));
+		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(85, 70), Vector(25, -M_PI_2)));
+		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(105.7, 45), Vector(10, M_PI*1.2)));
+		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(100, 14), Vector(25, M_PI_2)));
 
-	Path smoothPath = wiggle.getPath(0.1);
+	Path smoothPath = enterFarLeftHomeZoneToNearRightPlatform.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);
