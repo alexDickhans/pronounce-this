@@ -126,9 +126,8 @@ namespace Pronounce {
 
 		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
 
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(7.0, -M_PI_2)));
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 80), Vector(7, 0)));
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 115), Vector(5, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 115), Vector(20, 0)));
 
 		midGoalToFarPlatformIndex = purePursuit->addPath(midGoalToFarPlatform.getPath(0.05));
 
@@ -153,7 +152,7 @@ namespace Pronounce {
 
 		farRightDropOffToPlatformIndex = purePursuit->addPath(farRightDropOffToPlatform.getPath(0.05));
 
-		QuadraticSplinePath platformToEnterFarRightHomeZone("farRightDropOffToPlatform");
+		QuadraticSplinePath platformToEnterFarRightHomeZone("platformToEnterFarRightHomeZone");
 
 		platformToEnterFarRightHomeZone.addPoint(SplinePoint(Point(85, 115), Vector(7.0, M_PI)));
 		platformToEnterFarRightHomeZone.addPoint(SplinePoint(Point(85, 105.7), Vector(7.0, M_PI)));
