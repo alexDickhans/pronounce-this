@@ -21,14 +21,15 @@ pros::Motor intake(1, true);
 pros::ADIDigitalOut frontGrabber(1, false);
 pros::ADIDigitalOut backGrabber(2, false);
 pros::ADIDigitalOut backTilter(3, false);
-pros::ADIDigitalIn frontGrabberBumperSwitch(4);
-pros::ADIDigitalIn backGrabberBumperSwitch(5);
+pros::ADIDigitalOut frontHook(4, false);
+pros::ADIDigitalIn frontGrabberBumperSwitch(5);
+pros::ADIDigitalIn backGrabberBumperSwitch(6);
 
 // Inertial Measurement Unit
 pros::Imu imu(5);
 
-pros::Rotation leftEncoder(12);
-pros::Rotation rightEncoder(14);
+pros::Rotation leftEncoder(10);
+pros::Rotation rightEncoder(9);
 
 // Odom wheels
 Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
@@ -42,9 +43,9 @@ GpsOdometry gpsOdometry(&gps);
 // ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &nullOdomWheel, &imu);
 
-TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 11.0);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 10.0);
 
-Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.7, 0, 0.05), 20);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.8, 0, 6), 20);
 
 Balance balance(&drivetrain, &imu, new BangBang(20, true, -30), new PID(0, 0, 0));
 
@@ -52,6 +53,7 @@ MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
 
 SolenoidButton frontGrabberButton(&master, DIGITAL_A);
+SolenoidButton frontHookButton(&master, DIGITAL_X);
 SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
 SolenoidButton backGrabberButton2(&master, DIGITAL_R1, DIGITAL_R1);
 
@@ -127,7 +129,7 @@ void waitForDoneOrientation(double margin) {
 }
 
 void placeOnPlatform() {
-	pros::Task::delay(500);
+	pros::Task::delay(100);
 
 	liftButton.setAutonomousAuthority(2000);
 
@@ -138,15 +140,15 @@ void placeOnPlatform() {
 
 	liftButton.setAutonomousAuthority(1300);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(300);
 
 	frontGrabberButton.setButtonStatus(NEUTRAL);
 
-	pros::Task::delay(800);
+	pros::Task::delay(200);
 
 	drivetrain.skidSteerVelocity(-50, 0);
 
-	pros::Task::delay(350);
+	pros::Task::delay(200);
 
 	drivetrain.skidSteerVelocity(-20, 0);
 
@@ -156,11 +158,11 @@ void placeOnPlatform() {
 
 	drivetrain.skidSteerVelocity(-50, 0);
 
-	pros::Task::delay(400);
+	pros::Task::delay(200);
 
 	drivetrain.skidSteerVelocity(0, 0);
 
-	pros::Task::delay(300);
+	pros::Task::delay(100);
 
 	purePursuit.setEnabled(true);
 	purePursuit.setFollowing(true);
@@ -657,7 +659,7 @@ int leftAwpRight() {
 }
 
 int skills() {
-	odometry.reset(new Position(29.0, 11.4, -M_PI_2));
+	odometry.reset(new Position(26.5, 11, -M_PI_2));
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
@@ -739,6 +741,8 @@ int skills() {
 
 	waitForDone();
 
+	purePursuit.setSpeed(60);
+
 	purePursuit.setCurrentPathIndex(farRightDropOffToFarLeftAllianceGoalIndex);
 
 	purePursuit.setSpeed(40);
@@ -754,6 +758,8 @@ int skills() {
 	backGrabberChange(true);
 
 	pros::Task::delay(100);
+
+	turn(M_PI_2+M_PI_4);
 
 	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
 
@@ -1019,7 +1025,7 @@ int tuneOdom() {
 
 	printf("Test Auton\n");
 
-	odometry.reset(new Position(20, 0, 0));
+	odometry.reset(new Position(0, 0, 0));
 
 	purePursuit.setCurrentPathIndex(0);
 	purePursuit.setSpeed(45);
@@ -1135,6 +1141,7 @@ void updateMotors() {
 
 	while (1) {
 		frontGrabberButton.update();
+		frontHookButton.update();
 
 		if (!((pros::c::competition_get_status() & COMPETITION_AUTONOMOUS) != 0)) {
 			if (master.get_digital_new_press(DIGITAL_R1)) {
@@ -1181,6 +1188,9 @@ void initMotors() {
 	frontGrabberButton.setSingleToggle(true);
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
+	frontHookButton.setSolenoid(&frontHook);
+	frontHookButton.setSingleToggle(true);
+
 	backGrabberButton.setSolenoid(&backTilter);
 	backGrabberButton.setSingleToggle(true);
 
@@ -1204,29 +1214,25 @@ void initDrivetrain() {
 	// odometry.setUseImu(false);
 	// Left/Right fraction
 	// 1.072124756
+	// Left 99.57
+	// Right 100.57
+	double turningFactor = ((100.57/99.57) - 1.0) / 2;
+	double tuningFactor = 1.007;
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(1.0252);
+	leftOdomWheel.setTuningFactor(tuningFactor * (1+turningFactor));
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(leftOdomWheel.getTuningFactor() * 0.9862039);
+	rightOdomWheel.setTuningFactor(tuningFactor * (1-turningFactor));
 
-	leftEncoder.set_reversed(false);
-	rightEncoder.set_reversed(true);
+	leftEncoder.set_reversed(true);
+	rightEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(3.9);
-	odometry.setRightOffset(3.9);
+	odometry.setLeftOffset(3.396366486);
+	odometry.setRightOffset(3.396366486);
 	odometry.setBackOffset(0);
-
-
-	/*
-		// Used for tuning straight lines with pure pursuit
-		odometry.setLeftOffset(2000);
-		odometry.setRightOffset(2000);
-		odometry.setBackOffset(0);
-	*/
 
 	odometry.setMaxMovement(0);
 
-	purePursuit.setOutputMultiplier(600 / 65);
+	purePursuit.setOutputMultiplier(600.0 / 65.0);
 	purePursuit.setNormalizeDistance(10);
 	purePursuit.setSpeed(45);
 	purePursuit.setLookahead(15);
@@ -1234,7 +1240,7 @@ void initDrivetrain() {
 	purePursuit.setMaxAcceleration(400);
 
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-
+	
 	odometry.reset(new Position());
 
 	printf("Drivetrain Init done\n");
@@ -1374,7 +1380,6 @@ void autonomous() {
 	// autonomousSelector.run();
 	preAutonRun();
 	skills();
-	// farRightAllianceToPlatformTest();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -1431,9 +1436,9 @@ void opcontrol() {
 			backGrabberButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 		}
 
-		if (master.get_digital_new_press(DIGITAL_X)) {
-			odometry.reset(new Position());
-		}
+		// if (master.get_digital_new_press(DIGITAL_X)) {
+		// 	odometry.reset(new Position());
+		// }
 
 		if (master.get_digital_new_press(DIGITAL_UP)) {
 			driverMode = 0;

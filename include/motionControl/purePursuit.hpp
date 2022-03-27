@@ -51,7 +51,7 @@ namespace Pronounce {
 		double stopDistance = 0;
 		double normalizeDistance = 1;
 
-		double outputMultiplier = 1;
+		double outputMultiplier = 1.0;
 
 		double maxAcceleration = 0;
 		double maxDecelleration = 0;
@@ -100,6 +100,14 @@ namespace Pronounce {
 			std::cout << "Name: " << path.getName() << std::endl;
 			// printf(path.to_string().c_str());
 			return paths.size() - 1;
+		}
+
+		double getOutputMultiplier() {
+			return outputMultiplier;
+		}
+
+		void setOutputMultiplier(double outputMultiplier) {
+			this->outputMultiplier = outputMultiplier;
 		}
 
 		std::vector<Path> getPaths() {
@@ -210,14 +218,6 @@ namespace Pronounce {
 
 		void setMaxAcceleration(double maxAcceleration) {
 			this->maxAcceleration = maxAcceleration;
-		}
-
-		double getOutputMultiplier() {
-			return outputMultiplier;
-		}
-
-		void setOutputMultiplier(double outputMultiplier) {
-			this->outputMultiplier;
 		}
 
 		~PurePursuit();

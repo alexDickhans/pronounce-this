@@ -87,7 +87,7 @@ namespace Pronounce {
 		// Left home zone to left neutral goal
 		QuadraticSplinePath leftHomeZoneToLeftNeutralGoal("Left Home Zone to Left Neutral Goal");
 
-		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(35, 11.4), Vector(30, M_PI_2)));
+		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(26.5, 11), Vector(30, M_PI_2)));
 		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(46, 46.8), Vector(10, 0)));
 		leftHomeZoneToLeftNeutralGoal.addPoint(SplinePoint(Point(40, 63), Vector(10, 0.75)));
 
@@ -127,7 +127,7 @@ namespace Pronounce {
 		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
 
 		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 115), Vector(20, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 115), Vector(40, 0)));
 
 		midGoalToFarPlatformIndex = purePursuit->addPath(midGoalToFarPlatform.getPath(0.05));
 
@@ -170,7 +170,7 @@ namespace Pronounce {
 
 		farRightAllianceToRightHomeZone.addPoint(SplinePoint(Point(105.7, 130), Vector(20.0, M_PI_4 * 1.3 + M_PI)));
 		farRightAllianceToRightHomeZone.addPoint(SplinePoint(Point(122, 70), Vector(20.0, M_PI)));
-		farRightAllianceToRightHomeZone.addPoint(SplinePoint(Point(105.7, 15), Vector(20.0, M_PI)));
+		farRightAllianceToRightHomeZone.addPoint(SplinePoint(Point(105.7, 30), Vector(20.0, M_PI)));
 
 		farRightAllianceToRightHomeZoneIndex = purePursuit->addPath(farRightAllianceToRightHomeZone.getPath(0.05));
 

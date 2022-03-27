@@ -38,7 +38,7 @@ namespace Pronounce {
 
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
 
-			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed);
+			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed * this->getOutputMultiplier());
 
 			return;
 		}
@@ -66,7 +66,7 @@ namespace Pronounce {
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
 		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
-		maxSpeed = maxSpeed > 20 ? maxSpeed : 20;
+		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
 
 		double updateTime = pros::millis() - lastUpdateTime;
 		lastUpdateTime = updateTime;
@@ -79,7 +79,6 @@ namespace Pronounce {
 		}
 
 		// printf("Max speed: %f\n", maxSpeed);
-		// printf("Speed: %f\n", speed);
 		// printf("Side: %f\n", side);
 		// printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
 		// printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
@@ -87,9 +86,9 @@ namespace Pronounce {
 		// printf(std::string("Path: " + currentPath.getName()).c_str());
 		// printf("\n\n");
 
-		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed());
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed())  * this->getOutputMultiplier();
 
-		drivetrain->driveCurvature(motorSpeed * this->getOutputMultiplier(), pointData.curvature);
+		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {
