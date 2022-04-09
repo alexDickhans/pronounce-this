@@ -293,12 +293,12 @@ int main() {
 
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
+		QuadraticSplinePath leftNeutralGoalToFarHomeZone("Left Neutral Goal to Far Home Zone");
 
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(70, 115), Vector(20, 0)));
+		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(37, 72), Vector(25, -M_PI_4)));
+		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70, 108), Vector(20, 0.1)));
 
-	Path smoothPath = midGoalToFarPlatform.getPath(0.1);
+	Path smoothPath = leftNeutralGoalToFarHomeZone.getPath(0.1);
 
 	// Print all paths in the vector paths
 	printPath(smoothPath);

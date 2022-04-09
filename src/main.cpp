@@ -45,9 +45,9 @@ ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &nullOdomWheel, &imu);
 
 TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 10.0);
 
-Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.8, 0, 6), 20);
+Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.6, 0, 4.0), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(20, true, -30), new PID(0, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(20, true, -50), new PID(0, 0, 0));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -100, 0, 0);
@@ -92,7 +92,7 @@ void waitForDone(double distance, double timeout) {
 void waitForDone(double distance) {
 	// Wait for done
 	while (!purePursuit.isDone(distance)) {
-		pros::Task::delay(50);
+		pros::Task::delay(30);
 	}
 }
 
@@ -146,11 +146,11 @@ void placeOnPlatform() {
 
 	pros::Task::delay(200);
 
-	drivetrain.skidSteerVelocity(-50, 0);
+	drivetrain.skidSteerVelocity(-150, 0);
 
 	pros::Task::delay(200);
 
-	drivetrain.skidSteerVelocity(-20, 0);
+	drivetrain.skidSteerVelocity(-60, 0);
 
 	pros::Task::delay(200);
 
@@ -158,7 +158,7 @@ void placeOnPlatform() {
 
 	drivetrain.skidSteerVelocity(-50, 0);
 
-	pros::Task::delay(200);
+	pros::Task::delay(100);
 
 	drivetrain.skidSteerVelocity(0, 0);
 
@@ -394,7 +394,9 @@ int leftStealLeft() {
 }
 
 int rightStealRight() {
-	odometry.reset(new Position(105.7, 16, 0));
+	odometry.reset(new Position(105.7, 19.5, 0));
+
+	uint32_t startTime = pros::millis();
 
 	purePursuit.setSpeed(80);
 	purePursuit.setLookahead(15);
@@ -403,6 +405,7 @@ int rightStealRight() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	frontHookButton.setButtonStatus(POSITIVE);
 
 	double oldLookahead = purePursuit.getLookahead();
 
@@ -411,12 +414,13 @@ int rightStealRight() {
 
 	purePursuit.setLookahead(20);
 
-	waitForDone(4);
-
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
+	waitForDone(1);
+	
+	frontHookButton.setButtonStatus(NEUTRAL);
 
 	waitForDone(0.5);
+
+	printf("Time: %d\n", pros::millis() - startTime);
 
 	purePursuit.setLookahead(oldLookahead);
 
@@ -460,14 +464,42 @@ int rightStealRight() {
 		}
 	}
 	else {
-		while (odometry.getPosition()->getY() > 45) {
+		while (odometry.getPosition()->getY() > 25) {
 			pros::Task::delay(50);
 		}
 	}
 
-	liftButton.setAutonomousAuthority(100);
+	purePursuit.setSpeed(30);
 
-	purePursuit.setSpeed(85);
+	waitForDone();
+
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(200);
+
+	purePursuit.setFollowing(false);
+	purePursuit.setEnabled(false);
+
+	drivetrain.skidSteerVelocity(-150, 0);
+
+	pros::Task::delay(300);
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	pros::Task::delay(300);
+
+	drivetrain.skidSteerVelocity(300, 0);
+
+	pros::Task::delay(800);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+
+	return 0;
 
 	liftButton.setAutonomousAuthority(600);
 
@@ -663,7 +695,6 @@ int skills() {
 
 	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
 	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	intakeButton.setButtonStatus(POSITIVE);
 
 	purePursuit.setMaxAcceleration(65);
 
@@ -675,9 +706,9 @@ int skills() {
 
 	backGrabberChange(false);
 
-	drivetrain.skidSteerVelocity(-50, 0);
+	drivetrain.skidSteerVelocity(-150, 0);
 
-	pros::Task::delay(250);
+	pros::Task::delay(200);
 
 	drivetrain.skidSteerVelocity(0, 0);
 
@@ -691,6 +722,8 @@ int skills() {
 
 	pros::Task::delay(500);
 
+	intakeButton.setButtonStatus(POSITIVE);
+
 	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralGoalIndex);
 
 	liftButton.setAutonomousAuthority(600);
@@ -699,9 +732,9 @@ int skills() {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setSpeed(15);
+	purePursuit.setSpeed(20);
 
-	waitForDone(10);
+	waitForDone(15);
 
 	liftButton.setAutonomousAuthority(0);
 
@@ -711,15 +744,13 @@ int skills() {
 
 	purePursuit.setSpeed(65);
 
-	pros::Task::delay(300);
-
 	purePursuit.setCurrentPathIndex(leftNeutralGoalToFarHomeZoneIndex);
 
 	liftButton.setAutonomousAuthority(2000);
 
 	waitForDone();
 
-	purePursuit.setSpeed(15);
+	purePursuit.setSpeed(60);
 
 	turn(0, 0.2);
 
@@ -747,27 +778,31 @@ int skills() {
 
 	purePursuit.setSpeed(40);
 
-	waitForDone(20);
+	waitForDone(25);
 
 	liftButton.setAutonomousAuthority(600);
 
 	turn(M_PI_2);
 
-	waitForDone();
+	purePursuit.setSpeed(20);
+
+	waitForDone(0.1, 2000);
 
 	backGrabberChange(true);
 
 	pros::Task::delay(100);
 
-	turn(M_PI_2+M_PI_4);
+	purePursuit.setSpeed(30);
+
+	turn(M_PI_2 + M_PI_4);
 
 	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
 
 	intakeButton.setButtonStatus(POSITIVE);
 
-	purePursuit.setSpeed(30);
+	purePursuit.setSpeed(20);
 
-	waitForDone(10);
+	waitForDone(15);
 
 	liftButton.setAutonomousAuthority(0);
 
@@ -785,7 +820,11 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(2000);
 
+	purePursuit.setSpeed(20);
+
 	placeOnPlatform();
+
+	turn(M_PI_2);
 
 	purePursuit.setCurrentPathIndex(farPlatformToFarLeftAllianceDropOffIndex);
 
@@ -988,30 +1027,42 @@ int skills() {
  */
 int testOrientationAuton() {
 
-	printf("Test Auton\n");
+	printf("Test Orientation Auton\n");
 
-	odometry.reset(new Position(0, 0, 0));
+	bool grabFront = true;
+	bool grabBack = true;
 
-	purePursuit.setCurrentPathIndex(0);
+	if (grabFront) {
+		frontGrabberButton.setButtonStatus(NEUTRAL);
 
-	purePursuit.setOrientationControl(true);
-	purePursuit.setFollowing(true);
+		pros::Task::delay(500);
 
-	purePursuit.setTargetOrientation(M_PI);
+		frontGrabberButton.setButtonStatus(POSITIVE);
 
-	waitForDoneOrientation();
+		pros::Task::delay(500);
 
-	printf("Orientation set to M_PI\n");
+		liftButton.setAutonomousAuthority(2000);
+
+		pros::Task::delay(1000);
+	}
+
+	if (grabBack) {
+		backGrabberChange(true);
+
+		pros::Task::delay(500);
+	}
+
+	purePursuit.setCurrentPathIndex(zeroPathIndex);
+
+	turn(M_PI);
+
+	printf("Done with 180\n");
+
+	turn(0);
+
+	printf("Done with 0\n");
+
 	pros::Task::delay(1000);
-
-	purePursuit.setTargetOrientation(0);
-
-	printf("Orientation set to 0\n");
-
-	waitForDoneOrientation();
-
-	purePursuit.setOrientationControl(false);
-	purePursuit.setFollowing(false);
 
 	return 0;
 }
@@ -1052,7 +1103,7 @@ int testBalanceAuton() {
 
 	pros::Task::delay(500);
 
-	backGrabberButton.setButtonStatus(POSITIVE);
+	backGrabberChange(true);
 
 	pros::Task::delay(500);
 
@@ -1112,7 +1163,9 @@ void updateDrivetrain() {
 		else if (balance.isEnabled()) {
 			balance.update();
 		}
+
 		lv_label_set_text(infoLabel, (odometry.getPosition()->to_string() + "\nL: " + std::to_string(leftOdomWheel.getPosition()) + ", R: " + std::to_string(rightOdomWheel.getPosition())).c_str());
+
 		pros::Task::delay_until(&startTime, 10);
 	}
 }
@@ -1151,13 +1204,13 @@ void updateMotors() {
 
 		if (backButtonStatus) {
 			backGrabberButton2.setButtonStatus(POSITIVE);
-			if (pros::millis() - lastChange > 100) {
+			if (pros::millis() - lastChange > 50) {
 				backGrabberButton.setButtonStatus(POSITIVE);
 			}
 		}
 		else {
 			backGrabberButton.setButtonStatus(NEUTRAL);
-			if (pros::millis() - lastChange > 500) {
+			if (pros::millis() - lastChange > 150) {
 				backGrabberButton2.setButtonStatus(NEUTRAL);
 			}
 		}
@@ -1216,18 +1269,18 @@ void initDrivetrain() {
 	// 1.072124756
 	// Left 99.57
 	// Right 100.57
-	double turningFactor = ((100.57/99.57) - 1.0) / 2;
-	double tuningFactor = 1.007;
+	double turningFactor = (((101.22 / 101.50) - 1.0) / 2);
+	double tuningFactor = 1.010901883;
 	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(tuningFactor * (1+turningFactor));
+	leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
 	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(tuningFactor * (1-turningFactor));
+	rightOdomWheel.setTuningFactor(tuningFactor * (1 + turningFactor));
 
 	leftEncoder.set_reversed(true);
 	rightEncoder.set_reversed(false);
 
-	odometry.setLeftOffset(3.396366486);
-	odometry.setRightOffset(3.396366486);
+	odometry.setLeftOffset(3.297348572);
+	odometry.setRightOffset(3.297348572);
 	odometry.setBackOffset(0);
 
 	odometry.setMaxMovement(0);
@@ -1239,8 +1292,10 @@ void initDrivetrain() {
 	purePursuit.setStopDistance(0.5);
 	purePursuit.setMaxAcceleration(400);
 
+	pros::Task::delay(10);
+
 	pros::Task purePursuitTask = pros::Task(updateDrivetrain, "Pure Pursuit");
-	
+
 	odometry.reset(new Position());
 
 	printf("Drivetrain Init done\n");
@@ -1379,7 +1434,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
+	testBalanceAuton();
 	postAuton();
 
 	// autonomousSelector.run();

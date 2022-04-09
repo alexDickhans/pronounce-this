@@ -22,7 +22,7 @@ namespace Pronounce {
         double target = 0.0;
         double position;
 
-        double error = 0.0;
+        double error;
         double totalError = 0.0;
         double prevError = 0.0;
         double derivitive;
