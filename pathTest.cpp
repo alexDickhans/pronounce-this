@@ -47,27 +47,6 @@
 
 using namespace Pronounce;
 
-int testPathIndex;
-int leftAllianceToRightHomeZoneIndex;
-int rightHomeZoneToRightAllianceIndex;
-int rightAllianceToRightRingsIndex;
-int rightRingsToRightHomeZoneIndex;
-
-// Skills
-int leftHomeZoneToLeftNeutralGoalIndex;
-int leftNeutralGoalToFarHomeZoneIndex;
-int farHomeZoneToMidNeutralGoalIndex;
-int midNeutralGoalToPlatformIndex;
-int farPlatformToDropOffGoalIndex;
-int goalDropOffToFarLeftAllianceIndex;
-int farLeftAllianceToLeftRingsIndex;
-int leftRingsToGoalDropIndex;
-int farPlatformToEnterHomezoneIndex;
-int rightHomeZoneToFarRightAllianceGoalIndex;
-int farRightAllianceGoalToNearPreloadsIndex;
-int nearPlatformAlignIndex;
-int leftHomeZoneToPlatformIndex;
-
 int fps = 60;
 double playbackMultiplier = 1;
 
@@ -180,7 +159,7 @@ void printMirroredPlatform(double x1, double y1, double x2, double y2) {
 }
 
 void printGoal(Point point) {
-	setlinestyle(SOLID_LINE, 5, 2);
+	setlinestyle(SOLID_LINE, 5, 10);
 	circle(point.getY() * multiplier, point.getX() * multiplier, 6.5 * multiplier);
 }
 
@@ -290,18 +269,55 @@ int main() {
 	printField();
 
 	// printRobotWithLookahead(robot);
-
+	
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath leftNeutralGoalToFarHomeZone("Left Neutral Goal to Far Home Zone");
+	std::vector<Path> paths;
 
-		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(37, 72), Vector(25, -M_PI_4)));
-		leftNeutralGoalToFarHomeZone.addPoint(SplinePoint(Point(70, 108), Vector(20, 0.1)));
+	Path smoothPath;
 
-	Path smoothPath = leftNeutralGoalToFarHomeZone.getPath(0.1);
+		QuadraticSplinePath rightHomeZoneToRightNeutral;
+
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 19.5), Vector(0.0, 0)));
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 46), Vector(0.0, 0)));
+
+	smoothPath = rightHomeZoneToRightNeutral.getPath(0.1);
+
+	paths.emplace_back(smoothPath);
+
+		QuadraticSplinePath enterRightHomeZoneToRightAlliance;
+		
+		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(98, 46.8), Vector(10.0, -M_PI_2)));
+		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(120, 39), Vector(15, - M_PI_2 - 0.4)));
+
+	smoothPath = enterRightHomeZoneToRightAlliance.getPath(0.1);
+
+	paths.emplace_back(smoothPath);
+
+		QuadraticSplinePath rightAllianceToLeftAlliance;
+		
+		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(120, 37), Vector(10.0, M_PI - M_PI_2 - 0.4)));
+		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(98, 46.8), Vector(10.0, M_PI_2)));
+		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(46.8, 46.8), Vector(10.0, M_PI_2)));
+		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(35, 15), Vector(10.0, M_PI + M_PI_4)));
+
+	smoothPath = rightAllianceToLeftAlliance.getPath(0.1);
+
+	paths.emplace_back(smoothPath);
+
+		QuadraticSplinePath leftAllianceToPreloads;
+
+		leftAllianceToPreloads.addPoint(SplinePoint(Point(35, 15), Vector(10.0, M_PI_2)));
+		leftAllianceToPreloads.addPoint(SplinePoint(Point(15, 15), Vector(10.0, M_PI_2)));
+
+	smoothPath = leftAllianceToPreloads.getPath(0.1);
+
+	paths.emplace_back(smoothPath);
 
 	// Print all paths in the vector paths
-	printPath(smoothPath);
+	for (int i = 0; i < paths.size(); i++) {
+		printPath(paths.at(i));
+	}
 
 	delay(50000000);
 

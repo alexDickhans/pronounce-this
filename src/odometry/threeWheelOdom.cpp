@@ -50,7 +50,7 @@ namespace Pronounce {
 
 		Vector localOffset;
 
-		if (deltaAngle == 0) {
+		if (abs(deltaAngle) < 0.000001) {
 			// Calculate the local offset then translate it to the global offset
 			localOffset = Vector(new Point(deltaBack, deltaRight));
 		} else {

@@ -210,6 +210,42 @@ void turn(double angle, double sensitivity) {
 	purePursuit.setOrientationControl(false);
 }
 
+void grabFromHook() {
+	purePursuit.setEnabled(false);
+	purePursuit.setFollowing(false);
+
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(200);
+
+	drivetrain.skidSteerVelocity(-600, 0);
+
+	pros::Task::delay(250);
+
+	drivetrain.skidSteerVelocity(0, 0);
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setEnabled(false);
+	purePursuit.setFollowing(false);
+
+	pros::Task::delay(200);
+
+	drivetrain.skidSteerVelocity(600, 0);
+
+	pros::Task::delay(500);
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(200);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
+}
+
 /**
  * @brief Runs during auton period before auton
  *
@@ -230,464 +266,164 @@ int preAutonRun() {
 	return 0;
 }
 
-/**
- * @brief Runs the Right Steal Right Auton
- *
- */
-int leftStealLeft() {
-	odometry.reset(new Position(25, 16, 0.19));
-
-	purePursuit.setSpeed(80);
-	purePursuit.setLookahead(15);
-
-	printf("Left Steal Left\n");
-
-	double oldLookahead = purePursuit.getLookahead();
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	purePursuit.setLookahead(20);
-
-	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralIndex);
-	purePursuit.setFollowing(true);
-
-	waitForDone(4);
-
-	// Collect front goal
-	frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	waitForDone(0.5);
-
-	purePursuit.setLookahead(oldLookahead);
-
-	purePursuit.setFollowing(false);
-
-	pros::Task::delay(300);
-
-	liftButton.setAutonomousAuthority(100);
-
-	purePursuit.setFollowing(true);
-
-	printf("Left steal left: Collected front goal\n");
-
-	purePursuit.setCurrentPathIndex(leftNeutralToLeftAllianceGoalIndex);
-	purePursuit.setFollowing(true);
-
-	// Change to false if you don't want to let go of the neutral mobile goal after a certain amount of time
-	if (false) {
-		uint32_t startTime = pros::millis();
-
-		while (odometry.getPosition()->getY() > 40 && pros::millis() - startTime < 3000) {
-			pros::Task::delay(50);
-		}
-
-		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime >= 3000) {
-			printf("Left steal right: Failed to get to the right alliance goal\n");
-			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-			// Move back
-			// Timed programming, our favorite!
-			// This is all the safegaurds I have to bypass
-			purePursuit.setFollowing(false);
-			purePursuit.setEnabled(false);
-
-			drivetrain.skidSteerVelocity(50, 0);
-
-			pros::Task::delay(250);
-
-			drivetrain.skidSteerVelocity(0, 0);
-
-			purePursuit.setFollowing(true);
-			purePursuit.setEnabled(true);
-
-			// Get mid goal if you don't get the main goal
-			if (false) {
-				purePursuit.setCurrentPathIndex(leftNeutralToEnterLeftHomeZoneIndex);
-				purePursuit.setFollowing(true);
-
-				intakeButton.setButtonStatus(POSITIVE);
-
-				waitForDone(1);
-
-				purePursuit.setSpeed(65);
-
-				turn(M_PI_4);
-
-				purePursuit.setCurrentPathIndex(enterLeftHomeZoneToMidGoalIndex);
-				purePursuit.setFollowing(true);
-
-				waitForDone(20);
-
-				liftButton.setAutonomousAuthority(0);
-
-				waitForDone(1);
-
-				frontGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-				waitForDone(0.5);
-
-				purePursuit.setFollowing(false);
-
-				pros::Task::delay(200);
-
-				liftButton.setAutonomousAuthority(600);
-
-				purePursuit.setFollowing(true);
-
-				purePursuit.setCurrentPathIndex(midGoalToEnterLeftHomeZoneIndex);
-
-				waitForDone();
-
-				purePursuit.setCurrentPathIndex(leftNeutralToLeftAllianceGoalIndex);
-			}
-		}
-	}
-	else {
-		while (odometry.getPosition()->getY() > 40) {
-			pros::Task::delay(50);
-		}
-	}
-
-	purePursuit.setSpeed(30);
-
-	waitForDone(5);
-
-	purePursuit.setSpeed(10);
-
-	waitForDone(1);
-
-	backGrabberButton.setButtonStatus(POSITIVE);
-
-	pros::Task::delay(200);
-
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	pros::Task::delay(600);
-
-	purePursuit.setCurrentPathIndex(leftAllianceToRightHomeZoneIndex);
-	purePursuit.setFollowing(true);
-
-	liftButton.setAutonomousAuthority(600);
-
-	purePursuit.setSpeed(30);
-
-	pros::Task::delay(2000);
-
-	purePursuit.setSpeed(65);
-
-	waitForDone(8);
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	waitForDone();
-
-	pros::Task::delay(500);
-
-	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	purePursuit.setFollowing(false);
-
-	pros::Task::delay(500);
-
-	return 0;
-}
-
-int rightStealRight() {
-	odometry.reset(new Position(105.7, 19.5, 0));
-
-	uint32_t startTime = pros::millis();
-
-	purePursuit.setSpeed(80);
-	purePursuit.setLookahead(15);
-
-	printf("Right Steal Right\n");
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+void leftSteal() {
+	purePursuit.setSpeed(70);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	backGrabberChange(false);
 	frontHookButton.setButtonStatus(POSITIVE);
 
-	double oldLookahead = purePursuit.getLookahead();
-
-	purePursuit.setCurrentPathIndex(rightHomeZoneToRightNeutralIndex);
+	purePursuit.setEnabled(true);
 	purePursuit.setFollowing(true);
-
-	purePursuit.setLookahead(20);
-
-	waitForDone(1);
 	
-	frontHookButton.setButtonStatus(NEUTRAL);
-
-	waitForDone(0.5);
-
-	printf("Time: %d\n", pros::millis() - startTime);
-
-	purePursuit.setLookahead(oldLookahead);
-
-	purePursuit.setFollowing(false);
-
-	liftButton.setAutonomousAuthority(0);
-
-	printf("Right steal right: Collected front goal\n");
-
-	purePursuit.setCurrentPathIndex(rightNeutralToRightAllianceGoalIndex);
-	purePursuit.setFollowing(true);
-
-	purePursuit.setSpeed(45);
-
-	// Change to false if you don't want to let go of the alliance mobile goal after a certain amount of time
-	if (false) {
-		uint32_t startTime = pros::millis();
-
-		while (odometry.getPosition()->getY() > 45 && pros::millis() - startTime < 3000) {
-			pros::Task::delay(50);
-		}
-
-		if (odometry.getPosition()->getY() > 40 && pros::millis() - startTime >= 3000) {
-			printf("Left steal right: Failed to get to the right alliance goal\n");
-			frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-			// Move back
-			// Timed programming, our favorite!
-			// This is all the safegaurds I have to bypass
-			purePursuit.setFollowing(false);
-			purePursuit.setEnabled(false);
-
-			drivetrain.skidSteerVelocity(50, 0);
-
-			pros::Task::delay(250);
-
-			drivetrain.skidSteerVelocity(0, 0);
-
-			purePursuit.setFollowing(true);
-			purePursuit.setEnabled(true);
-		}
-	}
-	else {
-		while (odometry.getPosition()->getY() > 25) {
-			pros::Task::delay(50);
-		}
-	}
-
-	purePursuit.setSpeed(30);
+	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralStealIndex);
 
 	waitForDone();
 
-	frontHookButton.setButtonStatus(POSITIVE);
-
-	pros::Task::delay(200);
-
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
-
-	drivetrain.skidSteerVelocity(-150, 0);
-
-	pros::Task::delay(300);
-
 	frontHookButton.setButtonStatus(NEUTRAL);
 
-	pros::Task::delay(300);
+	purePursuit.setCurrentPathIndex(leftNeutralStealToLeftHomeZoneIndex);
 
-	drivetrain.skidSteerVelocity(300, 0);
-
-	pros::Task::delay(800);
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	frontGrabberButton.setButtonStatus(POSITIVE);
-
-	purePursuit.setFollowing(true);
-	purePursuit.setEnabled(true);
-
-	return 0;
-
-	liftButton.setAutonomousAuthority(600);
-
-	waitForDone(20);
-
-	purePursuit.setSpeed(15);
-
-	waitForDone(0.1, 3000);
-
-	backGrabberButton.setButtonStatus(POSITIVE);
-
-	pros::Task::delay(200);
-
-	purePursuit.setSpeed(45);
-
-	turn(-M_PI_4);
-
-	purePursuit.setSpeed(15);
-
-	purePursuit.setCurrentPathIndex(rightAllianceGoalToRightRingsIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setSpeed(20);
-
-	pros::Task::delay(500);
-
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	waitForDone(30);
-
-	liftButton.setAutonomousAuthority(1800);
-
-	waitForDone(0.1, 3000);
-
-	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setSpeed(45);
-
-	pros::Task::delay(2000);
-
-	liftButton.setAutonomousAuthority(600);
-
-	waitForDone();
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	purePursuit.setFollowing(false);
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	pros::Task::delay(300);
-
-	// Move back
-	// Timed programming, our favorite!
-	// This is all the safegaurds I have to bypass
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
-
-	drivetrain.skidSteerVelocity(50, 0);
-
-	pros::Task::delay(250);
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	purePursuit.setFollowing(true);
-	purePursuit.setEnabled(true);
-
-	pros::Task::delay(200);
-
-	return 0;
-}
-
-int leftAwpRight() {
-	odometry.reset(new Position(29.0, 11.4, -M_PI_2));
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-	frontGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	// Move back
-	// Timed programming, our favorite!
-	// This is all the safegaurds I have to bypass
-	purePursuit.setFollowing(false);
-	purePursuit.setEnabled(false);
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	drivetrain.skidSteerVelocity(-100, 0);
-
-	pros::Task::delay(250);
-
-	drivetrain.skidSteerVelocity(0, 0);
-
-	backGrabberButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	purePursuit.setFollowing(true);
-	purePursuit.setEnabled(true);
-
-	// Run pure pursuit paths, ewwww
-	purePursuit.setCurrentPathIndex(leftAllianceToRightAllianceIndex);
-	purePursuit.setFollowing(true);
-
-	purePursuit.setSpeed(15);
-
-	liftButton.setAutonomousAuthority(600);
-
-	pros::Task::delay(300);
-
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	pros::Task::delay(700);
-
-	purePursuit.setSpeed(30);
-
-	pros::Task::delay(1000);
-
-	purePursuit.setSpeed(20);
-
-	waitForDone(35);
-
-	purePursuit.setSpeed(15);
-
-	pros::Task::delay(400);
-
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	pros::Task::delay(400);
-
-	purePursuit.setSpeed(15);
-
-	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
-
-	turn(-M_PI_2);
-
-	intakeButton.setButtonStatus(ButtonStatus::NEGATIVE);
-
-	purePursuit.setSpeed(30);
-
-	waitForDone(0.1, 3000);
-
-	backGrabberButton.setButtonStatus(POSITIVE);
-
-	pros::Task::delay(200);
-
-	purePursuit.setSpeed(15);
-
-	turn(-M_PI_4, 0.2);
-
-	purePursuit.setSpeed(30);
-
-	purePursuit.setCurrentPathIndex(rightAllianceGoalToRightRingsIndex);
-	purePursuit.setFollowing(true);
-
-	pros::Task::delay(500);
-
-	intakeButton.setButtonStatus(ButtonStatus::POSITIVE);
-
-	waitForDone(20);
-
-	liftButton.setAutonomousAuthority(1600);
-
-	waitForDone(0.1, 3000);
-
-	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
-	purePursuit.setFollowing(true);
-	purePursuit.setSpeed(45);
-
-	pros::Task::delay(2000);
-
-	liftButton.setAutonomousAuthority(600);
-
-	while (odometry.getPosition()->getY() > 48) {
+	while(odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
 	}
 
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	purePursuit.setSpeed(45);
 
 	waitForDone();
 
-	purePursuit.setFollowing(false);
+	grabFromHook();
+}
 
-	backGrabberButton.setButtonStatus(ButtonStatus::NEUTRAL);
+void rightSteal() {
+	purePursuit.setSpeed(70);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	backGrabberChange(false);
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
+	
+	purePursuit.setCurrentPathIndex(rightHomeZoneToRightNeutralIndex);
+
+	waitForDone();
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(rightNeutralToRightHomeZoneIndex);
+
+	while(odometry.getPosition()->getY() > 40) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(45);
+
+	waitForDone();
+
+	grabFromHook();
+}
+
+void rightRightSteal() {
+
+}
+
+void rightMidSteal() {
+
+}
+
+void leftAWP() {
+	liftButton.setAutonomousAuthority(600);
 
 	pros::Task::delay(100);
 
-	intakeButton.setButtonStatus(ButtonStatus::NEUTRAL);
+	purePursuit.setCurrentPathIndex(leftAllianceToRightHomeZoneIndex);
 
 	pros::Task::delay(200);
 
+	intakeButton.setButtonStatus(POSITIVE);
+
+	waitForDone(40);
+}
+
+void rightAWP() {
+	turn(-M_PI_2*0.85);
+
+	purePursuit.setCurrentPathIndex(enterRightHomeZoneToRightAllianceIndex);
+
+	waitForDone(20);
+
+	purePursuit.setSpeed(30);
+
+	waitForDone(8);
+
+	backGrabberChange(true);
+
+	waitForDone(0.1, 3000);
+
+	pros::Task::delay(100);
+
+	purePursuit.setCurrentPathIndex(rightAllianceToRightRingsIndex);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	intakeButton.setButtonStatus(POSITIVE);
+
+	waitForDone(0.1, 5000);
+
+	purePursuit.setCurrentPathIndex(rightRingsToRightHomeZoneIndex);
+
+	waitForDone();
+}
+
+int leftStealLeftAWP() {
+	odometry.reset(new Position(27, 18, 0.17));
+
+	leftSteal();
+	
+	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftAllianceIndex);
+
+	waitForDone();
+
+	backGrabberChange(true);
+
+	leftAWP();
+
 	return 0;
+}
+
+int leftStealFullAWP() {
+	odometry.reset(new Position(27, 18, 0.17));
+
+	leftSteal();
+	
+	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftAllianceIndex);
+
+	waitForDone();
+
+	backGrabberChange(true);
+
+	leftAWP();
+
+	waitForDone();
+
+	rightAWP();
+
+	return 0;
+}
+
+int rightStealRightAWP() {
+	odometry.reset(new Position(105.7, 19.5, 0.0));
+
+	rightSteal();
+
+	rightAWP();
+
+	return 0;
+}
+
+void rightStealFullAWP() {
+
 }
 
 int skills() {
@@ -1204,7 +940,7 @@ void updateMotors() {
 
 		if (backButtonStatus) {
 			backGrabberButton2.setButtonStatus(POSITIVE);
-			if (pros::millis() - lastChange > 50) {
+			if (pros::millis() - lastChange > 100) {
 				backGrabberButton.setButtonStatus(POSITIVE);
 			}
 		}
@@ -1322,8 +1058,6 @@ void runSelector() {
  * Initialize the Auton Selector
  */
 void initSelector() {
-	autonomousSelector.addAuton(Auton("Left AWP Right", leftAwpRight));
-	autonomousSelector.addAuton(Auton("Right steal right", leftStealLeft));
 	autonomousSelector.addAuton(Auton("Test Orientation", testOrientationAuton));
 	autonomousSelector.addAuton(Auton("Test Balance", testBalanceAuton));
 	autonomousSelector.setDefaultAuton(0);
@@ -1434,7 +1168,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	testBalanceAuton();
+	rightStealRightAWP();
 	postAuton();
 
 	// autonomousSelector.run();
