@@ -276,41 +276,12 @@ int main() {
 
 	Path smoothPath;
 
-		QuadraticSplinePath rightHomeZoneToRightNeutral;
+		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
 
-		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 19.5), Vector(0.0, 0)));
-		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(105.7, 46), Vector(0.0, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(75, 70), Vector(20, 0)));
 
-	smoothPath = rightHomeZoneToRightNeutral.getPath(0.1);
-
-	paths.emplace_back(smoothPath);
-
-		QuadraticSplinePath enterRightHomeZoneToRightAlliance;
-		
-		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(98, 46.8), Vector(10.0, -M_PI_2)));
-		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(120, 39), Vector(15, - M_PI_2 - 0.4)));
-
-	smoothPath = enterRightHomeZoneToRightAlliance.getPath(0.1);
-
-	paths.emplace_back(smoothPath);
-
-		QuadraticSplinePath rightAllianceToLeftAlliance;
-		
-		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(120, 37), Vector(10.0, M_PI - M_PI_2 - 0.4)));
-		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(98, 46.8), Vector(10.0, M_PI_2)));
-		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(46.8, 46.8), Vector(10.0, M_PI_2)));
-		rightAllianceToLeftAlliance.addPoint(SplinePoint(Point(35, 15), Vector(10.0, M_PI + M_PI_4)));
-
-	smoothPath = rightAllianceToLeftAlliance.getPath(0.1);
-
-	paths.emplace_back(smoothPath);
-
-		QuadraticSplinePath leftAllianceToPreloads;
-
-		leftAllianceToPreloads.addPoint(SplinePoint(Point(35, 15), Vector(10.0, M_PI_2)));
-		leftAllianceToPreloads.addPoint(SplinePoint(Point(15, 15), Vector(10.0, M_PI_2)));
-
-	smoothPath = leftAllianceToPreloads.getPath(0.1);
+	smoothPath = midGoalToFarPlatform.getPath(0.1);
 
 	paths.emplace_back(smoothPath);
 

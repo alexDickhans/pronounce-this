@@ -138,7 +138,7 @@ void placeOnPlatform() {
 	purePursuit.setEnabled(false);
 	purePursuit.setFollowing(false);
 
-	liftButton.setAutonomousAuthority(1300);
+	liftButton.setAutonomousAuthority(1100);
 
 	pros::Task::delay(300);
 
@@ -582,11 +582,13 @@ int skills() {
 
 	pros::Task::delay(500);
 
-	intakeButton.setButtonStatus(POSITIVE);
-
 	purePursuit.setCurrentPathIndex(leftHomeZoneToLeftNeutralGoalIndex);
 
 	liftButton.setAutonomousAuthority(600);
+
+	pros::Task::delay(500);
+
+	intakeButton.setButtonStatus(POSITIVE);
 
 	while (odometry.getPosition()->getY() < 38) {
 		pros::Task::delay(50);
@@ -608,11 +610,13 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(2000);
 
-	waitForDone();
+	waitForDone(0.5, 3000);
 
 	purePursuit.setSpeed(60);
 
-	turn(0, 0.2);
+	turn(-M_PI_4 * 0.66, 0.2);
+
+	turn(0, 0.1);
 
 	purePursuit.setFollowing(false);
 
@@ -638,9 +642,11 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
-	waitForDone(25);
+	waitForDone(35);
 
 	liftButton.setAutonomousAuthority(600);
+
+	pros::Task::delay(500);
 
 	turn(M_PI_2);
 
@@ -1424,6 +1430,12 @@ void opcontrol() {
 			else if (master.get_digital_new_press(DIGITAL_LEFT)) {
 				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			}
+
+			if (master.get_digital(DIGITAL_R2)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
+			} else if (master.get_digital(DIGITAL_Y)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
 			}
 		}
 
