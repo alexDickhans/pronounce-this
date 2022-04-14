@@ -45,18 +45,17 @@ namespace Pronounce {
 			currentAngle = this->getResetPosition()->getTheta() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
 		}
 
-		double deltaAngle = angleDifference(currentAngle, lastAngle);
+		double deltaAngle = (deltaLeft - deltaRight) / (leftOffset + rightOffset);
 		double averageOrientation = lastAngle + (deltaAngle / 2);
 
 		Vector localOffset;
 
-		if (abs(deltaAngle) < 0.000001) {
+		if (abs(deltaAngle) > 0.01) {
+			double rotationAdjustment = 2 * sin(deltaAngle / 2);
+			localOffset = Vector(new Point(((deltaBack/deltaAngle) + backOffset) * rotationAdjustment, ((deltaRight/deltaAngle) + rightOffset) * rotationAdjustment));
+		} else {
 			// Calculate the local offset then translate it to the global offset
 			localOffset = Vector(new Point(deltaBack, deltaRight));
-		} else {
-			double rotationAdjustment = 2 * sin(deltaAngle / 2);
-			localOffset = Vector(new Point((deltaBack/deltaAngle) + backOffset, (deltaRight/deltaAngle) + rightOffset));
-			localOffset.scale(rotationAdjustment);
 		}
 
 		// Rotate vector
@@ -64,7 +63,7 @@ namespace Pronounce {
 
 		// Add localOffset to the global offset
 		lastPosition->add(localOffset.getCartesian());
-		lastPosition->setTheta(fmod(currentAngle + M_PI * 2, M_PI * 2));
+		lastPosition->setTheta(fmod(angleDifference(currentAngle, 0) + M_PI * 2, M_PI * 2));
 
 		if (localOffset.getMagnitude() > maxMovement && maxMovement != 0) {
 			return;
