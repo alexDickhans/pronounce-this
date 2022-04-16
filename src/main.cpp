@@ -403,13 +403,13 @@ void rightAWP() {
 
 	waitForDone(20);
 
-	purePursuit.setSpeed(30);
+	purePursuit.setSpeed(40);
 
 	waitForDone(8);
 
 	backGrabberChange(true);
 
-	waitForDone(0.1, 3000);
+	waitForDone(0.1, 2500);
 
 	pros::Task::delay(100);
 
@@ -614,7 +614,7 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
-	turn(-M_PI_4 * 0.66, 0.2);
+	turn(-M_PI_4 * 0.66, 0.3);
 
 	turn(0, 0.1);
 
@@ -638,15 +638,23 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
+	turn(M_PI_2 + M_PI_4);
+
 	purePursuit.setCurrentPathIndex(farRightDropOffToFarLeftAllianceGoalIndex);
 
 	purePursuit.setSpeed(60);
 
-	waitForDone(35);
+	waitForDone(40);
 
 	liftButton.setAutonomousAuthority(600);
 
+	purePursuit.setEnabled(false);
+	purePursuit.setFollowing(false);
+
 	pros::Task::delay(500);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
 
 	turn(M_PI_2);
 
@@ -1319,7 +1327,7 @@ void opcontrol() {
 
 	postAuton();
 
-	if (partner.is_connected()) {
+	if (!partner.is_connected()) {
 		frontGrabberButton.setButtonStatus(POSITIVE);
 	}
 	else {
@@ -1360,11 +1368,18 @@ void opcontrol() {
 		}
 
 
-		if (master.get_digital_new_press(DIGITAL_RIGHT) || partner.get_digital_new_press(DIGITAL_R1)) {
+		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
 			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 		}
-		else if (master.get_digital_new_press(DIGITAL_LEFT) || partner.get_digital_new_press(DIGITAL_R2)) {
+		else if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		}
+
+		if (master.get_digital_new_press(DIGITAL_B)) {
+			balance.setEnabled(!balance.isEnabled());
+			balance.getOrientationController()->setTarget(imu.get_heading());
 			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
@@ -1381,7 +1396,6 @@ void opcontrol() {
 		}
 
 		if (partner.is_connected()) {
-
 			if ((partner.get_digital(DIGITAL_L1) && !master.get_digital(DIGITAL_L2) && !partner.get_digital(DIGITAL_L2)) || master.get_digital(DIGITAL_L1) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
 				liftButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
 			}
@@ -1392,17 +1406,11 @@ void opcontrol() {
 				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEUTRAL);
 			}
 
-			if (master.get_digital(DIGITAL_R2) || partner.get_digital(DIGITAL_R2)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : NEGATIVE);
-			} else if (master.get_digital(DIGITAL_Y) || partner.get_digital(DIGITAL_R1)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : POSITIVE);
+			if (master.get_digital_new_press(DIGITAL_R2) || partner.get_digital_new_press(DIGITAL_R2)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
 			}
-
-			if (master.get_digital_new_press(DIGITAL_B) || partner.get_digital_new_press(DIGITAL_B)) {
-				balance.setEnabled(!balance.isEnabled());
-				balance.getOrientationController()->setTarget(imu.get_heading());
-				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			else if (master.get_digital_new_press(DIGITAL_Y) || partner.get_digital_new_press(DIGITAL_R1)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
 			}
 		}
 		else {
@@ -1414,28 +1422,6 @@ void opcontrol() {
 			}
 			else {
 				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEUTRAL);
-			}
-
-			if (master.get_digital_new_press(DIGITAL_B)) {
-				balance.setEnabled(!balance.isEnabled());
-				balance.getOrientationController()->setTarget(imu.get_heading());
-				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-			}
-
-			if (master.get_digital_new_press(DIGITAL_RIGHT)) {
-				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-			}
-			else if (master.get_digital_new_press(DIGITAL_LEFT)) {
-				drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-				drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-			}
-
-			if (master.get_digital(DIGITAL_R2)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
-			} else if (master.get_digital(DIGITAL_Y)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
 			}
 		}
 

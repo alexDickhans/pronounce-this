@@ -19,7 +19,7 @@ namespace Pronounce
         }
 
         void update() {
-            this->setPosition((rotationSensor->get_position() / (360.0 * 100.0)) * this->getRadius() * M_PI * 2.0 * this->getTuningFactor());
+            this->setPosition(((rotationSensor->get_position() / 100.0)/360.0) * this->getRadius() * M_PI * 2.0 * this->getTuningFactor());
         }
 
         ~TrackingWheel();
