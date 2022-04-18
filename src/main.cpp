@@ -1423,6 +1423,13 @@ void opcontrol() {
 			else {
 				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEUTRAL);
 			}
+
+			if (master.get_digital_new_press(DIGITAL_R2)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
+			}
+			else if (master.get_digital_new_press(DIGITAL_Y)) {
+				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
+			}
 		}
 
 		pros::delay(10);
