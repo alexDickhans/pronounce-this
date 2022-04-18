@@ -6,11 +6,17 @@
 #include <cmath>
 #include <algorithm>
 
-namespace Pronounce
-{
+namespace Pronounce {
 	double toRadians(double degrees);
 	double toDegrees(double radians);
 	double angleDifference(double angle1, double angle2);
+
+	/**
+	 * @brief Returns the sign of a number
+	 * 
+	 * @param x Number 
+	 * @return double Sign of the number -1, 1, or 0
+	 */
 	double signnum_c(double x);
 
 	/**

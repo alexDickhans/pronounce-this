@@ -102,7 +102,7 @@ namespace Pronounce {
 		// printf("Dejam time: %f\n", pros::millis() - this->dejamStartTime);
 
 		// If the timer is greater than the jam time, then dejam the motor
-		if (pros::millis() - this->dejamStartTime > dejamTime && jammed && pros::millis() - this->dejamStartTime < dejamTime + dejamDuration || ((this->jammed && pros::millis() - this->dejamStartTime) % 10000 > 5000)) {
+		if (pros::millis() - this->dejamStartTime > dejamTime && jammed && pros::millis() - this->dejamStartTime < dejamTime + dejamDuration || ((this->jammed && pros::millis() - this->dejamStartTime) % 200 > 100)) {
 			printf("Dejam started\n");
 			this->motor->move_velocity(dejamAuthority);
 		}

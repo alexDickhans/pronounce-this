@@ -47,27 +47,6 @@
 
 using namespace Pronounce;
 
-int testPathIndex;
-int leftAllianceToRightHomeZoneIndex;
-int rightHomeZoneToRightAllianceIndex;
-int rightAllianceToRightRingsIndex;
-int rightRingsToRightHomeZoneIndex;
-
-// Skills
-int leftHomeZoneToLeftNeutralGoalIndex;
-int leftNeutralGoalToFarHomeZoneIndex;
-int farHomeZoneToMidNeutralGoalIndex;
-int midNeutralGoalToPlatformIndex;
-int farPlatformToDropOffGoalIndex;
-int goalDropOffToFarLeftAllianceIndex;
-int farLeftAllianceToLeftRingsIndex;
-int leftRingsToGoalDropIndex;
-int farPlatformToEnterHomezoneIndex;
-int rightHomeZoneToFarRightAllianceGoalIndex;
-int farRightAllianceGoalToNearPreloadsIndex;
-int nearPlatformAlignIndex;
-int leftHomeZoneToPlatformIndex;
-
 int fps = 60;
 double playbackMultiplier = 1;
 
@@ -180,7 +159,7 @@ void printMirroredPlatform(double x1, double y1, double x2, double y2) {
 }
 
 void printGoal(Point point) {
-	setlinestyle(SOLID_LINE, 5, 2);
+	setlinestyle(SOLID_LINE, 5, 10);
 	circle(point.getY() * multiplier, point.getX() * multiplier, 6.5 * multiplier);
 }
 
@@ -290,20 +269,26 @@ int main() {
 	printField();
 
 	// printRobotWithLookahead(robot);
-
+	
 	setlinestyle(DASHED_LINE, 5, 2);
 
-		QuadraticSplinePath enterFarLeftHomeZoneToNearRightPlatform("platformToEnterFarLeftHomeZone");
+	std::vector<Path> paths;
 
-		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(60, 105.7), Vector(25, -M_PI_2)));
-		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(85, 70), Vector(25, -M_PI_2)));
-		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(105.7, 45), Vector(10, M_PI*1.2)));
-		enterFarLeftHomeZoneToNearRightPlatform.addPoint(SplinePoint(Point(100, 14), Vector(25, M_PI_2)));
+	Path smoothPath;
 
-	Path smoothPath = enterFarLeftHomeZoneToNearRightPlatform.getPath(0.1);
+		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
+
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
+		midGoalToFarPlatform.addPoint(SplinePoint(Point(75, 70), Vector(20, 0)));
+
+	smoothPath = midGoalToFarPlatform.getPath(0.1);
+
+	paths.emplace_back(smoothPath);
 
 	// Print all paths in the vector paths
-	printPath(smoothPath);
+	for (int i = 0; i < paths.size(); i++) {
+		printPath(paths.at(i));
+	}
 
 	delay(50000000);
 

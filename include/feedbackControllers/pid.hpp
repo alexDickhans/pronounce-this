@@ -4,10 +4,15 @@
 #include "utils/utils.hpp"
 
 namespace Pronounce {
-
-
-    double signum_c(double x);
-
+	
+	/**
+	 * @brief PID class
+	 * 
+	 * @author ad101-lab
+	 * 
+	 * Hopefully adding FF later
+	 * 
+	 */
     class PID {
     private:
         double kP;
@@ -17,7 +22,7 @@ namespace Pronounce {
         double target = 0.0;
         double position;
 
-        double error = 0.0;
+        double error;
         double totalError = 0.0;
         double prevError = 0.0;
         double derivitive;

@@ -82,7 +82,7 @@ namespace Pronounce {
 		}
 
 		bool isDoneOrientation(double maxDifference) {
-			return maxDifference > turnPid->getError() && this->turnPid->getDerivitive() * 100 < maxDifference;
+			return maxDifference > turnPid->getError();
 		}
 
 		~TankPurePursuit();
