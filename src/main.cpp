@@ -295,6 +295,35 @@ void leftSteal() {
 	grabFromHook();
 }
 
+void midSteal() {
+	purePursuit.setSpeed(70);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	backGrabberChange(false);
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToMidNeutralIndex);
+
+	waitForDone();
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setCurrentPathIndex(midNeutralToRightHomeZoneIndex);
+
+	while (odometry.getPosition()->getY() > 40) {
+		pros::Task::delay(50);
+	}
+
+	purePursuit.setSpeed(45);
+
+	waitForDone();
+
+	grabFromHook();
+}
+
 void rightSteal() {
 	purePursuit.setSpeed(70);
 
@@ -484,6 +513,15 @@ void rightToLeftAWP() {
 	leftAWP();
 }
 
+/*
+	SECTION Left side
+*/
+
+/**
+ * @brief Steal the left side goal and get the left AWP
+ * 
+ * @return int 
+ */
 int leftStealLeftAWP() {
 	odometry.reset(new Position(27, 18, 0.17));
 
@@ -500,6 +538,11 @@ int leftStealLeftAWP() {
 	return 0;
 }
 
+/**
+ * @brief Steal the left side goal and get the full AWP
+ * 
+ * @return int 
+ */
 int leftStealFullAWP() {
 	odometry.reset(new Position(27, 18, 0.17));
 
@@ -520,6 +563,15 @@ int leftStealFullAWP() {
 	return 0;
 }
 
+/*
+	SECTION Right side
+*/
+
+/**
+ * @brief Steal the right side goal and get the right AWP
+ * 
+ * @return int 
+ */
 int rightStealRightAWP() {
 	odometry.reset(new Position(105.7, 19.5, 0.0));
 
@@ -530,6 +582,11 @@ int rightStealRightAWP() {
 	return 0;
 }
 
+/**
+ * @brief Steal the right side goal and get the full AWp
+ * 
+ * @return int 
+ */
 int rightStealFullAWP() {
 	odometry.reset(new Position(105.7, 19.5, 0.0));
 
@@ -540,6 +597,11 @@ int rightStealFullAWP() {
 	return 0;
 }
 
+/**
+ * @brief Steal the right side goal starting from the right right side and get the right side AWP
+ * 
+ * @return int 
+ */
 int rightRightStealToRightAWP() {
 	odometry.reset(new Position(115, 19.5, 0.0));
 
@@ -547,6 +609,66 @@ int rightRightStealToRightAWP() {
 
 	rightAWP();
 
+	return 0;
+}
+
+/**
+ * @brief Steal the right side goal starting from the right right side and get the right side AWP
+ * 
+ * @return int 
+ */
+int rightRightStealToFullAWP() {
+	odometry.reset(new Position(115, 19.5, 0.0));
+
+	rightRightSteal();
+
+	rightAWPToLeftAWP();
+
+	return 0;
+}
+
+/**
+ * @brief Steal the mid goal from the right side and get the Left AWP
+ * 
+ * @return int 
+ */
+int midStealToLeftAWP() {
+	odometry.reset(new Position(115, 19.5, 0.0));
+
+	midSteal();
+
+	rightToLeftAWP();
+	
+	return 0;
+}
+
+/**
+ * @brief Steal the mid goal from the right side and get the Left AWP
+ * 
+ * @return int 
+ */
+int midStealToRightAWP() {
+	odometry.reset(new Position(115, 19.5, 0.0));
+
+	midSteal();
+
+	rightAWP();
+	
+	return 0;
+}
+
+/**
+ * @brief Steal the mid goal from the right side and get the full AWP
+ * 
+ * @return int 
+ */
+int midStealToFullAWP() {
+	odometry.reset(new Position(115, 19.5, 0.0));
+
+	midSteal();
+
+	rightAWPToLeftAWP();
+	
 	return 0;
 }
 
