@@ -24,6 +24,10 @@ namespace Pronounce {
 		 */
 		double update(double input);
 
+		double getLastInput() {
+			return lastInput;
+		}
+
 		double getSetPoint() {
 			return setPoint;
 		}
