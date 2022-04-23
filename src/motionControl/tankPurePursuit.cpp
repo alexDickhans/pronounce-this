@@ -65,7 +65,7 @@ namespace Pronounce {
 		Path currentPath = this->getPath(this->getCurrentPathIndex());
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
+		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * pointData.distanceFromEnd + 2.0);
 		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
 
 		double updateTime = pros::millis() - lastUpdateTime;

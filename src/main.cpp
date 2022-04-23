@@ -230,10 +230,12 @@ void grabFromHook() {
 
 	frontHookButton.setButtonStatus(NEUTRAL);
 
-	purePursuit.setEnabled(true);
-	purePursuit.setFollowing(true);
+	//purePursuit.setEnabled(true);
+	//purePursuit.setFollowing(true);
 
-	turn(odometry.getPosition()->getTheta() - 0.1);
+	//turn(odometry.getPosition()->getTheta() - 0.1);
+
+	pros::Task::delay(200);
 
 	purePursuit.setEnabled(false);
 	purePursuit.setFollowing(false);
@@ -322,8 +324,11 @@ void leftSteal() {
 void midSteal() {
 	purePursuit.setSpeed(70);
 
+	double oldLookahead = purePursuit.getLookahead();
+
+	purePursuit.setLookahead(25);
+
 	frontGrabberButton.setButtonStatus(NEUTRAL);
-	backGrabberChange(false);
 	frontHookButton.setButtonStatus(POSITIVE);
 
 	purePursuit.setEnabled(true);
@@ -337,13 +342,20 @@ void midSteal() {
 
 	purePursuit.setCurrentPathIndex(midNeutralToRightHomeZoneIndex);
 
+	purePursuit.setSpeed(50);
+
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setSpeed(45);
+	for (int i = 5; i > 3; i--) {
+		purePursuit.setSpeed(i * 10);
+		pros::Task::delay(200);
+	}
 
 	waitForDone();
+
+	purePursuit.setLookahead(oldLookahead);
 
 	grabFromHook();
 }
@@ -370,6 +382,8 @@ void rightSteal() {
 
 	purePursuit.setCurrentPathIndex(rightNeutralToRightHomeZoneIndex);
 
+	purePursuit.setSpeed(65);
+
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
 	}
@@ -387,7 +401,6 @@ void rightRightSteal() {
 	purePursuit.setSpeed(70);
 
 	frontGrabberButton.setButtonStatus(NEUTRAL);
-	backGrabberChange(false);
 	frontHookButton.setButtonStatus(POSITIVE);
 
 	purePursuit.setEnabled(true);
@@ -400,6 +413,8 @@ void rightRightSteal() {
 	frontHookButton.setButtonStatus(NEUTRAL);
 
 	purePursuit.setCurrentPathIndex(rightNeutralToFarRightHomeZoneIndex);
+
+	purePursuit.setSpeed(65);
 
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
@@ -419,6 +434,10 @@ void rightMidSteal() {
 	backGrabberChange(false);
 	frontHookButton.setButtonStatus(POSITIVE);
 
+	double oldLookahead = purePursuit.getLookahead();
+
+	purePursuit.setLookahead(30);
+
 	purePursuit.setEnabled(true);
 	purePursuit.setFollowing(true);
 
@@ -437,6 +456,8 @@ void rightMidSteal() {
 	purePursuit.setSpeed(45);
 
 	waitForDone();
+
+	purePursuit.setLookahead(oldLookahead);
 
 	grabFromHook();
 }
@@ -476,7 +497,7 @@ void rightAWP() {
 
 	backGrabberChange(true);
 
-	waitForDone(0.1, 2500);
+	waitForDone(0.1, 1000);
 
 	pros::Task::delay(100);
 
@@ -496,23 +517,38 @@ void rightAWP() {
 void rightAWPToLeftAWP() {
 	purePursuit.setSpeed(40);
 
-	purePursuit.setCurrentPathIndex(rightHomeZoneToRightAllianceIndex);
+	turn(-M_PI_2);
 
-	waitForDone(8);
+	purePursuit.setCurrentPathIndex(rightPlatformToRightAllianceIndex);
+
+	waitForDone(20, 2500);
+
+	purePursuit.setSpeed(40);
+
+	waitForDone(8, 2500);
 
 	backGrabberChange(true);
 
-	waitForDone(0.1, 3000);
+	waitForDone(0.1, 2500);
 
 	intakeButton.setButtonStatus(POSITIVE);
+	liftButton.setAutonomousAuthority(600);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToLeftAllianceIndex);
 
-	waitForDone(50);
+	purePursuit.setSpeed(50);
+
+	waitForDone(70);
 
 	intakeButton.setButtonStatus(NEUTRAL);
 
-	turn(-M_PI_4);
+	backGrabberChange(false);
+
+	purePursuit.setSpeed(50);
+
+	pros::Task::delay(300);
+
+	turn(0);
 
 	waitForDone();
 
@@ -602,7 +638,15 @@ int leftStealFullAWP() {
 
 	waitForDone();
 
+	backGrabberChange(false);
+
+	pros::Task::delay(1000);
+
+	purePursuit.setFollowing(true);
+
 	rightAWP();
+
+	backGrabberChange(false);
 
 	return 0;
 }
@@ -657,7 +701,7 @@ int rightStealFullAWP() {
  * @return int
  */
 int rightRightStealToRightAWP() {
-	odometry.reset(new Position(115, 19.5, 0.0));
+	odometry.reset(new Position(121, 18, toRadians(-15)));
 
 	pros::Task deployBack(deployBackGrabber);
 
@@ -674,8 +718,10 @@ int rightRightStealToRightAWP() {
  * @return int
  */
 int rightRightStealToFullAWP() {
-	odometry.reset(new Position(115, 19.5, 0.0));
+	odometry.reset(new Position(121, 18, toRadians(-15)));
 
+	pros::Task deployBack(deployBackGrabber);
+	
 	rightRightSteal();
 
 	rightAWPToLeftAWP();
@@ -691,6 +737,8 @@ int rightRightStealToFullAWP() {
 int midStealToLeftAWP() {
 	odometry.reset(new Position(115, 19.5, 0.0));
 
+	pros::Task deployBack(deployBackGrabber);
+
 	midSteal();
 
 	rightToLeftAWP();
@@ -704,7 +752,9 @@ int midStealToLeftAWP() {
  * @return int
  */
 int midStealToRightAWP() {
-	odometry.reset(new Position(115, 19.5, 0.0));
+	odometry.reset(new Position(99.5, 18, 25.0));
+
+	pros::Task deployBack(deployBackGrabber);
 
 	midSteal();
 
@@ -719,7 +769,9 @@ int midStealToRightAWP() {
  * @return int
  */
 int midStealToFullAWP() {
-	odometry.reset(new Position(115, 19.5, 0.0));
+	odometry.reset(new Position(99.5, 18, toRadians(-30)));
+
+	pros::Task deployBack(deployBackGrabber);
 
 	midSteal();
 
@@ -1212,6 +1264,7 @@ void updateDrivetrain() {
 		purePursuit.update();
 		balance.update();
 
+		// Has to be in increments of 10 because of the VEX sensor update time
 		pros::Task::delay_until(&startTime, 20);
 	}
 }
@@ -1222,9 +1275,23 @@ void updateDisplay() {
     lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
 	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
 
+	// Odom
+    lv_obj_t* purePursuitTab = lv_tabview_add_tab(tabview, "Pure pursuit");
+	lv_obj_t* purePursuitLabel = lv_label_create(purePursuitTab, NULL);
+
 	// Balance
     lv_obj_t* balanceTab = lv_tabview_add_tab(tabview, "Balance");
 	lv_obj_t* balanceLabel = lv_label_create(balanceTab, NULL);
+
+	// Drivetrain
+    lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
+	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
+
+	lv_table_set_row_cnt(drivetrainTable, 3);
+	lv_table_set_col_cnt(drivetrainTable, 2);
+
+	lv_table_set_col_width(drivetrainTable, 0, 200);
+	lv_table_set_col_width(drivetrainTable, 1, 200);
 
 	while (1) {
 		// Odometry
@@ -1234,6 +1301,19 @@ void updateDisplay() {
 		
 		// Balance
 		lv_label_set_text(balanceLabel, ("Angle: " + std::to_string(balance.getLinearController()->getLastInput()) + "\n").c_str());
+
+		// Drivetrain
+		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(midLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 2, 0, (std::to_string(backLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 0, 1, (std::to_string(frontRightMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 1, (std::to_string(midRightMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 2, 1, (std::to_string(backRightMotor.get_temperature()) + " C").c_str());
+
+		// Pure pursuit
+		lv_label_set_text(purePursuitLabel, ("Distance Remaining on path: " + std::to_string(purePursuit.getPointData().distanceFromEnd)).c_str());
+
+		pros::Task::delay(100);
 	}
 }
 
@@ -1340,7 +1420,7 @@ void initDrivetrain() {
 	// 1.072124756
 	// Left 99.57
 	// Right 100.57
-	double turningFactor = (((101.22 / 101.50) - 1.0) / 2);
+	double turningFactor = (((100.0 / 100.0) - 1.0) / 2);
 	double tuningFactor = 1.010901883;
 	leftOdomWheel.setRadius(2.75 / 2);
 	leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
@@ -1505,7 +1585,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	leftStealLeftAWP();
+	skills();
 	postAuton();
 
 	// autonomousSelector.run();
