@@ -43,7 +43,7 @@ GpsOdometry gpsOdometry(&gps);
 // ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &nullOdomWheel, &imu);
 
-TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 10.0);
+TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &midRightMotor, &backLeftMotor, &backRightMotor, &imu, 9.0);
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.6, 0, 2.0), 20);
 
@@ -844,8 +844,6 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
-	turn(-M_PI_4 * 0.66, 0.3);
-
 	turn(0, 0.1);
 
 	purePursuit.setFollowing(false);
@@ -874,7 +872,7 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
-	waitForDone(40);
+	waitForDone(30);
 
 	liftButton.setAutonomousAuthority(600);
 
@@ -898,15 +896,19 @@ int skills() {
 
 	purePursuit.setSpeed(30);
 
-	turn(M_PI_2 + M_PI_4);
+	turn(M_PI*0.9);
 
 	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
 
 	intakeButton.setButtonStatus(POSITIVE);
 
+	purePursuit.setSpeed(30);
+
+	waitForDone(20);
+
 	purePursuit.setSpeed(20);
 
-	waitForDone(15);
+	waitForDone(10);
 
 	liftButton.setAutonomousAuthority(0);
 
@@ -924,7 +926,7 @@ int skills() {
 
 	liftButton.setAutonomousAuthority(2000);
 
-	purePursuit.setSpeed(20);
+	purePursuit.setSpeed(40);
 
 	placeOnPlatform();
 
@@ -986,11 +988,13 @@ int skills() {
 
 	intakeButton.setButtonStatus(POSITIVE);
 
+	purePursuit.setSpeed(60);
+
 	while (odometry.getPosition()->getY() > 85) {
 		pros::Task::delay(50);
 	}
 
-	purePursuit.setSpeed(50);
+	purePursuit.setSpeed(40);
 
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
@@ -998,7 +1002,7 @@ int skills() {
 
 	purePursuit.setSpeed(10);
 
-	while (odometry.getPosition()->getY() > 35) {
+	while (odometry.getPosition()->getY() > 30) {
 		pros::Task::delay(50);
 	}
 
