@@ -866,7 +866,7 @@ int skills() {
 
 	purePursuit.setSpeed(60);
 
-	turn(M_PI_2 + M_PI_4);
+	turn(M_PI_2);
 
 	purePursuit.setCurrentPathIndex(farRightDropOffToFarLeftAllianceGoalIndex);
 
@@ -888,7 +888,7 @@ int skills() {
 
 	purePursuit.setSpeed(20);
 
-	waitForDone(0.5, 2000);
+	waitForDone(0.5, 1500);
 
 	backGrabberChange(true);
 
@@ -896,7 +896,7 @@ int skills() {
 
 	purePursuit.setSpeed(30);
 
-	turn(M_PI*0.9);
+	turn(M_PI*0.9, 0.3);
 
 	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
 
@@ -904,7 +904,7 @@ int skills() {
 
 	purePursuit.setSpeed(30);
 
-	waitForDone(20);
+	waitForDone(30);
 
 	purePursuit.setSpeed(20);
 
@@ -988,6 +988,8 @@ int skills() {
 
 	intakeButton.setButtonStatus(POSITIVE);
 
+	liftButton.setAutonomousAuthority(600);
+
 	purePursuit.setSpeed(60);
 
 	while (odometry.getPosition()->getY() > 85) {
@@ -1029,6 +1031,10 @@ int skills() {
 	turn(0);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightNeutralIndex);
+
+	waitForDone(10);
+
+	liftButton.setAutonomousAuthority(0);
 
 	waitForDone();
 
@@ -1091,9 +1097,11 @@ int skills() {
 
 	purePursuit.setCurrentPathIndex(enterFarLeftHomeZoneToNearRightPlatformIndex);
 
+	purePursuit.setSpeed(60);
+
 	liftButton.setAutonomousAuthority(600);
 
-	while (odometry.getPosition()->getY() > 40) {
+	while (odometry.getPosition()->getY() > 45) {
 		pros::Task::delay(50);
 	}
 
@@ -1109,9 +1117,9 @@ int skills() {
 
 	pros::Task::delay(100);
 
-	liftButton.setAutonomousAuthority(1600);
+	liftButton.setAutonomousAuthority(2000);
 
-	purePursuit.setSpeed(40);
+	purePursuit.setSpeed(60);
 
 	waitForDone();
 
@@ -1273,6 +1281,20 @@ void updateDrivetrain() {
 	}
 }
 
+void addValue(lv_chart_series_t* chartSeries, int size, int value) {
+	for (int i = 0; i < size-1; i++) {
+		chartSeries->points[i] = chartSeries->points[i+1];
+	}
+
+	chartSeries->points[size-1] = value;
+}
+
+void chartInit(lv_chart_series_t* chartSeries, int size) {
+	for (int i = 0; i < size; i++) {
+		chartSeries->points[i] = 0;
+	}
+}
+
 void updateDisplay() {
 
 	// Odom
@@ -1297,6 +1319,20 @@ void updateDisplay() {
 	lv_table_set_col_width(drivetrainTable, 0, 200);
 	lv_table_set_col_width(drivetrainTable, 1, 200);
 
+	// Intake
+	lv_obj_t* intakeTab = lv_tabview_add_tab(tabview, "Intake");
+	lv_obj_t* intakeChart = lv_chart_create(intakeTab, NULL);
+    lv_obj_set_size(intakeChart, 200, 140);
+    lv_chart_set_type(intakeChart, LV_CHART_TYPE_LINE);
+
+    lv_chart_series_t* intakeInputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_BLUE);
+    lv_chart_series_t* intakeOutputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_RED);
+
+	//chartInit(intakeInputSpeed, 50);
+	//chartInit(intakeOutputSpeed, 50);
+//
+	//pros::Task::delay(100);
+
 	while (1) {
 		// Odometry
 		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
@@ -1317,12 +1353,18 @@ void updateDisplay() {
 		// Pure pursuit
 		lv_label_set_text(purePursuitLabel, ("Distance Remaining on path: " + std::to_string(purePursuit.getPointData().distanceFromEnd)).c_str());
 
+		// Intake
+		//addValue(intakeInputSpeed, 50, intake.get_target_velocity());
+		//addValue(intakeOutputSpeed, 50, intake.get_actual_velocity());
+
+		//lv_chart_refresh(intakeChart);
+
 		pros::Task::delay(100);
 	}
 }
 
 void initDisplay() {
-	pros::Task updateDisplayTask = pros::Task(updateDisplay);
+	pros::Task updateDisplayTask = pros::Task(updateDisplay, "Update dispay");
 }
 
 /**
