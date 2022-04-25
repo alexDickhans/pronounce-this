@@ -308,6 +308,8 @@ void leftSteal() {
 
 	purePursuit.setCurrentPathIndex(leftNeutralStealToLeftHomeZoneIndex);
 
+	purePursuit.setSpeed(60);
+
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
 	}
@@ -597,7 +599,7 @@ void rightToLeftAWP() {
  * @return int
  */
 int leftStealLeftAWP() {
-	odometry.reset(new Position(27, 18, 0.17));
+	odometry.reset(new Position(27, 18, toRadians(10)));
 
 	pros::Task deployBack(deployBackGrabber);
 
@@ -624,7 +626,7 @@ int leftStealLeftAWP() {
  * @return int
  */
 int leftStealFullAWP() {
-	odometry.reset(new Position(27, 18, 0.17));
+	odometry.reset(new Position(27, 18, toRadians(10)));
 
 	leftSteal();
 
@@ -1281,7 +1283,7 @@ void updateDrivetrain() {
 	}
 }
 
-void addValue(lv_chart_series_t* chartSeries, int size, int value) {
+void lvChartAddValue(lv_chart_series_t* chartSeries, int size, int value) {
 	for (int i = 0; i < size-1; i++) {
 		chartSeries->points[i] = chartSeries->points[i+1];
 	}
@@ -1466,8 +1468,8 @@ void initDrivetrain() {
 	// 1.072124756
 	// Left 99.57
 	// Right 100.57
-	double turningFactor = (((100.0 / 100.0) - 1.0) / 2);
-	double tuningFactor = 1.010901883;
+	double turningFactor = (((100.79 / 100.35) - 1.0) / 2);
+	double tuningFactor = 0.998791278;
 	leftOdomWheel.setRadius(2.75 / 2);
 	leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
 	rightOdomWheel.setRadius(2.75 / 2);
@@ -1631,7 +1633,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
+	rightStealRightAWP();
 	postAuton();
 
 	// autonomousSelector.run();

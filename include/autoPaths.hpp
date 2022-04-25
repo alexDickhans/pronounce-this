@@ -128,10 +128,8 @@ namespace Pronounce {
 
 		QuadraticSplinePath farLeftAllianceToMidGoal("farLeftAllianceToMidGoal");
 
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(20, 105), Vector(5, -M_PI_2)));
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(33, 85), Vector(15, M_PI)));
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(40, 75), Vector(10.0, -M_PI_2)));
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(72, 70), Vector(5.0, -M_PI_2)));
+		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(20, 105), Vector(5.0, -M_PI_2)));
+		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(72, 70), Vector(20, M_PI_2-M_PI_4)));
 
 		farLeftAllianceToMidGoalIndex = purePursuit->addPath(farLeftAllianceToMidGoal.getPath(0.05));
 
@@ -254,9 +252,9 @@ namespace Pronounce {
 		// SECTION Left Steal
 
 		Path leftHomeZoneToLeftNeutralSteal;
-
+		// 25 in
 		leftHomeZoneToLeftNeutralSteal.addPoint(27, 18);
-		leftHomeZoneToLeftNeutralSteal.addPoint(33, 48);
+		leftHomeZoneToLeftNeutralSteal.addPoint(31, 42.6);
 
 		leftHomeZoneToLeftNeutralStealIndex = purePursuit->addPath(leftHomeZoneToLeftNeutralSteal);
 
