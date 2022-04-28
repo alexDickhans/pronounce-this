@@ -306,7 +306,7 @@ namespace Pronounce {
 		Path rightHomeZoneToMidNeutral;
 		// Distance: 32
 		rightHomeZoneToMidNeutral.addPoint(99.5, 18);
-		rightHomeZoneToMidNeutral.addPoint(99.5+(sin(toRadians(-30)) * 30), 47+(cos(toRadians(-30)) * 30));
+		rightHomeZoneToMidNeutral.addPoint(99.5+(sin(toRadians(-30)) * 30), 18+(cos(toRadians(-30)) * 30));
 
 		rightHomeZoneToMidNeutralIndex = purePursuit->addPath(rightHomeZoneToMidNeutral);
 
