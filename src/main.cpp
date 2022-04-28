@@ -57,6 +57,8 @@ SolenoidButton frontHookButton(&master, DIGITAL_X);
 SolenoidButton backGrabberButton(&master, DIGITAL_R1, DIGITAL_R1);
 SolenoidButton backGrabberButton2(&master, DIGITAL_R1, DIGITAL_R1);
 
+pros::Vision clawVision(18, VISION_ZERO_CENTER);
+
 // Autonomous Selector
 Pronounce::AutonSelector autonomousSelector;
 
@@ -82,6 +84,18 @@ void backGrabberChange(bool backButtonStatus2) {
 	}
 	backButtonStatus = backButtonStatus2;
 	lastChange = pros::millis();
+}
+
+double goalAngle() {
+	if (clawVision.get_object_count() < 1) {
+		return 0.0;
+	}
+
+	int x = clawVision.get_by_sig(0, 1).x_middle_coord;
+
+	double angle = 0.0035 * (double) x + 0.02;
+
+	return angle;
 }
 
 void waitForDone(double distance, double timeout) {
@@ -218,6 +232,10 @@ void grabFromHook() {
 	purePursuit.setEnabled(false);
 	purePursuit.setFollowing(false);
 
+	pros::Task::delay(300);
+
+	double angle = goalAngle();
+
 	frontHookButton.setButtonStatus(POSITIVE);
 
 	pros::Task::delay(200);
@@ -230,10 +248,10 @@ void grabFromHook() {
 
 	frontHookButton.setButtonStatus(NEUTRAL);
 
-	//purePursuit.setEnabled(true);
-	//purePursuit.setFollowing(true);
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
 
-	//turn(odometry.getPosition()->getTheta() - 0.1);
+	turn(odometry.getPosition()->getTheta() + angle);
 
 	pros::Task::delay(200);
 
@@ -373,6 +391,8 @@ void rightSteal() {
 
 	purePursuit.setLookahead(20);
 
+	purePursuit.setUseVoltage(true);
+	
 	purePursuit.setEnabled(true);
 	purePursuit.setFollowing(true);
 
@@ -389,6 +409,8 @@ void rightSteal() {
 	while (odometry.getPosition()->getY() > 40) {
 		pros::Task::delay(50);
 	}
+
+	purePursuit.setUseVoltage(false);
 
 	purePursuit.setSpeed(45);
 
@@ -495,17 +517,17 @@ void rightAWP() {
 
 	purePursuit.setSpeed(25);
 
-	waitForDone(8, 2500);
+	waitForDone(0.1, 1000);
 
 	backGrabberChange(true);
-
-	waitForDone(0.1, 1000);
 
 	pros::Task::delay(100);
 
 	purePursuit.setCurrentPathIndex(rightAllianceToRightRingsIndex);
 
 	liftButton.setAutonomousAuthority(2000);
+
+	pros::Task::delay(300);
 
 	intakeButton.setButtonStatus(POSITIVE);
 
@@ -723,7 +745,7 @@ int rightRightStealToFullAWP() {
 	odometry.reset(new Position(121, 18, toRadians(-15)));
 
 	pros::Task deployBack(deployBackGrabber);
-	
+
 	rightRightSteal();
 
 	rightAWPToLeftAWP();
@@ -898,7 +920,7 @@ int skills() {
 
 	purePursuit.setSpeed(30);
 
-	turn(M_PI*0.9, 0.3);
+	turn(M_PI * 0.9, 0.3);
 
 	purePursuit.setCurrentPathIndex(farLeftAllianceToMidGoalIndex);
 
@@ -1284,11 +1306,11 @@ void updateDrivetrain() {
 }
 
 void lvChartAddValue(lv_chart_series_t* chartSeries, int size, int value) {
-	for (int i = 0; i < size-1; i++) {
-		chartSeries->points[i] = chartSeries->points[i+1];
+	for (int i = 0; i < size - 1; i++) {
+		chartSeries->points[i] = chartSeries->points[i + 1];
 	}
 
-	chartSeries->points[size-1] = value;
+	chartSeries->points[size - 1] = value;
 }
 
 void chartInit(lv_chart_series_t* chartSeries, int size) {
@@ -1300,19 +1322,19 @@ void chartInit(lv_chart_series_t* chartSeries, int size) {
 void updateDisplay() {
 
 	// Odom
-    lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
+	lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
 	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
 
 	// Odom
-    lv_obj_t* purePursuitTab = lv_tabview_add_tab(tabview, "Pure pursuit");
+	lv_obj_t* purePursuitTab = lv_tabview_add_tab(tabview, "Pure pursuit");
 	lv_obj_t* purePursuitLabel = lv_label_create(purePursuitTab, NULL);
 
 	// Balance
-    lv_obj_t* balanceTab = lv_tabview_add_tab(tabview, "Balance");
+	lv_obj_t* balanceTab = lv_tabview_add_tab(tabview, "Balance");
 	lv_obj_t* balanceLabel = lv_label_create(balanceTab, NULL);
 
 	// Drivetrain
-    lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
+	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
 	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
 
 	lv_table_set_row_cnt(drivetrainTable, 3);
@@ -1324,11 +1346,16 @@ void updateDisplay() {
 	// Intake
 	lv_obj_t* intakeTab = lv_tabview_add_tab(tabview, "Intake");
 	lv_obj_t* intakeChart = lv_chart_create(intakeTab, NULL);
-    lv_obj_set_size(intakeChart, 200, 140);
-    lv_chart_set_type(intakeChart, LV_CHART_TYPE_LINE);
+	lv_obj_set_size(intakeChart, 200, 140);
+	lv_chart_set_type(intakeChart, LV_CHART_TYPE_LINE);
 
-    lv_chart_series_t* intakeInputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_BLUE);
-    lv_chart_series_t* intakeOutputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_RED);
+	lv_chart_series_t* intakeInputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_BLUE);
+	lv_chart_series_t* intakeOutputSpeed = lv_chart_add_series(intakeChart, LV_COLOR_RED);
+
+	// Vision
+	lv_obj_t* visionTab = lv_tabview_add_tab(tabview, "Vision");
+	lv_obj_t* visionLabel = lv_label_create(visionTab, NULL);
+	lv_obj_t* visionResultLabel = lv_label_create(visionTab, NULL);
 
 	//chartInit(intakeInputSpeed, 50);
 	//chartInit(intakeOutputSpeed, 50);
@@ -1338,9 +1365,9 @@ void updateDisplay() {
 	while (1) {
 		// Odometry
 		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
-						 + "\nL: " + std::to_string(leftOdomWheel.getPosition()) + 
-						 ", R: " + std::to_string(rightOdomWheel.getPosition())).c_str());
-		
+			+ "\nL: " + std::to_string(leftOdomWheel.getPosition()) +
+			", R: " + std::to_string(rightOdomWheel.getPosition())).c_str());
+
 		// Balance
 		lv_label_set_text(balanceLabel, ("Angle: " + std::to_string(balance.getLinearController()->getLastInput()) + "\n").c_str());
 
@@ -1358,6 +1385,8 @@ void updateDisplay() {
 		// Intake
 		//addValue(intakeInputSpeed, 50, intake.get_target_velocity());
 		//addValue(intakeOutputSpeed, 50, intake.get_actual_velocity());
+
+		lv_label_set_text(visionLabel, ("X coordinate:" + std::to_string(clawVision.get_by_sig(0, 1).x_middle_coord) + "\nAngle: " + std::to_string(toDegrees(goalAngle())) + "\nError: " + std::to_string(toDegrees(goalAngle() + odometry.getPosition()->getTheta()))).c_str());
 
 		//lv_chart_refresh(intakeChart);
 
@@ -1545,6 +1574,13 @@ void initLogger() {
 	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
 }
 
+void initVision() {
+	pros::vision_signature_s_t YELLOW_GOAL = pros::Vision::signature_from_utility(1, 1887, 3735, 2810, -4021, -3533, -3778, 3.000, 0);
+	clawVision.set_signature(0, &YELLOW_GOAL);
+	clawVision.set_auto_white_balance(0);
+	clawVision.set_exposure(20);
+}
+
 /**
  * Filter and apply the quadratic function.
  */
@@ -1581,6 +1617,7 @@ void initialize() {
 	initController();
 	initLogger();
 	initDisplay();
+	initVision();
 	// initSelector();
 
 	printf("Init done\n");
@@ -1633,7 +1670,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRightAWP();
+	midStealToFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -1736,6 +1773,14 @@ void opcontrol() {
 			}
 			else if (master.get_digital_new_press(DIGITAL_Y) || partner.get_digital_new_press(DIGITAL_R1)) {
 				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
+			}
+
+			if (partner.get_digital_new_press(DIGITAL_A)) {
+				purePursuit.setEnabled(true);
+				purePursuit.setFollowing(true);
+				turn(odometry.getPosition()->getTheta() + goalAngle());
+				purePursuit.setEnabled(false);
+				purePursuit.setFollowing(false);
 			}
 		}
 		else {

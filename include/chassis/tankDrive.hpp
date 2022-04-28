@@ -29,6 +29,11 @@ namespace Pronounce {
 			this->getRightMotors().move_velocity(rightSpeed);
 		}
 
+		void tankSteerVoltage(double leftSpeed, double rightSpeed) {
+			this->getLeftMotors().move_voltage(leftSpeed);
+			this->getRightMotors().move_voltage(rightSpeed);
+		}
+
 		~TankDrivetrain();
 	};
 } // namespace Pronounce

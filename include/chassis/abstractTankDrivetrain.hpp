@@ -37,9 +37,26 @@ namespace Pronounce {
 			this->tankSteerVelocity(leftSpeed, rightSpeed);
 		}
 
+		void driveCurvatureVoltage(double speed, double curvature) {			
+			double leftSpeed = speed * (2.0 + curvature * trackWidth) / 2.0;
+			double rightSpeed = speed * (2.0 - curvature * trackWidth) / 2.0;
+
+			double maxSpeed = max(abs(leftSpeed), abs(rightSpeed));
+
+			if (maxSpeed > abs(speed)) {
+				double multiplier = abs(speed) / maxSpeed;
+				leftSpeed *= multiplier;
+				rightSpeed *= multiplier;
+			}
+
+			this->tankSteerVoltage(leftSpeed, rightSpeed);
+		}
+
 		virtual void skidSteerVelocity(double speed, double turn) {}
 
 		virtual void tankSteerVelocity(double leftSpeed, double rightSpeed) {}
+
+		virtual void tankSteerVoltage(double leftSpeed, double rightSpeed) {}
 
 		~AbstractTankDrivetrain();
 	};

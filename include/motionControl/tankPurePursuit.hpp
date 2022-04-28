@@ -17,6 +17,8 @@ namespace Pronounce {
 		PID* turnPid;
 
 		double lastUpdateTime = 0;
+
+		bool useVoltage = false;
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);
@@ -26,6 +28,14 @@ namespace Pronounce {
 		void updateDrivetrain();
 
 		void stop();
+
+		bool getUseVoltage() {
+			return useVoltage;
+		}
+
+		void setUseVoltage(bool useVoltage) {
+			this->useVoltage = useVoltage;
+		}
 
 		AbstractTankDrivetrain* getDrivetrain() {
 			return drivetrain;

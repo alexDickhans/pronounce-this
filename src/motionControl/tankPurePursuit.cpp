@@ -74,7 +74,8 @@ namespace Pronounce {
 		double speed = 0;
 		if (maxSpeed > speed) {
 			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
-		} else {
+		}
+		else {
 			speed = this->getSpeed() * side;
 		}
 
@@ -86,9 +87,13 @@ namespace Pronounce {
 		// printf(std::string("Path: " + currentPath.getName()).c_str());
 		// printf("\n\n");
 
-		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed())  * this->getOutputMultiplier();
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
 
-		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		if (useVoltage) {
+			drivetrain->driveCurvatureVoltage(clamp(motorSpeed * (12000/200.0), -12000.0, 12000.0), pointData.curvature);
+		} else {
+			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		}
 	}
 
 	void TankPurePursuit::stop() {

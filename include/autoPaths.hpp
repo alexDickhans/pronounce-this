@@ -272,13 +272,13 @@ namespace Pronounce {
 		QuadraticSplinePath rightHomeZoneToRightNeutral;
 
 		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(107, 19.5), Vector(0.0, 0)));
-		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(107, 46), Vector(0.0, 0)));
+		rightHomeZoneToRightNeutral.addPoint(SplinePoint(Point(107, 42), Vector(0.0, 0)));
 
 		rightHomeZoneToRightNeutralIndex = purePursuit->addPath(rightHomeZoneToRightNeutral.getPath(0.01));
 
 		QuadraticSplinePath rightNeutralToRightHomeZone;
 
-		rightNeutralToRightHomeZone.addPoint(SplinePoint(Point(107, 46), Vector(0.0, 0)));
+		rightNeutralToRightHomeZone.addPoint(SplinePoint(Point(107, 42), Vector(0.0, 0)));
 		rightNeutralToRightHomeZone.addPoint(SplinePoint(Point(107, 17), Vector(0.0, 0)));
 
 		rightNeutralToRightHomeZoneIndex = purePursuit->addPath(rightNeutralToRightHomeZone.getPath(0.01));
@@ -306,7 +306,7 @@ namespace Pronounce {
 		Path rightHomeZoneToMidNeutral;
 		// Distance: 32
 		rightHomeZoneToMidNeutral.addPoint(99.5, 18);
-		rightHomeZoneToMidNeutral.addPoint(82, 47);
+		rightHomeZoneToMidNeutral.addPoint(99.5+(sin(toRadians(-30)) * 30), 47+(cos(toRadians(-30)) * 30));
 
 		rightHomeZoneToMidNeutralIndex = purePursuit->addPath(rightHomeZoneToMidNeutral);
 
@@ -365,14 +365,14 @@ namespace Pronounce {
 		QuadraticSplinePath enterRightHomeZoneToRightAlliance;
 		
 		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(98, 46.8), Vector(10.0, -M_PI_2)));
-		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(123, 37), Vector(15, - M_PI_2 - 0.4)));
+		enterRightHomeZoneToRightAlliance.addPoint(SplinePoint(Point(123, 35), Vector(15, - M_PI_2 - 0.4)));
 
 		enterRightHomeZoneToRightAllianceIndex = purePursuit->addPath(enterRightHomeZoneToRightAlliance.getPath(0.01));
 
 		QuadraticSplinePath rightPlatformToRightAlliance;
 		
 		rightPlatformToRightAlliance.addPoint(SplinePoint(Point(98, 40), Vector(10.0, -M_PI_2)));
-		rightPlatformToRightAlliance.addPoint(SplinePoint(Point(122, 35), Vector(15, - M_PI_2)));
+		rightPlatformToRightAlliance.addPoint(SplinePoint(Point(122, 35), Vector(15, -M_PI_2)));
 
 		rightPlatformToRightAllianceIndex = purePursuit->addPath(rightPlatformToRightAlliance.getPath(0.01));
 
