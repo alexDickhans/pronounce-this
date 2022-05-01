@@ -127,7 +127,7 @@ void waitForDoneOrientation() {
 
 	pros::Task::delay(300);
 
-	while (!purePursuit.isDoneOrientation(0.1) && pros::millis() - startTime < 3000) {
+	while (!purePursuit.isDoneOrientation(0.1) && pros::millis() - startTime < 5000) {
 		pros::Task::delay(50);
 	}
 
@@ -744,7 +744,7 @@ int leftStealLeftAWP() {
 
 	purePursuit.setSpeed(60);
 
-	turn(-M_PI_4*0.8);
+	turn(-M_PI_4*0.5);
 
 	purePursuit.setSpeed(30);
 
@@ -854,6 +854,97 @@ int midStealToRightAWP() {
 	return 0;
 }
 
+int rightDoubleSteal() {
+		purePursuit.setSpeed(70);
+
+	frontGrabberButton.setButtonStatus(NEUTRAL);
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	double oldLookahead = purePursuit.getLookahead();
+	double oldAccel = purePursuit.getMaxAcceleration();
+
+	purePursuit.setLookahead(20);
+	purePursuit.setMaxAcceleration(oldAccel * 1.5);
+
+	purePursuit.setUseVoltage(true);
+
+	purePursuit.setEnabled(true);
+	purePursuit.setFollowing(true);
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToMidNeutralIndex);
+
+	waitForDone();
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setLookahead(oldLookahead);
+	purePursuit.setMaxAcceleration(oldAccel);
+	
+	purePursuit.setCurrentPathIndex(midNeutralToRightHomeZoneIndex);
+
+	purePursuit.setUseVoltage(false);
+
+	purePursuit.setSpeed(50);
+
+	pros::Task::delay(200);
+
+	double lastY = odometry.getPosition()->getY();
+
+	while (odometry.getPosition()->getY() > 50) {
+		double y = odometry.getPosition()->getY();
+
+		if (y - lastY > 0.3) {
+			brakesButton.setButtonStatus(POSITIVE);
+		}
+
+		if (odometry.getPosition()->getY() < 50){
+			purePursuit.setSpeed(40);
+		}
+
+		lastY = y;
+
+		pros::Task::delay(60);
+	}
+
+	purePursuit.setUseVoltage(false);
+
+	for (int i = 5; i > 2; i--) {
+		purePursuit.setSpeed(i * 10);
+		pros::Task::delay(300);
+	}
+
+	waitForDone(5);
+
+	frontHookButton.setButtonStatus(POSITIVE);
+
+	waitForDone();
+
+	frontHookButton.setButtonStatus(NEUTRAL);
+
+	purePursuit.setLookahead(oldLookahead);
+	purePursuit.setMaxAcceleration(oldAccel);
+
+	brakesButton.setButtonStatus(NEUTRAL);
+
+	turn(0);
+
+	purePursuit.setSpeed(60);
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToRightNeutralClawIndex);
+
+	waitForDone();
+
+	frontGrabberButton.setButtonStatus(POSITIVE);
+
+	pros::Task::delay(100);
+
+	purePursuit.setCurrentPathIndex(rightHomeZoneToRightNeutralClawIndex);
+
+	waitForDone();
+
+	return 0;
+}
+
 int skills() {
 	odometry.reset(new Position(26.5, 11, -M_PI_2));
 
@@ -935,9 +1026,9 @@ int skills() {
 
 	waitForDone();
 
-	purePursuit.setSpeed(60);
-
 	liftButton.setAutonomousAuthority(0);
+
+	purePursuit.setSpeed(30);
 
 	turn(M_PI);
 
@@ -959,6 +1050,10 @@ int skills() {
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
 	pros::Task::delay(300);
+
+	liftButton.setAutonomousAuthority(600);
+
+	pros::Task::delay(500);
 
 	purePursuit.setSpeed(60);
 
@@ -984,17 +1079,19 @@ int skills() {
 	{
 		backGrabberChange(false);
 
+		pros::Task::delay(400);
+
 		purePursuit.setEnabled(false);
 		purePursuit.setFollowing(false);
 
-		drivetrain.skidSteerVelocity(-300, 0);
+		drivetrain.skidSteerVelocity(300, 0);
 
-		pros::Task::delay(200);
+		pros::Task::delay(300);
 
 		purePursuit.setEnabled(true);
 		purePursuit.setFollowing(true);
 
-		turn(M_PI + 1);
+		turn(odometry.getPosition()->getTheta() + M_PI);
 
 		purePursuit.setEnabled(false);
 		purePursuit.setFollowing(false);
@@ -1003,7 +1100,7 @@ int skills() {
 
 		drivetrain.skidSteerVelocity(300, 0);
 
-		pros::Task::delay(200);
+		pros::Task::delay(400);
 
 		purePursuit.setEnabled(true);
 		purePursuit.setFollowing(true);
@@ -1705,7 +1802,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightStealRightAWP();
+	skills();
 	postAuton();
 
 	// autonomousSelector.run();
