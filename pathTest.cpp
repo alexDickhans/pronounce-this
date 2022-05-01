@@ -276,12 +276,13 @@ int main() {
 
 	Path smoothPath;
 
-		QuadraticSplinePath farLeftAllianceToMidGoal("farLeftAllianceToMidGoal");
+		QuadraticSplinePath rightHomeZoneToLeftAlliance;
 
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(20, 105), Vector(20, -M_PI_2)));
-		farLeftAllianceToMidGoal.addPoint(SplinePoint(Point(72, 70), Vector(20, M_PI_2-M_PI_4)));
+		rightHomeZoneToLeftAlliance.addPoint(SplinePoint(Point(98, 37), Vector(20.0, M_PI_2)));
+		rightHomeZoneToLeftAlliance.addPoint(SplinePoint(Point(46, 37), Vector(20, M_PI_2)));
+		rightHomeZoneToLeftAlliance.addPoint(SplinePoint(Point(35, 17), Vector(20, M_PI + M_PI_2)));
 
-	smoothPath = farLeftAllianceToMidGoal.getPath(0.1);
+	smoothPath = rightHomeZoneToLeftAlliance.getPath(0.1);
 
 	paths.emplace_back(smoothPath);
 

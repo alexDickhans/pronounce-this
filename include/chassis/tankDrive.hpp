@@ -24,6 +24,11 @@ namespace Pronounce {
 			this->getRightMotors().move_velocity(speed - turn);
 		}
 
+		void skidSteerVoltage(double speed, double turn) {
+			this->getLeftMotors().move_voltage(speed + turn);
+			this->getRightMotors().move_voltage(speed - turn);
+		}
+
 		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
 			this->getLeftMotors().move_velocity(leftSpeed);
 			this->getRightMotors().move_velocity(rightSpeed);
