@@ -264,7 +264,7 @@ void grabFromHook() {
 
 	drivetrain.skidSteerVelocity(350, 0);
 
-	pros::Task::delay(700);
+	pros::Task::delay(550);
 
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
@@ -778,7 +778,7 @@ int rightRightStealToRightAWP() {
 
 	rightRightSteal();
 
-	turn(-M_PI_2 * 0.75);
+	turn(-M_PI_2 * 1.4);
 
 	rightAWP();
 
@@ -796,6 +796,8 @@ int rightRightStealToRightAWP() {
  */
 int midStealToLeftAWP() {
 	odometry.reset(new Position(99.5, 18, toRadians(-30)));
+
+	pros::Task::delay(200);
 
 	pros::Task deployBack(deployBackGrabber);
 
@@ -1678,7 +1680,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	rightRightStealToRightAWP();
+	midStealToLeftAWP();
 	postAuton();
 
 	// autonomousSelector.run();
