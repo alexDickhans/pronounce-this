@@ -76,8 +76,6 @@ bool backButtonStatus = false;
 bool backGrabberManual = false;
 uint32_t lastChange = 0;
 
-bool drivetrainBrakeStatus = false;
-
 // SECTION Auton
 
 void backGrabberChange(bool backButtonStatus2) {
@@ -1750,10 +1748,10 @@ void opcontrol() {
 			int rightX = filterAxis(master, ANALOG_RIGHT_X);
 
 			if (brakesButton.getButtonStatus() == POSITIVE) {
-				drivetrain.skidSteerVoltage(leftY < 0 ? leftY * (12000.0/600.0) : 0, rightX * (12000.0/600.0));
+				drivetrain.skidSteerVelocity(leftY < 0 ? leftY : 0, rightX);
 			}
 			else {
-				drivetrain.skidSteerVoltage(leftY * (12000.0/600.0), rightX * (12000.0/600.0));
+				drivetrain.skidSteerVelocity(leftY, rightX);
 			}
 		}
 		else if (!balance.isEnabled()) {
@@ -1761,17 +1759,20 @@ void opcontrol() {
 			int rightY = filterAxis(master, ANALOG_RIGHT_Y);
 
 			if (brakesButton.getButtonStatus() == POSITIVE) {
-				drivetrain.tankSteerVoltage(leftY < 0 ? leftY * (12000.0/600.0) : 0, rightY < 0 ? rightY * (12000.0/600.0) : 0);
+				drivetrain.tankSteerVelocity(leftY < 0 ? leftY : 0, rightY < 0 ? rightY : 0);
 			}
 			else {
-				drivetrain.tankSteerVoltage(leftY * (12000.0/600.0), rightY * (12000.0/600.0));
+				drivetrain.tankSteerVelocity(leftY, rightY);
 			}
 		}
 
-		if (master.get_digital_new_press(DIGITAL_LEFT)) {
-			drivetrainBrakeStatus = !drivetrainBrakeStatus;
-			drivetrain.getLeftMotors().set_brake_mode(drivetrainBrakeStatus ? pros::E_MOTOR_BRAKE_HOLD : pros::E_MOTOR_BRAKE_COAST);
-			drivetrain.getRightMotors().set_brake_mode(drivetrainBrakeStatus ? pros::E_MOTOR_BRAKE_HOLD : pros::E_MOTOR_BRAKE_COAST);
+		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+		else if (master.get_digital_new_press(DIGITAL_LEFT)) {
+			drivetrain.getLeftMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			drivetrain.getRightMotors().set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
 
 		// if (master.get_digital_new_press(DIGITAL_X)) {
