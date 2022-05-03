@@ -24,6 +24,7 @@ namespace Pronounce {
 		Vector localLookaheadVector;
 		Vector normalizedLookaheadVector;
 		double curvature;
+		double distanceFromEnd;
 	};
 
 	/**

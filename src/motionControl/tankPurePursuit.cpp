@@ -65,7 +65,7 @@ namespace Pronounce {
 		Path currentPath = this->getPath(this->getCurrentPathIndex());
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * this->getPath(this->getCurrentPathIndex()).distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY())) + 2.0);
+		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * pointData.distanceFromEnd + 2.0);
 		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
 
 		double updateTime = pros::millis() - lastUpdateTime;
@@ -74,7 +74,8 @@ namespace Pronounce {
 		double speed = 0;
 		if (maxSpeed > speed) {
 			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
-		} else {
+		}
+		else {
 			speed = this->getSpeed() * side;
 		}
 
@@ -86,9 +87,13 @@ namespace Pronounce {
 		// printf(std::string("Path: " + currentPath.getName()).c_str());
 		// printf("\n\n");
 
-		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed())  * this->getOutputMultiplier();
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
 
-		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		if (useVoltage) {
+			drivetrain->driveCurvatureVoltage(motorSpeed * (12000/600.0), pointData.curvature);
+		} else {
+			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		}
 	}
 
 	void TankPurePursuit::stop() {

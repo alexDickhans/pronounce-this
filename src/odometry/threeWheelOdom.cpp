@@ -48,24 +48,27 @@ namespace Pronounce {
 		double deltaAngle = (deltaLeft - deltaRight) / (leftOffset + rightOffset);
 		double averageOrientation = lastAngle + (deltaAngle / 2);
 
-		Vector localOffset;
+		Point localOffset;
 
-		if (abs(deltaAngle) > 0.01) {
+		if (deltaAngle != 0.0) {
 			double rotationAdjustment = 2 * sin(deltaAngle / 2);
-			localOffset = Vector(new Point(((deltaBack/deltaAngle) + backOffset) * rotationAdjustment, ((deltaRight/deltaAngle) + rightOffset) * rotationAdjustment));
+			localOffset = Point(((deltaBack/deltaAngle) + backOffset) * rotationAdjustment, ((deltaRight/deltaAngle) + rightOffset) * rotationAdjustment);
 		} else {
 			// Calculate the local offset then translate it to the global offset
-			localOffset = Vector(new Point(deltaBack, deltaRight));
+			localOffset = Point(deltaBack, deltaRight);
 		}
 
-		// Rotate vector
-		localOffset.rotate(-averageOrientation);
+		// Rotate local offset
+		double rotationCos = cos(averageOrientation);
+		double rotationSin = sin(averageOrientation);
+
+		localOffset = Point(localOffset.getX() * rotationCos + localOffset.getY() * rotationSin, - localOffset.getX() * rotationSin + localOffset.getY() * rotationCos);
 
 		// Add localOffset to the global offset
-		lastPosition->add(localOffset.getCartesian());
+		lastPosition->add(localOffset);
 		lastPosition->setTheta(fmod(angleDifference(currentAngle, 0) + M_PI * 2, M_PI * 2));
 
-		if (localOffset.getMagnitude() > maxMovement && maxMovement != 0) {
+		if (Vector(&localOffset).getMagnitude() > maxMovement && maxMovement != 0) {
 			return;
 		}
 

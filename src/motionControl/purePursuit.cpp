@@ -50,11 +50,14 @@ namespace Pronounce {
 		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
 		double signedCurvature = (2 * xDistance) / pow(lookaheadVector.getMagnitude(), 2);
 
+		double distanceFromEnd = path.distanceFromEnd(currentPoint);
+
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;
 		this->pointData.localLookaheadVector = robotRelativeLookaheadVector;
 		this->pointData.normalizedLookaheadVector = normalizedLookaheadVector;
 		this->pointData.curvature = signedCurvature;
+		this->pointData.distanceFromEnd = distanceFromEnd;
     }
 
     PurePursuit::~PurePursuit() {

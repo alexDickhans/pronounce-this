@@ -276,12 +276,14 @@ int main() {
 
 	Path smoothPath;
 
-		QuadraticSplinePath midGoalToFarPlatform("midGoalToFarPlatform");
+		QuadraticSplinePath rightNeutralGoalToNearRIghtPlatform("enterFarLeftHomeZoneToNearRightPlatform");
 
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(60, 70), Vector(20, 0)));
-		midGoalToFarPlatform.addPoint(SplinePoint(Point(75, 70), Vector(20, 0)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(105.7, 80), Vector(25, M_PI)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(80, 60), Vector(20, M_PI_2)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(25, 60), Vector(20, M_PI_2)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(25, 36), Vector(20, -M_PI_2*0.8)));
 
-	smoothPath = midGoalToFarPlatform.getPath(0.1);
+	smoothPath = rightNeutralGoalToNearRIghtPlatform.getPath(0.1);
 
 	paths.emplace_back(smoothPath);
 
