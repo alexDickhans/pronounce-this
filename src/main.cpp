@@ -25,7 +25,7 @@ pros::ADIDigitalOut frontHook(4, false);
 pros::ADIDigitalOut brakes(5, false);
 
 // Inertial Measurement Unit
-pros::Imu imu(5);
+pros::Imu imu(19);
 
 pros::Rotation leftEncoder(10);
 pros::Rotation rightEncoder(9);
@@ -46,7 +46,7 @@ TankDrivetrain drivetrain(&frontLeftMotor, &frontRightMotor, &midLeftMotor, &mid
 
 Pronounce::TankPurePursuit purePursuit(&drivetrain, &odometry, new PID(0.6, 0, 2.0), 20);
 
-Balance balance(&drivetrain, &imu, new BangBang(20, true, -50), new PID(0, 0, 0));
+Balance balance(&drivetrain, &imu, new BangBang(21, true, -150), new PID(0, 0, 0));
 
 MotorButton liftButton(&master, &lift, DIGITAL_L1, DIGITAL_L2, 200, 0, -200, 0, 0);
 MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -200, 0, 0);
@@ -192,7 +192,7 @@ void balanceRobot(double angle) {
 	purePursuit.setFollowing(false);
 	purePursuit.setEnabled(false);
 
-	drivetrain.skidSteerVelocity(200, 0);
+	drivetrain.skidSteerVelocity(300, 0);
 
 	pros::Task::delay(300);
 
@@ -1268,13 +1268,17 @@ int tuneOdom() {
 int testBalanceAuton() {
 	odometry.reset(new Position(0, 0, M_PI_2));
 
-	pros::Task::delay(200);
-
 	frontGrabberButton.setButtonStatus(POSITIVE);
 
-	pros::Task::delay(500);
+	pros::Task::delay(200);
 
 	backGrabberChange(true);
+
+	liftButton.setAutonomousAuthority(2000);
+
+	pros::Task::delay(3000);
+
+	liftButton.setAutonomousAuthority(0);
 
 	pros::Task::delay(500);
 
@@ -1610,10 +1614,10 @@ void initLogger() {
 }
 
 void initVision() {
-	pros::vision_signature_s_t YELLOW_GOAL = pros::Vision::signature_from_utility(1, 1887, 3735, 2810, -4021, -3533, -3778, 3.000, 0);
+	pros::vision_signature_s_t YELLOW_GOAL = pros::Vision::signature_from_utility(1, 2415, 3681, 3048, -3761, -3379, -3570, 3.000, 0);
 	clawVision.set_signature(0, &YELLOW_GOAL);
 	clawVision.set_auto_white_balance(0);
-	clawVision.set_exposure(20);
+	clawVision.set_exposure(33);
 }
 
 /**
@@ -1720,6 +1724,8 @@ void autonomous() {
 		rightDoubleSteal();
 	#elif AUTON == AUTON_NONE
 		// Do Nothing
+	#elif AUTON == AUTON_TEST
+		testBalanceAuton();
 	#elif AUTON == AUTON_SKILLS
 		skills();
 	#endif // AUTON
@@ -1742,12 +1748,11 @@ void opcontrol() {
 
 	postAuton();
 
-	if (!partner.is_connected()) {
+	#if AUTON != AUTON_SKILLS
 		frontGrabberButton.setButtonStatus(POSITIVE);
-	}
-	else {
+	#else
 		frontGrabberButton.setButtonStatus(NEUTRAL);
-	}
+	#endif
 
 	liftButton.setAutonomous(true);
 	liftButton.setAutonomousPosition(false);

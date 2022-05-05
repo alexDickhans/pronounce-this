@@ -23,7 +23,7 @@ namespace Pronounce {
 			return;
 
 		// Set the speed with the bang bang controller
-		double speed = linearController->update(imu->get_roll());
+		double speed = linearController->update(imu->get_roll()+7);
 
 		printf("speed: %f, angle: %f. \n", speed, imu->get_roll());
 
