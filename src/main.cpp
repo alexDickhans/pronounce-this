@@ -151,7 +151,7 @@ void placeOnPlatform() {
 
 	liftButton.setAutonomousAuthority(2000);
 
-	waitForDone();
+	waitForDone(0.5, 6000);
 
 	purePursuit.setEnabled(false);
 	purePursuit.setFollowing(false);
