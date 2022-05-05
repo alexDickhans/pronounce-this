@@ -1705,7 +1705,25 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
+
+	#if AUTON == AUTON_STEAL_LEFT_LEFT_AWP
+		leftStealLeftAWP();
+	#elif AUTON == AUTON_STEAL_MID_LEFT_AWP
+		midStealToLeftAWP();
+	#elif AUTON == AUTON_STEAL_MID_RIGHT_AWP
+		midStealToRightAWP();
+	#elif AUTON == AUTON_STEAL_RIGHT_RIGHT_AWP
+		rightStealRightAWP();
+	#elif AUTON == AUTON_STEAL_RIGHT_RIGHT_RIGHT_AWP
+		rightRightStealToRightAWP();
+	#elif AUTON == AUTON_RIGHT_DOUBLE_STEAL
+		rightDoubleSteal();
+	#elif AUTON == AUTON_NONE
+		// Do Nothing
+	#elif AUTON == AUTON_SKILLS
+		skills();
+	#endif // AUTON
+
 	postAuton();
 
 	// autonomousSelector.run();
