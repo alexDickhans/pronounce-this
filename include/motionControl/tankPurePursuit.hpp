@@ -19,6 +19,7 @@ namespace Pronounce {
 		double lastUpdateTime = 0;
 
 		bool useVoltage = false;
+		bool ignoreAcceleration = false;
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);

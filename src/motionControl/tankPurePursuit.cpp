@@ -90,7 +90,7 @@ namespace Pronounce {
 		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
 
 		if (useVoltage) {
-			drivetrain->driveCurvatureVoltage(motorSpeed * (12000/600.0), pointData.curvature);
+			drivetrain->driveCurvatureVoltage(this->getSpeed() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
 		} else {
 			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 		}
