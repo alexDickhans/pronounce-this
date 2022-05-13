@@ -9,6 +9,7 @@ abstractDrivetrain <|-- abstractTankDrivetrain
 abstract "SimDrivetrain" as simDrivetrain
 class "SimTankDrivetrain" as simTankDrivetrain
 
+abstractDrivetrain <|-- simDrivetrain
 simDrivetrain <|-- simTankDrivetrain
 abstractTankDrivetrain <|-- simTankDrivetrain
 
@@ -31,3 +32,4 @@ abstract "TankDrivetrain" as tankDrivetrain
 drivetrain <|-- tankDrivetrain
 abstractTankDrivetrain <|-- tankDrivetrain
 
+@enduml

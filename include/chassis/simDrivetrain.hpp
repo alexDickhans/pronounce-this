@@ -8,7 +8,7 @@ namespace Pronounce {
 	 * @brief A class for all simulator drivetrains
 	 * 
 	 */
-	class SimDrivetrain {
+	class SimDrivetrain : public AbstractDrivetrain {
 	private:
 		Position* position;
 		double resetOrientation = 0.0;
