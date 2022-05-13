@@ -2,54 +2,53 @@
 
 #include "api.h"
 #include "drivetrain.hpp"
+#include "utils/vector.hpp"
 
-#define AUTON_CONTROL 0
-#define DRIVER_CONTROL 1
-
+namespace Pronounce {	
 class XDrive {
-private:
+	private:
 
-    // Motors, have to be pointers because they would 
-    // not be modifiable otherwise 
-    pros::Motor* frontRight;
-    pros::Motor* frontLeft;
-    pros::Motor* backRight;
-    pros::Motor* backLeft;
+		pros::Motor* frontRight;
+		pros::Motor* frontLeft;
+		pros::Motor* backRight;
+		pros::Motor* backLeft;
 
-    // Motion control wheels
+	public:
 
-    pros::Imu* imu;
+		XDrive(pros::Motor* frontRight,
+			pros::Motor* frontLeft,
+			pros::Motor* backRight,
+			pros::Motor* backLeft) {
 
-    int currentState;
+			this->frontRight = frontRight;
+			this->frontLeft = frontLeft;
+			this->backRight = backRight;
+			this->backLeft = backLeft;
+		}
 
-public:
+		void setDriveVectorVelocity(Vector vector, double rotation) {
+			this->frontLeft->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() + rotation);
+			this->frontRight->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() - rotation);
+			this->backLeft->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() + rotation);
+			this->backRight->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() - rotation);
+		}
 
-    XDrive(pros::Motor* frontRight,
-        pros::Motor* frontLeft,
-        pros::Motor* backRight,
-        pros::Motor* backLeft,
-        pros::Imu* imu) {
+		void setDriveVectorVelocity(Vector vector) {
+			this->setDriveVectorVelocity(vector, 0);	
+		}
 
-        this->frontRight = frontRight;
-        this->frontLeft = frontLeft;
-        this->backRight = backRight;
-        this->backLeft = backLeft;
+		/**
+		 * Get the average drivetrain temperature
+		 *
+		 * @return Average of the 4 wheels
+		 */
+		double getAvgTemp() {
+			double total = this->frontLeft->get_temperature() +
+				this->frontRight->get_temperature() +
+				this->backLeft->get_temperature() +
+				this->backRight->get_temperature();
+			return total / 4;
+		}
 
-        this->imu = imu;
-    } //! Move implementation to src/chassis/xdrive.cpp
-
-
-    /**
-     * Get the average drivetrain temperature
-     * 
-     * @return Average of the 4 wheels
-     */
-    double getAvgTemp() {
-        double total = this->frontLeft->get_temperature() +
-            this->frontRight->get_temperature() +
-            this->backLeft->get_temperature() +
-            this->backRight->get_temperature();
-        return total / 4;
-    } //! Move implementation to src/chassis/xdrive.cpp
-
-};
+	};
+}
