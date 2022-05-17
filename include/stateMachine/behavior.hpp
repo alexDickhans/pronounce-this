@@ -4,48 +4,18 @@
 #include "config.hpp"
 
 namespace Pronounce {
-	class Behavior
-	{
+	class Behavior {
 	private:
-		std::string name;
-		Config* config;
-		Config* globalConfig;
 	public:
 		Behavior();
-		Behavior(std::string name);
-		Behavior(std::string name, Config* config, Config* globalConfig);
 
-		virtual void initialize(Config* stateConfig) {}
+		virtual void initialize() {}
 
 		virtual void update() {}
 
-		virtual bool isDone() {}
+		virtual bool isDone() { return false; }
 
-		virtual void dispose() {}
-
-		std::string getName() {
-			return this->name;
-		}
-
-		void setName(std::string name) {
-			this->name = name;
-		}
-
-		Config* getConfig() {
-			return config;
-		}
-
-		void setConfig(Config* config) {
-			this->config = config;
-		}
-
-		Config* getGlobalConfig() {
-			return globalConfig;
-		}
-
-		void setGlobalConfig(Config* globalConfig) {
-			this->globalConfig = globalConfig;
-		}
+		virtual void exit() {}
 
 		~Behavior();
 	};

@@ -13,6 +13,9 @@ class XDrive {
 		pros::Motor* backRight;
 		pros::Motor* backLeft;
 
+		double trackWidth;
+		double wheelAngle;
+
 	public:
 
 		XDrive(pros::Motor* frontRight,

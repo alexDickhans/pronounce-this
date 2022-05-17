@@ -2,16 +2,16 @@
 
 #include <string>
 #include <unordered_map>
+#include "utils/path.hpp"
 
-namespace Pronounce
-{
-	class Config
-	{
+namespace Pronounce {
+	class Config {
 	private:
 		std::unordered_map<std::string, double> doubleMap;
-		std::unordered_map<std::string, int> doubleInt;
-		std::unordered_map<std::string, std::string> doubleString;
-
+		std::unordered_map<std::string, int> intMap;
+		std::unordered_map<std::string, std::string> stringMap;
+		std::unordered_map<std::string, Config> configMap;
+		Path path;
 	public:
 		Config();
 
@@ -31,21 +31,56 @@ namespace Pronounce
 			return getDouble(name, 0.0);
 		}
 
-		void setInteger(int value) {
-			// set the value
+		void setInteger(std::string name, int value) {
+			intMap[name] = value;
 		}
 
-		int getInteger() {
-			// Return the value
-			return 0;
+		int getInteger(std::string name, int defaultValue) {
+			if (intMap.find(name) == intMap.end()) {
+				return defaultValue;
+			} else {
+				return intMap.at(name);
+			}
 		}
 
-		void setString(std::string value) {
-			// set the value
+		int getInteger(std::string name) {
+			return this->getInteger(name, 0);
 		}
 
-		std::string getString() {
-			// return the value
+		void setString(std::string name, std::string value) {
+			stringMap[name] = value;
+		}
+
+		std::string getString(std::string name, std::string defaultValue) {
+			if (stringMap.find(name) == stringMap.end()) {
+				return defaultValue;
+			} else {
+				return stringMap.at(name);
+			}
+		}
+
+		std::string getString(std::string name) {
+			return this->getString(name, "");
+		}
+
+		void setConfig(std::string name, Config config) {
+			this->configMap[name] = config;
+		}
+		
+		Config getConfig(std::string name) {
+			if (configMap.find(name) == configMap.end()) {
+				return Config();
+			} else {
+				return configMap.at(name);
+			}
+		}
+
+		Path getPath() {
+			return path;
+		}
+
+		void setPath(Path path) {
+			this->path = path;
 		}
 
 		~Config();

@@ -1,0 +1,39 @@
+@startuml
+
+state Collecting
+state Priming
+state Launching
+state Stopped
+state Eject
+
+Collecting : Flywheel multiplier: 0.8
+Priming : Flywheel multiplier: 1.0
+Stopped : Flywheel multiplier: 0.0
+Launching : Flywheel multiplier: 1.0
+Eject : Flywheel multiplier: 0.25
+
+Collecting : Indexer Engaged: false
+Priming : Indexer Engaged: false
+Stopped : Indexer Engaged: false
+Launching : Indexer Engaged: true
+Eject : Indexer Engaged: true
+
+[*] -> Collecting
+
+Collecting -> Priming : Not ready to shoot
+Collecting <- Priming : Getting ready to shoot
+Launching -> Priming : Not primed
+Launching -> Collecting : Done launching
+Priming -> Launching : Ready for shot
+Launching -> Priming : Stop shooting
+
+Priming --> Stopped : Stopping
+Launching --> Stopped : Stopping
+Collecting --> Stopped : Stopping
+
+Priming --> Eject : Ejecting
+Launching --> Eject : Ejecting
+Collecting --> Eject : Ejecting
+
+Eject <- Stopped : Ejecting
+Stopped -> Eject : Stopping

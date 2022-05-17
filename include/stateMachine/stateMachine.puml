@@ -1,0 +1,100 @@
+@startuml
+
+abstract "Behavior" as behavior {
+	+{Abstract}void initialize()
+	+{Abstract}void update()
+	+{Abstract}bool isDone()
+	+{Abstract}void exit()
+}
+
+class "StateController" as stateController {
+	- Behavior defaultBehvaior
+	- Behavior currentBehavior
+	+ void initialize()
+	+ void update()
+	+ bool isDone()
+	+ void exit()
+}
+
+behavior <|-- stateController
+behavior <.. stateController
+
+class "Sequence" as sequence {
+	-std::map<StateController, Behavior> behaviors
+	-int currentBehavior
+	+addBehavior(StateController stateController, Behavior behavior)
+	+getBehavior(int index)
+	+getBehaviorCount()
+	+void initialize()
+	+void update()
+	+bool isDone()
+	+void exit()
+}
+
+class "Parallel" as parallel {
+	-std::unordered_map<StateController, Behavior> behaviors
+	+addBehavior(StateController stateController, Behavior behavior)
+	+getBehavior(StateController stateController)
+	+void initialize()
+	+void update()
+	+bool isDone()
+	+void exit()
+}
+
+class "Wait" as wait {
+	-Behavior behavior
+	-uint_32 duration
+	+Wait(double duration)
+	+void initialize()
+	+void update()
+	+bool override isDone() - Returns done after time is done
+	+void exit()
+	+uint_32 getDuration()
+	+void setDuration(uint_32 duration)
+	+uint_32 remainingDuration()
+}
+
+parallel ..> stateController
+
+behavior <.. parallel
+behavior <|-- parallel
+
+behavior <.. wait
+behavior <|-- wait
+
+behavior <.. sequence
+behavior <|-- sequence
+
+sequence ..> stateController
+
+note left of behavior : Behavior is the parent class for all states.
+
+note right of wait
+A state that runs a behavior
+for a set ammount of time 
+before returning that it is done
+end note
+
+note right of sequence
+A sequence controls a 
+group of states to 
+make sure they run in order
+end note
+
+note right of parallel
+A parallel is used
+in the code to make 
+sure that several states 
+for different subsystems 
+run concurently.
+end note
+
+note left of stateController
+A state controller controls 
+all states and transitions
+of one subsystem
+end note
+
+note "This is the code diagram that shows all the interactions between the subsystems.\nThe closed arrows show an inheritance\nThe dashed lines show a dependency" as mainNote
+
+@enduml

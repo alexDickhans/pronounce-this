@@ -1,0 +1,19 @@
+@startuml
+
+state "Intaking" as intaking
+state "Stopped" as stopped
+state "Ejecting" as ejecting
+
+[*] --> intaking
+
+intaking : speed: 1.0
+stopped : speed: 0.0
+ejecting : speed: -1.0
+
+intaking <- stopped : Intake not full
+intaking -> ejecting : Intake jammed/too many discs
+stopped <- intaking : Intake full
+ejecting -> intaking : Intake dejammed
+stopped -> ejecting : Too many discs/Eject button pressed
+
+@enduml

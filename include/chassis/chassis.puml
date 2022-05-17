@@ -32,4 +32,11 @@ abstract "TankDrivetrain" as tankDrivetrain
 drivetrain <|-- tankDrivetrain
 abstractTankDrivetrain <|-- tankDrivetrain
 
+class "Pros" as pros
+
+drivetrain ..> pros
+xdrive ..> pros
+mecanumDrivetrain ..> pros
+tankDrivetrain ..> pros
+
 @enduml
