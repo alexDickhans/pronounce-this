@@ -11,13 +11,4 @@ namespace Pronounce {
 		Sequence(/* args */);
 		~Sequence();
 	};
-	
-	Sequence::Sequence(/* args */)
-	{
-	}
-	
-	Sequence::~Sequence()
-	{
-	}
-	
 } // namespace Pronounce

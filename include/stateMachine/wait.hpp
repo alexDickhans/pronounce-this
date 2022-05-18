@@ -38,6 +38,7 @@ namespace Pronounce {
 
 		void initialize() {
 			this->startTime = get_time_ms();
+			behavior->initialize();
 		}
 
 		void update() {

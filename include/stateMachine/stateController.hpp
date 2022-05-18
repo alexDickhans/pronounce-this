@@ -70,13 +70,4 @@ namespace Pronounce {
 
 		~StateController();
 	};
-
-	StateController::StateController(/* args */)
-	{
-	}
-
-	StateController::~StateController()
-	{
-	}
-
 } // namespace Pronounce
