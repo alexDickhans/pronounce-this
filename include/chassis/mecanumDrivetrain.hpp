@@ -1,12 +1,12 @@
 #pragma once
 
 #include "api.h"
-#include "omniDrivetrain.hpp"
+#include "abstractHolonomicDrivetrain.hpp"
 #include "utils/vector.hpp"
 #include "odometry/threeWheelOdom.hpp"
 
 namespace Pronounce {
-	class MecanumDrivetrain : public OmniDrivetrain {
+	class MecanumDrivetrain : public AbstractHolonomicDrivetrain {
 	private:
         pros::Motor* frontLeft;
         pros::Motor* frontRight;

@@ -60,7 +60,7 @@
 #include "chassis/abstractDrivetrain.hpp"
 #include "chassis/drivetrain.hpp"
 #include "chassis/mecanumDrivetrain.hpp"
-#include "chassis/omniDrivetrain.hpp"
+#include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
 #include "chassis/xdrive.hpp"
 
@@ -91,6 +91,12 @@
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
 #include "position/trackingWheel.hpp"
+
+// State Machine
+#include "stateMachine/behavior.hpp"
+#include "stateMachine/sequence.hpp"
+#include "stateMachine/stateController.hpp"
+#include "stateMachine/wait.hpp"
 
 // Utils
 #include "utils/motorGroup.hpp"

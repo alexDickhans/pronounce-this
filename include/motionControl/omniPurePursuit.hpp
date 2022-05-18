@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chassis/omniDrivetrain.hpp"
+#include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "purePursuit.hpp"
 #include "utils/vector.hpp"
 #include "odometry/odometry.hpp"
@@ -8,22 +8,22 @@
 namespace Pronounce {
 	class OmniPurePursuit : public PurePursuit {
 	private:
-		OmniDrivetrain* drivetrain;
+		AbstractHolonomicDrivetrain* drivetrain;
 	public:
 		OmniPurePursuit();
-		OmniPurePursuit(OmniDrivetrain* drivetrain);
-		OmniPurePursuit(OmniDrivetrain* drivetrain, double lookaheadDistance);
-		OmniPurePursuit(OmniDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
+		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain);
+		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, double lookaheadDistance);
+		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
 		
 		void updateDrivetrain();
 
 		void stop();
 
-		OmniDrivetrain* getDrivetrain() {
+		AbstractHolonomicDrivetrain* getDrivetrain() {
 			return drivetrain;
 		}
 
-		void setDrivetrain(OmniDrivetrain* drivetrain) {
+		void setDrivetrain(AbstractHolonomicDrivetrain* drivetrain) {
 			this->drivetrain = drivetrain;
 		}
 

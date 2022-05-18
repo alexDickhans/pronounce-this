@@ -47,8 +47,7 @@ namespace Pronounce {
 			if (currentBehavior != nullptr) {
 				currentBehavior->exit();
 				currentBehavior = nullptr;
-			}
-			else {
+			} else {
 				defaultBehavior->exit();
 			}
 		}

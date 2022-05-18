@@ -41,14 +41,15 @@ namespace Pronounce {
 		}
 
 		void update() {
-			if (get_time_ms() - this->startTime >= this->duration) {
-				behavior.exit();
-			}
+			behavior->update();
 		}
 
 		bool isDone() {
 			return get_time_ms() - this->startTime >= this->duration;
 		}
+
+		void exit() {
+			behavior->exit();
+		}
 	};
-	}
 } // namespace Pronounce
