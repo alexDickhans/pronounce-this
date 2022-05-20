@@ -56,6 +56,10 @@ namespace Pronounce {
 		}
 
 		void setCurrentBehavior(Behavior* behavior) {
+			if (defaultBehavior == behavior) {
+				this->useDefaultBehavior();
+				return;
+			}
 			currentBehavior = behavior;
 			defaultBehavior->exit();
 			currentBehavior->initialize();
