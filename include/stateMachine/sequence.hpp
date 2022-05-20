@@ -42,6 +42,11 @@ namespace Pronounce {
 			return currentIndex >= stateControllers.size()-1;
 		}
 
+		void addState(StateController* stateController, Behavior* behavior) {
+			stateControllers.emplace_back(stateController);
+			behaviors.emplace_back(behavior);
+		}
+
 		~Sequence();
 	};
 } // namespace Pronounce

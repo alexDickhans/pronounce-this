@@ -664,64 +664,7 @@ void opcontrol() {
 		int leftY = filterAxis(master, ANALOG_LEFT_Y);
 		int leftX = filterAxis(master, ANALOG_LEFT_X);
 		int rightX = filterAxis(master, ANALOG_RIGHT_X);
-		drivetrain.skidSteerVelocity(leftY, rightX);
-
-		// if (master.get_digital_new_press(DIGITAL_X)) {
-		// 	odometry.reset(new Position());
-		// }
-
-		if (master.get_digital_new_press(DIGITAL_UP)) {
-			driverMode = 0;
-		}
-		if (master.get_digital_new_press(DIGITAL_DOWN)) {
-			driverMode = 1;
-		}
-
-		if (partner.is_connected()) {
-			if ((partner.get_digital(DIGITAL_L1) && !master.get_digital(DIGITAL_L2) && !partner.get_digital(DIGITAL_L2)) || master.get_digital(DIGITAL_L1) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
-			}
-			else if ((partner.get_digital(DIGITAL_L2) && !master.get_digital(DIGITAL_L1) && !partner.get_digital(DIGITAL_L1)) || master.get_digital(DIGITAL_L2) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEGATIVE);
-			}
-			else {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEUTRAL);
-			}
-
-			if (master.get_digital_new_press(DIGITAL_R2) || partner.get_digital_new_press(DIGITAL_R2)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
-			}
-			else if (master.get_digital_new_press(DIGITAL_Y) || partner.get_digital_new_press(DIGITAL_R1)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
-			}
-
-			if (partner.get_digital_new_press(DIGITAL_A)) {
-				purePursuit.setEnabled(true);
-				purePursuit.setFollowing(true);
-				turn(odometry.getPosition()->getTheta() + goalAngle());
-				purePursuit.setEnabled(false);
-				purePursuit.setFollowing(false);
-			}
-		}
-		else {
-			if (master.get_digital(DIGITAL_L1) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::POSITIVE);
-			}
-			else if (master.get_digital(DIGITAL_L2) && !(master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_L2))) {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEGATIVE);
-			}
-			else {
-				liftButton.setButtonStatus(Pronounce::ButtonStatus::NEUTRAL);
-			}
-
-			if (master.get_digital_new_press(DIGITAL_R2)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == POSITIVE ? NEUTRAL : POSITIVE);
-			}
-			else if (master.get_digital_new_press(DIGITAL_Y)) {
-				intakeButton.setButtonStatus(intakeButton.getButtonStatus() == NEGATIVE ? NEUTRAL : NEGATIVE);
-			}
-		}
-
+		
 		pros::delay(10);
 	}
 }
