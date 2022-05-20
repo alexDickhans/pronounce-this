@@ -15,7 +15,8 @@ namespace Pronounce {
 		void initialize() {
 			if (currentBehavior != nullptr) {
 				currentBehavior->initialize();
-			} else {
+			}
+			else {
 				if (defaultBehavior != nullptr) {
 					defaultBehavior->initialize();
 				}
@@ -46,7 +47,8 @@ namespace Pronounce {
 			if (currentBehavior != nullptr) {
 				currentBehavior->exit();
 				currentBehavior = nullptr;
-			} else {
+			}
+			else {
 				defaultBehavior->exit();
 			}
 		}
@@ -58,11 +60,15 @@ namespace Pronounce {
 		void setCurrentBehavior(Behavior* behavior) {
 			if (defaultBehavior == behavior) {
 				this->useDefaultBehavior();
-				return;
+			} else if (currentBehavior != nullptr) {
+				currentBehavior->exit();
+				currentBehavior = behavior;
+				currentBehavior->initialize();
+			} else {
+				defaultBehavior->exit();
+				currentBehavior = behavior;
+				currentBehavior->initialize();
 			}
-			currentBehavior = behavior;
-			defaultBehavior->exit();
-			currentBehavior->initialize();
 		}
 
 		void useDefaultBehavior() {
