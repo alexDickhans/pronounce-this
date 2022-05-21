@@ -127,7 +127,6 @@
 // using namespace pros::literals;
 using namespace okapi;
 using namespace Pronounce; // General Lib
-using namespace PronounceTiP; // TiP Exclusive libs
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure
