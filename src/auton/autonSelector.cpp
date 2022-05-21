@@ -28,8 +28,6 @@ namespace Pronounce {
 
 		controller->setIsRendering(false);
 
-		printf("Auton selector\n");
-
 		uint32_t count = 0;
 
 		while (!done) {
@@ -62,8 +60,6 @@ namespace Pronounce {
 			pros::Task::delay(50);
 
 		}
-
-		printf("Auton selected: %s", autons[autonIndex].getName().c_str());
 
 		controller->setIsRendering(true);
 	}

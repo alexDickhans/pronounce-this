@@ -86,7 +86,6 @@ namespace Pronounce {
 
 		// set jammed to true if the speed of the motor indicates that it is jammed
 		if (speed < dejamSpeed && this->getButtonStatus() != NEUTRAL) {
-			printf("Jammed\n");
 			this->jammed = true;
 		}
 		else {
@@ -99,11 +98,8 @@ namespace Pronounce {
 			this->dejamStartTime = pros::millis();
 		}
 
-		// printf("Dejam time: %f\n", pros::millis() - this->dejamStartTime);
-
 		// If the timer is greater than the jam time, then dejam the motor
 		if (pros::millis() - this->dejamStartTime > dejamTime && jammed && pros::millis() - this->dejamStartTime < dejamTime + dejamDuration || ((this->jammed && pros::millis() - this->dejamStartTime) % 200 > 100)) {
-			printf("Dejam started\n");
 			this->motor->move_velocity(dejamAuthority);
 		}
 	}

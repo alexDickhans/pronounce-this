@@ -2,18 +2,18 @@
 
 namespace Pronounce {
 	OmniPurePursuit::OmniPurePursuit() : PurePursuit() {
-		drivetrain = new OmniDrivetrain();
+		drivetrain = new AbstractHolonomicDrivetrain();
 	}
 
-	OmniPurePursuit::OmniPurePursuit(OmniDrivetrain* drivetrain) : PurePursuit() {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain) : PurePursuit() {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(OmniDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(OmniDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 

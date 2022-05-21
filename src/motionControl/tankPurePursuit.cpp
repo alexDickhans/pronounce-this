@@ -78,15 +78,7 @@ namespace Pronounce {
 		else {
 			speed = this->getSpeed() * side;
 		}
-
-		// printf("Max speed: %f\n", maxSpeed);
-		// printf("Side: %f\n", side);
-		// printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
-		// printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
-		// printf("Lookahead Point: %f, %f\n", pointData.lookaheadPoint.getX(), pointData.lookaheadPoint.getY());
-		// printf(std::string("Path: " + currentPath.getName()).c_str());
-		// printf("\n\n");
-
+		
 		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
 
 		if (useVoltage) {

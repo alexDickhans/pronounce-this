@@ -44,8 +44,6 @@ namespace Pronounce {
 
 		void setDefaultProfile(PurePursuitProfile defaultProfile) {
 			this->defaultProfile = defaultProfile;
-			printf("Default profile lookahead distance: %f\n", defaultProfile.getLookaheadDistance());
-			printf("Member lookahead distance: %f\n", this->getDefaultProfile().getLookaheadDistance());
 		} 
 
 		~PurePursuitProfileManager();

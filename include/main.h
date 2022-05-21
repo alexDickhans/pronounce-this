@@ -43,9 +43,10 @@
 #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
-/**
- * User defined imports
- */
+// grafanalib includes
+#include "pros-grafana-lib/api.h"
+
+// 2654lib includes
 
 #include "autoPaths.hpp"
 

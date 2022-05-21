@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include "config.hpp"
 
 namespace Pronounce {
 	class Behavior {
@@ -18,14 +17,5 @@ namespace Pronounce {
 		virtual void exit() {}
 
 		~Behavior();
-	};
-	
-	Behavior::Behavior(/* args */)
-	{
-	}
-	
-	Behavior::~Behavior()
-	{
-	}
-	
+	};	
 } // namespace Pronounce

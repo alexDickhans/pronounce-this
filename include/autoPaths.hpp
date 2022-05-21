@@ -78,8 +78,6 @@ namespace Pronounce {
 	int wiggleIndex = -1;
 
 	void autoPaths(PurePursuit* purePursuit) {
-		printf("Why the unknown error, is it in this function??\n");
-
 		// Default pure pursuit profile
 		PurePursuitProfile defaultProfile(new PID(20, 0.0, 2.0), new PID(60.0, 0.0, 5.0), 10.0);
 		purePursuit->getPurePursuitProfileManager().setDefaultProfile(defaultProfile);
@@ -416,9 +414,6 @@ namespace Pronounce {
 		rightNeutralGoalToNearRIghtPlatformIndex = purePursuit->addPath(rightNeutralGoalToNearRIghtPlatform.getPath(0.1));
 
 		// !SECTION
-
-
-		printf("Array size: %d\n", purePursuit->getPaths().size());
 	}
 
 } // Namespace Prononce

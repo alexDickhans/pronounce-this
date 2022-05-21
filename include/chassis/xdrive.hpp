@@ -2,31 +2,27 @@
 
 #include "api.h"
 #include "drivetrain.hpp"
+#include "abstractHolonomicDrivetrain.hpp"
 #include "utils/vector.hpp"
 
 namespace Pronounce {	
-class XDrive {
+class XDrive : public Drivetrain, AbstractHolonomicDrivetrain {
 	private:
 
-		pros::Motor* frontRight;
-		pros::Motor* frontLeft;
-		pros::Motor* backRight;
-		pros::Motor* backLeft;
+		pros::Motor &frontLeftMotor;
+		pros::Motor &frontRightMotor;
+		pros::Motor &backLeftMotor;
+		pros::Motor &backRightMotor;
 
 		double trackWidth;
 		double wheelAngle;
 
 	public:
 
-		XDrive(pros::Motor* frontRight,
-			pros::Motor* frontLeft,
-			pros::Motor* backRight,
-			pros::Motor* backLeft) {
-
-			this->frontRight = frontRight;
-			this->frontLeft = frontLeft;
-			this->backRight = backRight;
-			this->backLeft = backLeft;
+		XDrive(pros::Motor &frontRight,
+			pros::Motor &frontLeft,
+			pros::Motor &backRight,
+			pros::Motor &backLeft) : Drivetrain(frontLeft, frontRight, backLeft, backRight) {
 		}
 
 		void setDriveVectorVelocity(Vector vector, double rotation) {

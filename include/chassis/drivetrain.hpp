@@ -12,17 +12,9 @@ namespace Pronounce {
     class Drivetrain : public AbstractDrivetrain {
     protected:
 
-		MotorGroup leftMotors;
-		MotorGroup rightMotors;
-
-        pros::Imu* imu;
-
     public:
 		Drivetrain();
-        Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-        Drivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-		Drivetrain(MotorGroup leftMotors, MotorGroup rightMotors, pros::Imu* imu);
-
+		
 		/**
          * Get average temperature of all the motors.
          */
