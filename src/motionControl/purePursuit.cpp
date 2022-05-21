@@ -2,33 +2,34 @@
 
 namespace Pronounce {
     PurePursuit::PurePursuit() {
-        this->setPurePursuitProfileManager(PurePursuitProfileManager());
-		this->paths = std::vector<Path>();
+		this->path = Path();
 		this->odometry = new Odometry();
+		this->currentProfile.lateralPid = new PID();
+		this->currentProfile.orientationPid = new PID();
     }
 
     PurePursuit::PurePursuit(double lookahead) : PurePursuit() {
-        this->lookahead = lookahead;
+        this->currentProfile.lookaheadDistance = lookahead;
     }
 
 	PurePursuit::PurePursuit(Odometry* odometry, double lookahead) {
-		this->setPurePursuitProfileManager(PurePursuitProfileManager());
-		this->paths = std::vector<Path>();
+		this->path = Path();
 		this->odometry = odometry;
-		this->lookahead = lookahead;
+		this->currentProfile.lookaheadDistance = lookahead;
+		this->currentProfile.lateralPid = new PID();
+		this->currentProfile.orientationPid = new PID();
 	}
 
 	void PurePursuit::updatePointData() {
 
         // Set position and path variables
-        Path path = paths.at(currentPath);
         std::vector<Point> pathVector = path.getPath();
         Position* currentPosition = odometry->getPosition();
         Point currentPoint = Point(currentPosition->getX(), currentPosition->getY());
+		double lookahead = this->currentProfile.lookaheadDistance;
 
         // Returns if robot is close to target to prevent little wiggles
-        if (pathVector.at(pathVector.size() - 1).distance(currentPoint) < stopDistance) {
-			this->atPoint = true;
+        if (this->isDone()) {
             return;
         }
 

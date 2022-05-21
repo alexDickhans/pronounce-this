@@ -18,25 +18,36 @@ namespace Pronounce {
 	}
 
 	void OmniPurePursuit::updateDrivetrain() {
-		// Get the lookahead vector from the pointData
-		Vector normalizedLookaheadVector = this->getPointData().normalizedLookaheadVector;
 
-		// Set the lateralPid values
-		this->getCurrentProfile().getLateralPid()->setTarget(normalizedLookaheadVector.getMagnitude());
-		this->getCurrentProfile().getLateralPid()->setPosition(0);
+		PurePursuitPointData pointData = this->getPointData();
 
-		// Get the lateralPid output
-		double lateralOutput = this->getCurrentProfile().getLateralPid()->update();
+		double lastSpeed = this->drivetrain->getSpeed();
+
+		double maxSpeed = sqrt(2 * this->getCurrentProfile().maxAcceleration * pointData.distanceFromEnd + 2.0);
+		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
+
+		double maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime() / 1000;
+		double speed = 0;
+		if (maxSpeed > speed) {
+			speed = clamp(this->getCurrentProfile().speed, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
+		}
+		else {
+			speed = this->getCurrentProfile().speed;
+		}
+		
+		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getCurrentProfile().speed, this->getCurrentProfile().speed) * this->getOutputMultiplier();
+
+		double lateralOutput = motorSpeed;
 
 		// Get the turn target
-		this->getCurrentProfile().getTurnPid()->setTarget(this->getTurnTarget());
-		this->getCurrentProfile().getTurnPid()->setPosition(this->getOdometry()->getPosition()->getTheta());
+		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget());
+		this->getCurrentProfile().orientationPid->setPosition(this->getOdometry()->getPosition()->getTheta());
 
 		// Get the turn output
-		double turnOutput = this->getCurrentProfile().getTurnPid()->update();
+		double turnOutput = this->getCurrentProfile().orientationPid->update();
 
 		// Send values to the drivetrain
-		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, normalizedLookaheadVector.getAngle()), turnOutput);
+		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
 	}
 
 	void OmniPurePursuit::stop() {

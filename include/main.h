@@ -104,8 +104,6 @@
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"
 #include "utils/position.hpp"
-#include "utils/purePursuitProfile.hpp"
-#include "utils/purePursuitProfileManager.hpp"
 #include "utils/quadraticSplinePath.hpp"
 #include "utils/runningAverage.hpp"
 #include "utils/splinePath.hpp"
@@ -115,7 +113,6 @@
 #include "utils/motorGroup.hpp"
 
 // Vision
-#include "vision/tippingVision.hpp"
 
 
 /**

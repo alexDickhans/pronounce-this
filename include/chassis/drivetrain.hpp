@@ -14,48 +14,16 @@ namespace Pronounce {
 
     public:
 		Drivetrain();
-		
+
 		/**
          * Get average temperature of all the motors.
          */
-        double getTemp();
+        virtual double getTemp() { return 0; }
 
         /**
          * Get average speed of all the motors
          */
-        double getSpeed();
-
-		pros::Imu* getImu() {
-			return imu;
-		}
-
-		void setImu(pros::Imu* imu) {
-			this->imu = imu;
-		}
-
-		MotorGroup getLeftMotors() {
-			return leftMotors;
-		}
-
-		void setLeftMotors(MotorGroup leftMotors) {
-			this->leftMotors = leftMotors;
-		}
-
-		void addLeftMotor(pros::Motor* motor) {
-			this->leftMotors.addMotor(motor);
-		}
-
-		MotorGroup getRightMotors() {
-			return rightMotors;
-		}
-
-		void setRightMotors(MotorGroup rightMotors) {
-			this->rightMotors = rightMotors;
-		}
-
-		void addRightMotor(pros::Motor* motor) {
-			this->rightMotors.addMotor(motor);
-		}
+        virtual double getSpeed() { return 0; }
 
 		~Drivetrain() {
 			
