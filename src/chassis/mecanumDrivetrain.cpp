@@ -1,14 +1,14 @@
 #include "mecanumDrivetrain.hpp"
 
 namespace Pronounce {
-    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) : OmniDrivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
+    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu) {
 		this->frontLeft = frontLeft;
         this->frontRight = frontRight;
         this->backLeft = backLeft;
         this->backRight = backRight;
 	}
 
-    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, Odometry* odometry) : OmniDrivetrain(frontLeft, frontRight, backLeft, backRight, imu) {
+    MecanumDrivetrain::MecanumDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, Odometry* odometry) {
         this->odometry = odometry;
 	}
 

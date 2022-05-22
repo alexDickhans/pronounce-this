@@ -1,0 +1,42 @@
+@startuml
+abstract "AbstractDrivetrain" as abstractDrivetrain
+abstract "AbstractHolonomicDrivetrain" as abstractHolonomicDrivetrain
+abstract "AbstractTankDrivetrain" as abstractTankDrivetrain
+
+abstractDrivetrain <|-- abstractHolonomicDrivetrain
+abstractDrivetrain <|-- abstractTankDrivetrain
+
+abstract "SimDrivetrain" as simDrivetrain
+class "SimTankDrivetrain" as simTankDrivetrain
+
+abstractDrivetrain <|-- simDrivetrain
+simDrivetrain <|-- simTankDrivetrain
+abstractTankDrivetrain <|-- simTankDrivetrain
+
+abstract "Drivetrain" as drivetrain
+
+abstractDrivetrain <|-- drivetrain
+
+abstract "XDrive" as xdrive
+
+drivetrain <|-- xdrive
+abstractHolonomicDrivetrain <|-- xdrive
+
+abstract "MecanumDrivetrain" as mecanumDrivetrain
+
+drivetrain <|-- mecanumDrivetrain
+abstractHolonomicDrivetrain <|-- mecanumDrivetrain
+
+abstract "TankDrivetrain" as tankDrivetrain
+
+drivetrain <|-- tankDrivetrain
+abstractTankDrivetrain <|-- tankDrivetrain
+
+class "Pros" as pros
+
+drivetrain ..> pros
+xdrive ..> pros
+mecanumDrivetrain ..> pros
+tankDrivetrain ..> pros
+
+@enduml

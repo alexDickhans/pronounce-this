@@ -9,9 +9,8 @@
 #include "utils/position.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
-#include "utils/purePursuitProfileManager.hpp"
-#include "utils/purePursuitProfile.hpp"
 #include "odometry/odometry.hpp"
+#include "stateMachine/behavior.hpp"
 
 namespace Pronounce {
 	/**
@@ -25,6 +24,14 @@ namespace Pronounce {
 		Vector normalizedLookaheadVector;
 		double curvature;
 		double distanceFromEnd;
+	};
+
+	struct PurePursuitProfile {
+		PID* lateralPid;
+		PID* orientationPid;
+		double lookaheadDistance;
+		double maxAcceleration;
+		double speed;
 	};
 
 	/**
@@ -44,63 +51,52 @@ namespace Pronounce {
 	 * 
 	 * @authors @ad101-lab
 	 */
-	class PurePursuit {
+	class PurePursuit : public Behavior {
 	private:
-		double lookahead;
-		std::vector<Path> paths;
-		int currentPath = -1;
+		Path path;
 		double stopDistance = 0;
 		double normalizeDistance = 1;
 
 		double outputMultiplier = 1.0;
 
-		double maxAcceleration = 0;
-		double maxDecelleration = 0;
-
 		PurePursuitProfile currentProfile;
-
-		PurePursuitProfileManager purePursuitProfileManager;
 
 		double turnTarget;
 
 		Odometry* odometry;
 
+		double doneDistance = 0.5;
+
 		PurePursuitPointData pointData;
 
-		bool enabled = false;
-		bool following = false;
-
-		bool atPoint = false;
+		double updateTime = 20;
 	public:
 		PurePursuit();
 		PurePursuit(double lookahead);
 		PurePursuit(Odometry* odometry, double lookahead);
+
+		void initialize() {
+			currentProfile.lateralPid->reset();
+			currentProfile.orientationPid->reset();
+		}
 
 		virtual void updateDrivetrain() {}
 
 		void updatePointData();
 
 		void update() {
-			if (!enabled)
-				return;
-
-			if (paths.size() == 0 || currentPath == -1 || (paths.size() <= currentPath) || !following) {
-				this->stop();
-				return;
-			}
-
 			updatePointData();
 			updateDrivetrain();
 		}
 
-		virtual void stop() {}
+		virtual void exit() {}
 
-		int addPath(Path path) {
-			paths.emplace_back(path);
-			printf("%d\n", paths.size());
-			std::cout << "Name: " << path.getName() << std::endl;
-			// printf(path.to_string().c_str());
-			return paths.size() - 1;
+		bool isDone(double maxDistance) {
+			return maxDistance > odometry->getPosition()->distance(path.getPoint(path.getPath().size() - 1));
+		}
+
+		bool isDone() {
+			return isDone(doneDistance);
 		}
 
 		double getOutputMultiplier() {
@@ -111,20 +107,12 @@ namespace Pronounce {
 			this->outputMultiplier = outputMultiplier;
 		}
 
-		std::vector<Path> getPaths() {
-			return this->paths;
+		Path getPath() {
+			return path;
 		}
 
 		PurePursuitPointData getPointData() {
 			return this->pointData;
-		}
-
-		Path getPath(int index) {
-			return paths.at(index);
-		}
-
-		int getCurrentPathIndex() {
-			return currentPath;
 		}
 
 		double getTurnTarget() {
@@ -133,13 +121,6 @@ namespace Pronounce {
 
 		void setTurnTarget(double turnTarget) {
 			this->turnTarget = turnTarget;
-		}
-
-		void setCurrentPathIndex(int index) {
-			currentPath = index;
-			printf("Current Path: %d\n", currentPath);
-			printf("Current path tostring: %s\n", paths.at(currentPath).to_string().c_str());
-			this->currentProfile = purePursuitProfileManager.getProfile(currentPath);
 		}
 
 		double getNormalizeDistance() {
@@ -158,43 +139,12 @@ namespace Pronounce {
 			this->currentProfile = profile;
 		}
 
-		PurePursuitProfileManager getPurePursuitProfileManager() {
-			return purePursuitProfileManager;
-		}
-
-		void setPurePursuitProfileManager(PurePursuitProfileManager purePursuitProfileManager) {
-			this->purePursuitProfileManager = purePursuitProfileManager;
-		}
-
 		Odometry* getOdometry() {
 			return odometry;
 		}
 
 		void setOdometry(Odometry* odometry) {
 			this->odometry = odometry;
-		}
-
-		bool isEnabled() {
-			return enabled;
-		}
-
-		void setEnabled(bool enabled) {
-			this->enabled = enabled;
-			if (!enabled) {
-				this->stop();
-			}
-		}
-
-		bool isFollowing() {
-			return following;
-		}
-
-		void setFollowing(bool following) {
-			this->following = following;
-		}
-
-		bool isDone(double maxDistance) {
-			return maxDistance > odometry->getPosition()->distance(paths.at(currentPath).getPoint(paths.at(currentPath).getPath().size() - 1));
 		}
 
 		double getStopDistance() {
@@ -205,21 +155,21 @@ namespace Pronounce {
 			this->stopDistance = stopDistance;
 		}
 
-		double getLookahead() {
-			return lookahead;
+		double getDoneDistance() {
+			return doneDistance;
 		}
 
-		void setLookahead(double lookahead) {
-			this->lookahead = lookahead;
+		void setDoneDistance(double doneDistance) {
+			this->doneDistance = doneDistance;
 		}
 
-		double getMaxAcceleration() {
-			return maxAcceleration;
+		double getUpdateTime() {
+			return updateTime;
 		}
 
-		void setMaxAcceleration(double maxAcceleration) {
-			this->maxAcceleration = maxAcceleration;
-		}
+		void setUpdateTime(double updateTime) {
+			this->updateTime = updateTime;
+		} 
 
 		~PurePursuit();
 	};

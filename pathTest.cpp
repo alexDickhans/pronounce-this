@@ -275,13 +275,12 @@ int main() {
 	std::vector<Path> paths;
 
 	Path smoothPath;
-
 		QuadraticSplinePath rightNeutralGoalToNearRIghtPlatform("enterFarLeftHomeZoneToNearRightPlatform");
 
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(105.7, 80), Vector(25, M_PI)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(115, 70), Vector(25, M_PI-M_PI_4)));
 		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(80, 60), Vector(20, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(25, 60), Vector(20, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(25, 36), Vector(20, -M_PI_2*0.8)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35, 60), Vector(20, M_PI_2)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35, 45), Vector(20, -M_PI_2*0.9)));
 
 	smoothPath = rightNeutralGoalToNearRIghtPlatform.getPath(0.1);
 

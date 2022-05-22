@@ -6,3 +6,4 @@
 #define AUTON_RIGHT_DOUBLE_STEAL 6
 #define AUTON_NONE 7
 #define AUTON_SKILLS 8
+#define AUTON_TEST 9

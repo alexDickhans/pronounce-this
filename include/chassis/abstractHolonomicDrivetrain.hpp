@@ -1,7 +1,6 @@
 #pragma once 
 
-#include "api.h"
-#include "drivetrain.hpp"
+#include "abstractDrivetrain.hpp"
 #include "utils/vector.hpp"
 
 namespace Pronounce
@@ -9,17 +8,17 @@ namespace Pronounce
     /**
      * Omnidirectional drive type, used for X-Drive/Mecanum drive
      */
-    class OmniDrivetrain : public Drivetrain {
+    class AbstractHolonomicDrivetrain : public AbstractDrivetrain {
     private:
-        
     public:
-        OmniDrivetrain();
-        OmniDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
+        AbstractHolonomicDrivetrain();
+
+		virtual double getSpeed() { return 0; }
 
         virtual void setDriveVectorVelocity(Vector vector) {}
         virtual void setDriveVectorVelocity(Vector vector, double rotation) {}
         
-        ~OmniDrivetrain();
+        ~AbstractHolonomicDrivetrain();
     };
     
 } // namespace Pronounce

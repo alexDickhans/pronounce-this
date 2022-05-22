@@ -15,6 +15,18 @@ namespace Pronounce {
             return this->position;
         }
 
+		double getX() {
+			return this->position->getX();
+		}
+
+		double getY() {
+			return this->position->getY();
+		}
+
+		double getTheta() {
+			return this->position->getTheta();
+		}
+
         void setPosition(Position* position) {
             this->position->operator=(position);
         }

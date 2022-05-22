@@ -2,54 +2,69 @@
 
 #include "api.h"
 #include "drivetrain.hpp"
+#include "abstractHolonomicDrivetrain.hpp"
+#include "utils/vector.hpp"
 
-#define AUTON_CONTROL 0
-#define DRIVER_CONTROL 1
+namespace Pronounce {
+	class XDrive : public Drivetrain, AbstractHolonomicDrivetrain {
+	private:
 
-class XDrive {
-private:
+		pros::Motor* frontLeftMotor;
+		pros::Motor* frontRightMotor;
+		pros::Motor* backLeftMotor;
+		pros::Motor* backRightMotor;
 
-    // Motors, have to be pointers because they would 
-    // not be modifiable otherwise 
-    pros::Motor* frontRight;
-    pros::Motor* frontLeft;
-    pros::Motor* backRight;
-    pros::Motor* backLeft;
+		double trackWidth;
+		double wheelAngle;
 
-    // Motion control wheels
+	public:
+		XDrive(pros::Motor* frontLeft,
+			pros::Motor* frontRight,
+			pros::Motor* backLeft,
+			pros::Motor* backRight) {
+			frontLeftMotor = frontLeft;
+			frontRightMotor = frontRight;
+			backLeftMotor = backLeft;
+			backRightMotor = backRight;
 
-    pros::Imu* imu;
+			trackWidth = 15;
+			wheelAngle = M_PI_4;
+		}
 
-    int currentState;
+		XDrive(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, double trackWidth, double wheelAngle) {
+			frontLeftMotor = frontLeft;
+			frontRightMotor = frontRight;
+			backLeftMotor = backLeft;
+			backRightMotor = backRight;
 
-public:
+			this->trackWidth = trackWidth;
+			this->wheelAngle = wheelAngle;
 
-    XDrive(pros::Motor* frontRight,
-        pros::Motor* frontLeft,
-        pros::Motor* backRight,
-        pros::Motor* backLeft,
-        pros::Imu* imu) {
+		}
 
-        this->frontRight = frontRight;
-        this->frontLeft = frontLeft;
-        this->backRight = backRight;
-        this->backLeft = backLeft;
+		void setDriveVectorVelocity(Vector vector, double rotation) {
+			this->frontLeftMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() + rotation);
+			this->frontRightMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() - rotation);
+			this->backLeftMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() + rotation);
+			this->backRightMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() - rotation);
+		}
 
-        this->imu = imu;
-    } //! Move implementation to src/chassis/xdrive.cpp
+		void setDriveVectorVelocity(Vector vector) {
+			this->setDriveVectorVelocity(vector, 0);
+		}
 
+		/**
+		 * Get the average drivetrain temperature
+		 *
+		 * @return Average of the 4 wheels
+		 */
+		double getAvgTemp() {
+			double total = this->frontLeftMotor->get_temperature() +
+				this->frontRightMotor->get_temperature() +
+				this->backLeftMotor->get_temperature() +
+				this->backRightMotor->get_temperature();
+			return total / 4;
+		}
 
-    /**
-     * Get the average drivetrain temperature
-     * 
-     * @return Average of the 4 wheels
-     */
-    double getAvgTemp() {
-        double total = this->frontLeft->get_temperature() +
-            this->frontRight->get_temperature() +
-            this->backLeft->get_temperature() +
-            this->backRight->get_temperature();
-        return total / 4;
-    } //! Move implementation to src/chassis/xdrive.cpp
-
-};
+	};
+}

@@ -31,9 +31,7 @@ namespace Pronounce {
 
 			uint32_t startTime = pros::millis();
 
-			while (!this->isBalanced()) {// && pros::millis() - startTime < 2000) {
-				printf("Is balanced: %d\n", this->isBalanced());
-				
+			while (!this->isBalanced()) {// && pros::millis() - startTime < 2000) {				
 				this->update();
 				pros::Task::delay(waitTime);
 			}

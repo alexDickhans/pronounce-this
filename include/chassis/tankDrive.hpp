@@ -10,35 +10,7 @@ namespace Pronounce {
 	private:
 
 	public:
-		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
-		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu);
-		TankDrivetrain(pros::Motor* frontLeft, pros::Motor* frontRight, pros::Motor* midLeft, pros::Motor* midRight, pros::Motor* backLeft, pros::Motor* backRight, pros::Imu* imu, double trackWidth);
-
-		double getSpeed() override {
-			return (this->getLeftMotors().get_actual_velocity() + this->getRightMotors().get_actual_velocity()) / 2;
-		}
-
-		void skidSteerVelocity(double speed, double turn) {
-			this->getLeftMotors().move_velocity(speed + turn);
-			this->getRightMotors().move_velocity(speed - turn);
-		}
-
-		void skidSteerVoltage(double speed, double turn) {
-			this->getLeftMotors().move_voltage(speed + turn);
-			this->getRightMotors().move_voltage(speed - turn);
-		}
-
-		void tankSteerVelocity(double leftSpeed, double rightSpeed) {
-			this->getLeftMotors().move_velocity(leftSpeed);
-			this->getRightMotors().move_velocity(rightSpeed);
-		}
-
-		void tankSteerVoltage(double leftSpeed, double rightSpeed) {
-			this->getLeftMotors().move_voltage(leftSpeed);
-			this->getRightMotors().move_voltage(rightSpeed);
-		}
-
+	
 		~TankDrivetrain();
 	};
 } // namespace Pronounce

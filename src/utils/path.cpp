@@ -8,7 +8,6 @@ namespace Pronounce {
         bool pointFound = false;
 
         if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance && !continuePath) {
-			// printf("Returning end point\n");
             return path.at(path.size() - 1);
         }
 
@@ -32,17 +31,11 @@ namespace Pronounce {
                 double t1 = (-b - discriminant) / (2 * a);
                 double t2 = (-b + discriminant) / (2 * a);
 
-				// printf("index: %d\n", i);
-
 				if ((this->continuePath && i == path.size() - 1 && (t1 >= 1 || t2 >= 1))) {
-					// printf("Returning end point\n");
 				}
-
-				// printf("T1: %f, T2: %f\n", t1, t2);
 
                 if (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 || (this->continuePath && i == path.size() - 1 && (t1 >= 1 || t2 >= 1))) {
                     if (t2 < t1) {
-						// printf("T1\n");
                         pointFound = true;
                         Vector resultVector = d.scale(t1);
                         Point tempLookaheadPoint = pathStart;
@@ -50,7 +43,6 @@ namespace Pronounce {
                         lookaheadPoint = tempLookaheadPoint;
                     }
                     if (t1 < t2) {
-						// printf("T2\n");
                         pointFound = true;
                         Vector resultVector = d.scale(t2);
                         Point tempLookaheadPoint = pathStart;

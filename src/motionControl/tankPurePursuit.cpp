@@ -27,10 +27,6 @@ namespace Pronounce {
 
 	void TankPurePursuit::updateDrivetrain() {
 
-		if (!this->isEnabled()) {
-			return;
-		}
-
 		if (orientationControl) {
 			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
 			this->turnPid->setPosition(angleDifference(currentOrientation, 0));
@@ -49,7 +45,7 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getLookahead(), -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY());
+		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getCurrentProfile().lookaheadDistance, -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY());
 
 		side = abs(side) < 0.5 ? signnum_c(side) : side;
 
@@ -62,15 +58,13 @@ namespace Pronounce {
 		// 12% improvement, mostly in speed up and slow down.
 		double lastSpeed = this->drivetrain->getSpeed();
 
-		Path currentPath = this->getPath(this->getCurrentPathIndex());
+		Path currentPath = this->getPath();
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		double maxSpeed = sqrt(2 * this->getMaxAcceleration() * pointData.distanceFromEnd + 2.0);
+		double maxSpeed = sqrt(2 * this->getCurrentProfile().maxAcceleration * pointData.distanceFromEnd + 2.0);
 		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
 
-		double updateTime = pros::millis() - lastUpdateTime;
-		lastUpdateTime = updateTime;
-		double maxAccelerationFrame = this->getMaxAcceleration() * updateTime / 1000;
+		double maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime() / 1000;
 		double speed = 0;
 		if (maxSpeed > speed) {
 			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
@@ -79,18 +73,10 @@ namespace Pronounce {
 			speed = this->getSpeed() * side;
 		}
 
-		// printf("Max speed: %f\n", maxSpeed);
-		// printf("Side: %f\n", side);
-		// printf("Local Lookahead x: %f, y: %f\n", pointData.localLookaheadVector.getCartesian().getX(), pointData.localLookaheadVector.getCartesian().getY());
-		// printf("x: %f, y: %f\n", currentPoint.getX(), currentPoint.getY());
-		// printf("Lookahead Point: %f, %f\n", pointData.lookaheadPoint.getX(), pointData.lookaheadPoint.getY());
-		// printf(std::string("Path: " + currentPath.getName()).c_str());
-		// printf("\n\n");
-
 		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
 
 		if (useVoltage) {
-			drivetrain->driveCurvatureVoltage(motorSpeed * (12000/600.0), pointData.curvature);
+			drivetrain->driveCurvatureVoltage(this->getSpeed() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
 		} else {
 			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 		}
