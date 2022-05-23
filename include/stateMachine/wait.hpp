@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stateMachine/behavior.hpp"
-
 int get_time_ms();
 
 #ifdef DEBUG
@@ -14,6 +12,8 @@ int get_time_ms() {
 }
 
 #else
+
+#include "stateMachine/behavior.hpp"
 // Robot specific includes/time calculation
 #include "api.h"
 
@@ -25,7 +25,7 @@ int get_time_ms() {
 #endif // DEBUG
 
 namespace Pronounce {
-	class Wait {
+	class Wait : public Behavior {
 	private:
 		int startTime;
 		int duration;
