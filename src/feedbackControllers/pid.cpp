@@ -19,30 +19,9 @@ namespace Pronounce {
 		this->turnPid = turnPid;
 	}
 
-	double PID::update() {
-		if (turnPid) {
-			this->error = angleDifference(target, position);
-		}
-		else {
-			this->error = target - position;
-		}
+	double PID::update(double input) {
 
-		this->derivitive = error - prevError;
-
-		if (abs(error) < integralBound) {
-			totalError += error;
-		}
-		else {
-			totalError = 0;
-		}
-
-		totalError = abs(totalError) > maxIntegral ? signnum_c(totalError) * maxIntegral : totalError;
-
-		this->power = error * kP + derivitive * kD + totalError * kI;
-
-		prevError = error;
-
-		return this->power;
+		return calculatePidValues(input);
 	}
 
 	PID::~PID() {
