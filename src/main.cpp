@@ -156,14 +156,6 @@ void runSelector() {
  */
 void initLogger() {
 
-	Logger::setDefaultLogger(
-		std::make_shared<Logger>(
-			TimeUtilFactory::createDefault().getTimer(),
-			"/usd/log.txt",
-			Logger::LogLevel::debug // Show everything
-			)
-	);
-	Logger::getDefaultLogger()->debug<std::string>("LOGGER: Logger initialized");
 }
 
 /**
