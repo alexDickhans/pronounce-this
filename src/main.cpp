@@ -30,17 +30,11 @@ Pronounce::TrackingWheel backOdomWheel(&backEncoder);
 pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
 GpsOdometry gpsOdometry(&gps);
 
-// ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
-
-MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -200, 0, 0);
 
 pros::Vision turretVision(18, VISION_ZERO_CENTER);
 
 grafanalib::GUIManager manager;
-
-// Autonomous Selector
-Pronounce::AutonSelector autonomousSelector;
 
 // LVGL
 lv_obj_t* tabview;
@@ -100,12 +94,6 @@ void initMotors() {
 	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-
-	intakeButton.setSingleToggle(true);
-	intakeButton.setDejam(true);
-	intakeButton.setDejamAuthority(-200);
-	intakeButton.setDejamSpeed(25);
-	intakeButton.setDejamTime(100);
 }
 
 void initDrivetrain() {
@@ -145,33 +133,11 @@ void initController() {
 	pros::Task renderTask(renderThread);
 }
 
-// Run selector as task
-void runSelector() {
-	pros::Task::delay(1000);
-	autonomousSelector.choose();
-}
-
 /**
  * Initialize the logger for data collection after the match
  */
 void initLogger() {
 
-}
-
-/**
- * Filter and apply the quadratic function.
- */
-double filterAxis(pros::Controller controller, pros::controller_analog_e_t controllerAxis) {
-	// Remove drift
-	double controllerValue = controller.get_analog(controllerAxis);
-	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
-
-	// Apply quadratic function 
-	// f(x) = controllerFilter / 127.0 ^ 3 * 127.0
-	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 620;
-
-	// Return solution
-	return quadraticFilter;
 }
 
 void initGrafanaLib() {
@@ -270,17 +236,9 @@ void autonomous() {
 void opcontrol() {
 
 	postAuton();
-	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	// lv_label_set_text(infoLabel, "");
 
 	// Driver Control Loop
 	while (true) {
-
-		// Filter and calculate magnitudes
-		int leftY = filterAxis(master, ANALOG_LEFT_Y);
-		int leftX = filterAxis(master, ANALOG_LEFT_X);
-		int rightX = filterAxis(master, ANALOG_RIGHT_X);
-
 		pros::delay(10);
 	}
 }
