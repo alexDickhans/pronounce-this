@@ -2,130 +2,134 @@
 
 #include <cmath>
 #include "utils/utils.hpp"
+#include "feedbackController.hpp"
 
 namespace Pronounce {
-	
+
 	/**
 	 * @brief PID class
-	 * 
+	 *
 	 * @author ad101-lab
-	 * 
+	 *
 	 * Hopefully adding FF later
-	 * 
+	 *
 	 */
-    class PID {
-    private:
-        double kP;
-        double kI;
-        double kD;
+	class PID : public FeedbackController {
+	private:
+		double kP;
+		double kI;
+		double kD;
 
-        double target = 0.0;
-        double position;
+		double error;
+		double totalError = 0.0;
+		double prevError = 0.0;
+		double derivitive;
 
-        double error;
-        double totalError = 0.0;
-        double prevError = 0.0;
-        double derivitive;
+		double integralBound = 30.0;
+		double maxIntegral = 0.3;
 
-        double integralBound = 30.0;
-        double maxIntegral = 0.3;
-
-        double power;
+		double power;
 
 		bool turnPid = false;
-    public:
-        PID();
-        PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false);
 
-        double update();
+	protected:
+		double calculatePidValues(double input) {
+			position = input;
 
-        void operator=(PID pid) {
-            this->kP = pid.getKP();
-            this->kI = pid.getKI();
-            this->kD = pid.getKD();
-            this->integralBound = pid.getIntegralBound();
-            this->maxIntegral = pid.getMaxIntegral();
-        }
+			if (turnPid) {
+				this->error = angleDifference(target, position);
+			}
+			else {
+				this->error = target - position;
+			}
 
-        void operator=(PID* pid) {
-            this->kP = pid->getKP();
-            this->kI = pid->getKI();
-            this->kD = pid->getKD();
-            this->integralBound = pid->getIntegralBound();
-            this->maxIntegral = pid->getMaxIntegral();
-        }
+			this->derivitive = error - prevError;
 
-        double getDerivitive() {
-            return derivitive;
-        }
+			if (abs(error) < integralBound) {
+				totalError += error;
+			}
+			else {
+				totalError = 0;
+			}
 
-        double getError() {
-            return error;
-        }
+			totalError = abs(totalError) > maxIntegral ? signnum_c(totalError) * maxIntegral : totalError;
 
-        double getPower() {
-            return power;
-        }
+			this->power = error * kP + derivitive * kD + totalError * kI;
 
-        void setPower(double power) {
-            this->power = power;
-        }
+			prevError = error;
 
-        double getPosition() {
-            return this->position;
-        }
+			return this->power;
+		}
 
-        void setPosition(double position) {
-            this->position = position;
-        }
+	public:
+		PID();
+		PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false);
 
-        double getTarget() {
-            return target;
-        }
+		double update(double input);
 
-        void setTarget(double target) {
-            this->target = target;
-        }
-        
-        double getKP() {
-            return kP;
-        }
+		void operator=(PID pid) {
+			this->kP = pid.getKP();
+			this->kI = pid.getKI();
+			this->kD = pid.getKD();
+			this->integralBound = pid.getIntegralBound();
+			this->maxIntegral = pid.getMaxIntegral();
+		}
 
-        void setKP(double kP) {
-            this->kP = kP;
-        }
+		void operator=(PID* pid) {
+			this->kP = pid->getKP();
+			this->kI = pid->getKI();
+			this->kD = pid->getKD();
+			this->integralBound = pid->getIntegralBound();
+			this->maxIntegral = pid->getMaxIntegral();
+		}
 
-        double getKI() {
-            return kI;
-        }
+		double getDerivitive() {
+			return derivitive;
+		}
 
-        void setKI(double kI) {
-            this->kI = kI;
-        }
+		double getError() {
+			return error;
+		}
 
-        double getKD() {
-            return kD;
-        }
+		double getKP() {
+			return kP;
+		}
 
-        void setKD(double kD) {
-            this->kD = kD;
-        }
+		void setKP(double kP) {
+			this->kP = kP;
+		}
 
-        double getIntegralBound() {
-            return this->integralBound;
-        }
+		double getKI() {
+			return kI;
+		}
 
-        void setIntegralBound(double integralBound) {
-            this->integralBound = integralBound;
-        }
+		void setKI(double kI) {
+			this->kI = kI;
+		}
 
-        double getMaxIntegral() {
-            return this->maxIntegral;
-        }
+		double getKD() {
+			return kD;
+		}
 
-        void setMaxIntegral(double maxIntegral) {
-            this->maxIntegral = maxIntegral;
-        }
+		void setKD(double kD) {
+			this->kD = kD;
+		}
+
+		double getIntegralBound() {
+			return this->integralBound;
+		}
+
+		void setIntegralBound(double integralBound) {
+			this->integralBound = integralBound;
+		}
+
+		double getMaxIntegral() {
+			return this->maxIntegral;
+		}
+
+		void setMaxIntegral(double maxIntegral) {
+			this->maxIntegral = maxIntegral;
+		}
 
 		bool getTurnPid() {
 			return turnPid;
@@ -141,8 +145,8 @@ namespace Pronounce {
 			this->derivitive = 0;
 		}
 
-        ~PID();
-    };
+		~PID();
+	};
 } // namespace Pronounce
 
 

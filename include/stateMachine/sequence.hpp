@@ -1,45 +1,55 @@
 #pragma once
 
+#ifndef DEBUG
 #include "behavior.hpp"
 #include "stateController.hpp"
-#include <vector>
+#endif // !DEBUG
 
+#include <vector>
+#include <iostream>
 namespace Pronounce {
 	class Sequence : public Behavior {
 	private:
 		std::vector<StateController*> stateControllers;
 		std::vector<Behavior*> behaviors;
+
 		int currentIndex = 0;
 	public:
-		Sequence();
+		Sequence() {}
 
 		void initialize() {
+			currentIndex = 0;
 			if (behaviors.size() > 0) {
-				stateControllers.at(0)->initialize();
+				stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 			}
 		}
 
 		void update() {
-			if (stateControllers.at(currentIndex)->isDone()) {
+			
+			if (behaviors.at(currentIndex)->isDone()) {
 				if (currentIndex < stateControllers.size() - 1) {
 					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 				}
 				else {
+					std::cout << "Ending" << std::endl;
 					stateControllers.at(currentIndex)->useDefaultBehavior();
+					currentIndex++;
 					// Done
 				}
 			}
 		}
 
 		void exit() {
-			stateControllers.at(currentIndex)->useDefaultBehavior();
-			currentIndex = stateControllers.size()-1;
+			if (!this->isDone()) {
+				stateControllers.at(currentIndex)->useDefaultBehavior();
+				currentIndex = stateControllers.size() - 1;
+			}
 		}
 
 		bool isDone() {
-			return currentIndex >= stateControllers.size()-1;
+			return !(currentIndex < stateControllers.size());
 		}
 
 		void addState(StateController* stateController, Behavior* behavior) {
@@ -47,6 +57,6 @@ namespace Pronounce {
 			behaviors.emplace_back(behavior);
 		}
 
-		~Sequence();
+		~Sequence() {}
 	};
 } // namespace Pronounce

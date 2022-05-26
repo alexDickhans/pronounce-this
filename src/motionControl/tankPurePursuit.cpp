@@ -29,8 +29,7 @@ namespace Pronounce {
 
 		if (orientationControl) {
 			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
-			this->turnPid->setPosition(angleDifference(currentOrientation, 0));
-			double spinSpeed = this->turnPid->update();
+			double spinSpeed = this->turnPid->update(angleDifference(currentOrientation, 0));
 
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
 

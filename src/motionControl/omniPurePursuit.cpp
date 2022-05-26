@@ -41,10 +41,9 @@ namespace Pronounce {
 
 		// Get the turn target
 		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget());
-		this->getCurrentProfile().orientationPid->setPosition(this->getOdometry()->getPosition()->getTheta());
 
 		// Get the turn output
-		double turnOutput = this->getCurrentProfile().orientationPid->update();
+		double turnOutput = this->getCurrentProfile().orientationPid->update(this->getOdometry()->getPosition()->getTheta());
 
 		// Send values to the drivetrain
 		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
