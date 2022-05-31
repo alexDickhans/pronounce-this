@@ -38,11 +38,14 @@ namespace Pronounce {
 
 		FlywheelPID* flywheelPID;
 
+		bool useIsDone = false;
+
 	public:
-		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool pneumaticEngaged, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID) {
+		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool pneumaticEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID) {
 			this->flywheelSpeedMultiplier = flywheelSpeedMultiplier;
 			this->flywheelOutputMultiplier = flywheelOutputMultiplier;
 			this->pneumaticEngaged = pneumaticEngaged;
+			this->useIsDone = useIsDone;
 			this->flywheelMotor = flywheelMotor;
 			this->turretMotor = turretMotor;
 			this->indexer = indexer;
@@ -72,6 +75,14 @@ namespace Pronounce {
 			flywheelMotor->move_voltage(0.0);
 		}
 
+		bool isDone() {
+			if (useIsDone) {
+				return abs(this->flywheelSpeed - this->getFlywheelSpeed()) < 100;
+			} else {
+				return false;
+			}
+		}
+
 		void setFlywheelSpeed(double flywheelSpeed) {
 			this->flywheelSpeed = flywheelSpeed;
 		}
@@ -79,6 +90,10 @@ namespace Pronounce {
 		void setTurretAngle(double value) {
 			this->turretAngle = value;
 		} 
+
+		double getFlywheelSpeed() {
+			return flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier;
+		}
 
 		~Launcher() {}
 	};

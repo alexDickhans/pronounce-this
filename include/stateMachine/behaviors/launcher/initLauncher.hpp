@@ -21,10 +21,10 @@ namespace Pronounce {
 
 	FlywheelPID flywheelPID(7.0, 0.4, 0.0, 3.0);
 
-	Launcher launcherStopped(0.0, 42.0 / 1.0, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
-	Launcher launcherIdle(1.0, 42.0 / 1.0, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
-	Launcher launcherFullSpeed(1.0, 42.0 / 1.0, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
-	Launcher launcherLaunching(1.0, 42.0 / 1.0, true, &flywheels, &turretMotor, &indexer, &flywheelPID);
+	Launcher launcherStopped(0.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
+	Launcher launcherIdle(1.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
+	Launcher launcherFullSpeed(1.0, 42.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &flywheelPID);
+	Launcher launcherLaunching(1.0, 42.0 / 1.0, true, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
 
 	StateController launcherStateController(&launcherIdle);
 	StateController launcherStateExtensionController(new Behavior());
@@ -41,8 +41,8 @@ namespace Pronounce {
 		flywheels.addMotor(&flywheel1);
 		flywheels.addMotor(&flywheel2);
 
+		launchDisc.addState(&launcherStateController, &launcherFullSpeed);
 		launchDisc.addState(&launcherStateController, &launchDisc1);
-		launchDisc.addState(&launcherStateController, &launchDisc2);
 
 		turretMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	}
