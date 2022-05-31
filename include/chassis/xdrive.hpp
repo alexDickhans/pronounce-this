@@ -43,10 +43,10 @@ namespace Pronounce {
 		}
 
 		void setDriveVectorVelocity(Vector vector, double rotation) {
-			this->frontLeftMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() + rotation);
-			this->frontRightMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() - rotation);
-			this->backLeftMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() + rotation);
-			this->backRightMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() - rotation);
+			this->frontLeftMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() - rotation);
+			this->frontRightMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() + rotation);
+			this->backLeftMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() - rotation);
+			this->backRightMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() + rotation);
 		}
 
 		void setDriveVectorVelocity(Vector vector) {
@@ -65,6 +65,8 @@ namespace Pronounce {
 				this->backRightMotor->get_temperature();
 			return total / 4;
 		}
+
+		~XDrive() {}
 
 	};
 }

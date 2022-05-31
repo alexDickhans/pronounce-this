@@ -55,9 +55,11 @@ namespace Pronounce {
 		void initialize() {}
 
 		void update() {
+			std::cout << "drivetrain" << std::endl;
 
 			if (outputMultiplier == 0.0) {
 				drivetrain->setDriveVectorVelocity(Vector(0.0, 0.0), 0.0);
+				return;
 			}
 
 			double x = map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X), -127.0, 127.0, -1.0, 1.0);
@@ -71,7 +73,7 @@ namespace Pronounce {
 				driveVector.rotate(-odometry->getTheta());
 			}
 
-			driveVector.scale(outputMultiplier);
+			driveVector = driveVector.scale(outputMultiplier);
 
 			drivetrain->setDriveVectorVelocity(driveVector, turn * outputMultiplier);
 		}
@@ -84,6 +86,6 @@ namespace Pronounce {
 			return false;
 		}
 
-		~JoystickDrivetrain();
+		~JoystickDrivetrain() {}
 	};
 } // namespace Pronounce

@@ -6,7 +6,7 @@
 namespace Pronounce {
 	class FlywheelPID : public PID {
 	private:
-		double feedforwardMultiplier;
+		double feedforwardMultiplier = 0.0;
 	public:
 		FlywheelPID() {}
 		FlywheelPID(double kP, double kI, double kD, double feedforwardMultiplier) : PID(kP, kI, kD) {

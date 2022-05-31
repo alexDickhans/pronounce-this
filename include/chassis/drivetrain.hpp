@@ -25,9 +25,7 @@ namespace Pronounce {
          */
         virtual double getSpeed() { return 0; }
 
-		~Drivetrain() {
-			
-		}
+		~Drivetrain() {}
     };
 } // namespace Pronounce
 

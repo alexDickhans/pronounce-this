@@ -5,6 +5,10 @@ grafanalib::GUIManager manager;
 // LVGL
 lv_obj_t* tabview;
 
+RobotStatus robotStatus;
+ModeLogic modeLogic(&robotStatus);
+TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
+
 // SECTION Auton
 
 /**
@@ -12,6 +16,7 @@ lv_obj_t* tabview;
  *
  */
 int preAutonRun() {
+	teleopController.useDefaultBehavior();
 	return 0;
 }
 
@@ -66,11 +71,11 @@ void initLogger() {
 }
 
 void initGrafanaLib() {
-	manager.setRefreshRate(50);
+	manager = grafanalib::GUIManager();
 
 	grafanalib::Variable<Pronounce::Odometry> odometryVar("Odometry", odometry);
 
-	grafanalib::VariableGroup<Pronounce::Odometry> odometryVarGroup({odometryVar});
+	grafanalib::VariableGroup<Pronounce::Odometry> odometryVarGroup({ odometryVar });
 
 	odometryVarGroup.add_getter("X", &Pronounce::Odometry::getX);
 	odometryVarGroup.add_getter("Y", &Pronounce::Odometry::getY);
@@ -81,11 +86,46 @@ void initGrafanaLib() {
 	grafanalib::Variable<Pronounce::Controller> controller1Var("Controller1", master);
 	grafanalib::Variable<Pronounce::Controller> controller2Var("Controller2", partner);
 
-	grafanalib::VariableGroup<Pronounce::Controller> controllerVarGroup({controller1Var, controller2Var});
+	grafanalib::VariableGroup<Pronounce::Controller> controllerVarGroup({ controller1Var, controller2Var });
 
-	manager.registerDataHandler(&controllerVarGroup);
+	controllerVarGroup.add_getter("LeftX", &Pronounce::Controller::getLeftX);
+	controllerVarGroup.add_getter("LeftY", &Pronounce::Controller::getLeftY);
+	controllerVarGroup.add_getter("RightX", &Pronounce::Controller::getRightX);
+	controllerVarGroup.add_getter("RightY", &Pronounce::Controller::getRightY);
 
-	manager.startTask();
+	controllerVarGroup.add_getter("A", &Pronounce::Controller::getA);
+	controllerVarGroup.add_getter("B", &Pronounce::Controller::getB);
+	controllerVarGroup.add_getter("X", &Pronounce::Controller::getX);
+	controllerVarGroup.add_getter("Y", &Pronounce::Controller::getY);
+
+	controllerVarGroup.add_getter("Up", &Pronounce::Controller::getUp);
+	controllerVarGroup.add_getter("Down", &Pronounce::Controller::getDown);
+	controllerVarGroup.add_getter("Left", &Pronounce::Controller::getLeft);
+	controllerVarGroup.add_getter("Right", &Pronounce::Controller::getRight);
+
+	controllerVarGroup.add_getter("L1", &Pronounce::Controller::getL1);
+	controllerVarGroup.add_getter("L2", &Pronounce::Controller::getL2);
+	controllerVarGroup.add_getter("R1", &Pronounce::Controller::getR1);
+	controllerVarGroup.add_getter("R2", &Pronounce::Controller::getR2);
+
+	// manager.registerDataHandler(&controllerVarGroup);
+	manager.setRefreshRate(50);
+
+	// manager.startTask();
+	// manager.stopTask();
+}
+
+void update() {
+	uint32_t startTime = 0;
+	while (true) {
+		// Create stuff for exact delay
+		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
+		startTime = pros::millis();
+
+		modeLogic.update();
+
+		pros::delay(10 - (pros::millis() - startTime));
+	}
 }
 
 /**
@@ -102,6 +142,13 @@ void initialize() {
 	initController();
 	initLogger();
 	initGrafanaLib();
+	initController();
+	initLauncherStates();
+
+	modeLogic.initialize();
+
+	pros::Task modeLogicTask(update);
+
 }
 
 // !SECTION
@@ -112,6 +159,7 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
+	teleopController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -166,7 +214,7 @@ void autonomous() {
  */
 void opcontrol() {
 
-	postAuton();
+	teleopController.setCurrentBehavior(&teleopModeLogic);
 
 	// Driver Control Loop
 	while (true) {

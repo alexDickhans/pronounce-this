@@ -56,7 +56,6 @@
 
 // Auton
 #include "auton/auton.hpp"
-#include "auton/autonSelector.hpp"
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
@@ -99,6 +98,9 @@
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/wait.hpp"
 #include "stateMachine/behaviors/robotBehaviors.hpp"
+#include "stateMachine/state/modeLogic.hpp"
+#include "stateMachine/state/teleopModeLogic.hpp"
+#include "stateMachine/state/modeLogic.hpp"
 
 // Utils
 #include "utils/motorGroup.hpp"

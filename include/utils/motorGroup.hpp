@@ -85,8 +85,7 @@ namespace Pronounce {
 		double get_actual_velocity() {
 			double actualVelocity = 0;
 			for (int i = 0; i < motors.size(); i++) {
-				pros::Motor* motor = this->motors.at(i);
-				actualVelocity += motor->get_actual_velocity();
+				actualVelocity += this->motors.at(i)->get_actual_velocity();
 			}
 			return actualVelocity / motors.size();
 		}

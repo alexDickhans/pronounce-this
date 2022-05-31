@@ -19,17 +19,17 @@ namespace Pronounce {
 	Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 	// Drive Motors
-	pros::Motor frontRightMotor(3, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor backRightMotor(5, pros::E_MOTOR_GEARSET_18, false);
-	pros::Motor frontLeftMotor(6, pros::E_MOTOR_GEARSET_18, false);
-	pros::Motor backLeftMotor(8, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor frontLeftMotor(5, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor frontRightMotor(6, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor backLeftMotor(7, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor backRightMotor(8, pros::E_MOTOR_GEARSET_18, true);
 
 	// Inertial Measurement Unit
 	pros::Imu imu(19);
 
-	pros::Rotation leftEncoder(10);
-	pros::Rotation rightEncoder(9);
-	pros::Rotation backEncoder(9);
+	pros::Rotation leftEncoder(9);
+	pros::Rotation rightEncoder(10);
+	pros::Rotation backEncoder(11);
 
 	// Odom wheels
 	Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
@@ -42,7 +42,7 @@ namespace Pronounce {
 
 	ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 
-	XDrive drivetrain(&frontLeftMotor, &frontLeftMotor, &backLeftMotor, &backRightMotor);
+	XDrive drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor);
 
 	JoystickDrivetrain fieldRelativeJoystick(0.10, true, false, 2.4, 200.0, &odometry, &master, &drivetrain);
 	JoystickDrivetrain fieldRelativeTargetingJoystick(0.10, true, true, 2.4, 200.0, &odometry, &master, &drivetrain);
@@ -72,13 +72,15 @@ namespace Pronounce {
 		leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
 		rightOdomWheel.setRadius(2.75 / 2);
 		rightOdomWheel.setTuningFactor(tuningFactor * (1 + turningFactor));
+		backOdomWheel.setRadius(2.75 / 2);
+		backOdomWheel.setTuningFactor(tuningFactor * 1.0);
 
 		leftEncoder.set_reversed(true);
 		rightEncoder.set_reversed(false);
 
-		odometry.setLeftOffset(3.303827647);
-		odometry.setRightOffset(3.303827647);
-		odometry.setBackOffset(0);
+		odometry.setLeftOffset(8.75/2);
+		odometry.setRightOffset(8.75/2);
+		odometry.setBackOffset(-3);
 
 		odometry.setMaxMovement(0);
 

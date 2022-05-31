@@ -4,6 +4,7 @@
 #include "stateMachine/behavior.hpp"
 #include "feedbackControllers/flywheelPID.hpp"
 #include "utils/motorGroup.hpp"
+#include <iostream>
 
 namespace Pronounce {
 	class Launcher : public Behavior {
@@ -17,7 +18,7 @@ namespace Pronounce {
 		 * @brief Staticish variable that should stay the same between all states. Converts the rpm of the motor to the actual rpm of the wheel
 		 * 
 		 */
-		double flywheelOutputMultiplier;
+		double flywheelOutputMultiplier = 0.0;
 		/**
 		 * @brief Boolean to determine if the 
 		 * 
@@ -55,8 +56,10 @@ namespace Pronounce {
 		void update() {
 			if (flywheelSpeedMultiplier > 0.0) {
 				flywheelPID->setPosition(flywheelSpeed * flywheelSpeedMultiplier);
-				double flywheelVoltage = flywheelPID->update(flywheelMotor->get_actual_velocity() / flywheelOutputMultiplier);
+				double flywheelVoltage = flywheelPID->update(flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier);
 				flywheelMotor->move_voltage(flywheelVoltage);
+				std::cout << "Flywheel speed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
+				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
 			}
 
 			indexer->set_value(pneumaticEngaged);
@@ -67,6 +70,14 @@ namespace Pronounce {
 		void exit() {
 			flywheelMotor->move_voltage(0.0);
 		}
+
+		void setFlywheelSpeed(double flywheelSpeed) {
+			this->flywheelSpeed = flywheelSpeed;
+		}
+
+		void setTurretAngle(double value) {
+			this->turretAngle = value;
+		} 
 
 		~Launcher() {}
 	};

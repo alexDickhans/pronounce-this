@@ -1,8 +1,9 @@
 #pragma once
 
-#include "behaviors/robotBehaviors.hpp"
+#include "stateMachine/behaviors/robotBehaviors.hpp"
 #include "robotStatus.hpp"
-#include "behavior.hpp"
+#include "stateMachine/behavior.hpp"
+#include "stateMachine/behaviorGroup.hpp"
 
 namespace Pronounce {
 
@@ -10,10 +11,14 @@ namespace Pronounce {
 
 	BehaviorGroup stateControllers;
 
+	StateController teleopController(new Behavior());
+
 	void initBehaviors() {
+		stateControllers.addBehavior(&teleopController);
+		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&intakeStateController);
-		stateControllers.addBehavior(&launcherStateController);
 		stateControllers.addBehavior(&launcherStateExtensionController);
+		stateControllers.addBehavior(&launcherStateController);
 		stateControllers.addBehavior(&drivetrainStateController);
 	}
 
@@ -31,14 +36,26 @@ namespace Pronounce {
 
 		void initialize() {
 			robotStatus->initialize();
+			initBehaviors();
+			stateControllers.initialize();
+			initSequences();
 		}
 
 		void update() {
 			robotStatus->update();
+			launcherIdle.setFlywheelSpeed(robotStatus->getFlywheelRpm());
+			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelRpm());
+			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelRpm());
+
+			launcherIdle.setTurretAngle(robotStatus->getTurretAngle());
+			launcherLaunching.setTurretAngle(robotStatus->getTurretAngle());
+			launcherFullSpeed.setTurretAngle(robotStatus->getTurretAngle());
+			stateControllers.update();
 		}
 
 		void exit() {
 			robotStatus->exit();
+			stateControllers.exit();
 		}
 
 		bool isDone() {
