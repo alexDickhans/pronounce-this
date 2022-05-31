@@ -43,5 +43,7 @@ namespace Pronounce {
 
 		launchDisc.addState(&launcherStateController, &launchDisc1);
 		launchDisc.addState(&launcherStateController, &launchDisc2);
+
+		turretMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	}
 } // namespace Pronounce

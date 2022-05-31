@@ -44,14 +44,14 @@ namespace Pronounce {
 			}
 
 			if (controller1->get_digital(DIGITAL_LEFT)) {
-				turretAngle -= 10.0;
+				turretAngle -= 5.0;
 			}
 			if (controller1->get_digital(DIGITAL_RIGHT)) {
-				turretAngle += 10.0;
+				turretAngle += 5.0;
 			}
 
 			if (controller2->is_connected()) {
-				turretAngle += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 5.0 : 0;
+				turretAngle += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 50.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
 			}
 

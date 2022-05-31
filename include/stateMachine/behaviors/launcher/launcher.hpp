@@ -29,7 +29,7 @@ namespace Pronounce {
 		double flywheelSpeed = 0.0;
 
 		double turretAngle = 0.0;
-		double turretOutputMultiplier = 1.0;
+		double turretOutputMultiplier = 5.0;
 
 		MotorGroup* flywheelMotor;
 		pros::ADIDigitalOut* indexer;
@@ -62,9 +62,10 @@ namespace Pronounce {
 				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
 			}
 
-			indexer->set_value(pneumaticEngaged);
-
-			turretMotor->move_absolute(turretAngle*turretOutputMultiplier, 200);
+			if (pros::millis() % 70 > 60) {
+				indexer->set_value(pneumaticEngaged);
+				turretMotor->move_absolute(turretAngle*turretOutputMultiplier, 200);
+			}
 		}
 
 		void exit() {
