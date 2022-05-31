@@ -52,6 +52,7 @@
 
 #include "defines.h"
 #include "auton.h"
+#include "driver.h"
 
 // Auton
 #include "auton/auton.hpp"
@@ -71,6 +72,8 @@
 // FeedbackControllers
 #include "feedbackControllers/bangBang.hpp"
 #include "feedbackControllers/pid.hpp"
+#include "feedbackControllers/feedbackController.hpp"
+#include "feedbackControllers/flywheelPID.hpp"
 
 // Motion control
 #include "motionControl/balance.hpp"
@@ -95,6 +98,7 @@
 #include "stateMachine/sequence.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/wait.hpp"
+#include "stateMachine/behaviors/robotBehaviors.hpp"
 
 // Utils
 #include "utils/motorGroup.hpp"

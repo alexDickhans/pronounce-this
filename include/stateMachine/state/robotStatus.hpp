@@ -1,15 +1,20 @@
 #pragma once
 
 #include "behavior.hpp"
+#include "api.h"
 
 namespace Pronounce {
+
+	pros::Vision turretVision(18, VISION_ZERO_CENTER);
+
 	class RobotStatus : public Behavior {
 	private:
-		/* data */
+
 	public:
 		RobotStatus(/* args */);
 
 		void initialize() {
+			// Init beambreaks
 			return;
 		}
 
@@ -18,7 +23,7 @@ namespace Pronounce {
 		}
 
 		void exit() {
-
+			return;
 		}
 
 		~RobotStatus();

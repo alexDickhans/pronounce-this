@@ -1,45 +1,9 @@
 #include "main.h"
 
-// Controllers
-Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
-Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
-
-// Motors
-
-// Drive Motors
-pros::Motor frontRightMotor(3, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor backRightMotor(5, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor frontLeftMotor(6, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor backLeftMotor(8, pros::E_MOTOR_GEARSET_06, true);
-
-pros::Motor intake(1, true);
-
-// Inertial Measurement Unit
-pros::Imu imu(19);
-
-pros::Rotation leftEncoder(10);
-pros::Rotation rightEncoder(9);
-pros::Rotation backEncoder(9);
-
-// Odom wheels
-Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
-Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
-Pronounce::TrackingWheel backOdomWheel(&backEncoder);
-
-// GPS sensor
-pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
-GpsOdometry gpsOdometry(&gps);
-
-ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
-
-pros::Vision turretVision(18, VISION_ZERO_CENTER);
-
 grafanalib::GUIManager manager;
 
 // LVGL
 lv_obj_t* tabview;
-
-#define DRIFT_MIN 7.0
 
 // SECTION Auton
 
@@ -86,45 +50,6 @@ void initSensors() {
 }
 
 /**
- * Initialize all motors
- */
-void initMotors() {
-	// Motor brake modes
-	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-}
-
-void initDrivetrain() {
-
-	// odometry.setUseImu(false);
-	// Left/Right fraction
-	// 1.072124756
-	// Left 99.57
-	// Right 100.57
-	double turningFactor = (((100.35 / 100.0) - 1.0) / 2);
-	double tuningFactor = 0.998791278;
-	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
-	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(tuningFactor * (1 + turningFactor));
-
-	leftEncoder.set_reversed(true);
-	rightEncoder.set_reversed(false);
-
-	odometry.setLeftOffset(3.303827647);
-	odometry.setRightOffset(3.303827647);
-	odometry.setBackOffset(0);
-
-	odometry.setMaxMovement(0);
-
-	pros::Task::delay(10);
-
-	odometry.reset(new Position());
-}
-
-/**
  * Initialize the controller
  */
 void initController() {
@@ -153,6 +78,13 @@ void initGrafanaLib() {
 
 	manager.registerDataHandler(&odometryVarGroup);
 
+	grafanalib::Variable<Pronounce::Controller> controller1Var("Controller1", master);
+	grafanalib::Variable<Pronounce::Controller> controller2Var("Controller2", partner);
+
+	grafanalib::VariableGroup<Pronounce::Controller> controllerVarGroup({controller1Var, controller2Var});
+
+	manager.registerDataHandler(&controllerVarGroup);
+
 	manager.startTask();
 }
 
@@ -166,7 +98,6 @@ void initialize() {
 
 	// Initialize functions
 	initSensors();
-	initMotors();
 	initDrivetrain();
 	initController();
 	initLogger();

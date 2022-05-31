@@ -6,7 +6,7 @@
 #include "utils/vector.hpp"
 
 namespace Pronounce {
-	class XDrive : public Drivetrain, AbstractHolonomicDrivetrain {
+	class XDrive : public Drivetrain, public AbstractHolonomicDrivetrain {
 	private:
 
 		pros::Motor* frontLeftMotor;

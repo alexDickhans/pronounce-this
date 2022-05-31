@@ -1,4 +1,4 @@
-
+#pragma once
 
 namespace Pronounce {
 	class FeedbackController {
