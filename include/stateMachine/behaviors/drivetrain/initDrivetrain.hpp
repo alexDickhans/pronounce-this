@@ -19,10 +19,10 @@ namespace Pronounce {
 	Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 	// Drive Motors
-	pros::Motor frontLeftMotor(5, pros::E_MOTOR_GEARSET_18, false);
-	pros::Motor frontRightMotor(6, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor backLeftMotor(7, pros::E_MOTOR_GEARSET_18, false);
-	pros::Motor backRightMotor(8, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor frontLeftMotor(5, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor frontRightMotor(6, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor backLeftMotor(7, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor backRightMotor(8, pros::E_MOTOR_GEARSET_18, false);
 
 	// Inertial Measurement Unit
 	pros::Imu imu(19);

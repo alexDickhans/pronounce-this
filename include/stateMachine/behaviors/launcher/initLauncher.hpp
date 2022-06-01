@@ -19,7 +19,7 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut indexer(1, false);
 
-	FlywheelPID flywheelPID(7.0, 0.4, 0.0, 3.0);
+	FlywheelPID flywheelPID(4.0, 0.3, 0.0, 3.0);
 
 	Launcher launcherStopped(0.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
 	Launcher launcherIdle(1.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID);
