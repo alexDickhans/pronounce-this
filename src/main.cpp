@@ -71,6 +71,11 @@ void initLogger() {
 }
 
 void initGrafanaLib() {
+	// manager.stopTask();
+}
+
+void update() {
+
 	manager = grafanalib::GUIManager();
 
 	grafanalib::Variable<Pronounce::Odometry> odometryVar("Odometry", odometry);
@@ -109,13 +114,37 @@ void initGrafanaLib() {
 	controllerVarGroup.add_getter("R2", &Pronounce::Controller::getR2);
 
 	// manager.registerDataHandler(&controllerVarGroup);
-	manager.setRefreshRate(50);
 
-	// manager.startTask();
-	// manager.stopTask();
-}
+	manager.setRefreshRate(20);
 
-void update() {
+	grafanalib::Variable<pros::Motor> frontLeftMotorVar("Front Left Motor", frontLeftMotor);
+	grafanalib::Variable<pros::Motor> frontRightMotorVar("Front Right Motor", frontRightMotor);
+	grafanalib::Variable<pros::Motor> backLeftMotorVar("Back Left Motor", backLeftMotor);
+	grafanalib::Variable<pros::Motor> backRightMotorVar("Back Right Motor", backRightMotor);
+	grafanalib::Variable<pros::Motor> flywheel1MotorMotorVar("Flywheel1", flywheel1);
+	grafanalib::Variable<pros::Motor> flywheel2MotorMotorVar("Flywheel2", flywheel2);
+
+	grafanalib::VariableGroup<pros::Motor> motorVarGroups({frontLeftMotorVar, frontRightMotorVar, backLeftMotorVar, backRightMotorVar, flywheel1MotorMotorVar, flywheel2MotorMotorVar});
+
+	motorVarGroups.add_getter("Temperature", &pros::Motor::get_temperature);
+	motorVarGroups.add_getter("Actual Velocity", &pros::Motor::get_actual_velocity);
+	motorVarGroups.add_getter("Voltage", &pros::Motor::get_voltage);
+	motorVarGroups.add_getter("Efficiency", &pros::Motor::get_efficiency);
+
+	manager.registerDataHandler(&motorVarGroups);
+
+	grafanalib::Variable<RobotStatus> robotStatusVar("RobotStatus", robotStatus);
+
+	grafanalib::VariableGroup<RobotStatus> robotStatusVarGroups({robotStatusVar});
+
+	robotStatusVarGroups.add_getter("Flywheel Target Speed", &Pronounce::RobotStatus::getFlywheelRpm);
+	robotStatusVarGroups.add_getter("Flywheel Actual Speed", &Pronounce::RobotStatus::getActualFlywheelRpm);
+	// robotStatusVarGroups.add_getter("Flywheel Turret Angle", &Pronounce::RobotStatus::getTurretAngle);
+
+	manager.registerDataHandler(&robotStatusVarGroups);
+
+	manager.startTask();
+
 	uint32_t startTime = 0;
 	while (true) {
 		// Create stuff for exact delay
@@ -123,9 +152,55 @@ void update() {
 		startTime = pros::millis();
 
 		modeLogic.update();
+		odometry.update();
 
 		pros::delay(10 - (pros::millis() - startTime));
 	}
+}
+
+void updateDisplay() {
+
+	// Odom
+	lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
+	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
+
+	// Drivetrain
+	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
+	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
+
+	lv_table_set_row_cnt(drivetrainTable, 2);
+	lv_table_set_col_cnt(drivetrainTable, 2);
+
+	lv_table_set_col_width(drivetrainTable, 0, 200);
+	lv_table_set_col_width(drivetrainTable, 1, 200);
+
+	// Flywheels
+	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Flywheel");
+	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
+
+	while (true) {
+		// Odometry
+		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
+			+ "\nL: " + std::to_string(leftOdomWheel.getPosition()) +
+			", R: " + std::to_string(rightOdomWheel.getPosition())).c_str());
+
+		// Drivetrain
+		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(backLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 0, 1, (std::to_string(frontRightMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 1, (std::to_string(backRightMotor.get_temperature()) + " C").c_str());
+
+		// Flywheel
+		lv_label_set_text(flywheelLabel, ("\nTarget Speed: " + std::to_string(robotStatus.getFlywheelRpm()) +
+			"\nCurrent Speed: " + std::to_string(robotStatus.getActualFlywheelRpm()) +
+			"\nVoltage: " + std::to_string(flywheel1.get_voltage())).c_str());
+
+		pros::Task::delay(50);
+	}
+}
+
+void initDisplay() {
+	pros::Task display(updateDisplay);
 }
 
 /**
@@ -141,9 +216,9 @@ void initialize() {
 	initDrivetrain();
 	initController();
 	initLogger();
-	initGrafanaLib();
 	initController();
 	initLauncherStates();
+	initDisplay();
 
 	modeLogic.initialize();
 
@@ -213,7 +288,7 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-
+	
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 
 	// Driver Control Loop

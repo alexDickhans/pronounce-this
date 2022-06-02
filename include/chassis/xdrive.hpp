@@ -43,10 +43,29 @@ namespace Pronounce {
 		}
 
 		void setDriveVectorVelocity(Vector vector, double rotation) {
-			this->frontLeftMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() + rotation);
-			this->frontRightMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() - rotation);
-			this->backLeftMotor->move_velocity(vector.getCartesian().getY() - vector.getCartesian().getX() + rotation);
-			this->backRightMotor->move_velocity(vector.getCartesian().getY() + vector.getCartesian().getX() - rotation);
+			double frontLeftVelocity = vector.getCartesian().getY() + vector.getCartesian().getX() + rotation;
+			double frontRightVelocity = vector.getCartesian().getY() - vector.getCartesian().getX() - rotation;
+			double backLeftVelocity = vector.getCartesian().getY() - vector.getCartesian().getX() + rotation;
+			double backRightVelocity = vector.getCartesian().getY() + vector.getCartesian().getX() - rotation;
+
+			double maxVal = abs(frontLeftVelocity);
+			maxVal = maxVal > abs(frontRightVelocity) ? maxVal : abs(frontRightVelocity);
+			maxVal = maxVal > abs(backLeftVelocity) ? maxVal : abs(backLeftVelocity);
+			maxVal = maxVal > abs(backRightVelocity) ? maxVal : abs(backRightVelocity);
+
+			if (maxVal > 200.0) {
+				double adjustment = maxVal/200.0;
+
+				frontLeftVelocity *= adjustment;
+				frontRightVelocity *= adjustment;
+				backLeftVelocity *= adjustment;
+				backRightVelocity *= adjustment;
+			} 
+
+			this->frontLeftMotor->move_velocity(frontLeftVelocity);
+			this->frontRightMotor->move_velocity(frontRightVelocity);
+			this->backLeftMotor->move_velocity(backLeftVelocity);
+			this->backRightMotor->move_velocity(backRightVelocity);
 		}
 
 		void setDriveVectorVelocity(Vector vector) {

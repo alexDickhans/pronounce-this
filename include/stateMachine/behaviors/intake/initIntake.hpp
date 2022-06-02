@@ -7,7 +7,7 @@
 
 namespace Pronounce {
 
-	pros::Motor intake(4, true);
+	pros::Motor intake(4, false);
 
 	Intake intakeIntaking(&intake, 1.0);
 	Intake intakeStopped(&intake, 0.0);

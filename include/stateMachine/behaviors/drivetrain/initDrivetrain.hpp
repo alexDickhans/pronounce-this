@@ -77,6 +77,7 @@ namespace Pronounce {
 
 		leftEncoder.set_reversed(true);
 		rightEncoder.set_reversed(false);
+		backEncoder.set_reversed(true);
 
 		odometry.setLeftOffset(8.75/2);
 		odometry.setRightOffset(8.75/2);

@@ -20,7 +20,7 @@ namespace Pronounce {
 		}
 
 		void initialize() {
-			drivetrainStateController.setCurrentBehavior(&normalJoystick);
+			drivetrainStateController.setCurrentBehavior(&fieldRelativeJoystick);
 		}
 
 		void update() {

@@ -70,7 +70,7 @@ namespace Pronounce {
 			driveVector = filterVector(driveVector);
 
 			if (fieldOriented) {
-				driveVector.rotate(-odometry->getTheta());
+				driveVector.rotate(odometry->getTheta());
 			}
 
 			driveVector = driveVector.scale(outputMultiplier);

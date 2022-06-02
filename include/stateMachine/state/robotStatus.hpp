@@ -33,6 +33,10 @@ namespace Pronounce {
 			return flywheelRPM + flywheelAdjustment;
 		}
 
+		double getActualFlywheelRpm() {
+			return launcherIdle.getFlywheelSpeed();
+		}
+
 		double getTurretAngle() {
 			return turretAngle;
 		}
