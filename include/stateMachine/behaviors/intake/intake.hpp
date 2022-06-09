@@ -2,14 +2,15 @@
 
 #include "api.h"
 #include "stateMachine/behavior.hpp"
+#include "utils/motorGroup.hpp"
 
 namespace Pronounce {
 	class Intake : public Behavior {
 	private:
-		pros::Motor* intake;
+		MotorGroup* intake;
 		double speed;
 	public:
-		Intake(pros::Motor* intake, double speed) {
+		Intake(MotorGroup* intake, double speed) {
 			this->intake = intake;
 			this->speed = speed;
 		}

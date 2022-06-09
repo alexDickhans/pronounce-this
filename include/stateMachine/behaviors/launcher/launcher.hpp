@@ -29,7 +29,7 @@ namespace Pronounce {
 		double flywheelSpeed = 0.0;
 
 		double turretAngle = 0.0;
-		double turretOutputMultiplier = 5.0;
+		double turretOutputMultiplier = 3.7;
 
 		MotorGroup* flywheelMotor;
 		pros::ADIDigitalOut* indexer;
@@ -37,11 +37,12 @@ namespace Pronounce {
 		pros::Motor* turretMotor;
 
 		FlywheelPID* flywheelPID;
+		PID* turretPID;
 
 		bool useIsDone = false;
 
 	public:
-		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool pneumaticEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID) {
+		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool pneumaticEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID, PID* turretPID) {
 			this->flywheelSpeedMultiplier = flywheelSpeedMultiplier;
 			this->flywheelOutputMultiplier = flywheelOutputMultiplier;
 			this->pneumaticEngaged = pneumaticEngaged;
@@ -50,6 +51,7 @@ namespace Pronounce {
 			this->turretMotor = turretMotor;
 			this->indexer = indexer;
 			this->flywheelPID = flywheelPID;
+			this->turretPID = turretPID;
 		}
 
 		void initialize() {
@@ -64,11 +66,11 @@ namespace Pronounce {
 				std::cout << "Flywheel speed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
 				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
 			}
+			indexer->set_value(pneumaticEngaged);
 
-			if (pros::millis() % 70 > 60) {
-				indexer->set_value(pneumaticEngaged);
-				turretMotor->move_absolute(turretAngle*turretOutputMultiplier, 200);
-			}
+			turretPID->setTarget(turretAngle * turretOutputMultiplier);
+			double turretPower = turretPID->update(turretMotor->get_position() / turretOutputMultiplier);
+			turretMotor->move_voltage(turretPower);
 		}
 
 		void exit() {

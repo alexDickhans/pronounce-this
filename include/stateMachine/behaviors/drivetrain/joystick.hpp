@@ -6,6 +6,10 @@
 #include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "utils/utils.hpp"
 #include "math.h"
+#include "utils/runningAverage.hpp"
+
+#define RUNNING_AVERAGE_TRANSLATION 20
+#define RUNNING_AVERAGE_ROTATION 5
 
 namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
@@ -15,6 +19,10 @@ namespace Pronounce {
 		bool targeting = false;
 		double exponentializeValue = 1.0;
 		double outputMultiplier = 1.0;
+
+		RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX;
+		RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY;
+		RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn;
 
 		/**
 		 * @brief Used for field oriented and targeting control
@@ -41,7 +49,7 @@ namespace Pronounce {
 		}
 
 	public:
-		JoystickDrivetrain(double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, Odometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) {
+		JoystickDrivetrain(double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, Odometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) {
 			this->deadband = deadband;
 			this->fieldOriented = fieldOriented;
 			this->targeting = targeting;
@@ -50,6 +58,9 @@ namespace Pronounce {
 			this->odometry = odometry;
 			this->controller = controller;
 			this->drivetrain = drivetrain;
+			this->movingAverageX = movingAverageX;
+			this->movingAverageY = movingAverageY;
+			this->movingAverageTurn = movingAverageTurn;
 		}
 
 		void initialize() {}
@@ -62,9 +73,13 @@ namespace Pronounce {
 				return;
 			}
 
-			double x = map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X), -127.0, 127.0, -1.0, 1.0);
-			double y = map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), -127.0, 127.0, -1.0, 1.0);
-			double turn = map(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), -127.0, 127.0, -1.0, 1.0);
+			movingAverageX->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X), -127.0, 127.0, -1.0, 1.0));
+			movingAverageY->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), -127.0, 127.0, -1.0, 1.0));
+			movingAverageTurn->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), -127.0, 127.0, -1.0, 1.0));
+
+			double x = movingAverageX->getAverage();
+			double y = movingAverageY->getAverage();
+			double turn = movingAverageTurn->getAverage();
 
 			Vector driveVector(new Point(x, y));
 			driveVector = filterVector(driveVector);

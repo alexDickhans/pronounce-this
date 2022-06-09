@@ -103,6 +103,7 @@
 #include "stateMachine/state/modeLogic.hpp"
 
 // Utils
+#include "utils/exponentialMovingAverage.hpp"
 #include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"

@@ -4,6 +4,7 @@
 #include "robotStatus.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviorGroup.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce {
 
@@ -47,9 +48,12 @@ namespace Pronounce {
 			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelRpm());
 			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelRpm());
 
-			launcherIdle.setTurretAngle(robotStatus->getTurretAngle());
-			launcherLaunching.setTurretAngle(robotStatus->getTurretAngle());
-			launcherFullSpeed.setTurretAngle(robotStatus->getTurretAngle());
+			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0)), 0.0, 180.0));
+			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0)), 0.0, 180.0));
+			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0)), 0.0, 180.0));
+			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0)), 0.0, 180.0));
+
+			std::cout << "Turret angle: " << robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0)) << std::endl;
 			stateControllers.update();
 		}
 

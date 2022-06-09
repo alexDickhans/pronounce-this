@@ -11,6 +11,8 @@
 #include "odometry/gpsOdometry.hpp"
 #include "chassis/xdrive.hpp"
 #include "driver/controller.hpp"
+#include "utils/exponentialMovingAverage.hpp"
+#include "utils/runningAverage.hpp"
 
 namespace Pronounce {
 
@@ -44,12 +46,16 @@ namespace Pronounce {
 
 	XDrive drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor);
 
-	JoystickDrivetrain fieldRelativeJoystick(0.10, true, false, 2.4, 200.0, &odometry, &master, &drivetrain);
-	JoystickDrivetrain fieldRelativeTargetingJoystick(0.10, true, true, 2.4, 200.0, &odometry, &master, &drivetrain);
-	JoystickDrivetrain normalJoystick(0.10, false, false, 2.4, 200.0, &odometry, &master, &drivetrain);
-	JoystickDrivetrain normalTargetingJoystick(0.10, false, true, 2.4, 200.0, &odometry, &master, &drivetrain);
+	RunningAverage<RUNNING_AVERAGE_TRANSLATION> movingAverageX;
+	RunningAverage<RUNNING_AVERAGE_TRANSLATION> movingAverageY;
+	RunningAverage<RUNNING_AVERAGE_ROTATION> movingAverageTurn;
 
-	JoystickDrivetrain drivetrainStopped(0.10, false, true, 2.4, 0.0, &odometry, &master, &drivetrain);
+	JoystickDrivetrain fieldRelativeJoystick(0.10, true, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain fieldRelativeTargetingJoystick(0.10, true, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain normalJoystick(0.10, false, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain normalTargetingJoystick(0.10, false, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+
+	JoystickDrivetrain drivetrainStopped(0.10, false, true, 2.4, 0.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
 
 	StateController drivetrainStateController(&drivetrainStopped);
 
@@ -67,7 +73,7 @@ namespace Pronounce {
 		// Left 99.57
 		// Right 100.57
 		double turningFactor = (((100.35 / 100.0) - 1.0) / 2);
-		double tuningFactor = 0.998791278;
+		double tuningFactor = 1.0;
 		leftOdomWheel.setRadius(2.75 / 2);
 		leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
 		rightOdomWheel.setRadius(2.75 / 2);
@@ -79,8 +85,8 @@ namespace Pronounce {
 		rightEncoder.set_reversed(false);
 		backEncoder.set_reversed(true);
 
-		odometry.setLeftOffset(8.75/2);
-		odometry.setRightOffset(8.75/2);
+		odometry.setLeftOffset(3.741365718);
+		odometry.setRightOffset(3.741365718);
 		odometry.setBackOffset(-3);
 
 		odometry.setMaxMovement(0);

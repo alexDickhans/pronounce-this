@@ -219,6 +219,7 @@ void initialize() {
 	initController();
 	initLauncherStates();
 	initDisplay();
+	initIntake();
 
 	modeLogic.initialize();
 

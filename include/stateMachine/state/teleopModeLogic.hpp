@@ -20,7 +20,7 @@ namespace Pronounce {
 		}
 
 		void initialize() {
-			drivetrainStateController.setCurrentBehavior(&fieldRelativeJoystick);
+			drivetrainStateController.setCurrentBehavior(&normalJoystick);
 		}
 
 		void update() {
@@ -44,10 +44,10 @@ namespace Pronounce {
 			}
 
 			if (controller1->get_digital(DIGITAL_LEFT)) {
-				turretAngle -= 5.0;
+				turretAngle -= 1.0;
 			}
 			if (controller1->get_digital(DIGITAL_RIGHT)) {
-				turretAngle += 5.0;
+				turretAngle += 1.0;
 			}
 
 			if (controller2->is_connected()) {
