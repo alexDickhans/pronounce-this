@@ -44,9 +44,9 @@ namespace Pronounce {
 
 		void update() {
 			robotStatus->update();
-			launcherIdle.setFlywheelSpeed(robotStatus->getFlywheelRpm());
-			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelRpm());
-			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelRpm());
+			launcherIdle.setFlywheelSpeed(robotStatus->getFlywheelTarget());
+			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
+			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 
 			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0)), 0.0, 180.0));
 			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0)), 0.0, 180.0));

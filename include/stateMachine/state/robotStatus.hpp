@@ -13,6 +13,7 @@ namespace Pronounce {
 	class RobotStatus : public Behavior {
 	private:
 		double flywheelRPM = 3500;
+		
 	public:
 
 		RobotStatus() {}
@@ -29,7 +30,7 @@ namespace Pronounce {
 			return;
 		}
 
-		double getFlywheelRpm() {
+		double getFlywheelTarget() {
 			return flywheelRPM + flywheelAdjustment;
 		}
 

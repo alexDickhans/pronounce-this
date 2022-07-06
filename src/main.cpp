@@ -137,7 +137,7 @@ void update() {
 
 	grafanalib::VariableGroup<RobotStatus> robotStatusVarGroups({robotStatusVar});
 
-	robotStatusVarGroups.add_getter("Flywheel Target Speed", &Pronounce::RobotStatus::getFlywheelRpm);
+	robotStatusVarGroups.add_getter("Flywheel Target Speed", &Pronounce::RobotStatus::getFlywheelTarget);
 	robotStatusVarGroups.add_getter("Flywheel Actual Speed", &Pronounce::RobotStatus::getActualFlywheelRpm);
 	// robotStatusVarGroups.add_getter("Flywheel Turret Angle", &Pronounce::RobotStatus::getTurretAngle);
 
@@ -191,7 +191,7 @@ void updateDisplay() {
 		lv_table_set_cell_value(drivetrainTable, 1, 1, (std::to_string(backRightMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel, ("\nTarget Speed: " + std::to_string(robotStatus.getFlywheelRpm()) +
+		lv_label_set_text(flywheelLabel, ("\nTarget Speed: " + std::to_string(robotStatus.getFlywheelTarget()) +
 			"\nCurrent Speed: " + std::to_string(robotStatus.getActualFlywheelRpm()) +
 			"\nVoltage: " + std::to_string(flywheel1.get_voltage())).c_str());
 
