@@ -8,7 +8,7 @@
 
 namespace Pronounce {
 
-	pros::Motor intake(4, true);
+	pros::Motor intake(4, false);
 	pros::Motor intake2(12, true);
 	pros::Motor intake3(13, false);
 

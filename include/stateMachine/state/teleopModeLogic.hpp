@@ -13,6 +13,8 @@ namespace Pronounce {
 
 		pros::Controller* controller1;
 		pros::Controller* controller2;
+
+		bool tilter;
 	public:
 		TeleopModeLogic(pros::Controller* controller1, pros::Controller* controller2) {
 			this->controller1 = controller1;
@@ -54,6 +56,15 @@ namespace Pronounce {
 				turretAngle += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 50.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
 			}
+
+			if (controller1->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+				tilter = !tilter;
+			}
+
+			launcherFullSpeed.setTilterEngaged(tilter);
+			launcherIdle.setTilterEngaged(tilter);
+			launcherLaunching.setTilterEngaged(tilter);
+			launcherStopped.setTilterEngaged(tilter);
 
 			std::cout << "Turret: " << turretAngle << std::endl;
 			std::cout << "FlywheelSpeed: " << flywheelAdjustment << std::endl;

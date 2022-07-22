@@ -1,9 +1,10 @@
 #pragma once
 
-#include "odometry.hpp"
+#include "continuousOdometry.hpp"
 #include "position/odomWheel.hpp"
 #include "utils/vector.hpp"
 #include "utils/utils.hpp"
+#include "utils/pose2d.hpp"
 
 namespace Pronounce
 {
@@ -23,7 +24,7 @@ namespace Pronounce
 
         void update();
 
-        void reset(Position* position) {
+        void reset(Pose2D* position) {
             this->setPosition(position);
             this->setResetPosition(position);
             this->leftWheel->reset();

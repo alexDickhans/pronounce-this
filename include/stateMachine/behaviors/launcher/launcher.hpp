@@ -23,7 +23,9 @@ namespace Pronounce {
 		 * @brief Boolean to determine if the 
 		 * 
 		 */
-		bool pneumaticEngaged;
+		bool indexerEngaged;
+
+		bool tilterEngaged = false;
 
 		// double distanceFromCenter;
 		double flywheelSpeed = 0.0;
@@ -33,6 +35,7 @@ namespace Pronounce {
 
 		MotorGroup* flywheelMotor;
 		pros::ADIDigitalOut* indexer;
+		pros::ADIDigitalOut* tilter;
 
 		pros::Motor* turretMotor;
 
@@ -42,20 +45,21 @@ namespace Pronounce {
 		bool useIsDone = false;
 
 	public:
-		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool pneumaticEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID, PID* turretPID) {
+		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool indexerEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, pros::ADIDigitalOut* tilter, FlywheelPID* flywheelPID, PID* turretPID) {
 			this->flywheelSpeedMultiplier = flywheelSpeedMultiplier;
 			this->flywheelOutputMultiplier = flywheelOutputMultiplier;
-			this->pneumaticEngaged = pneumaticEngaged;
+			this->indexerEngaged = indexerEngaged;
 			this->useIsDone = useIsDone;
 			this->flywheelMotor = flywheelMotor;
 			this->turretMotor = turretMotor;
 			this->indexer = indexer;
+			this->tilter = tilter;
 			this->flywheelPID = flywheelPID;
 			this->turretPID = turretPID;
 		}
 
 		void initialize() {
-			indexer->set_value(pneumaticEngaged);
+			indexer->set_value(indexerEngaged);
 		}
 
 		void update() {
@@ -66,7 +70,8 @@ namespace Pronounce {
 				std::cout << "Flywheel speed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
 				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
 			}
-			indexer->set_value(pneumaticEngaged);
+			indexer->set_value(indexerEngaged);
+			tilter->set_value(tilterEngaged);
 
 			turretPID->setTarget(turretAngle * turretOutputMultiplier);
 			double turretPower = turretPID->update(turretMotor->get_position() / turretOutputMultiplier);
@@ -83,6 +88,10 @@ namespace Pronounce {
 			} else {
 				return false;
 			}
+		}
+
+		void setTilterEngaged(bool tilterEngaged) {
+			this->tilterEngaged = tilterEngaged;
 		}
 
 		void setFlywheelSpeed(double flywheelSpeed) {

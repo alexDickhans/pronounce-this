@@ -17,15 +17,16 @@ namespace Pronounce {
 
 	MotorGroup flywheels;
 
-	pros::ADIDigitalOut indexer(1, false);
+	pros::ADIDigitalOut indexer(2, false);
+	pros::ADIDigitalOut tilter(1, false);
 
 	FlywheelPID flywheelPID(3.0, 0.5, 0.0, 3.0);
 	PID turretPID(600.0, 0.0, 100);
 
-	Launcher launcherStopped(0.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID);
-	Launcher launcherIdle(1.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID);
-	Launcher launcherFullSpeed(1.0, 42.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID);
-	Launcher launcherLaunching(1.0, 42.0 / 1.0, true, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID);
+	Launcher launcherStopped(0.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &tilter, &flywheelPID, &turretPID);
+	Launcher launcherIdle(1.0, 42.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &tilter, &flywheelPID, &turretPID);
+	Launcher launcherFullSpeed(1.0, 42.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &tilter, &flywheelPID, &turretPID);
+	Launcher launcherLaunching(1.0, 42.0 / 1.0, true, false, &flywheels, &turretMotor, &indexer, &tilter, &flywheelPID, &turretPID);
 
 	StateController launcherStateController(&launcherIdle);
 	StateController launcherStateExtensionController(new Behavior());

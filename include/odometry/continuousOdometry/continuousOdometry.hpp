@@ -1,17 +1,20 @@
 #pragma once
 
-#include "utils/position.hpp"
+#include "utils/pose2d.hpp"
+#include "utils/vector.hpp"
 
 namespace Pronounce {
     class Odometry {
     private:
-        Position* position;
-        Position* resetPosition;
+        Pose2D* position;
+        Pose2D* resetPosition;
+
+		Vector currentVelocity;
     public:
         Odometry();
-        Odometry(Position* position);
+        Odometry(Pose2D* position);
 
-        Position* getPosition() {
+        Pose2D* getPosition() {
             return this->position;
         }
 
@@ -24,30 +27,39 @@ namespace Pronounce {
 		}
 
 		double getTheta() {
-			return this->position->getTheta();
+			return this->position->getAngle();
 		}
 
-        void setPosition(Position* position) {
+        void setPosition(Pose2D* position) {
             this->position->operator=(position);
         }
 
-        Position* getResetPosition() {
+        Pose2D* getResetPosition() {
             return this->resetPosition;
         }
 
-        void setResetPosition(Position* resetPosition) {
+        void setResetPosition(Pose2D* resetPosition) {
             this->resetPosition->operator=(resetPosition);
         }
+		
+		Vector getCurrentVelocity() {
+			return this->currentVelocity;
+		}
+
+		void setCurrentVelocity(Vector velocity) {
+			this->currentVelocity = velocity;
+		}
 
         virtual void update() {};
 
-        virtual void reset(Position* position) {
+        virtual void reset(Pose2D* position) {
             this->position->operator=(position);
             this->resetPosition->operator=(position);
+			this->currentVelocity.operator=(Vector());
         }
         
         void reset() {
-            this->reset(new Position());
+            this->reset(new Pose2D());
         }
 
         ~Odometry();

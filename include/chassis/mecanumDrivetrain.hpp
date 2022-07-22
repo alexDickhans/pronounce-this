@@ -3,7 +3,6 @@
 #include "api.h"
 #include "abstractHolonomicDrivetrain.hpp"
 #include "utils/vector.hpp"
-#include "odometry/threeWheelOdom.hpp"
 
 namespace Pronounce {
 	class MecanumDrivetrain : public AbstractHolonomicDrivetrain {
