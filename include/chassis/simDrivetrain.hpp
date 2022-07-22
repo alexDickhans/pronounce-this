@@ -1,7 +1,7 @@
 #pragma once
 
 #include "abstractDrivetrain.hpp"
-#include "utils/position.hpp"
+#include "utils/pose2d.hpp"
 
 namespace Pronounce {
 	/**
@@ -10,17 +10,17 @@ namespace Pronounce {
 	 */
 	class SimDrivetrain : public AbstractDrivetrain {
 	private:
-		Position* position;
+		Pose2D* position;
 		double resetOrientation = 0.0;
 	public:
 		SimDrivetrain();
-		SimDrivetrain(Position* position);
+		SimDrivetrain(Pose2D* position);
 		
-		Position* getPosition() {
+		Pose2D* getPosition() {
 			return position;
 		}
 
-		void setPosition(Position* position) {
+		void setPosition(Pose2D* position) {
 			this->position = position;
 		}
 
@@ -32,9 +32,9 @@ namespace Pronounce {
 			this->resetOrientation = resetOrientation;
 		}
 
-		void reset(Position* position) {
+		void reset(Pose2D* position) {
 			this->position->operator=(position);
-			this->resetOrientation = position->getTheta();
+			this->resetOrientation = position->getAngle();
 		}
 
 		virtual void update() {}

@@ -6,10 +6,10 @@
 #include <iostream>
 #include "feedbackControllers/pid.hpp"
 #include "utils/path.hpp"
-#include "utils/position.hpp"
+#include "utils/pose2d.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
-#include "odometry/odometry.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {

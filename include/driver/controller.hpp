@@ -2,8 +2,8 @@
 
 #include "api.h"
 #include "chassis/drivetrain.hpp"
-#include "utils/position.hpp"
-#include "odometry/odometry.hpp"
+#include "utils/pose2d.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "utils/vector.hpp"
 
 #define STATE_AUTON 0

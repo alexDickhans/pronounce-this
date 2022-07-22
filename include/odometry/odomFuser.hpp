@@ -1,7 +1,9 @@
 #pragma once
 
+#include "continuousOdometry/continuousOdometry.hpp"
+
 namespace Pronounce {
-	class OdomFuser {
+	class OdomFuser : public Odometry {
 	private:
 		/* data */
 	public:

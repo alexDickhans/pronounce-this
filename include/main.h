@@ -60,7 +60,6 @@
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
 #include "chassis/drivetrain.hpp"
-#include "chassis/mecanumDrivetrain.hpp"
 #include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
 #include "chassis/xdrive.hpp"
@@ -80,12 +79,14 @@
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
 
-// Odometry
-#include "odometry/gpsOdometry.hpp"
-#include "odometry/mecanumOdometry.hpp"
-#include "odometry/odometry.hpp"
-#include "odometry/threeWheelOdom.hpp"
-#include "odometry/tankOdom.hpp"
+// Continuous Odometry
+#include "odometry/continuousOdometry/mecanumOdometry.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
+#include "odometry/continuousOdometry/threeWheelOdom.hpp"
+
+// TODO: Add others
+// Interrupt Odom
+#include "odometry/interruptOdometry/gpsOdometry.hpp"
 
 // Position
 #include "position/motorOdom.hpp"

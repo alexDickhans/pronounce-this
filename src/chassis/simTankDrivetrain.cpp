@@ -6,16 +6,16 @@ namespace Pronounce {
 
 	SimTankDrivetrain::SimTankDrivetrain(double trackWidth) : SimTankDrivetrain(trackWidth, 0.0, 0.0) {}
 
-	SimTankDrivetrain::SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed) : SimTankDrivetrain(trackWidth, maxAcceleration, maxSpeed, new Position(0.0, 0.0, 0.0)) {}
+	SimTankDrivetrain::SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed) : SimTankDrivetrain(trackWidth, maxAcceleration, maxSpeed, new Pose2D(0.0, 0.0, 0.0)) {}
 
-	SimTankDrivetrain::SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed, Position* position) : SimDrivetrain(position), AbstractTankDrivetrain(trackWidth) {
+	SimTankDrivetrain::SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed, Pose2D* position) : SimDrivetrain(position), AbstractTankDrivetrain(trackWidth) {
 		this->maxAcceleration = maxAcceleration;
 		this->maxSpeed = maxSpeed;
 	}
 
 	void SimTankDrivetrain::update() {
 
-		Position* oldPosition = this->getPosition();
+		Pose2D* oldPosition = this->getPosition();
 		
 		// Update the wheel velocities
 		double leftChange = clamp(leftVelocityTarget - leftVelocity, -maxAcceleration, maxAcceleration);
@@ -36,11 +36,11 @@ namespace Pronounce {
 		// Calculate a vector
 		Vector localOffset(offset, relativeAngle - (angle / 2.0) - M_PI_2);
 
-		Position* newPosition = new Position();
+		Pose2D* newPosition = new Pose2D();
 		newPosition->operator=(oldPosition);
 		
 		newPosition->add(localOffset.getCartesian());
-		newPosition->setTheta(relativeAngle + M_PI_2);
+		newPosition->setAngle(relativeAngle + M_PI_2);
 
 		this->setPosition(newPosition);
 	}

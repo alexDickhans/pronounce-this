@@ -19,7 +19,7 @@ namespace Pronounce {
 		SimTankDrivetrain();
 		SimTankDrivetrain(double trackWidth);
 		SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed);
-		SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed, Position* position);
+		SimTankDrivetrain(double trackWidth, double maxAcceleration, double maxSpeed, Pose2D* position);
 
 		void update();
 

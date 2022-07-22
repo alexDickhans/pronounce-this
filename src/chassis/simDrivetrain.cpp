@@ -3,10 +3,10 @@
 namespace Pronounce {
 
 	SimDrivetrain::SimDrivetrain() {
-		this->position = new Position();
+		this->position = new Pose2D();
 	}
 
-	SimDrivetrain::SimDrivetrain(Position* position) {
+	SimDrivetrain::SimDrivetrain(Pose2D* position) {
 		this->position = position;
 	}
 	
