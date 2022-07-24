@@ -1,6 +1,6 @@
 #pragma once
 
-#include "odometry/odometry.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "api.h"
 
 namespace Pronounce {

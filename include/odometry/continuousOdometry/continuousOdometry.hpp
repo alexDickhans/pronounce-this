@@ -4,15 +4,15 @@
 #include "utils/vector.hpp"
 
 namespace Pronounce {
-    class Odometry {
+    class ContinuousOdometry {
     private:
         Pose2D* position;
         Pose2D* resetPosition;
 
 		Vector currentVelocity;
     public:
-        Odometry();
-        Odometry(Pose2D* position);
+        ContinuousOdometry();
+        ContinuousOdometry(Pose2D* position);
 
         Pose2D* getPosition() {
             return this->position;
@@ -62,6 +62,6 @@ namespace Pronounce {
             this->reset(new Pose2D());
         }
 
-        ~Odometry();
+        ~ContinuousOdometry();
     };    
 } // namespace Pronounce

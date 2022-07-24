@@ -2,12 +2,7 @@
 
 namespace Pronounce {
 
-	Controller::Controller(pros::controller_id_e_t id) : pros::Controller(id) {
-		this->odometry = nullptr;
-	}
-
-	Controller::Controller(pros::controller_id_e_t id, Odometry* odometry) : pros::Controller(id) {
-		this->odometry = odometry;
+	Controller::Controller(pros::controller_id_e_t id, ContinuousOdometry& odometry) : pros::Controller(id), odometry(odometry) {
 	}
 
 	double Controller::getMagnitude(int joystick) {

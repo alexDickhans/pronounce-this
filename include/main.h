@@ -108,7 +108,7 @@
 #include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"
-#include "utils/position.hpp"
+#include "utils/pose2d.hpp"
 #include "utils/quadraticSplinePath.hpp"
 #include "utils/runningAverage.hpp"
 #include "utils/splinePath.hpp"

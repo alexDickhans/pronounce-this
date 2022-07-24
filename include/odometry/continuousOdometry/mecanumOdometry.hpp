@@ -6,7 +6,7 @@
 #include "utils/pointUtil.hpp"
 #include "utils/vector.hpp"
 #include "position/odomWheel.hpp"
-#include "odometry.hpp"
+#include "continuousOdometry.hpp"
 
 namespace Pronounce {
 

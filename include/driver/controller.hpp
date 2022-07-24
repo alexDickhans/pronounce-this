@@ -18,7 +18,7 @@ namespace Pronounce {
     private:
         uint8_t lastState;
 
-        Odometry* odometry;
+        ContinuousOdometry& odometry;
 
         // Path to be implemented later.
         
@@ -37,8 +37,7 @@ namespace Pronounce {
         // pros::Vision* vision;
 
     public:
-        Controller(pros::controller_id_e_t id);
-        Controller(pros::controller_id_e_t id, Odometry* odometry);
+        Controller(pros::controller_id_e_t id, ContinuousOdometry& odometry);
 
         /**
          * Get the degrees that the controller is pointing at
@@ -86,11 +85,11 @@ namespace Pronounce {
             this->drivetrain = drivetrain;
         }
 
-		Odometry* getOdometry() {
+		ContinuousOdometry& getOdometry() {
 			return odometry;
 		}
 
-		void setOdometry(Odometry* odometry) {
+		void setOdometry(ContinuousOdometry& odometry) {
 			this->odometry = odometry;
 		}
 

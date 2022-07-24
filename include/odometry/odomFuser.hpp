@@ -3,7 +3,7 @@
 #include "continuousOdometry/continuousOdometry.hpp"
 
 namespace Pronounce {
-	class OdomFuser : public Odometry {
+	class OdomFuser : public ContinuousOdometry {
 	private:
 		/* data */
 	public:
