@@ -85,7 +85,7 @@ namespace Pronounce {
 			driveVector = filterVector(driveVector);
 
 			if (fieldOriented) {
-				driveVector.rotate(odometry->getTheta());
+				driveVector.rotate(odometry->getAngle());
 			}
 
 			driveVector = driveVector.scale(outputMultiplier);

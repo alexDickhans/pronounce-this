@@ -4,7 +4,7 @@
 #include "api.h"
 
 namespace Pronounce {
-	class GpsOdometry : public Odometry {
+	class GpsOdometry : public ContinuousOdometry {
 	private:
 		pros::Gps* gps;
 
@@ -29,12 +29,12 @@ namespace Pronounce {
 		GpsOdometry(pros::Gps* gps);
 
 		void update();
-		void update(Position* position);
+		void update(Pose2D* pose);
 
-		void reset(Position* position) {
-			this->setPosition(position);
-			this->setResetPosition(position);
-			gps->initialize_full(convertToGlobal(position->getX()), convertToGlobal(position->getY()), toDegrees(position->getTheta()) + gpsOrientation, gpsX, gpsY);
+		void reset(Pose2D* pose) {
+			this->setPose(pose);
+			this->setResetPose(pose);
+			gps->initialize_full(convertToGlobal(pose->getX()), convertToGlobal(pose->getY()), toDegrees(pose->getAngle()) + gpsOrientation, gpsX, gpsY);
 		}
 
 		pros::Gps* getGps() {

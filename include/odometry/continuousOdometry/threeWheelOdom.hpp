@@ -25,8 +25,8 @@ namespace Pronounce
         void update();
 
         void reset(Pose2D* position) {
-            this->setPosition(position);
-            this->setResetPosition(position);
+            this->setPose(position);
+            this->setResetPose(position);
             this->leftWheel->reset();
             this->rightWheel->reset();
             this->backWheel->reset();

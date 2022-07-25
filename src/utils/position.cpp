@@ -1,22 +1,22 @@
-#include "position.hpp"
+#include "pose2d.hpp"
 
 namespace Pronounce {
-    Position::Position() : Point() {
-        this->theta = 0;
+    Pose2D::Pose2D() : Point() {
+        this->angle = 0;
     }
 
-    Position::Position(double theta) : Point() {
-        this->theta = theta;
+    Pose2D::Pose2D(double angle) : Point() {
+        this->angle = angle;
     }
 
-    Position::Position(double x, double y) : Point(x, y) {
-        this->theta = 0;
+    Pose2D::Pose2D(double x, double y) : Point(x, y) {
+        this->angle = 0;
     }
 
-    Position::Position(double x, double y, double theta) : Point(x, y) {
-        this->theta = theta;
+    Pose2D::Pose2D(double x, double y, double angle) : Point(x, y) {
+        this->angle = angle;
     }
 
-    Position::~Position() {
+    Pose2D::~Pose2D() {
     }
 } // namespace Pronounce
