@@ -63,7 +63,7 @@ namespace Pronounce {
 
 		double turnTarget;
 
-		Odometry* odometry;
+		ContinuousOdometry* odometry;
 
 		double doneDistance = 0.5;
 
@@ -73,7 +73,7 @@ namespace Pronounce {
 	public:
 		PurePursuit();
 		PurePursuit(double lookahead);
-		PurePursuit(Odometry* odometry, double lookahead);
+		PurePursuit(ContinuousOdometry* odometry, double lookahead);
 
 		void initialize() {
 			currentProfile.lateralPid->reset();
@@ -139,11 +139,11 @@ namespace Pronounce {
 			this->currentProfile = profile;
 		}
 
-		Odometry* getOdometry() {
+		ContinuousOdometry* getOdometry() {
 			return odometry;
 		}
 
-		void setOdometry(Odometry* odometry) {
+		void setOdometry(ContinuousOdometry* odometry) {
 			this->odometry = odometry;
 		}
 

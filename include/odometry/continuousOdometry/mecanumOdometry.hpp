@@ -10,7 +10,7 @@
 
 namespace Pronounce {
 
-    class MecanumOdometry : public Odometry {
+    class MecanumOdometry : public ContinuousOdometry {
     private:
         OdomWheel* wheel1;
         OdomWheel* wheel2;
@@ -30,7 +30,7 @@ namespace Pronounce {
 
         void update();
 
-        void reset(Position* position) {
+        void reset(Pose2D* position) {
             this->setPosition(position);
             this->setResetPosition(position);
             wheel1->reset();

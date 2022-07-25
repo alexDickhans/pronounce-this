@@ -6,40 +6,44 @@
 namespace Pronounce {
     class ContinuousOdometry {
     private:
-        Pose2D* position;
-        Pose2D* resetPosition;
+        Pose2D* pose;
+        Pose2D* resetPose;
 
 		Vector currentVelocity;
     public:
         ContinuousOdometry();
-        ContinuousOdometry(Pose2D* position);
+        ContinuousOdometry(Pose2D* pose);
 
         Pose2D* getPosition() {
-            return this->position;
+            return this->pose;
         }
 
 		double getX() {
-			return this->position->getX();
+			return this->pose->getX();
 		}
 
 		double getY() {
-			return this->position->getY();
+			return this->pose->getY();
 		}
 
-		double getTheta() {
-			return this->position->getAngle();
+		double getAngle() {
+			return this->pose->getAngle();
 		}
 
-        void setPosition(Pose2D* position) {
-            this->position->operator=(position);
+		Pose2D* getPose() {
+			return pose;
+		}
+
+        void setPose(Pose2D* pose) {
+            this->pose->operator=(pose);
         }
 
-        Pose2D* getResetPosition() {
-            return this->resetPosition;
+        Pose2D* getResetPose() {
+            return this->resetPose;
         }
 
-        void setResetPosition(Pose2D* resetPosition) {
-            this->resetPosition->operator=(resetPosition);
+        void setResetPose(Pose2D* resetPose) {
+            this->resetPose->operator=(resetPose);
         }
 		
 		Vector getCurrentVelocity() {
@@ -52,9 +56,9 @@ namespace Pronounce {
 
         virtual void update() {};
 
-        virtual void reset(Pose2D* position) {
-            this->position->operator=(position);
-            this->resetPosition->operator=(position);
+        virtual void reset(Pose2D* pose) {
+            this->pose->operator=(pose);
+            this->resetPose->operator=(pose);
 			this->currentVelocity.operator=(Vector());
         }
         

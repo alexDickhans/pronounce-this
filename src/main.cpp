@@ -1,7 +1,5 @@
 #include "main.h"
 
-grafanalib::GUIManager manager;
-
 // LVGL
 lv_obj_t* tabview;
 
@@ -21,7 +19,7 @@ int preAutonRun() {
 }
 
 int autonTemplate() {
-	odometry.reset(new Position(0, 0, 0));
+	odometry.reset(new Pose2D(0, 0, 0));
 
 	pros::Task::delay(500);
 
@@ -70,80 +68,7 @@ void initLogger() {
 
 }
 
-void initGrafanaLib() {
-	// manager.stopTask();
-}
-
 void update() {
-
-	manager = grafanalib::GUIManager();
-
-	grafanalib::Variable<Pronounce::Odometry> odometryVar("Odometry", odometry);
-
-	grafanalib::VariableGroup<Pronounce::Odometry> odometryVarGroup({ odometryVar });
-
-	odometryVarGroup.add_getter("X", &Pronounce::Odometry::getX);
-	odometryVarGroup.add_getter("Y", &Pronounce::Odometry::getY);
-	odometryVarGroup.add_getter("Angle", &Pronounce::Odometry::getTheta);
-
-	manager.registerDataHandler(&odometryVarGroup);
-
-	grafanalib::Variable<Pronounce::Controller> controller1Var("Controller1", master);
-	grafanalib::Variable<Pronounce::Controller> controller2Var("Controller2", partner);
-
-	grafanalib::VariableGroup<Pronounce::Controller> controllerVarGroup({ controller1Var, controller2Var });
-
-	controllerVarGroup.add_getter("LeftX", &Pronounce::Controller::getLeftX);
-	controllerVarGroup.add_getter("LeftY", &Pronounce::Controller::getLeftY);
-	controllerVarGroup.add_getter("RightX", &Pronounce::Controller::getRightX);
-	controllerVarGroup.add_getter("RightY", &Pronounce::Controller::getRightY);
-
-	controllerVarGroup.add_getter("A", &Pronounce::Controller::getA);
-	controllerVarGroup.add_getter("B", &Pronounce::Controller::getB);
-	controllerVarGroup.add_getter("X", &Pronounce::Controller::getX);
-	controllerVarGroup.add_getter("Y", &Pronounce::Controller::getY);
-
-	controllerVarGroup.add_getter("Up", &Pronounce::Controller::getUp);
-	controllerVarGroup.add_getter("Down", &Pronounce::Controller::getDown);
-	controllerVarGroup.add_getter("Left", &Pronounce::Controller::getLeft);
-	controllerVarGroup.add_getter("Right", &Pronounce::Controller::getRight);
-
-	controllerVarGroup.add_getter("L1", &Pronounce::Controller::getL1);
-	controllerVarGroup.add_getter("L2", &Pronounce::Controller::getL2);
-	controllerVarGroup.add_getter("R1", &Pronounce::Controller::getR1);
-	controllerVarGroup.add_getter("R2", &Pronounce::Controller::getR2);
-
-	// manager.registerDataHandler(&controllerVarGroup);
-
-	manager.setRefreshRate(20);
-
-	grafanalib::Variable<pros::Motor> frontLeftMotorVar("Front Left Motor", frontLeftMotor);
-	grafanalib::Variable<pros::Motor> frontRightMotorVar("Front Right Motor", frontRightMotor);
-	grafanalib::Variable<pros::Motor> backLeftMotorVar("Back Left Motor", backLeftMotor);
-	grafanalib::Variable<pros::Motor> backRightMotorVar("Back Right Motor", backRightMotor);
-	grafanalib::Variable<pros::Motor> flywheel1MotorMotorVar("Flywheel1", flywheel1);
-	grafanalib::Variable<pros::Motor> flywheel2MotorMotorVar("Flywheel2", flywheel2);
-
-	grafanalib::VariableGroup<pros::Motor> motorVarGroups({frontLeftMotorVar, frontRightMotorVar, backLeftMotorVar, backRightMotorVar, flywheel1MotorMotorVar, flywheel2MotorMotorVar});
-
-	motorVarGroups.add_getter("Temperature", &pros::Motor::get_temperature);
-	motorVarGroups.add_getter("Actual Velocity", &pros::Motor::get_actual_velocity);
-	motorVarGroups.add_getter("Voltage", &pros::Motor::get_voltage);
-	motorVarGroups.add_getter("Efficiency", &pros::Motor::get_efficiency);
-
-	manager.registerDataHandler(&motorVarGroups);
-
-	grafanalib::Variable<RobotStatus> robotStatusVar("RobotStatus", robotStatus);
-
-	grafanalib::VariableGroup<RobotStatus> robotStatusVarGroups({robotStatusVar});
-
-	robotStatusVarGroups.add_getter("Flywheel Target Speed", &Pronounce::RobotStatus::getFlywheelTarget);
-	robotStatusVarGroups.add_getter("Flywheel Actual Speed", &Pronounce::RobotStatus::getActualFlywheelRpm);
-	// robotStatusVarGroups.add_getter("Flywheel Turret Angle", &Pronounce::RobotStatus::getTurretAngle);
-
-	manager.registerDataHandler(&robotStatusVarGroups);
-
-	manager.startTask();
 
 	uint32_t startTime = 0;
 	while (true) {

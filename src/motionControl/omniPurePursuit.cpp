@@ -13,7 +13,7 @@ namespace Pronounce {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 

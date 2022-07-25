@@ -92,7 +92,7 @@ namespace Pronounce {
 
 		pros::Task::delay(10);
 
-		odometry.reset(new Position());
+		odometry.reset(new Pose2D());
 	}
 
 } // namespace Pronounce

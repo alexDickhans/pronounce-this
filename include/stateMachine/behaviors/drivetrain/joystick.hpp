@@ -28,7 +28,7 @@ namespace Pronounce {
 		 * @brief Used for field oriented and targeting control
 		 *
 		 */
-		Odometry* odometry;
+		ContinuousOdometry* odometry;
 
 		pros::Controller* controller;
 
@@ -49,7 +49,7 @@ namespace Pronounce {
 		}
 
 	public:
-		JoystickDrivetrain(double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, Odometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) {
+		JoystickDrivetrain(double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) {
 			this->deadband = deadband;
 			this->fieldOriented = fieldOriented;
 			this->targeting = targeting;

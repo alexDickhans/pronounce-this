@@ -13,13 +13,13 @@ namespace Pronounce {
 		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 		this->turnPid = new PID();
 		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 		this->turnPid = turnPid;
 		this->turnPid->setTurnPid(true);
@@ -28,7 +28,7 @@ namespace Pronounce {
 	void TankPurePursuit::updateDrivetrain() {
 
 		if (orientationControl) {
-			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
+			double currentOrientation = this->getOdometry()->getPosition()->getAngle();
 			double spinSpeed = this->turnPid->update(angleDifference(currentOrientation, 0));
 
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;

@@ -8,7 +8,7 @@
 
 namespace Pronounce
 {
-    class ThreeWheelOdom : public Odometry {
+    class ThreeWheelOdom : public ContinuousOdometry {
     private:
         OdomWheel* leftWheel, * rightWheel, * backWheel;
         double leftOffset, rightOffset, backOffset;
