@@ -11,8 +11,8 @@ namespace Pronounce {
      */
     class OdomWheel {
     private:
-        QLength position = 0;
-        QLength lastPosition = 0;
+        QLength position = 0.0;
+        QLength lastPosition = 0.0;
 
         QLength radius;
 
@@ -22,8 +22,8 @@ namespace Pronounce {
         OdomWheel(double radius);
 
         virtual void reset() {
-            position = 0;
-            lastPosition = 0;
+            position = 0.0;
+            lastPosition = 0.0;
         }
         
         QLength getRadius() {

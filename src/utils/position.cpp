@@ -2,7 +2,7 @@
 
 namespace Pronounce {
     Pose2D::Pose2D() : Point() {
-        this->angle = 0;
+        this->angle = 0.0;
     }
 
     Pose2D::Pose2D(double angle) : Point() {
@@ -10,7 +10,7 @@ namespace Pronounce {
     }
 
     Pose2D::Pose2D(double x, double y) : Point(x, y) {
-        this->angle = 0;
+        this->angle = 0.0;
     }
 
     Pose2D::Pose2D(double x, double y, double angle) : Point(x, y) {

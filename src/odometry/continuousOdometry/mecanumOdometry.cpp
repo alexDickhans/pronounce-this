@@ -4,12 +4,12 @@ namespace Pronounce {
     MecanumOdometry::MecanumOdometry(/* args */) {
     }
 
-    MecanumOdometry::MecanumOdometry(double xOffset, double yOffset) {
+    MecanumOdometry::MecanumOdometry(QLength xOffset, QLength yOffset) {
         this->xOffset = xOffset;
         this->yOffset = yOffset;
     }
 
-    MecanumOdometry::MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double xOffset, double yOffset) : MecanumOdometry(xOffset, yOffset) {
+    MecanumOdometry::MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, QLength xOffset, QLength yOffset) : MecanumOdometry(xOffset, yOffset) {
         this->wheel1 = wheel1;
         this->wheel2 = wheel2;
         this->wheel3 = wheel3;
@@ -31,10 +31,10 @@ namespace Pronounce {
         Angle angleChange = 0.0;
         Angle lastAngle = lastPose->getAngle();
 
-        double deltaWheel1 = wheel1->getChange();
-        double deltaWheel2 = wheel2->getChange();
-        double deltaWheel3 = wheel3->getChange();
-        double deltaWheel4 = wheel4->getChange();
+        QLength deltaWheel1 = wheel1->getChange();
+        QLength deltaWheel2 = wheel2->getChange();
+        QLength deltaWheel3 = wheel3->getChange();
+        QLength deltaWheel4 = wheel4->getChange();
 
         if (useImu && imu != nullptr) {
             if (imu->is_calibrating()) {
@@ -52,7 +52,7 @@ namespace Pronounce {
             // Use the wheel encoders to determine orientation
 
             // Calculate the orientation since last reset
-            Angle currentAngle = (-wheel1->getPosition() + wheel2->getPosition() - wheel3->getPosition() + wheel4->getPosition()) / (4 * xOffset, yOffset);
+            Angle currentAngle = (-wheel1->getPosition() + wheel2->getPosition() - wheel3->getPosition() + wheel4->getPosition()).getValue() / (4 * xOffset, yOffset).getValue();
 
             angleChange = currentAngle - lastAngle;
 

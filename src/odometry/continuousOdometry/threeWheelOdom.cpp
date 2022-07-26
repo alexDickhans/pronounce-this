@@ -27,32 +27,32 @@ namespace Pronounce {
 		backWheel->update();
 
 		// Get the current movement of odometry wheels
-		double deltaLeft = leftWheel->getChange();
-		double deltaRight = rightWheel->getChange();
-		double deltaBack = backWheel->getChange();
+		QLength deltaLeft = leftWheel->getChange();
+		QLength deltaRight = rightWheel->getChange();
+		QLength deltaBack = backWheel->getChange();
 
 		// Get the last robot position
 		Pose2D* lastPose = this->getPose();
 
 		// Calculate the change in orientation
 		Angle lastAngle = lastPose->getAngle();
-		Angle currentAngle = 0;
+		Angle currentAngle = 0.0;
 
 		if (useImu && imu != nullptr) {
 			currentAngle = toRadians(imu->get_rotation());
 		}
 		else {
-			currentAngle = this->getResetPose()->getAngle().getValue() + (leftWheel->getPosition() - rightWheel->getPosition()) / (leftOffset + rightOffset);
+			currentAngle = this->getResetPose()->getAngle().getValue() + (leftWheel->getPosition() - rightWheel->getPosition()).getValue() / (leftOffset + rightOffset).getValue();
 		}
 
-		Angle deltaAngle = (deltaLeft - deltaRight) / (leftOffset + rightOffset);
+		Angle deltaAngle = (deltaLeft - deltaRight).getValue() / (leftOffset + rightOffset).getValue();
 		Angle averageOrientation = lastAngle + (deltaAngle / 2);
 
 		Point localOffset;
 
 		if (deltaAngle.Convert(radian) != 0.0) {
 			double rotationAdjustment = 2 * sin(deltaAngle / 2);
-			localOffset = Point(((deltaBack/deltaAngle) + backOffset) * rotationAdjustment, ((deltaRight/deltaAngle) + rightOffset) * rotationAdjustment);
+			localOffset = Point(((deltaBack/deltaAngle).getValue() + backOffset.getValue()) * rotationAdjustment, ((deltaRight/deltaAngle).getValue() + rightOffset.getValue()) * rotationAdjustment);
 		} else {
 			// Calculate the local offset then translate it to the global offset
 			localOffset = Point(deltaBack, deltaRight);
@@ -66,7 +66,7 @@ namespace Pronounce {
 
 		// Add localOffset to the global offset
 		lastPose->add(localOffset);
-		lastPose->setAngle(fmod(angleDifference(currentAngle, 0) + M_PI * 2, M_PI * 2));
+		lastPose->setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));
 
 		if (Vector(&localOffset).getMagnitude() > maxMovement && maxMovement.Convert(metre) != 0.0) {
 			return;

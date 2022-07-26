@@ -2,8 +2,8 @@
 
 namespace Pronounce {
     Vector::Vector() {
-        this->magnitude = 0;
-        this->angle = 0;
+        this->magnitude = 0.0;
+        this->angle = 0.0;
     }
 
     Vector::Vector(QLength magnitude, Angle angle) {
@@ -55,7 +55,7 @@ namespace Pronounce {
     Vector Vector::scale(double scalar) {
         Vector vector = Vector(*this);
 
-        vector.setMagnitude(vector.getMagnitude() * scalar);
+        vector.setMagnitude(vector.getMagnitude().getValue() * scalar);
 
         return vector;
     }

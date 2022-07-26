@@ -21,12 +21,12 @@ namespace Pronounce {
 
         pros::Imu* imu;
 
-        double xOffset;
-        double yOffset;
+        QLength xOffset;
+        QLength yOffset;
     public:
         MecanumOdometry();
-        MecanumOdometry(double xOffset, double yOffset);
-        MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, double xOffset, double yOffset);
+        MecanumOdometry(QLength xOffset, QLength yOffset);
+        MecanumOdometry(OdomWheel* wheel1, OdomWheel* wheel2, OdomWheel* wheel3, OdomWheel* wheel4, pros::Imu* imu, QLength xOffset, QLength yOffset);
 
         void update();
 
@@ -45,7 +45,7 @@ namespace Pronounce {
          * 
          * @param xOffset 
          */
-        void setXOffset(double xOffset) {
+        void setXOffset(QLength xOffset) {
             this->xOffset = xOffset;
         }
 
@@ -54,7 +54,7 @@ namespace Pronounce {
          * 
          * @return double 
          */
-        double getXOffset() {
+        QLength getXOffset() {
             return xOffset;
         }
 
@@ -63,7 +63,7 @@ namespace Pronounce {
          * 
          * @param yOffset 
          */
-        void setYOffset(double yOffset) {
+        void setYOffset(QLength yOffset) {
             this->yOffset = yOffset;
         }
 
@@ -72,7 +72,7 @@ namespace Pronounce {
          * 
          * @return double 
          */
-        double getYOffset() {
+        QLength getYOffset() {
             return yOffset;
         }
         
