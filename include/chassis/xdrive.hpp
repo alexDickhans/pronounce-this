@@ -43,10 +43,10 @@ namespace Pronounce {
 		}
 
 		void setDriveVectorVelocity(Vector vector, double rotation) {
-			double frontLeftVelocity = vector.getCartesian().getY() + vector.getCartesian().getX() + rotation;
-			double frontRightVelocity = vector.getCartesian().getY() - vector.getCartesian().getX() - rotation;
-			double backLeftVelocity = vector.getCartesian().getY() - vector.getCartesian().getX() + rotation;
-			double backRightVelocity = vector.getCartesian().getY() + vector.getCartesian().getX() - rotation;
+			double frontLeftVelocity = (vector.getCartesian().getY() + vector.getCartesian().getX()).getValue() + rotation;
+			double frontRightVelocity = (vector.getCartesian().getY() - vector.getCartesian().getX()).getValue() - rotation;
+			double backLeftVelocity = (vector.getCartesian().getY() - vector.getCartesian().getX()).getValue() + rotation;
+			double backRightVelocity = (vector.getCartesian().getY() + vector.getCartesian().getX()).getValue() - rotation;
 
 			double maxVal = abs(frontLeftVelocity);
 			maxVal = maxVal > abs(frontRightVelocity) ? maxVal : abs(frontRightVelocity);

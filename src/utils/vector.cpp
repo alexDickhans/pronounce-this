@@ -6,29 +6,29 @@ namespace Pronounce {
         this->angle = 0;
     }
 
-    Vector::Vector(double magnitude, double angle) {
-		if (magnitude < 0) {
-			this->magnitude = -magnitude;
-			this->angle = angle + M_PI;
+    Vector::Vector(QLength magnitude, Angle angle) {
+		if (magnitude < (QLength) 0.0) {
+			this->magnitude = -magnitude.getValue();
+			this->angle = angle.getValue() + M_PI;
 		}
         this->magnitude = magnitude;
         this->angle = angle;
     }
 
     Vector::Vector(Point* point) {
-        this->magnitude = point->distance(Point());
-        this->angle = atan2(point->getY(), point->getX());
+        this->magnitude = point->distance(Point()).getValue();
+        this->angle = atan2(point->getY().getValue(), point->getX().getValue());
     }
 
     Vector::Vector(Point* point1, Point* point2) {
-        this->magnitude = point1->distance(*point2);
-        this->angle = atan2(point2->getY() - point1->getY(), point2->getX() - point1->getX());
+        this->magnitude = point1->distance(*point2).getValue();
+        this->angle = atan2((point2->getY() - point1->getY()).getValue(), (point2->getX() - point1->getX()).getValue());
     }
 
     Point Vector::getCartesian() {
         Point result = Point();
-        result.setX(magnitude * cos(angle));
-        result.setY(magnitude * sin(angle));
+        result.setX(magnitude.getValue() * cos(angle));
+        result.setY(magnitude.getValue() * sin(angle));
         return result;
     }
 
@@ -36,8 +36,8 @@ namespace Pronounce {
         Point thisPoint = this->getCartesian();
         Point xPoint = x.getCartesian();
 
-        double result = thisPoint.getX() * xPoint.getX() +
-            thisPoint.getY() * xPoint.getY();
+        double result = (thisPoint.getX() * xPoint.getX() +
+            thisPoint.getY() * xPoint.getY()).getValue();
 
         return result;
     }

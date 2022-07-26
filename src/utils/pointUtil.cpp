@@ -6,7 +6,7 @@ namespace Pronounce {
         this->y = 0.0;
     }
 
-    Point::Point(double x, double y) {
+    Point::Point(QLength x, QLength y) {
         this->x = x;
         this->y = y;
     }

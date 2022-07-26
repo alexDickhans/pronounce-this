@@ -18,15 +18,15 @@ namespace Pronounce {
             return this->pose;
         }
 
-		double getX() {
+		QLength getX() {
 			return this->pose->getX();
 		}
 
-		double getY() {
+		QLength getY() {
 			return this->pose->getY();
 		}
 
-		double getAngle() {
+		Angle getAngle() {
 			return this->pose->getAngle();
 		}
 

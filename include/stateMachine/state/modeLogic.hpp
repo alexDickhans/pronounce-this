@@ -53,7 +53,7 @@ namespace Pronounce {
 			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
 			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
 
-			std::cout << "Turret angle: " << robotStatus->getTurretAngle() - toDegrees(angleDifference(odometry.getPosition()->getAngle(), 0.0)) << std::endl;
+			std::cout << "Turret angle: " << robotStatus->getTurretAngle() - (odometry.getPosition()->getAngle() - 0.0_rad).Convert(degree) << std::endl;
 			stateControllers.update();
 		}
 

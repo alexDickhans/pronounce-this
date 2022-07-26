@@ -35,7 +35,7 @@ namespace Pronounce {
 		AbstractHolonomicDrivetrain* drivetrain;
 
 		Vector filterVector(Vector vector) {
-			vector.setMagnitude(vector.getMagnitude() < deadband ? 0.0 : vector.getMagnitude());
+			vector.setMagnitude(vector.getMagnitude().getValue() < deadband ? 0.0 : vector.getMagnitude());
 			return vector;
 		}
 
@@ -44,7 +44,7 @@ namespace Pronounce {
 		}
 
 		Vector exponentialize(Vector vector) {
-			vector.setMagnitude(pow(vector.getMagnitude(), exponentializeValue));
+			vector.setMagnitude(pow(vector.getMagnitude().getValue(), exponentializeValue));
 			return vector;
 		}
 

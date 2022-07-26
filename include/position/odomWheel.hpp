@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api.h"
+#include "units/units.hpp"
 
 namespace Pronounce {
     /**
@@ -10,10 +11,10 @@ namespace Pronounce {
      */
     class OdomWheel {
     private:
-        double position = 0;
-        double lastPosition = 0;
+        QLength position = 0;
+        QLength lastPosition = 0;
 
-        double radius;
+        QLength radius;
 
         double tuningFactor = 1.0;
     public:
@@ -25,11 +26,11 @@ namespace Pronounce {
             lastPosition = 0;
         }
         
-        double getRadius() {
+        QLength getRadius() {
             return this->radius;
         }
 
-        void setRadius(double radius) {
+        void setRadius(QLength radius) {
             this->radius = radius;
         }
 
@@ -44,32 +45,32 @@ namespace Pronounce {
         /**
          * Get the position at the current moment
          */
-        virtual double getPosition() {
+        virtual QLength getPosition() {
             return this->position;
         }
         /**
          * Set the position
          */
-        virtual void setPosition(double position) {
+        virtual void setPosition(QLength position) {
             this->position = position;
         }
 
         /**
          * Get the last position
          */
-        double getLastPosition() {
+        QLength getLastPosition() {
             return this->lastPosition;
         }
 
         /**
          * Set the last position
          */
-        void setLastPosition(double lastPosition) {
+        void setLastPosition(QLength lastPosition) {
             this->lastPosition = lastPosition;
         }
 
-        double getChange() {
-            double difference = this->getPosition() - this->lastPosition;
+        QLength getChange() {
+            QLength difference = this->getPosition() - this->lastPosition;
             this->lastPosition = this->getPosition();
             return difference;
         }

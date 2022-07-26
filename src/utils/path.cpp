@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace Pronounce {
-    Point Path::getLookAheadPoint(Point currentPosition, double lookaheadDistance) {
+    Point Path::getLookAheadPoint(Point currentPosition, QLength lookaheadDistance) {
         Point lookaheadPoint = Point();
         bool pointFound = false;
 
@@ -20,7 +20,7 @@ namespace Pronounce {
 
             double a = d.dot(d);
             double b = 2 * f.dot(d);
-            double c = f.dot(f) - (lookaheadDistance * lookaheadDistance);
+            double c = f.dot(f) - (lookaheadDistance * lookaheadDistance).getValue();
             double discriminant = (b * b) - (4 * a * c);
 
             if (discriminant < 0) {
@@ -84,7 +84,7 @@ namespace Pronounce {
 
     Point Path::getClosestPoint(Point currentPosition) {
         Point closestPoint;
-        double closestDistance = INT32_MAX;
+        QLength closestDistance = (double) INT32_MAX;
 		double closestT = INT32_MAX;
 
 		double totalT = 0;
@@ -109,7 +109,7 @@ namespace Pronounce {
                 lastPoint = lastPoint;
             }
 
-            double distance = lastPoint.distance(currentPosition);
+            QLength distance = lastPoint.distance(currentPosition);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestPoint = lastPoint;

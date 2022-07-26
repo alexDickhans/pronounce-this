@@ -13,16 +13,16 @@ namespace Pronounce {
 		int32_t lastGoodFix = -10000;
 		int32_t lastUpdate = 0;
 
-		double gpsX = 0;
-		double gpsY = 0;
-		double gpsOrientation = 0;
+		QLength gpsX = 0_m;
+		QLength gpsY = 0_m;
+		Angle gpsOrientation = 0_rad;
 
-		double convertToLocal(double x) {
-			return (x - 1.8) * 39.37;
+		QLength convertToLocal(QLength x) {
+			return x - 1.8_m;
 		}
 
-		double convertToGlobal(double x) {
-			return (x / 39.37) + 1.8;
+		QLength convertToGlobal(QLength x) {
+			return x + 1.8_m;
 		}
 	public:
 		GpsOdometry();
@@ -34,7 +34,7 @@ namespace Pronounce {
 		void reset(Pose2D* pose) {
 			this->setPose(pose);
 			this->setResetPose(pose);
-			gps->initialize_full(convertToGlobal(pose->getX()), convertToGlobal(pose->getY()), toDegrees(pose->getAngle()) + gpsOrientation, gpsX, gpsY);
+			gps->initialize_full(convertToGlobal(pose->getX()).getValue(), convertToGlobal(pose->getY()).getValue(), (pose->getAngle()+ gpsOrientation).Convert(degree), gpsX.getValue(), gpsY.getValue());
 		}
 
 		pros::Gps* getGps() {

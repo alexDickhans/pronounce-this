@@ -32,7 +32,7 @@
  *
  * For instance, you can do `4_mtr = 50` to set motor 4's target velocity to 50
  */
-#define PROS_USE_LITERALS
+//#define PROS_USE_LITERALS
 
 #include "api.h"
 
@@ -98,6 +98,9 @@
 #include "stateMachine/state/modeLogic.hpp"
 #include "stateMachine/state/teleopModeLogic.hpp"
 #include "stateMachine/state/modeLogic.hpp"
+
+// Units
+#include "units/units.hpp"
 
 // Utils
 #include "utils/exponentialMovingAverage.hpp"

@@ -11,12 +11,12 @@ namespace Pronounce
     class ThreeWheelOdom : public ContinuousOdometry {
     private:
         OdomWheel* leftWheel, * rightWheel, * backWheel;
-        double leftOffset, rightOffset, backOffset;
+        QLength leftOffset, rightOffset, backOffset;
 
 		pros::Imu* imu;
 		bool useImu = false;
 
-		double maxMovement = 0;
+		QLength maxMovement = 0.0;
     public:
         ThreeWheelOdom();
         ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
@@ -32,35 +32,35 @@ namespace Pronounce
             this->backWheel->reset();
         }
 
-		double getMaxMovement() {
+		QLength getMaxMovement() {
 			return maxMovement;
 		}
 
-		void setMaxMovement(double maxMovement) {
+		void setMaxMovement(QLength maxMovement) {
 			this->maxMovement = maxMovement;
 		}
 
-        double getLeftOffset() {
+        QLength getLeftOffset() {
             return leftOffset;
         }
 
-        void setLeftOffset(double leftOffset) {
+        void setLeftOffset(QLength leftOffset) {
             this->leftOffset = leftOffset;
         }
 
-        double getRightOffset() {
+        QLength getRightOffset() {
             return rightOffset;
         }
 
-        void setRightOffset(double rightOffset) {
+        void setRightOffset(QLength rightOffset) {
             this->rightOffset = rightOffset;
         }
 
-        double getBackOffset() {
+        QLength getBackOffset() {
             return backOffset;
         }
 
-        void setBackOffset(double backOffset) {
+        void setBackOffset(QLength backOffset) {
             this->backOffset = backOffset;
         }
 

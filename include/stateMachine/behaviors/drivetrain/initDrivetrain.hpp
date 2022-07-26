@@ -84,11 +84,11 @@ namespace Pronounce {
 		rightEncoder.set_reversed(false);
 		backEncoder.set_reversed(true);
 
-		odometry.setLeftOffset(3.741365718);
-		odometry.setRightOffset(3.741365718);
-		odometry.setBackOffset(-3);
+		odometry.setLeftOffset(3.741365718_in);
+		odometry.setRightOffset(3.741365718_in);
+		odometry.setBackOffset(-3.0_in);
 
-		odometry.setMaxMovement(0);
+		odometry.setMaxMovement(0.0);
 
 		pros::Task::delay(10);
 

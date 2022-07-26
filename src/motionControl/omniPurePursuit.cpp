@@ -21,13 +21,13 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double lastSpeed = this->drivetrain->getSpeed();
+		QSpeed lastSpeed = this->drivetrain->getSpeed();
 
-		double maxSpeed = sqrt(2 * this->getCurrentProfile().maxAcceleration * pointData.distanceFromEnd + 2.0);
-		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
+		QSpeed maxSpeed = sqrt(2.0 * this->getCurrentProfile().maxAcceleration.getValue() * pointData.distanceFromEnd.getValue() + ConvertTo(2.0_in, m));
+		maxSpeed = maxSpeed > 5.0_inchs ? maxSpeed : 5_inchs;
 
-		double maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime() / 1000;
-		double speed = 0;
+		QSpeed maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime();
+		QSpeed speed = 0.0;
 		if (maxSpeed > speed) {
 			speed = clamp(this->getCurrentProfile().speed, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
 		}
@@ -35,15 +35,15 @@ namespace Pronounce {
 			speed = this->getCurrentProfile().speed;
 		}
 		
-		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getCurrentProfile().speed, this->getCurrentProfile().speed) * this->getOutputMultiplier();
+		QSpeed motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getCurrentProfile().speed.getValue(), this->getCurrentProfile().speed.getValue());
 
-		double lateralOutput = motorSpeed;
+		double lateralOutput = motorSpeed.getValue() * this->getOutputMultiplier();
 
 		// Get the turn target
-		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget());
+		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget().getValue());
 
 		// Get the turn output
-		double turnOutput = this->getCurrentProfile().orientationPid->update(this->getOdometry()->getPosition()->getAngle());
+		double turnOutput = this->getCurrentProfile().orientationPid->update(this->getOdometry()->getPosition()->getAngle().getValue());
 
 		// Send values to the drivetrain
 		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, pointData.normalizedLookaheadVector.getAngle()), turnOutput);

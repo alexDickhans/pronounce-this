@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pointUtil.hpp"
+#include "units/units.hpp"
 #include <string>
 
 namespace Pronounce {
@@ -11,13 +12,13 @@ namespace Pronounce {
      */
     class Vector {
     private:
-        double magnitude;
-        double angle;
+        QLength magnitude;
+        Angle angle;
     public:
         Vector();
         Vector(Point* point);
         Vector(Point* point1, Point* point2);
-        Vector(double magnitude, double angle);
+        Vector(QLength magnitude, Angle angle);
 
         void operator=(Vector vector) {
             this->setAngle(vector.getAngle());
@@ -38,7 +39,7 @@ namespace Pronounce {
          * 
          */
         void normalize() {
-            this->magnitude = 1;
+            this->magnitude = 1_m;
         }
 
         /**
@@ -70,7 +71,7 @@ namespace Pronounce {
          *
          * @return double Magnitude
          */
-        double getMagnitude() {
+        QLength getMagnitude() {
             return magnitude;
         }
 
@@ -79,16 +80,16 @@ namespace Pronounce {
          *
          * @param magnitude New magnitude value
          */
-        void setMagnitude(double magnitude) {
+        void setMagnitude(QLength magnitude) {
             this->magnitude = magnitude;
         }
 
-        /**
+        /**double
          * @brief Get the angle
          *
          * @return double angle
          */
-        double getAngle() {
+        Angle getAngle() {
             return angle;
         }
 
@@ -97,16 +98,16 @@ namespace Pronounce {
          *
          * @param magnitude New angle value
          */
-        void setAngle(double angle) {
+        void setAngle(Angle angle) {
             this->angle = angle;
         }
 
-        void rotate(double angle) {
+        void rotate(Angle angle) {
             this->angle += angle;
         }
 
         std::string to_string() {
-            return "Magnitude: " + std::to_string(magnitude) + " angle: " + std::to_string(angle);
+            return "Magnitude: " + std::to_string(magnitude.Convert(inch)) + " angle: " + std::to_string(angle.Convert(degree));
         }
 
         ~Vector();

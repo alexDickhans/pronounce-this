@@ -106,8 +106,8 @@ void updateDisplay() {
 	while (true) {
 		// Odometry
 		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
-			+ "\nL: " + std::to_string(leftOdomWheel.getPosition()) +
-			", R: " + std::to_string(rightOdomWheel.getPosition())).c_str());
+			+ "\nL: " + std::to_string(leftOdomWheel.getPosition().Convert(inch)) +
+			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
 		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
