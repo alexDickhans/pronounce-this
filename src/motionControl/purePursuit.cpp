@@ -3,16 +3,16 @@
 namespace Pronounce {
     PurePursuit::PurePursuit() {
 		this->path = Path();
-		this->odometry = new Odometry();
+		this->odometry = new ContinuousOdometry();
 		this->currentProfile.lateralPid = new PID();
 		this->currentProfile.orientationPid = new PID();
     }
 
-    PurePursuit::PurePursuit(double lookahead) : PurePursuit() {
+    PurePursuit::PurePursuit(QLength lookahead) : PurePursuit() {
         this->currentProfile.lookaheadDistance = lookahead;
     }
 
-	PurePursuit::PurePursuit(Odometry* odometry, double lookahead) {
+	PurePursuit::PurePursuit(ContinuousOdometry* odometry, QLength lookahead) {
 		this->path = Path();
 		this->odometry = odometry;
 		this->currentProfile.lookaheadDistance = lookahead;
@@ -24,9 +24,9 @@ namespace Pronounce {
 
         // Set position and path variables
         std::vector<Point> pathVector = path.getPath();
-        Position* currentPosition = odometry->getPosition();
-        Point currentPoint = Point(currentPosition->getX(), currentPosition->getY());
-		double lookahead = this->currentProfile.lookaheadDistance;
+        Pose2D* currentPose = odometry->getPose();
+        Point currentPoint = Point(currentPose->getX(), currentPose->getY());
+		QLength lookahead = this->currentProfile.lookaheadDistance;
 
         // Returns if robot is close to target to prevent little wiggles
         if (this->isDone()) {
@@ -36,22 +36,22 @@ namespace Pronounce {
         // Get lookahead point and vector from robot
         Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
         Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
-        lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPosition->getTheta());
+        lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPose->getAngle());
 
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
         // PID controller behaves the same for different lookahead paths
-        double magnitude = lookaheadVector.getMagnitude();
-        double mappedMagnitude = clamp(map(magnitude, 0, lookahead, 0, normalizeDistance), 0.0, normalizeDistance);
+        QLength magnitude = lookaheadVector.getMagnitude();
+        double mappedMagnitude = clamp(map(magnitude.getValue(), 0, lookahead.getValue(), 0, normalizeDistance.getValue()), 0.0, normalizeDistance.getValue());
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
 		Vector robotRelativeLookaheadVector(&currentPoint, &lookaheadPoint);
 		
-		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPosition->getTheta());
+		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPose->getAngle());
 
-		double xDistance = robotRelativeLookaheadVector.getCartesian().getX();
-		double signedCurvature = (2 * xDistance) / pow(lookaheadVector.getMagnitude(), 2);
+		QLength xDistance = robotRelativeLookaheadVector.getCartesian().getX();
+		double signedCurvature = (2.0 * xDistance).getValue() / pow(lookaheadVector.getMagnitude().getValue(), 2);
 
-		double distanceFromEnd = path.distanceFromEnd(currentPoint);
+		QLength distanceFromEnd = path.distanceFromEnd(currentPoint);
 
 		this->pointData.lookaheadPoint = lookaheadPoint;
 		this->pointData.lookaheadVector = lookaheadVector;

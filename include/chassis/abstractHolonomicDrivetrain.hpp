@@ -11,14 +11,14 @@ namespace Pronounce
     class AbstractHolonomicDrivetrain : public AbstractDrivetrain {
     private:
     public:
-        AbstractHolonomicDrivetrain();
+        AbstractHolonomicDrivetrain() {}
 
-		virtual double getSpeed() { return 0; }
+		virtual QSpeed getSpeed() { return 0.0; }
 
         virtual void setDriveVectorVelocity(Vector vector) {}
         virtual void setDriveVectorVelocity(Vector vector, double rotation) {}
         
-        ~AbstractHolonomicDrivetrain();
+        ~AbstractHolonomicDrivetrain() {}
     };
     
 } // namespace Pronounce

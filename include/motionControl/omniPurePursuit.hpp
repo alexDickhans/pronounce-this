@@ -3,7 +3,7 @@
 #include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "purePursuit.hpp"
 #include "utils/vector.hpp"
-#include "odometry/odometry.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 
 namespace Pronounce {
 	class OmniPurePursuit : public PurePursuit {
@@ -13,7 +13,7 @@ namespace Pronounce {
 		OmniPurePursuit();
 		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain);
 		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, double lookaheadDistance);
-		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
+		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance);
 		
 		void updateDrivetrain();
 

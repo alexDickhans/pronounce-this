@@ -6,7 +6,7 @@ namespace Pronounce {
 		this->odometry = nullptr;
 	}
 
-	Controller::Controller(pros::controller_id_e_t id, Odometry* odometry) : pros::Controller(id) {
+	Controller::Controller(pros::controller_id_e_t id, ContinuousOdometry* odometry) : pros::Controller(id) {
 		this->odometry = odometry;
 	}
 
@@ -54,44 +54,6 @@ namespace Pronounce {
 
 	void Controller::render() {
 		count++;
-
-		if (!continueRendering) {
-			return;
-		}
-
-		this->clear();
-		pros::Task::delay(120);
-
-
-		// During disabled
-		if (pros::competition::is_disabled() && pros::competition::is_connected()) {
-			this->print(0, 0, "Robot disabled");
-			pros::Task::delay(120);
-		}
-		else if (pros::competition::is_autonomous() && pros::competition::is_connected()) {
-			this->print(0, 0, "Auton Period");
-			pros::Task::delay(120);
-		}
-		else {
-			this->print(0, 0, "Temp: %fC", this->drivetrain->getTemp());
-			pros::Task::delay(120);
-			this->print(1, 0, "Speed: %f%", this->drivetrain->getSpeed());
-			pros::Task::delay(120);
-			if (this->odometry != nullptr) {
-				this->print(2, 0, "Position: %f, %f", this->odometry->getPosition()->getX(), this->odometry->getPosition()->getY());
-				pros::Task::delay(120);
-			}
-		}
-
-		this->print(3, 0, "Battery: %f%", pros::battery::get_capacity());
-		pros::Task::delay(120);
-
-		if (pros::battery::get_capacity() < 20.0 && count % 5 == 0) {
-			this->rumble(".");
-			pros::Task::delay(120);
-		}
-
-		pros::Task::delay(200);
 	}
 
 	void Controller::renderFunc() {

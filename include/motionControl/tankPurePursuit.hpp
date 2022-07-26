@@ -9,7 +9,7 @@ namespace Pronounce {
 	private:
 		AbstractTankDrivetrain* drivetrain;
 
-		double speed = 100;
+		QLength speed = 100.0;
 		bool inverted = false;
 
 		bool orientationControl = false;
@@ -20,8 +20,8 @@ namespace Pronounce {
 	public:
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
 		TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance);
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance);
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, PID* turnPid, double lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PID* turnPid, double lookaheadDistance);
 
 		void updateDrivetrain();
 
@@ -43,11 +43,11 @@ namespace Pronounce {
 			this->drivetrain = drivetrain;
 		}
 
-		double getSpeed() {
+		QLength getSpeed() {
 			return speed;
 		}
 
-		void setSpeed(double speed) {
+		void setSpeed(QLength speed) {
 			this->speed = speed;
 		}
 
@@ -85,7 +85,7 @@ namespace Pronounce {
 			this->orientationControl = orientationControl;
 		}
 
-		bool isDone(double maxDistance) {
+		bool isDone(QLength maxDistance) {
 			return maxDistance > this->getPath().distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY()));
 		}
 

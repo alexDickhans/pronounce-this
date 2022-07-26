@@ -3,21 +3,22 @@
 #include <cmath>
 #include <string>
 #include "utils.hpp"
+#include "units/units.hpp"
 
 namespace Pronounce {
     class Point {
     private:
-        double x;
-        double y;
+        QLength x;
+        QLength y;
     public:
         Point();
-        Point(double x, double y);
+        Point(QLength x, QLength y);
 
-        double distance(Point point) {
-            double x = point.getX() - this->getX();
-            double y = point.getY() - this->getY();
+        QLength distance(Point point) {
+            QLength x = point.getX() - this->getX();
+            QLength y = point.getY() - this->getY();
 
-            double distance = sqrt(pow(x, 2) + pow(y, 2));
+            QLength distance = sqrt(pow(x.getValue(), 2) + pow(y.getValue(), 2));
 
             return distance;
         }
@@ -36,7 +37,7 @@ namespace Pronounce {
 		 * @return Point The result of the linear interpolation
 		 */
 		static Point lerp(Point point1, Point point2, double t) {
-			Point result = Point(map(t, 0, 1, point1.getX(), point2.getX()), map(t, 0, 1, point1.getY(), point2.getY()));
+			Point result = Point(map(t, 0, 1, point1.getX().getValue(), point2.getX().getValue()), map(t, 0, 1, point1.getY().getValue(), point2.getY().getValue()));
 			return result;
 		}
 
@@ -52,19 +53,19 @@ namespace Pronounce {
 		}
 
 
-        double getX() {
+        QLength getX() {
             return this->x;
         }
 
-        void setX(double x) {
+        void setX(QLength x) {
             this->x = x;
         }
 
-        double getY() {
+        QLength getY() {
             return this->y;
         }
 
-        void setY(double y) {
+        void setY(QLength y) {
             this->y = y;
         }
 
@@ -94,7 +95,7 @@ namespace Pronounce {
         }
 
         std::string to_string() {
-            return "X: " + std::to_string(x) + ", Y: " + std::to_string(y);
+            return "X: " + std::to_string(x.getValue()) + ", Y: " + std::to_string(y.getValue());
         }
 
         ~Point();

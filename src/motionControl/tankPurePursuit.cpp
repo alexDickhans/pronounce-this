@@ -13,13 +13,13 @@ namespace Pronounce {
 		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 		this->turnPid = new PID();
 		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, Odometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 		this->turnPid = turnPid;
 		this->turnPid->setTurnPid(true);
@@ -28,12 +28,12 @@ namespace Pronounce {
 	void TankPurePursuit::updateDrivetrain() {
 
 		if (orientationControl) {
-			double currentOrientation = this->getOdometry()->getPosition()->getTheta();
-			double spinSpeed = this->turnPid->update(angleDifference(currentOrientation, 0));
+			Angle currentOrientation = this->getOdometry()->getPosition()->getAngle();
+			double spinSpeed = this->turnPid->update(angleDifference(currentOrientation.getValue(), 0));
 
 			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
 
-			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed * this->getOutputMultiplier());
+			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed.getValue() * this->getOutputMultiplier());
 
 			return;
 		}
@@ -44,7 +44,7 @@ namespace Pronounce {
 
 		PurePursuitPointData pointData = this->getPointData();
 
-		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY() / this->getCurrentProfile().lookaheadDistance, -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY());
+		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY().getValue() / this->getCurrentProfile().lookaheadDistance.getValue(), -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY().getValue());
 
 		side = abs(side) < 0.5 ? signnum_c(side) : side;
 
@@ -55,27 +55,27 @@ namespace Pronounce {
 		// Before change: 3.4667
 		// After change: 3.08
 		// 12% improvement, mostly in speed up and slow down.
-		double lastSpeed = this->drivetrain->getSpeed();
+		QSpeed lastSpeed = this->drivetrain->getSpeed();
 
 		Path currentPath = this->getPath();
 		Point currentPoint = Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY());
 
-		double maxSpeed = sqrt(2 * this->getCurrentProfile().maxAcceleration * pointData.distanceFromEnd + 2.0);
-		maxSpeed = maxSpeed > 5 ? maxSpeed : 5;
+		QSpeed maxSpeed = sqrt(2 * this->getCurrentProfile().maxAcceleration.getValue() * pointData.distanceFromEnd.getValue() + 2.0);
+		maxSpeed = maxSpeed > 5.0_inchs ? maxSpeed : 5.0_inchs;
 
-		double maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime() / 1000;
-		double speed = 0;
+		QSpeed maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime();
+		QSpeed speed = 0.0;
 		if (maxSpeed > speed) {
-			speed = clamp(this->getSpeed() * side, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
+			speed = clamp(this->getSpeed().getValue() * side, (this->drivetrain->getSpeed() - maxAccelerationFrame).getValue(), (this->drivetrain->getSpeed() + maxAccelerationFrame).getValue());
 		}
 		else {
-			speed = this->getSpeed() * side;
+			speed = this->getSpeed().getValue() * side;
 		}
 
-		double motorSpeed = clamp(clamp(speed, -maxSpeed, maxSpeed), -this->getSpeed(), this->getSpeed()) * this->getOutputMultiplier();
+		double motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getSpeed().getValue(), this->getSpeed().getValue()) * this->getOutputMultiplier();
 
 		if (useVoltage) {
-			drivetrain->driveCurvatureVoltage(this->getSpeed() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
+			drivetrain->driveCurvatureVoltage(this->getSpeed().getValue() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
 		} else {
 			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 		}

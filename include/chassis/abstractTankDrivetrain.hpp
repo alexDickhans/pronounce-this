@@ -2,6 +2,7 @@
 
 #include "abstractDrivetrain.hpp"
 #include "utils/utils.hpp"
+#include "units/units.hpp"
 #include <iostream>
 
 namespace Pronounce {
@@ -12,7 +13,7 @@ namespace Pronounce {
 		AbstractTankDrivetrain();
 		AbstractTankDrivetrain(double trackWidth);
 
-		virtual double getSpeed() { return 0; }
+		virtual QSpeed getSpeed() { return 0.0; }
 
 		double getTrackWidth() {
 			return trackWidth;

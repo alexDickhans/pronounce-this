@@ -1,26 +1,47 @@
 #pragma once
 
-#include "behavior.hpp"
+#include "stateMachine/behavior.hpp"
+#include "api.h"
 
 namespace Pronounce {
+
+	pros::Vision turretVision(18, VISION_ZERO_CENTER);
+
+	double flywheelAdjustment = 0;
+	double turretAngle = 0;
+
 	class RobotStatus : public Behavior {
 	private:
-		/* data */
+		double flywheelRPM = 3500;
+		
 	public:
-		RobotStatus(/* args */);
+
+		RobotStatus() {}
 
 		void initialize() {
+			// Init beambreaks
 			return;
 		}
 
 		void update() {
-
 		}
 
 		void exit() {
-
+			return;
 		}
 
-		~RobotStatus();
+		double getFlywheelTarget() {
+			return flywheelRPM + flywheelAdjustment;
+		}
+
+		double getActualFlywheelRpm() {
+			return launcherIdle.getFlywheelSpeed();
+		}
+
+		double getTurretAngle() {
+			return turretAngle;
+		}
+
+		~RobotStatus() {}
 	};
 } // namespace Pronounce

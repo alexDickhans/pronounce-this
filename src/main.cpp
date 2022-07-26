@@ -1,51 +1,11 @@
 #include "main.h"
 
-// Controllers
-Pronounce::Controller master(pros::E_CONTROLLER_MASTER);
-Pronounce::Controller partner(pros::E_CONTROLLER_PARTNER);
-
-// Motors
-
-// Drive Motors
-pros::Motor frontRightMotor(3, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor backRightMotor(5, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor frontLeftMotor(6, pros::E_MOTOR_GEARSET_06, false);
-pros::Motor backLeftMotor(8, pros::E_MOTOR_GEARSET_06, true);
-
-pros::Motor intake(1, true);
-
-// Inertial Measurement Unit
-pros::Imu imu(19);
-
-pros::Rotation leftEncoder(10);
-pros::Rotation rightEncoder(9);
-pros::Rotation backEncoder(9);
-
-// Odom wheels
-Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
-Pronounce::TrackingWheel rightOdomWheel(&rightEncoder);
-Pronounce::TrackingWheel backOdomWheel(&backEncoder);
-
-// GPS sensor
-pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
-GpsOdometry gpsOdometry(&gps);
-
-// ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
-ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
-
-MotorButton intakeButton(&master, &intake, DIGITAL_R2, DIGITAL_Y, 200, 0, -200, 0, 0);
-
-pros::Vision turretVision(18, VISION_ZERO_CENTER);
-
-grafanalib::GUIManager manager;
-
-// Autonomous Selector
-Pronounce::AutonSelector autonomousSelector;
-
 // LVGL
 lv_obj_t* tabview;
 
-#define DRIFT_MIN 7.0
+RobotStatus robotStatus;
+ModeLogic modeLogic(&robotStatus);
+TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
 
 // SECTION Auton
 
@@ -54,11 +14,12 @@ lv_obj_t* tabview;
  *
  */
 int preAutonRun() {
+	teleopController.useDefaultBehavior();
 	return 0;
 }
 
 int autonTemplate() {
-	odometry.reset(new Position(0, 0, 0));
+	odometry.reset(new Pose2D(0, 0, 0));
 
 	pros::Task::delay(500);
 
@@ -92,63 +53,12 @@ void initSensors() {
 }
 
 /**
- * Initialize all motors
- */
-void initMotors() {
-	// Motor brake modes
-	frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	frontRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-	backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
-
-	intakeButton.setSingleToggle(true);
-	intakeButton.setDejam(true);
-	intakeButton.setDejamAuthority(-200);
-	intakeButton.setDejamSpeed(25);
-	intakeButton.setDejamTime(100);
-}
-
-void initDrivetrain() {
-
-	// odometry.setUseImu(false);
-	// Left/Right fraction
-	// 1.072124756
-	// Left 99.57
-	// Right 100.57
-	double turningFactor = (((100.35 / 100.0) - 1.0) / 2);
-	double tuningFactor = 0.998791278;
-	leftOdomWheel.setRadius(2.75 / 2);
-	leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
-	rightOdomWheel.setRadius(2.75 / 2);
-	rightOdomWheel.setTuningFactor(tuningFactor * (1 + turningFactor));
-
-	leftEncoder.set_reversed(true);
-	rightEncoder.set_reversed(false);
-
-	odometry.setLeftOffset(3.303827647);
-	odometry.setRightOffset(3.303827647);
-	odometry.setBackOffset(0);
-
-	odometry.setMaxMovement(0);
-
-	pros::Task::delay(10);
-
-	odometry.reset(new Position());
-}
-
-/**
  * Initialize the controller
  */
 void initController() {
 	master.setOdometry(&odometry);
 	partner.setOdometry(&odometry);
 	pros::Task renderTask(renderThread);
-}
-
-// Run selector as task
-void runSelector() {
-	pros::Task::delay(1000);
-	autonomousSelector.choose();
 }
 
 /**
@@ -158,36 +68,64 @@ void initLogger() {
 
 }
 
-/**
- * Filter and apply the quadratic function.
- */
-double filterAxis(pros::Controller controller, pros::controller_analog_e_t controllerAxis) {
-	// Remove drift
-	double controllerValue = controller.get_analog(controllerAxis);
-	double controllerFilter = abs(controllerValue) < DRIFT_MIN ? 0.0 : controllerValue;
+void update() {
 
-	// Apply quadratic function 
-	// f(x) = controllerFilter / 127.0 ^ 3 * 127.0
-	double quadraticFilter = pow(controllerFilter / 127.0, 3) * 620;
+	uint32_t startTime = 0;
+	while (true) {
+		// Create stuff for exact delay
+		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
+		startTime = pros::millis();
 
-	// Return solution
-	return quadraticFilter;
+		modeLogic.update();
+		odometry.update();
+
+		pros::delay(10 - (pros::millis() - startTime));
+	}
 }
 
-void initGrafanaLib() {
-	manager.setRefreshRate(50);
+void updateDisplay() {
 
-	grafanalib::Variable<Pronounce::Odometry> odometryVar("Odometry", odometry);
+	// Odom
+	lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
+	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
 
-	grafanalib::VariableGroup<Pronounce::Odometry> odometryVarGroup({odometryVar});
+	// Drivetrain
+	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
+	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
 
-	odometryVarGroup.add_getter("X", &Pronounce::Odometry::getX);
-	odometryVarGroup.add_getter("Y", &Pronounce::Odometry::getY);
-	odometryVarGroup.add_getter("Angle", &Pronounce::Odometry::getTheta);
+	lv_table_set_row_cnt(drivetrainTable, 2);
+	lv_table_set_col_cnt(drivetrainTable, 2);
 
-	manager.registerDataHandler(&odometryVarGroup);
+	lv_table_set_col_width(drivetrainTable, 0, 200);
+	lv_table_set_col_width(drivetrainTable, 1, 200);
 
-	manager.startTask();
+	// Flywheels
+	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Flywheel");
+	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
+
+	while (true) {
+		// Odometry
+		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
+			+ "\nL: " + std::to_string(leftOdomWheel.getPosition().Convert(inch)) +
+			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch))).c_str());
+
+		// Drivetrain
+		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(backLeftMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 0, 1, (std::to_string(frontRightMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable, 1, 1, (std::to_string(backRightMotor.get_temperature()) + " C").c_str());
+
+		// Flywheel
+		lv_label_set_text(flywheelLabel, ("\nTarget Speed: " + std::to_string(robotStatus.getFlywheelTarget()) +
+			"\nCurrent Speed: " + std::to_string(robotStatus.getActualFlywheelRpm()) +
+			"\nVoltage: " + std::to_string(flywheel1.get_voltage())).c_str());
+
+		pros::Task::delay(50);
+	}
+}
+
+void initDisplay() {
+	pros::Task display(updateDisplay);
 }
 
 /**
@@ -200,11 +138,18 @@ void initialize() {
 
 	// Initialize functions
 	initSensors();
-	initMotors();
 	initDrivetrain();
 	initController();
 	initLogger();
-	initGrafanaLib();
+	initController();
+	initLauncherStates();
+	initDisplay();
+	initIntake();
+
+	modeLogic.initialize();
+
+	pros::Task modeLogicTask(update);
+
 }
 
 // !SECTION
@@ -215,6 +160,7 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
+	teleopController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -268,19 +214,11 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-
-	postAuton();
-	//lv_obj_t* infoLabel = lv_label_create(lv_scr_act(), NULL);
-	// lv_label_set_text(infoLabel, "");
+	
+	teleopController.setCurrentBehavior(&teleopModeLogic);
 
 	// Driver Control Loop
 	while (true) {
-
-		// Filter and calculate magnitudes
-		int leftY = filterAxis(master, ANALOG_LEFT_Y);
-		int leftX = filterAxis(master, ANALOG_LEFT_X);
-		int rightX = filterAxis(master, ANALOG_RIGHT_X);
-
 		pros::delay(10);
 	}
 }

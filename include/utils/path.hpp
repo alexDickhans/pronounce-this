@@ -22,7 +22,7 @@ namespace Pronounce {
 		Path();
 		Path(std::string name);
 
-		void fill(double spacing) {
+		void fill(QLength spacing) {
 			std::vector<Point> oldPath = path;
 			path.clear();
 
@@ -30,9 +30,9 @@ namespace Pronounce {
 				// Fill every point in the path with the spacing
 				Point point = oldPath.at(i);
 				Vector vector = Vector(&point, &oldPath.at(i + 1));
-				double pointCount = ceil(vector.getMagnitude() / spacing);
+				double pointCount = ceil((vector.getMagnitude() / spacing).getValue());
 				vector.normalize();
-				vector = vector.scale(spacing);
+				vector = vector.scale(spacing.getValue());
 
 				for (int i = 0; i < pointCount - 1; i++) {
 					point.add(vector.getCartesian());
@@ -65,13 +65,13 @@ namespace Pronounce {
 					Point newPoint = path.at(i);
 
 					// x
-					double aux = path.at(i).getX();
+					QLength aux = path.at(i).getX();
 					path.at(i).setX(path.at(i).getX()
 						+ (weightData * (oldPoint.getX() - newPoint.getX()))
 						+ (weightSmooth * (path.at(i - 1).getX() + path.at(i + 1).getX() - 2.0 * newPoint.getX()))
 					);
 
-					change += abs(aux - newPoint.getX());
+					change += abs((aux - newPoint.getX()).getValue());
 
 					// y
 					aux = path.at(i).getY();
@@ -80,7 +80,7 @@ namespace Pronounce {
 						+ (weightSmooth * (path.at(i - 1).getY() + path.at(i + 1).getY() - 2.0 * newPoint.getY()))
 					);
 
-					change += abs(aux - newPoint.getY());
+					change += abs((aux - newPoint.getX()).getValue());
 				}
 			}
 		}
@@ -105,7 +105,7 @@ namespace Pronounce {
 			this->path.emplace_back(Point(x, y));
 		}
 
-		Point getLookAheadPoint(Point currentPosition, double lookaheadDistance);
+		Point getLookAheadPoint(Point currentPosition, QLength lookaheadDistance);
 
 		/**
 		 * @brief Get the closest point in the path to the robot
@@ -117,7 +117,7 @@ namespace Pronounce {
 
 		double getTValue(Point currentPosition) {
 			Point closestPoint;
-			double closestDistance = INT32_MAX;
+			QLength closestDistance = (double) INT32_MAX;
 			double closestT = INT32_MAX;
 
 			double totalT = 0;
@@ -144,7 +144,7 @@ namespace Pronounce {
 					lastPoint = lastPoint;
 				}
 
-				double distance = lastPoint.distance(currentPosition);
+				QLength distance = lastPoint.distance(currentPosition);
 				if (distance < closestDistance) {
 					closestDistance = distance;
 					closestPoint = lastPoint;
@@ -157,8 +157,8 @@ namespace Pronounce {
 			return closestT;
 		}
 
-		double distance() {
-			double total = 0;
+		QLength distance() {
+			QLength total = 0.0;
 
 			for (int i = 1; i < path.size(); i++) {
 				Point startPoint = path.at(i-1);
@@ -170,27 +170,27 @@ namespace Pronounce {
 			return total;
 		}
 
-		double distanceFromStart(double t) {
+		QLength distanceFromStart(double t) {
 			double t2 = t;
 
-			double total = 0;
+			QLength total = 0.0;
 
 			for (int i = 1; i <= std::min(ceil(t), path.size()-1.0); i ++) {
 				Point startPoint = path.at(i-1);
 				Point endPoint = path.at(i);
 
-				total += startPoint.distance(endPoint) * clamp(t2, 0.0, 1.0);
+				total += startPoint.distance(endPoint).getValue() * clamp(t2, 0.0, 1.0);
 				t2--;
 			}
 
 			return total;
 		}
 
-		double distanceFromStart(Point currentPosition) {
+		QLength distanceFromStart(Point currentPosition) {
 			return this->distanceFromStart(this->getTValue(currentPosition));
 		}
 
-		double distanceFromEnd(Point currentPosition) {
+		QLength distanceFromEnd(Point currentPosition) {
 			return this->distance() - this->distanceFromStart(currentPosition);
 		}
 

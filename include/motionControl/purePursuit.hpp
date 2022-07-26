@@ -6,10 +6,10 @@
 #include <iostream>
 #include "feedbackControllers/pid.hpp"
 #include "utils/path.hpp"
-#include "utils/position.hpp"
+#include "utils/pose2d.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
-#include "odometry/odometry.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {
@@ -23,15 +23,15 @@ namespace Pronounce {
 		Vector localLookaheadVector;
 		Vector normalizedLookaheadVector;
 		double curvature;
-		double distanceFromEnd;
+		QLength distanceFromEnd;
 	};
 
 	struct PurePursuitProfile {
 		PID* lateralPid;
 		PID* orientationPid;
-		double lookaheadDistance;
-		double maxAcceleration;
-		double speed;
+		QLength lookaheadDistance;
+		QAcceleration maxAcceleration;
+		QSpeed speed;
 	};
 
 	/**
@@ -54,26 +54,26 @@ namespace Pronounce {
 	class PurePursuit : public Behavior {
 	private:
 		Path path;
-		double stopDistance = 0;
-		double normalizeDistance = 1;
+		QLength stopDistance = 1_in;
+		QLength normalizeDistance = 1_in;
 
 		double outputMultiplier = 1.0;
 
 		PurePursuitProfile currentProfile;
 
-		double turnTarget;
+		Angle turnTarget;
 
-		Odometry* odometry;
+		ContinuousOdometry* odometry;
 
-		double doneDistance = 0.5;
+		QLength doneDistance = 0.5_in;
 
 		PurePursuitPointData pointData;
 
-		double updateTime = 20;
+		QTime updateTime = 20_ms;
 	public:
 		PurePursuit();
-		PurePursuit(double lookahead);
-		PurePursuit(Odometry* odometry, double lookahead);
+		PurePursuit(QLength lookahead);
+		PurePursuit(ContinuousOdometry* odometry, QLength lookahead);
 
 		void initialize() {
 			currentProfile.lateralPid->reset();
@@ -91,7 +91,7 @@ namespace Pronounce {
 
 		virtual void exit() {}
 
-		bool isDone(double maxDistance) {
+		bool isDone(QLength maxDistance) {
 			return maxDistance > odometry->getPosition()->distance(path.getPoint(path.getPath().size() - 1));
 		}
 
@@ -115,19 +115,19 @@ namespace Pronounce {
 			return this->pointData;
 		}
 
-		double getTurnTarget() {
+		Angle getTurnTarget() {
 			return turnTarget;
 		}
 
-		void setTurnTarget(double turnTarget) {
+		void setTurnTarget(Angle turnTarget) {
 			this->turnTarget = turnTarget;
 		}
 
-		double getNormalizeDistance() {
+		QLength getNormalizeDistance() {
 			return normalizeDistance;
 		}
 
-		void setNormalizeDistance(double normalizeDistance) {
+		void setNormalizeDistance(QLength normalizeDistance) {
 			this->normalizeDistance = normalizeDistance;
 		}
 
@@ -139,15 +139,15 @@ namespace Pronounce {
 			this->currentProfile = profile;
 		}
 
-		Odometry* getOdometry() {
+		ContinuousOdometry* getOdometry() {
 			return odometry;
 		}
 
-		void setOdometry(Odometry* odometry) {
+		void setOdometry(ContinuousOdometry* odometry) {
 			this->odometry = odometry;
 		}
 
-		double getStopDistance() {
+		QLength getStopDistance() {
 			return stopDistance;
 		}
 
@@ -155,7 +155,7 @@ namespace Pronounce {
 			this->stopDistance = stopDistance;
 		}
 
-		double getDoneDistance() {
+		QLength getDoneDistance() {
 			return doneDistance;
 		}
 
@@ -163,11 +163,11 @@ namespace Pronounce {
 			this->doneDistance = doneDistance;
 		}
 
-		double getUpdateTime() {
+		QTime getUpdateTime() {
 			return updateTime;
 		}
 
-		void setUpdateTime(double updateTime) {
+		void setUpdateTime(QTime updateTime) {
 			this->updateTime = updateTime;
 		} 
 

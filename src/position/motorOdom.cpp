@@ -10,6 +10,6 @@ namespace Pronounce {
     }
 
     void MotorOdom::update() {
-        this->setPosition(motor->get_position() * this->getRadius() * M_PI * 2.0 * this->getTuningFactor());
+        this->setPosition(motor->get_position() * this->getRadius().Convert(metre) * 1_pi * 2.0 * this->getTuningFactor());
     }
 } // namespace Pronounce

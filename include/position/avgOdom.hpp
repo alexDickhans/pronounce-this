@@ -1,6 +1,7 @@
 #pragma once
 
 #include "odomWheel.hpp"
+#include "units/units.hpp"
 #include <vector>
 
 namespace Pronounce {
@@ -22,8 +23,8 @@ namespace Pronounce {
         /**
          * Get the distance at the current moment
          */
-        double getPosition() {
-            double total = 0;
+        QLength getPosition() {
+            QLength total = 0.0;
             for (int i = 0; i < odomWheels.size(); i++) {
                 total += odomWheels.at(i).getPosition();
             }
@@ -38,8 +39,8 @@ namespace Pronounce {
             }
         }
 
-        double getChange() {
-            double total = 0;
+        QLength getChange() {
+            QLength total = 0.0;
 			for (int i = 0; i < odomWheels.size(); i++) {
                 total += odomWheels.at(i).getChange();
             }

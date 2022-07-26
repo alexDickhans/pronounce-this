@@ -2,8 +2,8 @@
 
 #include "api.h"
 #include "chassis/drivetrain.hpp"
-#include "utils/position.hpp"
-#include "odometry/odometry.hpp"
+#include "utils/pose2d.hpp"
+#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "utils/vector.hpp"
 
 #define STATE_AUTON 0
@@ -18,7 +18,7 @@ namespace Pronounce {
     private:
         uint8_t lastState;
 
-        Odometry* odometry;
+        ContinuousOdometry* odometry;
 
         // Path to be implemented later.
         
@@ -38,7 +38,7 @@ namespace Pronounce {
 
     public:
         Controller(pros::controller_id_e_t id);
-        Controller(pros::controller_id_e_t id, Odometry* odometry);
+        Controller(pros::controller_id_e_t id, ContinuousOdometry* odometry);
 
         /**
          * Get the degrees that the controller is pointing at
@@ -86,12 +86,76 @@ namespace Pronounce {
             this->drivetrain = drivetrain;
         }
 
-		Odometry* getOdometry() {
+		ContinuousOdometry* getOdometry() {
 			return odometry;
 		}
 
-		void setOdometry(Odometry* odometry) {
+		void setOdometry(ContinuousOdometry* odometry) {
 			this->odometry = odometry;
+		}
+
+		int getLeftX() {
+			return this->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+		}
+
+		int getRightX() {
+			return this->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		}
+
+		int getLeftY() {
+			return this->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		}
+
+		int getRightY() {
+			return this->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+		}
+
+		bool getUp() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_UP);
+		}
+
+		bool getDown() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
+		}
+
+		bool getLeft() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_LEFT);
+		}
+
+		bool getRight() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
+		}
+
+		bool getR1() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+		}
+
+		bool getR2() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+		}
+
+		bool getL1() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+		}
+
+		bool getL2() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+		}
+
+		bool getA() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_A);
+		}
+
+		bool getB() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_B);
+		}
+
+		bool getX() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_X);
+		}
+
+		bool getY() {
+			return this->get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 		}
 
         ~Controller();
