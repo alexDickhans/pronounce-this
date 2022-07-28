@@ -75,6 +75,11 @@
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
 
+// Orientation
+#include "odometry/orientation/avgOrientation.hpp"
+#include "odometry/orientation/imu.hpp"
+#include "odometry/orientation/orientation.hpp"
+
 // Continuous Odometry
 #include "odometry/continuousOdometry/mecanumOdometry.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
