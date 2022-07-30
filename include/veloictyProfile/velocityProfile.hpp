@@ -33,6 +33,8 @@ namespace Pronounce {
 
 		virtual QJerk getJerkByTime(QTime time) { return 0.0; }
 
+		virtual QTime getTimeByDistance(QLength distance) { return 0.0; }
+
 		QLength getDistance() {
 			return distance;
 		}
