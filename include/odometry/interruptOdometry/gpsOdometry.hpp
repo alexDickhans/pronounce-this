@@ -1,56 +1,43 @@
 #pragma once
 
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
+#include "odometry/interruptOdometry/interruptOdometry.hpp"
 #include "api.h"
+#include "units/units.hpp"
 
 namespace Pronounce {
-	class GpsOdometry : public ContinuousOdometry {
+	class GpsOdometry : public InterruptOdometry {
 	private:
-		pros::Gps* gps;
+		pros::Gps& gps;
 
-		pros::c::gps_status_s_t lastPos;
+		Pose2D lastPos;
 		bool goodFixBool = false;
-		int32_t lastGoodFix = -10000;
-		int32_t lastUpdate = 0;
+		QTime lastGoodFix = -10000.0;
+		QTime lastUpdate = 0.0;
 
 		QLength gpsX = 0_m;
 		QLength gpsY = 0_m;
 		Angle gpsOrientation = 0_rad;
 
-		QLength convertToLocal(QLength x) {
+		QLength convertFromGps(QLength x) {
 			return x - 1.8_m;
 		}
 
-		QLength convertToGlobal(QLength x) {
+		QLength convertToGps(QLength x) {
 			return x + 1.8_m;
 		}
 	public:
-		GpsOdometry();
-		GpsOdometry(pros::Gps* gps);
-
-		void update();
-		void update(Pose2D* pose);
-
-		void reset(Pose2D* pose) {
-			this->setPose(pose);
-			this->setResetPose(pose);
-			gps->initialize_full(convertToGlobal(pose->getX()).getValue(), convertToGlobal(pose->getY()).getValue(), (pose->getAngle()+ gpsOrientation).Convert(degree), gpsX.getValue(), gpsY.getValue());
+		GpsOdometry(pros::Gps& gps) : gps(gps), lastPos(0, 0, 0) {
+			
 		}
 
-		pros::Gps* getGps() {
-			return gps;
-		}
+		bool positionReady(Pose2D currentPose, Vector velocity) { 
+			pros::c::gps_status_s_t currentPos = gps.get_status();
 
-		void setGps(pros::Gps* gps) {
-			this->gps = gps;
-		}
+			// Convert to our coordinate space
+			Pose2D currentPose = Pose2D(currentPos.x * 1_m, currentPos.y * 1_m);
 
-		bool goodFix() {
-
-			pros::c::gps_status_s_t currentPos = gps->get_status();
-
-			if (pros::millis() - lastUpdate < 50) {
-				if (goodFixBool && pros::millis() - lastGoodFix > 2000) {
+			if ((pros::millis() * 1_ms) - lastUpdate < 50_ms) {
+				if (goodFixBool && (pros::millis() * 1_ms) - lastGoodFix > 2000_ms) {
 					return true;
 				}
 				return false;
@@ -63,7 +50,7 @@ namespace Pronounce {
 			}
 
 			// If the robot isn't moving too far start the timer
-			if (sqrt(pow(currentPos.x - lastPos.x, 2) + pow(currentPos.y - lastPos.y, 2)) < (2.0 / (1000.0 / (double)(pros::millis() - lastUpdate))) && !goodFixBool) {
+			if (sqrt(pow((currentPose.getX() - lastPos.getX()).getValue(), 2) + pow((currentPose.getY() - lastPos.getY()).getValue(), 2)) < (2.0 / (1000.0 / (double)(pros::millis() * 1_ms - lastUpdate))) && !goodFixBool) {
 				if (!goodFixBool) {
 					lastGoodFix = pros::millis();
 				}
@@ -82,6 +69,21 @@ namespace Pronounce {
 			return false;
 		}
 
-		~GpsOdometry();
+		virtual Pose2D getPosition(Pose2D currentPose, Vector velocity) {
+			pros::c::gps_status_s_t currentReading = gps.get_status();
+			Pose2D readingPose = Pose2D(convertFromGps(currentReading.x), convertFromGps(currentReading.y));
+
+			return readingPose;
+		}
+
+		void reset(Pose2D pose) {
+			gps.initialize_full(convertToGps(pose.getX()).getValue(), convertToGps(pose.getY()).getValue(), (pose.getAngle()+ gpsOrientation).Convert(degree), gpsX.getValue(), gpsY.getValue());
+		}
+
+		pros::Gps& getGps() {
+			return gps;
+		}
+
+		~GpsOdometry() {}
 	};
 } // namespace Pronounce

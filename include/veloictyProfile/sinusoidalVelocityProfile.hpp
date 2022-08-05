@@ -40,7 +40,9 @@ namespace Pronounce {
 			distanceToTime.add(distance.getValue(), t.getValue());
 		}
 
-
+		QTime getDuration() {
+			return Tt;
+		}
 
 		QLength getDistanceByTime(QTime t) {
 			if (t <= 0.0_s) {

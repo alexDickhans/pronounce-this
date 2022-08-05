@@ -15,6 +15,9 @@ namespace Pronounce {
         Pose2D();
         Pose2D(double angle);
         Pose2D(double x, double y);
+        Pose2D(QLength x, QLength y) : Point(x, y) {
+			
+		}
         Pose2D(double x, double y, double angle);
 
         std::string to_string() {
