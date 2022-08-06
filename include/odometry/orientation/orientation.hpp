@@ -2,6 +2,9 @@
 
 #include "units/units.hpp"
 
+// TODO: Add docstrings
+// TODO: add comments
+
 namespace Pronounce {
 	class Orientation {
 	private:

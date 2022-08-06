@@ -5,6 +5,8 @@
 #include "stateController.hpp"
 #endif // !DEBUG
 
+// TODO: add docstrings
+
 #include <vector>
 #include <iostream>
 namespace Pronounce {

@@ -13,6 +13,10 @@
 #include "utils/exponentialMovingAverage.hpp"
 #include "utils/runningAverage.hpp"
 
+// TODO: Clean up
+// TODO: move declarations to another place
+// TODO: Add comments
+
 namespace Pronounce {
 
 	// Controllers
@@ -39,7 +43,7 @@ namespace Pronounce {
 
 	// GPS sensor
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
-	GpsOdometry gpsOdometry(&gps);
+	GpsOdometry gpsOdometry(gps, 7.5_in, 7.5_in, 180_deg);
 
 	ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
 

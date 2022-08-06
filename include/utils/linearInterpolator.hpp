@@ -4,6 +4,11 @@
 #include <vector>
 #include "units/units.hpp"
 
+// TODO: test code
+// TODO: Check implemntation
+// TODO: add docstrings
+// TODO: add comments
+
 namespace Pronounce {
 	double lerp(double a, double b, double t) {
 		return a + t * (b - a);

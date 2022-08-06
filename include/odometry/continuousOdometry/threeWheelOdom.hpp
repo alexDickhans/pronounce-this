@@ -6,8 +6,12 @@
 #include "utils/utils.hpp"
 #include "utils/pose2d.hpp"
 
-namespace Pronounce
-{
+// TODO: Add velocity to calculations
+// TODO: Add docstrings
+// TODO: Add comments
+// TODO: Make sure the code is clean
+
+namespace Pronounce {
     class ThreeWheelOdom : public ContinuousOdometry {
     private:
         OdomWheel* leftWheel, * rightWheel, * backWheel;

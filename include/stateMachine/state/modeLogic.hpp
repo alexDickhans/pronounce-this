@@ -6,6 +6,9 @@
 #include "stateMachine/behaviorGroup.hpp"
 #include "utils/utils.hpp"
 
+// TODO: clean up
+// TODO: Add docstrings
+
 namespace Pronounce {
 
 	StateController stateExtensionController(new Behavior());

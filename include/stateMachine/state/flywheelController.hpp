@@ -2,6 +2,8 @@
 
 #include "games/spinUp/gameConstants.hpp"
 
+// TODO: Finish implentation
+
 namespace Pronounce {
 	class FlywheelController {
 	private:

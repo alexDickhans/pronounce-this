@@ -5,6 +5,11 @@
 #include "utils/linearInterpolator.hpp"
 #include <cmath>
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Make sure implemntation is correct
+// TODO: Test
+
 namespace Pronounce {
 	class SinusoidalVelocityProfile : public VelocityProfile {
 	private:

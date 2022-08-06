@@ -8,8 +8,12 @@
 #include "math.h"
 #include "utils/runningAverage.hpp"
 
+// TODO: mode running average stuff to another place
+// TODO: Change to jerk and acceleration limiting
 #define RUNNING_AVERAGE_TRANSLATION 20
 #define RUNNING_AVERAGE_ROTATION 5
+
+// TODO: Add docstrings
 
 namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {

@@ -2,6 +2,10 @@
 
 #include "units/units.hpp"
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Make sure implemntation is correct
+
 namespace Pronounce {
 	struct ProfileConstraints {
 		QSpeed maxVelocity;

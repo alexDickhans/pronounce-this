@@ -4,6 +4,8 @@
 #include "chassis/abstractTankDrivetrain.hpp"
 #include <iostream>
 
+// TODO: Clean this up and add doc strings and comments
+
 namespace Pronounce {
 	class TankPurePursuit : public PurePursuit {
 	private:

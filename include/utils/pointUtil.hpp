@@ -5,6 +5,10 @@
 #include "utils.hpp"
 #include "units/units.hpp"
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Use units more strictly
+
 namespace Pronounce {
     class Point {
     private:

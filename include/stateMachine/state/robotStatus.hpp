@@ -3,6 +3,9 @@
 #include "stateMachine/behavior.hpp"
 #include "api.h"
 
+// TODO: Clean up
+// TODO: Implement more sensors with classes
+
 namespace Pronounce {
 
 	pros::Vision turretVision(18, VISION_ZERO_CENTER);

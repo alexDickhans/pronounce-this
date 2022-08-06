@@ -5,6 +5,10 @@
 #include "interruptOdometry/interruptOdometry.hpp"
 #include <vector>
 
+// TODO: Add comments
+// TODO: Add docstrings
+// TODO: check if this works with velocity
+
 namespace Pronounce {
 	class OdomFuser : public ContinuousOdometry {
 	private:

@@ -6,6 +6,12 @@
 #include "utils/pointUtil.hpp"
 #include "sensors/lineSensorArray.hpp"
 
+// TODO: Add docstrings
+// TODO: Test code
+// TODO: Add comments
+// TODO: Clean up code
+// TODO: Finish code
+
 namespace Pronounce {
 	class TapeOdometry {
 	private:

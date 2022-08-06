@@ -24,6 +24,9 @@ int get_time_ms() {
 
 #endif // DEBUG
 
+// TODO: Add docstring
+// TODO: Add comments
+
 namespace Pronounce {
 	class Wait : public Behavior {
 	private:

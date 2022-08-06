@@ -3,6 +3,11 @@
 #include "api.h"
 #include <vector>
 
+// TODO: Add positions
+// TODO: clean up
+// TODO: Add docstrings
+// TODO: check code
+
 namespace Pronounce {
 	class LineSensorArray
 	{

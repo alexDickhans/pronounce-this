@@ -3,6 +3,10 @@
 #include "pointUtil.hpp"
 #include "vector.hpp"
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Change name
+
 namespace Pronounce {
 	class SplinePoint {
 	private:

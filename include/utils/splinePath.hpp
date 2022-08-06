@@ -5,6 +5,10 @@
 #include <vector>
 #include <string>
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Change name
+
 namespace Pronounce {
 	/**
 	 * @brief Smooths a list of points using splines

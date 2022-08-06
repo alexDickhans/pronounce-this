@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: Add comments
+
 namespace Pronounce {
 	class FeedbackController {
 	private:

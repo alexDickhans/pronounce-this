@@ -2,6 +2,10 @@
 
 #include "api.h"
 
+// TODO: Test code
+// TODO: add docstrings
+// TODO: Comments
+
 namespace Pronounce {
 	class IRBeambreak {
 	private:

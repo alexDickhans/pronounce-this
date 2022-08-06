@@ -6,6 +6,9 @@
 #include "robotStatus.hpp"
 #include "driver.h"
 
+// TODO: Clean up
+// TODO: Add docstring
+
 namespace Pronounce {
 	class TeleopModeLogic : public Behavior {
 	private:

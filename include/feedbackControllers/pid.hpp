@@ -4,6 +4,8 @@
 #include "utils/utils.hpp"
 #include "feedbackController.hpp"
 
+// TODO: Add comments
+
 namespace Pronounce {
 
 	/**

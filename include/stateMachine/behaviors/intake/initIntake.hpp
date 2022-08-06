@@ -6,6 +6,10 @@
 #include "stateMachine/stateController.hpp"
 #include "utils/motorGroup.hpp"
 
+// TODO: Clean up
+// TODO: move declarations to another place
+// TODO: Add comments
+
 namespace Pronounce {
 
 	pros::Motor intake(4, false);

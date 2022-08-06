@@ -8,6 +8,10 @@
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
 
+// TODO: Clean up
+// TODO: move declarations to another place
+// TODO: Add comments
+
 namespace Pronounce {
 
 	pros::Motor flywheel1(1, pros::E_MOTOR_GEARSET_36, true);

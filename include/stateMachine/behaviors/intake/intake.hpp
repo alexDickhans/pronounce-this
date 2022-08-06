@@ -4,6 +4,9 @@
 #include "stateMachine/behavior.hpp"
 #include "utils/motorGroup.hpp"
 
+// TODO: Add docstrings
+// TODO: add comments
+
 namespace Pronounce {
 	class Intake : public Behavior {
 	private:

@@ -6,6 +6,9 @@
 #include "utils/motorGroup.hpp"
 #include <iostream>
 
+// TODO: Add docstrings
+// TODO: Add comments
+
 namespace Pronounce {
 	class Launcher : public Behavior {
 	private:

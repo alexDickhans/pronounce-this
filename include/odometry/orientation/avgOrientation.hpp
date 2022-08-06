@@ -4,10 +4,14 @@
 #include "orientation.hpp"
 #include <vector>
 
+// TODO: Add docstrings
+// TODO: Test code
+// TODO: Add comments
+
 namespace Pronounce {
 	class AvgOrientation : public Orientation {
 	private:
-		std::vector<Orientation&> orientations;
+		std::vector<Orientation*> orientations;
 	public:
 		AvgOrientation();
 
@@ -15,8 +19,8 @@ namespace Pronounce {
 			Angle total = 0.0;
 
 			for (int i = 0; i < orientations.size(); i ++) {
-				orientations.at(i).update();
-				total += orientations.at(i).getAngle();
+				orientations.at(i)->update();
+				total += orientations.at(i)->getAngle();
 			}
 
 			this->setAngle(total/orientations.size());
@@ -24,8 +28,12 @@ namespace Pronounce {
 
 		void reset() {
 			for (int i = 0; i < orientations.size(); i++) {
-				orientations.at(i).reset();
+				orientations.at(i)->reset();
 			}
+		}
+
+		void addOrientation(Orientation* orientation) {
+			this->orientations.emplace_back(orientation);
 		}
 
 		~AvgOrientation();

@@ -3,6 +3,10 @@
 #include "utils/pose2d.hpp"
 #include "utils/vector.hpp"
 
+// TODO: Add docstrings
+// TODO: Add comments
+// TODO: Clean code
+
 namespace Pronounce {
     class ContinuousOdometry {
     private:

@@ -2,6 +2,12 @@
 
 #include "velocityProfile.hpp"
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Make sure implemntation is correct
+// TODO: Test
+// TODO: Finish implementation
+
 namespace Pronounce {
 	class TrapezoidalVelocityProfile {
 	private:

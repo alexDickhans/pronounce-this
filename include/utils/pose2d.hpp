@@ -4,6 +4,10 @@
 #include <string>
 #include "units/units.hpp"
 
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Use units more strictly
+
 namespace Pronounce {
     /**
      * A class to keep track of position on the field

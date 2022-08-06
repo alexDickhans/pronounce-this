@@ -3,6 +3,9 @@
 #include <vector>
 #include "api.h"
 
+// TODO: Add docstring
+// TODO: Check that all functions are implmented
+
 namespace Pronounce {
 	class MotorGroup {
 	private:

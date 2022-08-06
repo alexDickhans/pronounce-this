@@ -1,5 +1,8 @@
 #pragma once
 
+// TODO: add comments
+// TODO: clean up code
+
 #include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "purePursuit.hpp"
 #include "utils/vector.hpp"

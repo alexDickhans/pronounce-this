@@ -3,6 +3,11 @@
 #include "odomWheel.hpp"
 #include <iostream>
 
+// TODO: add docstrings
+// TODO: check code
+// TODO: check units
+// TODO: add comments
+
 namespace Pronounce {
     class  AdiOdomWheel : public OdomWheel {
     private:

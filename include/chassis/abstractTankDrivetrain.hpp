@@ -10,8 +10,8 @@ namespace Pronounce {
 	private:
 		double trackWidth;
 	public:
-		AbstractTankDrivetrain();
-		AbstractTankDrivetrain(double trackWidth);
+		AbstractTankDrivetrain() {}
+		AbstractTankDrivetrain(double trackWidth) : trackWidth(trackWidth) {}
 
 		virtual QSpeed getSpeed() { return 0.0; }
 

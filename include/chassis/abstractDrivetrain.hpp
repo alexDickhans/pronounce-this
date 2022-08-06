@@ -9,9 +9,9 @@ namespace Pronounce {
 	private:
 		
 	public:
-		AbstractDrivetrain();
+		AbstractDrivetrain() {}
 
-		~AbstractDrivetrain();
+		~AbstractDrivetrain() {}
 	};
 		
 } // namespace Pronounce

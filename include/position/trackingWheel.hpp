@@ -3,6 +3,10 @@
 #include "odomWheel.hpp"
 #include "api.h"
 
+// TODO: rename to be more descriptive
+// TODO: Add docstrings
+// TODO: add comments
+
 namespace Pronounce
 {
     class TrackingWheel : public OdomWheel {

@@ -5,8 +5,11 @@
 #include "path.hpp"
 #include <vector>
 
-namespace Pronounce
-{
+// TODO: add docstrings
+// TODO: add comments
+// TODO: Change name
+
+namespace Pronounce {
 	class QuadraticSplinePath {
 	private:
 		std::vector<SplinePoint> points;

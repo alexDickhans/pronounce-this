@@ -1,6 +1,9 @@
 
 #pragma once
 
+// TODO: Finish docstrings
+// TODO: Add comments
+
 #include <vector>
 #include "pointUtil.hpp"
 #include "vector.hpp"

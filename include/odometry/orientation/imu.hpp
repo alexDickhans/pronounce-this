@@ -4,6 +4,10 @@
 #include "units/units.hpp"
 #include "orientation.hpp"
 
+// TODO: Add docstrings
+// TODO: Add comments
+// TODO: check units
+
 namespace Pronounce {
 	class IMU : public Orientation {
 	private:
