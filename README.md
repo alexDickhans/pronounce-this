@@ -6,4 +6,4 @@ This is our programming repository for 2022-2023 VEX Competition Spin up.
 
 ## Libraries used
 
-pros-grafana-lib - [Github link](https://github.com/BWHS-Robotics/pros-grafana-cli)
+
