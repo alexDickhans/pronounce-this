@@ -10,13 +10,12 @@ namespace Pronounce {
 		pros::Gps& gps;
 
 		Pose2D lastPos;
-		bool goodFixBool = false;
-		QTime lastGoodFix = -10000.0;
-		QTime lastUpdate = 0.0;
 
 		QLength gpsX = 0_m;
 		QLength gpsY = 0_m;
 		Angle gpsOrientation = 0_rad;
+
+		QLength outsideBuffer = 24_in;
 
 		QLength convertFromGps(QLength x) {
 			return x - 1.8_m;
@@ -26,47 +25,24 @@ namespace Pronounce {
 			return x + 1.8_m;
 		}
 	public:
-		GpsOdometry(pros::Gps& gps) : gps(gps), lastPos(0, 0, 0) {
-			
+		GpsOdometry(pros::Gps& gps, QLength gpsX, QLength gpsY, Angle gpsOrientation) : gps(gps), lastPos(0, 0, 0) {
+			this->gpsX = gpsX;
+			this->gpsY = gpsY;
+			this->gpsOrientation = gpsOrientation;
 		}
 
-		bool positionReady(Pose2D currentPose, Vector velocity) { 
-			pros::c::gps_status_s_t currentPos = gps.get_status();
+		bool positionReady(Pose2D currentPose, Vector velocity) {
+			Pose2D pose = this->getPosition(currentPose, velocity);
 
-			// Convert to our coordinate space
-			Pose2D currentPose = Pose2D(currentPos.x * 1_m, currentPos.y * 1_m);
-
-			if ((pros::millis() * 1_ms) - lastUpdate < 50_ms) {
-				if (goodFixBool && (pros::millis() * 1_ms) - lastGoodFix > 2000_ms) {
-					return true;
-				}
+			if (!(pose.getX() > outsideBuffer && pose.getX() < 144_in - outsideBuffer && pose.getY() > outsideBuffer && pose.getY() < 144_in - outsideBuffer)) {
 				return false;
 			}
 
-			// If our position is 0 we invalidate it
-			if (sqrt(pow(currentPos.x, 2) + pow(currentPos.y, 2)) == 0.0) {
-				goodFixBool = false;
-				return false;
-			}
+			// TODO: Add more conditionals
 
-			// If the robot isn't moving too far start the timer
-			if (sqrt(pow((currentPose.getX() - lastPos.getX()).getValue(), 2) + pow((currentPose.getY() - lastPos.getY()).getValue(), 2)) < (2.0 / (1000.0 / (double)(pros::millis() * 1_ms - lastUpdate))) && !goodFixBool) {
-				if (!goodFixBool) {
-					lastGoodFix = pros::millis();
-				}
-				goodFixBool = true;
-			}
-			else {
-				goodFixBool = false;
-				return false;
-			}
+			return true;
 
-			// Wait to return a good fix until we know that it is good for a while
-			if (goodFixBool && pros::millis() - lastGoodFix > 2000) {
-				return true;
-			}
-
-			return false;
+			lastPos = pose;
 		}
 
 		virtual Pose2D getPosition(Pose2D currentPose, Vector velocity) {
