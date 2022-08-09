@@ -44,14 +44,10 @@
 
 // 2654lib includes
 
-#include "autoPaths.hpp"
 
 #include "defines.h"
 #include "auton.h"
 #include "driver.h"
-
-// Auton
-#include "auton/auton.hpp"
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"

@@ -7,6 +7,8 @@ namespace Pronounce
 {
     /**
      * Omnidirectional drive type, used for X-Drive/Mecanum drive
+	 * 
+	 * @authors Alex Dickhans(ad101-lab)
      */
     class AbstractHolonomicDrivetrain : public AbstractDrivetrain {
     private:
@@ -19,6 +21,7 @@ namespace Pronounce
 		 * @param vector The vector to drive to, normalized
 		 */
         virtual void setDriveVectorVelocity(Vector vector) {}
+
 		/**
 		 * @brief Set the drive vector relative to the robot using velocity and rotation
 		 * 

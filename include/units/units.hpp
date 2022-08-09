@@ -329,9 +329,6 @@ constexpr QPressure operator"" _bar(unsigned long long int x) { return static_ca
 constexpr QPressure operator"" _psi(long double x) { return static_cast<double>(x) * psi; };
 constexpr QPressure operator"" _psi(unsigned long long int x) { return static_cast<double>(x) * psi; };
 
-constexpr QCurvature operator"" _radm(long double x) { return static_cast<double>(x); };
-constexpr QCurvature operator"" _radm(unsigned long long int x) { return static_cast<double>(x); };
-
 // Angular unit literals:
 // ----------------------
 constexpr long double operator"" _pi(long double x)
@@ -352,6 +349,20 @@ constexpr Angle operator"" _rad(long double x) { return Angle(x); };
 constexpr Angle operator"" _rad(unsigned long long int x) { return Angle(static_cast<double>(x)); };
 constexpr Angle operator"" _deg(long double x) { return static_cast<double>(x) * degree; };
 constexpr Angle operator"" _deg(unsigned long long int x) { return static_cast<double>(x) * degree; };
+
+constexpr QCurvature RadM(1.0);
+constexpr QCurvature DegM = degree/metre;
+constexpr QCurvature RadIn = degree/inch; 
+constexpr QCurvature DegIn = degree/inch; 
+
+constexpr QCurvature operator"" _radm(long double x) { return static_cast<double>(x); };
+constexpr QCurvature operator"" _radm(unsigned long long int x) { return static_cast<double>(x); };
+constexpr QCurvature operator"" _degm(long double x) { return static_cast<double>(x) * DegM; };
+constexpr QCurvature operator"" _degm(unsigned long long int x) { return static_cast<double>(x) * DegM; };
+constexpr QCurvature operator"" _radin(long double x) { return static_cast<double>(x) * RadIn; };
+constexpr QCurvature operator"" _radin(unsigned long long int x) { return static_cast<double>(x) * RadIn; };
+constexpr QCurvature operator"" _degin(long double x) { return static_cast<double>(x) * DegIn; };
+constexpr QCurvature operator"" _degin(unsigned long long int x) { return static_cast<double>(x) * DegIn; };
 
 // Conversion macro, which utilizes the string literals
 #define ConvertTo(_x, _y) (_x).Convert(1.0_##_y)

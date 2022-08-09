@@ -43,7 +43,7 @@ namespace Pronounce {
         Controller(pros::controller_id_e_t id, ContinuousOdometry* odometry);
 
         /**
-         * Get the degrees that the controller is pointing at
+         * Get the angle that the controller is pointing at
          * 
          * @param joystick The joysick data is coming from
          * 
