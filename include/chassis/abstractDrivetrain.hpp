@@ -11,6 +11,13 @@ namespace Pronounce {
 	public:
 		AbstractDrivetrain() {}
 
+		/**
+		 * @brief Get the current speed of the drivetrain
+		 * 
+		 * @return QSpeed 
+		 */
+		virtual QSpeed getSpeed() { return 0.0; }
+
 		~AbstractDrivetrain() {}
 	};
 		
