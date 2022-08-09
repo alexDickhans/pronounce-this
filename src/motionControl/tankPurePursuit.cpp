@@ -27,17 +27,7 @@ namespace Pronounce {
 
 	void TankPurePursuit::updateDrivetrain() {
 
-		if (orientationControl) {
-			Angle currentOrientation = this->getOdometry()->getPosition()->getAngle();
-			double spinSpeed = this->turnPid->update(angleDifference(currentOrientation.getValue(), 0));
-
-			std::cout << "Angle difference: " << this->turnPid->getError() << std::endl;
-
-			this->drivetrain->skidSteerVelocity(0, spinSpeed * speed.getValue() * this->getOutputMultiplier());
-
-			return;
-		}
-		else if (isDone(this->getStopDistance())) {
+		if (isDone(this->getStopDistance())) {
 			this->stop();
 			return;
 		}
@@ -72,7 +62,7 @@ namespace Pronounce {
 			speed = this->getSpeed().getValue() * side;
 		}
 
-		double motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getSpeed().getValue(), this->getSpeed().getValue()) * this->getOutputMultiplier();
+		double motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getSpeed().getValue(), this->getSpeed().getValue());
 
 		if (useVoltage) {
 			drivetrain->driveCurvatureVoltage(this->getSpeed().getValue() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
@@ -82,7 +72,7 @@ namespace Pronounce {
 	}
 
 	void TankPurePursuit::stop() {
-		drivetrain->tankSteerVelocity(0, 0);
+		drivetrain->tankSteerVelocity(0.0, 0.0);
 	}
 
 	TankPurePursuit::~TankPurePursuit() {
