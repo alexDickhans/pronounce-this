@@ -73,6 +73,7 @@ QUANTITY_TYPE(0, 1, -3, 0, QJerk);
 QUANTITY_TYPE(0, 0, -1, 0, QFrequency);
 QUANTITY_TYPE(1, 1, -2, 0, QForce);
 QUANTITY_TYPE(1, -1, -2, 0, QPressure);
+QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);
@@ -231,7 +232,6 @@ constexpr QPressure Pascal(1.0);
 constexpr QPressure bar = 100000 * Pascal;
 constexpr QPressure psi = pound * G / inch2;
 
-
 // Physical unit literals:
 // -----------------------
 
@@ -329,6 +329,8 @@ constexpr QPressure operator"" _bar(unsigned long long int x) { return static_ca
 constexpr QPressure operator"" _psi(long double x) { return static_cast<double>(x) * psi; };
 constexpr QPressure operator"" _psi(unsigned long long int x) { return static_cast<double>(x) * psi; };
 
+constexpr QCurvature operator"" _radm(long double x) { return static_cast<double>(x); };
+constexpr QCurvature operator"" _radm(unsigned long long int x) { return static_cast<double>(x); };
 
 // Angular unit literals:
 // ----------------------
