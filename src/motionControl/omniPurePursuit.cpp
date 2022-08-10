@@ -9,17 +9,15 @@ namespace Pronounce {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, QLength lookaheadDistance) : PurePursuit(lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, QLength lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
 	}
 
-	void OmniPurePursuit::updateDrivetrain() {
-
-		PurePursuitPointData pointData = this->getPointData();
+	void OmniPurePursuit::updateDrivetrain(PurePursuitPointData pointData) {
 
 		QSpeed lastSpeed = this->drivetrain->getSpeed();
 
@@ -37,7 +35,7 @@ namespace Pronounce {
 		
 		QSpeed motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getCurrentProfile().speed.getValue(), this->getCurrentProfile().speed.getValue());
 
-		double lateralOutput = motorSpeed.getValue() * this->getOutputMultiplier();
+		QSpeed lateralOutput = motorSpeed;
 
 		// Get the turn target
 		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget().getValue());
