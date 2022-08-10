@@ -1,38 +1,24 @@
 #include "tankPurePursuit.hpp"
 
 namespace Pronounce {
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain) : PurePursuit() {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain) : PurePursuit(1.0) {
 		this->drivetrain = drivetrain;
-		this->turnPid = new PID();
-		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, QLength lookaheadDistance) : PurePursuit(lookaheadDistance) {
 		this->drivetrain = drivetrain;
-		this->turnPid = new PID();
-		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
+	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, QLength lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
 		this->drivetrain = drivetrain;
-		this->turnPid = new PID();
-		this->turnPid->setTurnPid(true);
 	}
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PID* turnPid, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
-		this->drivetrain = drivetrain;
-		this->turnPid = turnPid;
-		this->turnPid->setTurnPid(true);
-	}
-
-	void TankPurePursuit::updateDrivetrain() {
+	void TankPurePursuit::updateDrivetrain(PurePursuitPointData pointData) {
 
 		if (isDone(this->getStopDistance())) {
 			this->stop();
 			return;
 		}
-
-		PurePursuitPointData pointData = this->getPointData();
 
 		double side = sqrt(abs(clamp(pointData.localLookaheadVector.getCartesian().getY().getValue() / this->getCurrentProfile().lookaheadDistance.getValue(), -1.0, 1.0))) * signnum_c(pointData.localLookaheadVector.getCartesian().getY().getValue());
 

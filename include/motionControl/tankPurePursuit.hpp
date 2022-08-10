@@ -56,7 +56,7 @@ namespace Pronounce {
 		 * @brief Update the drivetrain based on the value from the pure pursuit parent object
 		 * 
 		 */
-		void updateDrivetrain();
+		void updateDrivetrain(PurePursuitPointData pointData);
 
 		/**
 		 * @brief Stop the drivetrain
