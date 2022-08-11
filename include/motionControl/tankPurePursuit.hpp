@@ -4,8 +4,6 @@
 #include "chassis/abstractTankDrivetrain.hpp"
 #include <iostream>
 
-// TODO: Clean this up and add doc strings and comments
-
 namespace Pronounce {
 	/**
 	 * @brief Pure pursuit specifically for tank drive using curvature control

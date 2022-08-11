@@ -12,10 +12,6 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 
-// TODO: Make sure doc strings are up do date
-// TODO: Make sure comments are up to date
-// TODO: Clean up
-
 namespace Pronounce {
 	/**
 	 * @brief Struct to store the information that is used to control the robot.
