@@ -54,6 +54,7 @@ namespace Pronounce {
 		Point localOffset;
 
 		if (deltaAngle.Convert(radian) != 0.0) {
+			// Calculate values based on how far it rotated that frame
 			double rotationAdjustment = 2 * sin(deltaAngle / 2);
 			localOffset = Point(((deltaBack/deltaAngle).getValue() + backOffset.getValue()) * rotationAdjustment, ((deltaRight/deltaAngle).getValue() + rightOffset.getValue()) * rotationAdjustment);
 		} else {
@@ -65,8 +66,10 @@ namespace Pronounce {
 		double rotationCos = cos(averageOrientation);
 		double rotationSin = sin(averageOrientation);
 
+		// Calculate the rotation manually instead of using the vector class to increase speed an accuracy
 		localOffset = Point(localOffset.getX().Convert(metre) * rotationCos + localOffset.getY().Convert(metre) * rotationSin, - localOffset.getX().Convert(metre) * rotationSin + localOffset.getY().Convert(metre) * rotationCos);
 		
+		// Set the global velocity vector
 		this->setCurrentVelocity(Vector(&localOffset));
 
 		// Add localOffset to the global offset

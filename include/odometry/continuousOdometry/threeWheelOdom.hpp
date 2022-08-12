@@ -7,8 +7,6 @@
 #include "utils/pose2d.hpp"
 #include "orientation/orientation.hpp"
 
-// TODO: Add velocity to calculations
-// TODO: Add comments
 // TODO: Make sure the code is clean
 
 namespace Pronounce {
