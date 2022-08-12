@@ -12,11 +12,11 @@ namespace Pronounce {
 		this->reset(new Pose2D());
 	}
 
-	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, pros::Imu* imu) : ContinuousOdometry() {
+	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* Orientation) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
-		this->imu = imu;
+		this->externalOrientation = externalOrientation;
 		this->reset(new Pose2D());
 	}
 
@@ -38,7 +38,7 @@ namespace Pronounce {
 		Angle lastAngle = lastPose->getAngle();
 		Angle currentAngle = 0.0;
 
-		if (useImu && imu != nullptr) {
+		if (useImu && externalOrientation != nullptr) {
 			currentAngle = toRadians(imu->get_rotation());
 		}
 		else {
