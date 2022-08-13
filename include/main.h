@@ -76,13 +76,13 @@
 #include "odometry/orientation/orientation.hpp"
 
 // Continuous Odometry
-#include "odometry/continuousOdometry/mecanumOdometry.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
 
-// TODO: Add others
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
+#include "odometry/interruptOdometry/interruptOdometry.hpp"
+#include "odometry/interruptOdometry/tapeOdometry.hpp"
 
 // Position
 #include "position/motorOdom.hpp"

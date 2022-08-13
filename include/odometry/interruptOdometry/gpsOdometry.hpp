@@ -5,6 +5,7 @@
 #include "units/units.hpp"
 
 namespace Pronounce {
+	
 	class GpsOdometry : public InterruptOdometry {
 	private:
 		pros::Gps& gps;
