@@ -381,6 +381,18 @@ constexpr RQuantity<std::ratio_divide<M, std::ratio<2>>, std::ratio_divide<L, st
 		(sqrt(num.getValue()));
 }
 
+// Typesafe mathematical operations:
+// ---------------------------------
+template <typename M, typename L, typename T, typename A>
+constexpr RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
+	std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
+	Qsq(const RQuantity<M, L, T, A>& num)
+{
+	return RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
+		std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
+		(pow(num.getValue(), 2));
+}
+
 // Typesafe trigonometric operations
 inline double sin(const Angle& num) {
 	return sin(num.getValue());
