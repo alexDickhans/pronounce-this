@@ -98,6 +98,10 @@ namespace Pronounce {
             this->setY(this->getY() + point->getY());
         }
 
+		Point operator+(Point b) {
+			return Point(this->getX() + b.getX(), this->getY() + b.getY());
+		}
+
         std::string to_string() {
             return "X: " + std::to_string(x.getValue()) + ", Y: " + std::to_string(y.getValue());
         }

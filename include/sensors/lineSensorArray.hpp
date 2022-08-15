@@ -9,10 +9,9 @@
 // TODO: check code
 
 namespace Pronounce {
-	class LineSensorArray
-	{
+	class LineSensorArray {
 	private:
-		std::vector<pros::ADILineSensor&> lineSensors;
+		std::vector<std::pair<pros::ADILineSensor&, Point>> lineSensors;
 	public:
 		LineSensorArray() {}
 
@@ -20,44 +19,47 @@ namespace Pronounce {
 			int32_t total = 0;
 
 			for (int i = 0; i < lineSensors.size(); i++) {
-				total += lineSensors.at(i).get_value();
+				total += lineSensors.at(i).first.get_value();
 			}
 
 			return total / lineSensors.size();
 		}
 
-		double getMax() {
+		std::pair<Point, int32_t> getMax() {
 			int32_t max = 0;
+			Point position;
 
 			for (int i = 0; i < lineSensors.size(); i++) {
-				int32_t value = lineSensors.at(i).get_value();
+				int32_t value = lineSensors.at(i).first.get_value();
 				if (value > max) {
 					max = value;
+					position = lineSensors.at(i).second;
 				}
 			}
 			
-			return max;
+			return std::pair<Point, int32_t>(position, max);
 		}
 
-		double getMin() {
-			int32_t min = lineSensors.at(1).get_value();
+		std::pair<Point, int32_t> getMin() {
+			int32_t min = lineSensors.at(1).first.get_value();
+			Point position = lineSensors.at(1).second;
 
 			// We can skip the first value because we are already checking that
 			for (int i = 1; i < lineSensors.size(); i ++) {
-				int32_t value = lineSensors.at(i).get_value();
+				int32_t value = lineSensors.at(i).first.get_value();
 				if (value < min) {
 					min = value;
 				}
 			}
 
-			return min;
+			return std::pair<Point, int32_t>(position, min);
 		}
 
-		void addLineSensor(pros::ADILineSensor& lineSensor) {
-			this->lineSensors.emplace_back(lineSensor);
+		void addLineSensor(pros::ADILineSensor& lineSensor, Point point) {
+			this->lineSensors.emplace_back(std::pair<pros::ADILineSensor&, Point>(lineSensor, point));
 		}
 
-		pros::ADILineSensor& getLineSensor(uint32_t index) {
+		std::pair<pros::ADILineSensor&, Point> getLineSensor(uint32_t index) {
 			return lineSensors.at(index);
 		}
 
