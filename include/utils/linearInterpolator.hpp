@@ -6,7 +6,6 @@
 
 // TODO: test code
 // TODO: Check implemntation
-// TODO: add docstrings
 // TODO: add comments
 
 namespace Pronounce {
@@ -22,44 +21,62 @@ namespace Pronounce {
 		return a + t * (b - a);
 	}
 
+	/**
+	 * @brief Linear interpolator class for use in flywheels and other functions
+	 * 
+	 * @authors Alex Dickhans
+	 */
 	class LinearInterpolator {
 	private:
-		std::vector<double> keys;
-		std::vector<double> values;
+		/**
+		 * @brief Pair of keys and values
+		 * 
+		 */
+		std::vector<std::pair<double, double>> values;
 	public:
+		/**
+		 * @brief Construct a new Linear Interpolator object
+		 * 
+		 */
 		LinearInterpolator();
 
+		/**
+		 * @brief Add a key and value to the linear interpolator
+		 * 
+		 * @param key The new key to add
+		 * @param value The new value to add
+		 */
 		void add(double key, double value) {
-			for (int i = 0; i < keys.size(); i++) {
-				if (keys.at(i) > key) {
-					std::vector<double>::iterator index = keys.begin();
+			for (int i = 0; i < values.size(); i++) {
+				if (values.at(i).second > key) {
+					std::vector<std::pair<double, double>>::iterator index = values.begin();
 					std::advance(index, i);
-					keys.insert(index, key);
-
-					std::vector<double>::iterator index = values.begin();
-					std::advance(index, i);
-					values.insert(index, value);
+					values.insert(index, std::pair<double, double>(key, value));
 					return;
 				}
 			}
 
-			keys.emplace_back(key);
-			values.emplace_back(value);
+			values.emplace_back(std::pair<double, double>(key, value));
 		}
 
+		/**
+		 * @brief Get the value at the key
+		 * 
+		 * @param key The key to check at
+		 * @return double The value at that key
+		 */
 		double get(double key) {
-			if (key < keys.at(0)) {
-				return lerp(values.at(0), values.at(1), (key - keys.at(0)) /  (keys.at(1) - keys.at(0)));
-			} else if (key > keys.at(keys.size() - 1)) {
-				return lerp(values.at(keys.size() - 2), values.at(keys.size() - 1), (key - keys.at(keys.size() - 1)) /  (keys.at(keys.size() - 2) - keys.at(keys.size() - 1)));
+			if (key < values.at(0).first) {
+				return lerp(values.at(0).second, values.at(1).second, (key - values.at(0).first) /  (values.at(1).first - values.at(0).first));
+			} else if (key > values.at(values.size() - 1).first) {
+				return lerp(values.at(values.size() - 2).second, values.at(values.size() - 1).second, (key - values.at(values.size() - 1)).first /  (values.at(values.size() - 2).first - values.at(values.size() - 1).second));
 			}
 			
-			for (int i = 1; i < keys.size(); i ++) {
-				if (keys.at(i-1) < key && keys.at(i) > key) {
-					return lerp(keys.at(i-1), keys.at(i), (key - keys.at(keys.size() - 1)) /  (keys.at(keys.size() - 2) - keys.at(keys.size() - 1)));
+			for (int i = 1; i < values.size(); i ++) {
+				if (values.at(i-1).first < key && values.at(i).first > key) {
+					return lerp(values.at(i-1).first, values.at(i).first, (key - values.at(values.size() - 1).first) /  (values.at(values.size() - 2).first - values.at(values.size() - 1).first));
 				}
 			}
-
 		} 
 
 		~LinearInterpolator();
