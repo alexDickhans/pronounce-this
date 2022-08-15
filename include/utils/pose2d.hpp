@@ -4,10 +4,6 @@
 #include <string>
 #include "units/units.hpp"
 
-// TODO: add docstrings
-// TODO: add comments
-// TODO: Use units more strictly
-
 namespace Pronounce {
     /**
      * A class to keep track of pose on the field
@@ -109,10 +105,22 @@ namespace Pronounce {
             this->setAngle(position->getAngle());
         }
 
+		/**
+		 * @brief Add function to add 2 poses together
+		 * 
+		 * @param b Other pose
+		 * @return Pose2D Total of the poses
+		 */
 		Pose2D operator+(Pose2D b) {
 			return Pose2D(this->getX() + b.getX(), this->getY() + b.getY(), this->getAngle() + b.getAngle());
 		}
 
+		/**
+		 * @brief Add function to add 2 poses together
+		 * 
+		 * @param b Other point
+		 * @return Pose2D Total of the poses
+		 */
 		Pose2D operator+(Point b) {
 			return Pose2D(this->getX() + b.getX(), this->getY() + b.getY(), this->getAngle());
 		}
