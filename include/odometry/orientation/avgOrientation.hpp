@@ -4,38 +4,63 @@
 #include "orientation.hpp"
 #include <vector>
 
-// TODO: Add docstrings
-// TODO: Test code
-// TODO: Add comments
-
 namespace Pronounce {
+
+	/**
+	 * @brief Average multiple orientation values
+	 * 
+	 * @authors Alex Dickhans (alexDickhans) 
+	 */
 	class AvgOrientation : public Orientation {
 	private:
-		std::vector<Orientation*> orientations;
+		/**
+		 * @brief List of orientations
+		 * 
+		 */
+		std::vector<Orientation&> orientations;
 	public:
-		AvgOrientation();
+		/**
+		 * @brief Construct a new Avg Orientation object
+		 * 
+		 */
+		AvgOrientation() : Orientation(0.0) {
+			orientations = std::vector<Orientation&>();
+		}
 
+		/**
+		 * @brief Update the values in the orientation values
+		 * 
+		 */
 		void update() {
 			Angle total = 0.0;
 
 			for (int i = 0; i < orientations.size(); i ++) {
-				orientations.at(i)->update();
-				total += orientations.at(i)->getAngle();
+				orientations.at(i).update();
+				total += orientations.at(i).getAngle();
 			}
 
 			this->setAngle(total/orientations.size());
 		}
 
+		/**
+		 * @brief Reset all the values
+		 * 
+		 */
 		void reset() {
 			for (int i = 0; i < orientations.size(); i++) {
-				orientations.at(i)->reset();
+				orientations.at(i).reset();
 			}
 		}
 
-		void addOrientation(Orientation* orientation) {
+		/**
+		 * @brief Add a orientation value to the list
+		 * 
+		 * @param orientation The orientation pointer
+		 */
+		void addOrientation(Orientation& orientation) {
 			this->orientations.emplace_back(orientation);
 		}
 
-		~AvgOrientation();
+		~AvgOrientation() {}
 	};
 } // namespace Pronounce
