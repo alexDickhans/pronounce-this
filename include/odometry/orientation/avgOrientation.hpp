@@ -17,14 +17,14 @@ namespace Pronounce {
 		 * @brief List of orientations
 		 * 
 		 */
-		std::vector<Orientation&> orientations;
+		std::vector<Orientation*> orientations;
 	public:
 		/**
 		 * @brief Construct a new Avg Orientation object
 		 * 
 		 */
 		AvgOrientation() : Orientation(0.0) {
-			orientations = std::vector<Orientation&>();
+			orientations = std::vector<Orientation*>();
 		}
 
 		/**
@@ -35,8 +35,8 @@ namespace Pronounce {
 			Angle total = 0.0;
 
 			for (int i = 0; i < orientations.size(); i ++) {
-				orientations.at(i).update();
-				total += orientations.at(i).getAngle();
+				orientations.at(i)->update();
+				total += orientations.at(i)->getAngle();
 			}
 
 			this->setAngle(total/orientations.size());
@@ -48,7 +48,7 @@ namespace Pronounce {
 		 */
 		void reset() {
 			for (int i = 0; i < orientations.size(); i++) {
-				orientations.at(i).reset();
+				orientations.at(i)->reset();
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace Pronounce {
 		 * 
 		 * @param orientation The orientation pointer
 		 */
-		void addOrientation(Orientation& orientation) {
+		void addOrientation(Orientation* orientation) {
 			this->orientations.emplace_back(orientation);
 		}
 
