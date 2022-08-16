@@ -1,9 +1,6 @@
 
 #pragma once
 
-// TODO: Finish docstrings
-// TODO: Add comments
-
 #include <vector>
 #include "pointUtil.hpp"
 #include "vector.hpp"
@@ -14,17 +11,47 @@ namespace Pronounce {
 
 	/**
 	 * @brief List of points to use in pure pursuit tracking algorithm
-	 *
+	 *	
+	 * @authors Alex Dickhans (alexDickhans)
 	 */
 	class Path {
 	private:
+		/**
+		 * @brief List of points in the path
+		 * 
+		 */
 		std::vector<Point> path;
+
+		/**
+		 * @brief To continue the line past the end of the path, useful for odom
+		 * 
+		 */
 		bool continuePath = true;
+
+		/**
+		 * @brief Name of the path, used for debugging
+		 * 
+		 */
 		std::string name = "";
 	public:
+		/**
+		 * @brief Construct a new Path object with blank path and name
+		 * 
+		 */
 		Path();
+
+		/**
+		 * @brief Construct a new Path object with blank path
+		 * 
+		 * @param name Name of the path to be used for debugging
+		 */
 		Path(std::string name);
 
+		/**
+		 * @brief Fill in the path with points
+		 * 
+		 * @param spacing The points to inject per line
+		 */
 		void fill(QLength spacing) {
 			std::vector<Point> oldPath = path;
 			path.clear();
@@ -88,26 +115,60 @@ namespace Pronounce {
 			}
 		}
 
+		/**
+		 * @brief Get the Path object
+		 * 
+		 * @return std::vector<Point> List of points in the path
+		 */
 		std::vector<Point> getPath() {
 			return path;
 		}
 
+		/**
+		 * @brief Set the Path object
+		 * 
+		 * @param path List of points in the new path
+		 */
 		void setPath(std::vector<Point> path) {
 			this->path = path;
 		}
 
+		/**
+		 * @brief Get a point in the path
+		 * 
+		 * @param index Index of the point
+		 * @return Point Point at that index
+		 */
 		Point getPoint(size_t index) {
 			return path.at(index);
 		}
 
+		/**
+		 * @brief Add a point to the path
+		 * 
+		 * @param point Point to add
+		 */
 		void addPoint(Point point) {
 			this->path.emplace_back(point);
 		}
 
-		void addPoint(double x, double y) {
+		/**
+		 * @brief Add a point to the path with x and y
+		 * 
+		 * @param x X distance
+		 * @param y Y distance
+		 */
+		void addPoint(QLength x, QLength y) {
 			this->path.emplace_back(Point(x, y));
 		}
 
+		/**
+		 * @brief Get the current look ahead point
+		 * 
+		 * @param currentPosition The current position of the robot
+		 * @param lookaheadDistance The lookahead distance
+		 * @return Point The point at that lookahead distance
+		 */
 		Point getLookAheadPoint(Point currentPosition, QLength lookaheadDistance);
 
 		/**
@@ -118,6 +179,12 @@ namespace Pronounce {
 		 */
 		Point getClosestPoint(Point currentPosition);
 
+		/**
+		 * @brief Get the t value of the closest point
+		 * 
+		 * @param currentPosition The current position of the robot
+		 * @return double The t value of the closest position
+		 */
 		double getTValue(Point currentPosition) {
 			Point closestPoint;
 			QLength closestDistance = (double) INT32_MAX;
@@ -160,6 +227,11 @@ namespace Pronounce {
 			return closestT;
 		}
 
+		/**
+		 * @brief Get the total distance of the path
+		 * 
+		 * @return QLength Total distance of the path
+		 */
 		QLength distance() {
 			QLength total = 0.0;
 
@@ -173,6 +245,12 @@ namespace Pronounce {
 			return total;
 		}
 
+		/**
+		 * @brief Get the distance of the robot from the start of the path to the t value
+		 * 
+		 * @param t The t value that you want to get the distance at 
+		 * @return QLength The current length of the path
+		 */
 		QLength distanceFromStart(double t) {
 			double t2 = t;
 
@@ -189,46 +267,99 @@ namespace Pronounce {
 			return total;
 		}
 
+		/**
+		 * @brief Get the distance from the start of the path
+		 * 
+		 * @param currentPosition The current position of the robot
+		 * @return QLength The distance from the start of the path
+		 */
 		QLength distanceFromStart(Point currentPosition) {
 			return this->distanceFromStart(this->getTValue(currentPosition));
 		}
 
+		/**
+		 * @brief The distance from the end of the path
+		 * 
+		 * @param currentPosition The current position of the robot
+		 * @return QLength The distance from the end of the path
+		 */
 		QLength distanceFromEnd(Point currentPosition) {
 			return this->distance() - this->distanceFromStart(currentPosition);
 		}
 
+		/**
+		 * @brief Get if the continue path variable
+		 * 
+		 * @return true If the continue path is true
+		 * @return false If the continue path is false
+		 */
 		bool isContinuePath() {
 			return continuePath;
 		}
 
+		/**
+		 * @brief Set the Continue Path object
+		 * 
+		 * @param continuePath The new continue path object
+		 */
 		void setContinuePath(bool continuePath) {
 			this->continuePath = continuePath;
 		}
 
+		/**
+		 * @brief Get the name of the object
+		 * 
+		 * @return std::string predefined name of the object
+		 */
 		std::string getName() {
 			return name;
 		}
 
+		/**
+		 * @brief Set the Name of the object
+		 * 
+		 * @param name New name of the object, used for debugging
+		 */
 		void setName(std::string name) {
 			this->name = name;
 		}
 
+		/**
+		 * @brief Add a point to the path
+		 * 
+		 * @param point Point to add to the path
+		 */
 		void operator+= (Point point) {
 			this->path.emplace_back(point);
 		}
 
+		/**
+		 * @brief Add a vector of points to the path
+		 * 
+		 * @param points List of points to add to the path
+		 */
 		void operator+= (std::vector<Point> points) {
 			for (Point point : points) {
 				this->path.emplace_back(point);
 			}
 		}
 
+		/**
+		 * @brief Add 2 paths together
+		 * 
+		 * @param path Path to add
+		 */
 		void operator+= (Path path) {
 			for (Point point : path.getPath()) {
 				this->path.emplace_back(point);
 			}
 		}
 
+		/**
+		 * @brief Formatted string of the values in the path
+		 * 
+		 * @return std::string Formatted strings
+		 */
 		std::string to_string() {
 			std::string str = "Name: " + name + ",\n Path: \n";
 			for (Point point : path) {
