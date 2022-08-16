@@ -12,6 +12,7 @@
 #include "driver/controller.hpp"
 #include "utils/exponentialMovingAverage.hpp"
 #include "utils/runningAverage.hpp"
+#include "odometry/orientation/imu.hpp"
 
 // TODO: Clean up
 // TODO: move declarations to another place
@@ -31,6 +32,9 @@ namespace Pronounce {
 
 	// Inertial Measurement Unit
 	pros::Imu imu(19);
+	IMU imuOrientation(imu);
+
+	AvgOrientation averageImu;
 
 	pros::Rotation leftEncoder(9);
 	pros::Rotation rightEncoder(10);
@@ -45,7 +49,7 @@ namespace Pronounce {
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
 	GpsOdometry gpsOdometry(gps, 7.5_in, 7.5_in, 180_deg);
 
-	ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &imu);
+	ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &averageImu);
 
 	XDrive drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor);
 
@@ -70,6 +74,8 @@ namespace Pronounce {
 		backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 		backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 
+		averageImu.addOrientation(&imuOrientation);
+
 		// odometry.setUseImu(false);
 		// Left/Right fraction
 		// 1.072124756
@@ -91,8 +97,6 @@ namespace Pronounce {
 		odometry.setLeftOffset(3.741365718_in);
 		odometry.setRightOffset(3.741365718_in);
 		odometry.setBackOffset(-3.0_in);
-
-		odometry.setMaxMovement(0.0);
 
 		pros::Task::delay(10);
 

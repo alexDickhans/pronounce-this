@@ -38,13 +38,13 @@ namespace Pronounce {
 		QSpeed lateralOutput = motorSpeed;
 
 		// Get the turn target
-		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget().getValue());
+		this->orientationPid->setTarget(this->getTurnTarget().getValue());
 
 		// Get the turn output
-		double turnOutput = this->getCurrentProfile().orientationPid->update(this->getOdometry()->getPosition()->getAngle().getValue());
+		double turnOutput = this->orientationPid->update(this->getOdometry()->getPosition()->getAngle().getValue());
 
 		// Send values to the drivetrain
-		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
+		drivetrain->setDriveVectorVelocity(Vector(lateralOutput * 1_s, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
 	}
 
 	void OmniPurePursuit::stop() {

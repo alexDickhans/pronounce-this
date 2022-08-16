@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ratio>
+#include <math.h>
 
 // The "RQuantity" class is the prototype template container class, that just holds a double value. The
 // class SHOULD NOT BE INSTANTIATED directly by itself, rather use the quantity types defined below.

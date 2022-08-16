@@ -22,6 +22,12 @@ namespace Pronounce {
 		 */
 		AbstractHolonomicDrivetrain* drivetrain;
 
+		PID* orientationPid;
+
+		/**
+		 * @brief Turn target for the drivetrain
+		 * 
+		 */
 		Angle turnTarget{0.0};
 	public:
 
@@ -84,6 +90,43 @@ namespace Pronounce {
 		 */
 		void setDrivetrain(AbstractHolonomicDrivetrain* drivetrain) {
 			this->drivetrain = drivetrain;
+		}
+
+		/**
+		 * @brief Get the Orientation Pid object
+		 * 
+		 * @return PID* The orientation pid object
+		 */
+		PID* getOrientationPid() {
+			return orientationPid;
+		}
+
+		/**
+		 * @brief Set the Orientation Pid object
+		 * 
+		 * @param orientationPid New Orientation pid object
+		 */
+		void setOrientationPid(PID* orientationPid) {
+			this->orientationPid = orientationPid;
+			this->orientationPid->setTurnPid(true);
+		}
+
+		/**
+		 * @brief Get the Turn Target angle
+		 * 
+		 * @return Angle Get the turn angle
+		 */
+		Angle getTurnTarget() {
+			return this->turnTarget;
+		}
+
+		/**
+		 * @brief Set the Turn Target angle
+		 * 
+		 * @param turnTarget The turn angle
+		 */
+		void setTurnTarget(Angle turnTarget) {
+			this->turnTarget = turnTarget;
 		}
 
 		~OmniPurePursuit();

@@ -3,8 +3,6 @@
 #include <vector>
 #include "api.h"
 
-// TODO: Add docstring
-
 namespace Pronounce {
 
 	/**

@@ -73,7 +73,7 @@ namespace Pronounce {
 		 * @param gpsY Gps y position on the robot
 		 * @param gpsOrientation Gps orientation on the robot
 		 */
-		GpsOdometry(pros::Gps& gps, QLength gpsX, QLength gpsY, Angle gpsOrientation) : gps(gps), lastPos(0, 0, 0) {
+		GpsOdometry(pros::Gps& gps, QLength gpsX, QLength gpsY, Angle gpsOrientation) : gps(gps), lastPos(0.0, 0.0, 0.0) {
 			this->gpsX = gpsX;
 			this->gpsY = gpsY;
 			this->gpsOrientation = gpsOrientation;

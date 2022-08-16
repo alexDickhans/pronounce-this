@@ -7,17 +7,16 @@
 
 // TODO: add docstrings
 // TODO: add comments
-// TODO: Change name
 
 namespace Pronounce {
-	class QuadraticSplinePath {
+	class BezierPath {
 	private:
 		std::vector<SplinePoint> points;
 		std::string name = "";
 	public:
-		QuadraticSplinePath();
-		QuadraticSplinePath(std::vector<SplinePoint> points);
-		QuadraticSplinePath(std::string name);
+		BezierPath();
+		BezierPath(std::vector<SplinePoint> points);
+		BezierPath(std::string name);
 
 		Path getPath(double pointGranularity) {
 			if (points.size() < 2) {
@@ -55,21 +54,21 @@ namespace Pronounce {
 			points.emplace_back(point);
 		}
 
-		~QuadraticSplinePath();
+		~BezierPath();
 	};
 	
-	QuadraticSplinePath::QuadraticSplinePath(/* args */) {
+	BezierPath::BezierPath(/* args */) {
 	}
 
-	QuadraticSplinePath::QuadraticSplinePath(std::string name) {
+	BezierPath::BezierPath(std::string name) {
 		this->name = name;
 	}
 
-	QuadraticSplinePath::QuadraticSplinePath(std::vector<SplinePoint> points) {
+	BezierPath::BezierPath(std::vector<SplinePoint> points) {
 		this->points = points;
 	}
 	
-	QuadraticSplinePath::~QuadraticSplinePath() {
+	BezierPath::~BezierPath() {
 	}
 	
 } // namespace Pronounce

@@ -5,7 +5,7 @@
 #include "utils/vector.hpp"
 #include "utils/utils.hpp"
 #include "utils/pose2d.hpp"
-#include "orientation/orientation.hpp"
+#include "odometry/orientation/orientation.hpp"
 
 namespace Pronounce {
 

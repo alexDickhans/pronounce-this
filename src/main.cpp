@@ -19,7 +19,7 @@ int preAutonRun() {
 }
 
 int autonTemplate() {
-	odometry.reset(new Pose2D(0, 0, 0));
+	odometry.reset(new Pose2D(0.0, 0.0, 0.0));
 
 	pros::Task::delay(500);
 

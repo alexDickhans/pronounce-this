@@ -43,13 +43,17 @@ namespace Pronounce {
 		double signedCurvature = (2.0 * xDistance).getValue() / pow(lookaheadVector.getMagnitude().getValue(), 2);
 
 		QLength distanceFromEnd = path.distanceFromEnd(currentPoint);
+		
+		PurePursuitPointData pointData;
 
-		this->pointData.lookaheadPoint = lookaheadPoint;
-		this->pointData.lookaheadVector = lookaheadVector;
-		this->pointData.localLookaheadVector = robotRelativeLookaheadVector;
-		this->pointData.normalizedLookaheadVector = normalizedLookaheadVector;
-		this->pointData.curvature = signedCurvature;
-		this->pointData.distanceFromEnd = distanceFromEnd;
+		pointData.lookaheadPoint = lookaheadPoint;
+		pointData.lookaheadVector = lookaheadVector;
+		pointData.localLookaheadVector = robotRelativeLookaheadVector;
+		pointData.normalizedLookaheadVector = normalizedLookaheadVector;
+		pointData.curvature = signedCurvature;
+		pointData.distanceFromEnd = distanceFromEnd;
+
+		return pointData;
     }
 
     PurePursuit::~PurePursuit() {

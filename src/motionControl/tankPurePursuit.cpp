@@ -50,11 +50,7 @@ namespace Pronounce {
 
 		double motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getSpeed().getValue(), this->getSpeed().getValue());
 
-		if (useVoltage) {
-			drivetrain->driveCurvatureVoltage(this->getSpeed().getValue() * this->getOutputMultiplier() * side * (12000/600.0), pointData.curvature);
-		} else {
-			drivetrain->driveCurvature(motorSpeed, pointData.curvature);
-		}
+		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {
