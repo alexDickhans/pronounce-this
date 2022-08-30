@@ -49,10 +49,10 @@ namespace Pronounce {
 			}
 
 			if (controller1->get_digital(DIGITAL_LEFT)) {
-				turretAngle -= 1.0;
+				turretAngle -= 0.01;
 			}
 			if (controller1->get_digital(DIGITAL_RIGHT)) {
-				turretAngle += 1.0;
+				turretAngle += 0.01;
 			}
 
 			if (controller2->is_connected()) {
@@ -63,11 +63,6 @@ namespace Pronounce {
 			if (controller1->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
 				tilter = !tilter;
 			}
-
-			launcherFullSpeed.setTilterEngaged(tilter);
-			launcherIdle.setTilterEngaged(tilter);
-			launcherLaunching.setTilterEngaged(tilter);
-			launcherStopped.setTilterEngaged(tilter);
 
 			std::cout << "Turret: " << turretAngle << std::endl;
 			std::cout << "FlywheelSpeed: " << flywheelAdjustment << std::endl;

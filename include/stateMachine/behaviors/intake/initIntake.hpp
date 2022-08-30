@@ -12,9 +12,8 @@
 
 namespace Pronounce {
 
-	pros::Motor intake(4, false);
-	pros::Motor intake2(12, true);
-	pros::Motor intake3(13, false);
+	pros::Motor intake(12, false);
+	pros::Motor intake2(20, true);
 
 	MotorGroup intakes;	
 
@@ -27,6 +26,5 @@ namespace Pronounce {
 	void initIntake() {
 		intakes.addMotor(&intake);
 		intakes.addMotor(&intake2);
-		intakes.addMotor(&intake3);
 	}
 }

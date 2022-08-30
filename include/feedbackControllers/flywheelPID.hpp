@@ -2,13 +2,14 @@
 
 #include "feedbackController.hpp"
 #include "pid.hpp"
+#include <stdio.h>
 
 // TODO: Add comments
 
 namespace Pronounce {
 	class FlywheelPID : public PID {
 	private:
-		double feedforwardMultiplier = 0.0;
+		double feedforwardMultiplier = 3.6;
 	public:
 		FlywheelPID() {}
 		FlywheelPID(double kP, double kI, double kD, double feedforwardMultiplier) : PID(kP, kI, kD) {
@@ -16,7 +17,7 @@ namespace Pronounce {
 		}
 
 		double update(double input) {
-			return calculatePidValues(input) + input * feedforwardMultiplier;
+			return (this->getTarget() * feedforwardMultiplier) + calculatePidValues(input);
 		}
 
 		double getFeedforwardMultiplier() {

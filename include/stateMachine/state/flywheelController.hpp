@@ -5,15 +5,16 @@
 // TODO: Finish implentation
 
 namespace Pronounce {
-	class FlywheelController {
+
+	class FlywheelController :  {
 	private:
-		Point currentGoal;
-		bool skills = false;
+		Point targetPosition;
 	public:
-		FlywheelController(Point currentGoal, bool skills) {
-			this->currentGoal = currentGoal;
-			this->skills = skills;
+		FlywheelController(Point targetPosition) {
+			this->targetPosition = targetPosition;
 		}
+
+
 		
 		~FlywheelController() {}
 	};

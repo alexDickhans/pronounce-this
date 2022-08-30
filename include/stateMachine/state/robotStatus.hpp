@@ -8,14 +8,20 @@
 
 namespace Pronounce {
 
-	pros::Vision turretVision(18, VISION_ZERO_CENTER);
+	enum GameMode {
+		Skills = 0,
+		Red = 1,
+		Blue = 2,
+	};
+
+	const GameMode gameMode = GameMode::Skills; 
 
 	double flywheelAdjustment = 0;
 	double turretAngle = 0;
 
 	class RobotStatus : public Behavior {
 	private:
-		double flywheelRPM = 3500;
+		double flywheelRPM = 2000;
 		
 	public:
 
@@ -27,6 +33,15 @@ namespace Pronounce {
 		}
 
 		void update() {
+			pros::vision_object_s_t biggestTurretDetection = turretVision.get_by_size(0);
+
+			double angleChange = biggestTurretDetection.x_middle_coord;
+
+			std::cout << "Vision sensor angle" << angleChange;
+
+			turretAngle += map(angleChange, -320, 320, -0.01, 0.01);
+
+			std::cout << "Vision sensor angle" << angleChange;
 		}
 
 		void exit() {

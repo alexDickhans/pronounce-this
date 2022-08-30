@@ -51,12 +51,12 @@ namespace Pronounce {
 			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 
-			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
+			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
+			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
+			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
+			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
 
-			std::cout << "Turret angle: " << robotStatus->getTurretAngle() - (odometry.getPosition()->getAngle() - 0.0_rad).Convert(degree) << std::endl;
+			std::cout << "Turret angle: " << robotStatus->getTurretAngle() << std::endl; //  - (odometry.getPosition()->getAngle() - 0.0_rad).Convert(degree) << std::endl;
 			stateControllers.update();
 		}
 
