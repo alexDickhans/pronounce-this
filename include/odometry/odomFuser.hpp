@@ -13,11 +13,15 @@ namespace Pronounce {
 	class OdomFuser : public ContinuousOdometry {
 	private:
 		ContinuousOdometry& continuousOdometry;
-		std::vector<InterruptOdometry&> interruptOdometrys;
+		std::vector<InterruptOdometry*> interruptOdometrys;
 	public:
 		OdomFuser(ContinuousOdometry& continuousOdometry) : continuousOdometry(continuousOdometry) { }
 
 		void update() {
+			std::cout << "Fuse odom update" << std::endl;
+
+			continuousOdometry.update();
+
 			// Set the velocity to the continuous odometry because we don't want to have large jumps in the speed when it is reset
 			this->setCurrentVelocity(continuousOdometry.getCurrentVelocity());
 
@@ -26,10 +30,12 @@ namespace Pronounce {
 
 			// Go through each of the interrupt odoms in a list, the sequential order selected by the user will allow the more accurate odometry types to go last and result in the best positioning
 			for (int i = 0; i < interruptOdometrys.size(); i++) {
-				if (interruptOdometrys.at(i).positionReady(*currentPose, this->getCurrentVelocity())) {
-					currentPose = &interruptOdometrys.at(i).getPosition(*currentPose, this->getCurrentVelocity());
+				if (interruptOdometrys.at(i)->positionReady(*currentPose, this->getCurrentVelocity())) {
+					currentPose = new Pose2D(interruptOdometrys.at(i)->getPosition(*currentPose, this->getCurrentVelocity()));
 				}
 			}
+
+			std::cout << "Current pose: " << currentPose->to_string() << std::endl;
 
 			// Set the pose to the end result
 			this->setPose(currentPose);

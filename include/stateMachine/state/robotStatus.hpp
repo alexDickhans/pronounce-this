@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stateMachine/behavior.hpp"
+#include "stateMachine/state/flywheelController.hpp"
 #include "api.h"
 
 // TODO: Clean up
@@ -14,18 +15,21 @@ namespace Pronounce {
 		Blue = 2,
 	};
 
-	const GameMode gameMode = GameMode::Skills; 
+	const GameMode gameMode = GameMode::Red; 
 
 	double flywheelAdjustment = 0;
-	double turretAngle = 0;
+	Angle turretAdjustment = 0.0;
 
 	class RobotStatus : public Behavior {
 	private:
-		double flywheelRPM = 2000;
-		
+		double flywheelRPM = 2200;
+		Angle turretAngle = 0.0;
+
+		FlywheelController allianceGoal;
+		FlywheelController opponentGoal;
 	public:
 
-		RobotStatus() {}
+		RobotStatus() : allianceGoal(ALLIANCE_GOAL), opponentGoal(OPPONENT_GOAL) {}
 
 		void initialize() {
 			// Init beambreaks
@@ -37,11 +41,15 @@ namespace Pronounce {
 
 			double angleChange = biggestTurretDetection.x_middle_coord;
 
-			std::cout << "Vision sensor angle" << angleChange;
+			if (gameMode == GameMode::Skills) {
+				// Skills aiming stuff
+			} else {
+				// Competition aiming stuff
+				FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 
-			turretAngle += map(angleChange, -320, 320, -0.01, 0.01);
-
-			std::cout << "Vision sensor angle" << angleChange;
+				this->turretAngle = odometry.getAngle() - flywheelValues.turretAngle;
+				this->flywheelRPM = flywheelValues.flywheelSpeed;
+			}
 		}
 
 		void exit() {
@@ -56,8 +64,8 @@ namespace Pronounce {
 			return launcherIdle.getFlywheelSpeed();
 		}
 
-		double getTurretAngle() {
-			return turretAngle;
+		Angle getTurretAngle() {
+			return angleDifference((turretAngle + turretAdjustment).Convert(radian), 0.0);
 		}
 
 		~RobotStatus() {}

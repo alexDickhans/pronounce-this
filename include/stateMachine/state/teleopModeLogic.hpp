@@ -5,6 +5,7 @@
 #include "api.h"
 #include "robotStatus.hpp"
 #include "driver.h"
+#include "modeLogic.hpp"
 
 // TODO: Clean up
 // TODO: Add docstring
@@ -31,6 +32,8 @@ namespace Pronounce {
 		void update() {
 			if (controller1->get_digital_new_press(INTAKE_BUTTON)) {
 				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeIntaking);
+			} else if (controller1->get_digital_new_press(DEJAM_BUTTON)) {
+				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeEjecting);
 			}
 
 			if (controller1->get_digital_new_press(LAUNCHER_STOP_BUTTON)) {
@@ -49,14 +52,14 @@ namespace Pronounce {
 			}
 
 			if (controller1->get_digital(DIGITAL_LEFT)) {
-				turretAngle -= 0.01;
+				turretAdjustment -= 0.005;
 			}
 			if (controller1->get_digital(DIGITAL_RIGHT)) {
-				turretAngle += 0.01;
+				turretAdjustment += 0.005;
 			}
 
 			if (controller2->is_connected()) {
-				turretAngle += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 50.0 : 0;
+				turretAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 500.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
 			}
 
@@ -64,7 +67,6 @@ namespace Pronounce {
 				tilter = !tilter;
 			}
 
-			std::cout << "Turret: " << turretAngle << std::endl;
 			std::cout << "FlywheelSpeed: " << flywheelAdjustment << std::endl;
 		}
 

@@ -74,7 +74,7 @@ namespace Pronounce {
 			}
 			indexer->set_value(indexerEngaged);
 
-			turretPID->setTarget(turretAngle * turretOutputMultiplier);
+			turretPID->setTarget(turretAngle);
 			double turretPower = turretPID->update(toRadians(rotationSensor.get_angle() / 100.0));
 
 			std::cout << "Turret voltage: " << turretPower << " Rotation sensor position: " << turretPID->getPosition() << std::endl;

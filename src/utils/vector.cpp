@@ -20,6 +20,11 @@ namespace Pronounce {
         this->angle = atan2(point->getY().getValue(), point->getX().getValue());
     }
 
+	Vector::Vector(Point point) {
+        this->magnitude = point.distance(Point()).getValue();
+        this->angle = atan2(point.getY().getValue(), point.getX().getValue());
+    }
+
     Vector::Vector(Point* point1, Point* point2) {
         this->magnitude = point1->distance(*point2).getValue();
         this->angle = atan2((point2->getY() - point1->getY()).getValue(), (point2->getX() - point1->getX()).getValue());

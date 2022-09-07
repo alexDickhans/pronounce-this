@@ -18,12 +18,12 @@ namespace Pronounce {
 	StateController teleopController(new Behavior());
 
 	void initBehaviors() {
-		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&launcherStateExtensionController);
 		stateControllers.addBehavior(&launcherStateController);
 		stateControllers.addBehavior(&drivetrainStateController);
+		stateControllers.addBehavior(&teleopController);
 	}
 
 	void initSequences() {
@@ -51,13 +51,16 @@ namespace Pronounce {
 			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 
-			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
-			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
-			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
-			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, -M_PI_2, M_PI_2));
+			double turretAngle = clamp(robotStatus->getTurretAngle().getValue(), -M_PI_2, M_PI_2);
 
-			std::cout << "Turret angle: " << robotStatus->getTurretAngle() << std::endl; //  - (odometry.getPosition()->getAngle() - 0.0_rad).Convert(degree) << std::endl;
+			launcherStopped.setTurretAngle(turretAngle);
+			launcherIdle.setTurretAngle(turretAngle);
+			launcherLaunching.setTurretAngle(turretAngle);
+			launcherFullSpeed.setTurretAngle(turretAngle);
+
+			std::cout << "Turret angle: " << turretAngle << std::endl;
 			stateControllers.update();
+			std::cout << "Turret: " << robotStatus->getTurretAngle().Convert(degree) << std::endl;
 		}
 
 		void exit() {

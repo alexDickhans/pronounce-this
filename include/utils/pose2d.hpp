@@ -56,6 +56,10 @@ namespace Pronounce {
 		 */
         Pose2D(QLength x, QLength y, Angle angle) : Point(x, y), angle(angle) {}
 
+		Pose2D(Pose2D* pose) {
+			Pose2D(pose->getX(), pose->getY(), pose->getAngle());
+		}
+
 		/**
 		 * @brief Get a formatted string of the object
 		 * 

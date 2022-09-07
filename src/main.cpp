@@ -76,8 +76,8 @@ void update() {
 		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
 		startTime = pros::millis();
 
-		modeLogic.update();
 		odometry.update();
+		modeLogic.update();
 
 		pros::delay(10 - (pros::millis() - startTime));
 	}
@@ -107,7 +107,8 @@ void updateDisplay() {
 		// Odometry
 		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
 			+ "\nL: " + std::to_string(leftOdomWheel.getPosition().Convert(inch)) +
-			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch))).c_str());
+			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch)) +
+			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
 		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
@@ -214,6 +215,7 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
+	// pros::delay(10);
 	
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 

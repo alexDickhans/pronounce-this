@@ -13,6 +13,7 @@
 #include "utils/exponentialMovingAverage.hpp"
 #include "utils/runningAverage.hpp"
 #include "odometry/orientation/imu.hpp"
+#include "odometry/odomFuser.hpp"
 
 // TODO: Clean up
 // TODO: move declarations to another place
@@ -36,9 +37,9 @@ namespace Pronounce {
 
 	AvgOrientation averageImu;
 
-	pros::Rotation leftEncoder(9);
-	pros::Rotation rightEncoder(10);
-	pros::Rotation backEncoder(11);
+	pros::Rotation leftEncoder(6);
+	pros::Rotation rightEncoder(8);
+	pros::Rotation backEncoder(7);
 
 	// Odom wheels
 	Pronounce::TrackingWheel leftOdomWheel(&leftEncoder);
@@ -49,7 +50,7 @@ namespace Pronounce {
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
 	GpsOdometry gpsOdometry(gps, 7.5_in, 7.5_in, 180_deg);
 
-	ThreeWheelOdom odometry(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &averageImu);
+	ThreeWheelOdom threeWheelOdom(&leftOdomWheel, &rightOdomWheel, &backOdomWheel, &averageImu);
 
 	XDrive drivetrain(&frontLeftMotor, &frontRightMotor, &backLeftMotor, &backRightMotor);
 
@@ -57,6 +58,8 @@ namespace Pronounce {
 	RunningAverage<RUNNING_AVERAGE_TRANSLATION> movingAverageY;
 	RunningAverage<RUNNING_AVERAGE_ROTATION> movingAverageTurn;
 
+	OdomFuser odometry(threeWheelOdom);
+	
 	JoystickDrivetrain fieldRelativeJoystick(0.10, true, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
 	JoystickDrivetrain fieldRelativeTargetingJoystick(0.10, true, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
 	JoystickDrivetrain normalJoystick(0.10, false, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
@@ -76,27 +79,22 @@ namespace Pronounce {
 
 		averageImu.addOrientation(&imuOrientation);
 
-		// odometry.setUseImu(false);
-		// Left/Right fraction
-		// 1.072124756
-		// Left 99.57
-		// Right 100.57
-		double turningFactor = (((100.35 / 100.0) - 1.0) / 2);
+		double turningFactor = (((100.0 / 100.0) - 1.0) / 2);
 		double tuningFactor = 1.0;
-		leftOdomWheel.setRadius(2.75 / 2);
+		leftOdomWheel.setRadius(2.75_in / 2.0);
 		leftOdomWheel.setTuningFactor(tuningFactor * (1 - turningFactor));
-		rightOdomWheel.setRadius(2.75 / 2);
+		rightOdomWheel.setRadius(2.75_in / 2.0);
 		rightOdomWheel.setTuningFactor(tuningFactor * (1 + turningFactor));
-		backOdomWheel.setRadius(2.75 / 2);
+		backOdomWheel.setRadius(2.75_in / 2.0);
 		backOdomWheel.setTuningFactor(tuningFactor * 1.0);
 
-		leftEncoder.set_reversed(true);
-		rightEncoder.set_reversed(false);
-		backEncoder.set_reversed(true);
+		leftEncoder.set_reversed(false);
+		rightEncoder.set_reversed(true);
+		backEncoder.set_reversed(false);
 
-		odometry.setLeftOffset(3.741365718_in);
-		odometry.setRightOffset(3.741365718_in);
-		odometry.setBackOffset(-3.0_in);
+		threeWheelOdom.setLeftOffset(11.75_in/2.0);
+		threeWheelOdom.setRightOffset(11.75_in/2.0);
+		threeWheelOdom.setBackOffset(0.0_in);
 
 		pros::Task::delay(10);
 

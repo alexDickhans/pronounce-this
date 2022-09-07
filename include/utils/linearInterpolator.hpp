@@ -38,7 +38,7 @@ namespace Pronounce {
 		 * @brief Construct a new Linear Interpolator object
 		 * 
 		 */
-		LinearInterpolator();
+		LinearInterpolator() {}
 
 		/**
 		 * @brief Add a key and value to the linear interpolator
@@ -69,7 +69,7 @@ namespace Pronounce {
 			if (key < values.at(0).first) {
 				return lerp(values.at(0).second, values.at(1).second, (key - values.at(0).first) /  (values.at(1).first - values.at(0).first));
 			} else if (key > values.at(values.size() - 1).first) {
-				return lerp(values.at(values.size() - 2).second, values.at(values.size() - 1).second, (key - values.at(values.size() - 1)).first /  (values.at(values.size() - 2).first - values.at(values.size() - 1).second));
+				return lerp(values.at(values.size() - 2).second, values.at(values.size() - 1).second, ((key - values.at(values.size() - 1).first) /  (values.at(values.size() - 2).first - values.at(values.size() - 1).second)));
 			}
 			
 			for (int i = 1; i < values.size(); i ++) {
@@ -77,8 +77,10 @@ namespace Pronounce {
 					return lerp(values.at(i-1).first, values.at(i).first, (key - values.at(values.size() - 1).first) /  (values.at(values.size() - 2).first - values.at(values.size() - 1).first));
 				}
 			}
+
+			return 0.0;
 		} 
 
-		~LinearInterpolator();
+		~LinearInterpolator() {}
 	};	
 } // namespace Pronounce

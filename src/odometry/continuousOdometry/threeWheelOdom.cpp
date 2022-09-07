@@ -21,6 +21,8 @@ namespace Pronounce {
 	}
 
 	void ThreeWheelOdom::update() {
+		std::cout << "Three wheel odom update" << std::endl;
+
 		// Update the wheel positions
 		leftWheel->update();
 		rightWheel->update();
@@ -63,8 +65,8 @@ namespace Pronounce {
 		}
 
 		// Rotate local offset
-		double rotationCos = cos(averageOrientation);
-		double rotationSin = sin(averageOrientation);
+		double rotationCos = cos(averageOrientation - orientationOffset);
+		double rotationSin = sin(averageOrientation - orientationOffset);
 
 		// Calculate the rotation manually instead of using the vector class to increase speed an accuracy
 		localOffset = Point(localOffset.getX().Convert(metre) * rotationCos + localOffset.getY().Convert(metre) * rotationSin, - localOffset.getX().Convert(metre) * rotationSin + localOffset.getY().Convert(metre) * rotationCos);
@@ -74,7 +76,7 @@ namespace Pronounce {
 
 		// Add localOffset to the global offset
 		lastPose->add(localOffset);
-		lastPose->setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));
+		lastPose->setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));// + orientationOffset.getValue());
 
 		// Update the position
 		this->setPose(lastPose);

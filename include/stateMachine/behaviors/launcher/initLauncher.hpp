@@ -7,6 +7,7 @@
 #include "stateMachine/wait.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
+#include "utils/linearInterpolator.hpp"
 
 // TODO: Clean up
 // TODO: move declarations to another place
@@ -42,6 +43,8 @@ namespace Pronounce {
 
 	pros::Vision turretVision(5, VISION_ZERO_CENTER);
 
+	LinearInterpolator flywheelRPM;
+
 	const uint8_t RED_GOAL = 1;
 
 	void initLauncherStates() {
@@ -50,7 +53,7 @@ namespace Pronounce {
 
 		flywheels.addMotor(&flywheel1);
 
-		launchDisc.addState(&launcherStateController, &launchDisc2);
+		launchDisc.addState(&launcherStateController, &launcherFullSpeed);
 		launchDisc.addState(&launcherStateController, &launchDisc1);
 
 		turretMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -58,5 +61,15 @@ namespace Pronounce {
 		pros::vision_signature_s_t redGoal = pros::Vision::signature_from_utility(RED_GOAL, 4979, 7501, 6240, -601, 307, -147, 3.000, 0);
 		turretVision.set_signature(RED_GOAL, &redGoal);	
 		turretVision.set_exposure(95);
+
+		flywheelRPM.add(24.0, 2000.0);
+		flywheelRPM.add(48.0, 2500.0);
+		flywheelRPM.add(72.0, 2700.0);
+		flywheelRPM.add(96.0, 2900.0);
+		flywheelRPM.add(120.0, 3000.0);
+		flywheelRPM.add(144.0, 3100.0);
+		flywheelRPM.add(148.0, 3200.0);
+		flywheelRPM.add(172.0, 3300.0);
+		flywheelRPM.add(196.0, 3350.0);
 	}
 } // namespace Pronounce

@@ -4,8 +4,8 @@
 #include "utils/path.hpp"
 
 namespace Pronounce {
-	const Point allianceGoal = Point(18.0_in, 122.5_in);
-	const Point opponentGoal = Point(122.5_in, 18.0_in);
+	const Point ALLIANCE_GOAL = Point(18.0_in, 122.5_in);
+	const Point OPPONENT_GOAL = Point(122.5_in, 18.0_in);
 
 	const Point bottomRoller = Point(29.5_in, 4_in);
 	const Point leftRoller = Point(29.5_in, 4_in);

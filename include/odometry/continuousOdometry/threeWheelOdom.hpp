@@ -39,6 +39,8 @@ namespace Pronounce {
 		 */
 		bool useExternalOrientation = false;
 
+		Angle orientationOffset{90.0};
+
     public:
 		/**
 		 * @brief Construct a new Three Wheel Odom object with all values set to zero and no pointers set
@@ -191,6 +193,14 @@ namespace Pronounce {
         void setBackWheel(OdomWheel* backWheel) {
             this->backWheel = backWheel;
         }
+
+		bool getUseExternalOrientation() {
+			return this->useExternalOrientation;
+		}
+
+		void setUseExternalOrientation(bool useExternalOrientation) {
+			this->useExternalOrientation = useExternalOrientation;
+		}
 
         ~ThreeWheelOdom();
     };
