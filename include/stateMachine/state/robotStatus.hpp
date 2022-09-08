@@ -43,11 +43,13 @@ namespace Pronounce {
 
 			if (gameMode == GameMode::Skills) {
 				// Skills aiming stuff
+				FlywheelValue allianceGoal = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
+				FlywheelValue opponentGoal = this->opponentGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 			} else {
 				// Competition aiming stuff
 				FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 
-				this->turretAngle = odometry.getAngle() - flywheelValues.turretAngle;
+				this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
 				this->flywheelRPM = flywheelValues.flywheelSpeed;
 			}
 		}

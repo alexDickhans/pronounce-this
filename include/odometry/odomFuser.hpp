@@ -42,6 +42,7 @@ namespace Pronounce {
 		}
 
 		void reset(Pose2D* pose) {
+			// this->continuousOdometry.setPose(pose);
 			this->setPose(pose);
 			this->setResetPose(pose);
 			this->setCurrentVelocity(Vector());

@@ -88,8 +88,8 @@ namespace Pronounce {
 		backOdomWheel.setRadius(2.75_in / 2.0);
 		backOdomWheel.setTuningFactor(tuningFactor * 1.0);
 
-		leftEncoder.set_reversed(false);
-		rightEncoder.set_reversed(true);
+		leftEncoder.set_reversed(true);
+		rightEncoder.set_reversed(false);
 		backEncoder.set_reversed(false);
 
 		threeWheelOdom.setLeftOffset(11.75_in/2.0);
@@ -98,7 +98,7 @@ namespace Pronounce {
 
 		pros::Task::delay(10);
 
-		odometry.reset(new Pose2D());
+		threeWheelOdom.reset(new Pose2D(18.0_in, 122.5_in - 24_in, 0.0));
 	}
 
 } // namespace Pronounce

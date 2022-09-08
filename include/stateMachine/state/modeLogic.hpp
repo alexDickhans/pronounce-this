@@ -60,7 +60,6 @@ namespace Pronounce {
 
 			std::cout << "Turret angle: " << turretAngle << std::endl;
 			stateControllers.update();
-			std::cout << "Turret: " << robotStatus->getTurretAngle().Convert(degree) << std::endl;
 		}
 
 		void exit() {
