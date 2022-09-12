@@ -2,12 +2,19 @@
 
 #include "utils/vector.hpp"
 #include "utils/pose2d.hpp"
+#include <exception>
 
 namespace Pronounce {
 
+	class PositionNotReady : public std::exception {
+		const char* what() const throw () {
+			return "Position not ready";
+		}
+	};
+
 	/**
 	 * @brief A class for odometry where the outputs are discontinuous or only gets a reliable position every once in a while
-	 * 
+	 *
 	 * @authors Alex Dickhans(alexDickhans)
 	 */
 	class InterruptOdometry {
@@ -15,13 +22,13 @@ namespace Pronounce {
 	public:
 		/**
 		 * @brief Construct a new Interrupt Odometry object, run this in all your child objects
-		 * 
+		 *
 		 */
 		InterruptOdometry() {}
 
 		/**
 		 * @brief Find out of the object is ready to call get position
-		 * 
+		 *
 		 * @param currentPose The current pose of the robot
 		 * @param velocity The current velocity of the robot
 		 * @return true The position is ready so call the get position function
@@ -31,7 +38,7 @@ namespace Pronounce {
 
 		/**
 		 * @brief Get the refined position
-		 * 
+		 *
 		 * @param currentPose The current pose of the robot
 		 * @param velocity The current velocity of the robot
 		 * @return Pose2D The refined position of the robot

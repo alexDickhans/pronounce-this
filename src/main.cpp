@@ -70,7 +70,8 @@ void initLogger() {
 
 void update() {
 
-	uint32_t startTime = 0;
+	uint32_t startTime = pros::millis();
+
 	while (true) {
 		// Create stuff for exact delay
 		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
@@ -79,7 +80,7 @@ void update() {
 		odometry.update();
 		modeLogic.update();
 
-		pros::delay(10 - (pros::millis() - startTime));
+		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 	}
 }
 

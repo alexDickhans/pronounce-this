@@ -23,7 +23,7 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut indexer(1, false);
 
-	FlywheelPID flywheelPID(0.5, 0.5, 0.0, 3.4);
+	FlywheelPID flywheelPID(10.0, 0.0, -8.0, 3.2);
 	PID turretPID(30000.0, 0.0, 35000.0);
 
 	pros::Rotation turretRotation(4);
@@ -62,14 +62,10 @@ namespace Pronounce {
 		turretVision.set_signature(RED_GOAL, &redGoal);	
 		turretVision.set_exposure(95);
 
-		flywheelRPM.add(24.0, 2000.0);
-		flywheelRPM.add(48.0, 2500.0);
-		flywheelRPM.add(72.0, 2700.0);
-		flywheelRPM.add(96.0, 2900.0);
-		flywheelRPM.add(120.0, 3000.0);
-		flywheelRPM.add(144.0, 3100.0);
-		flywheelRPM.add(148.0, 3200.0);
-		flywheelRPM.add(172.0, 3300.0);
-		flywheelRPM.add(196.0, 3350.0);
+		flywheelRPM.add(38.0, 2135.0);
+		flywheelRPM.add(62.0, 2200.0);
+		flywheelRPM.add(86.0, 2410.0);
+		flywheelRPM.add(110.0, 2750.0);
+		flywheelRPM.add(134.0, 2800.0);
 	}
 } // namespace Pronounce

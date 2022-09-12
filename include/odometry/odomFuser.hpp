@@ -4,6 +4,7 @@
 #include "units/units.hpp"
 #include "interruptOdometry/interruptOdometry.hpp"
 #include <vector>
+#include <exception>
 
 // TODO: Add comments
 // TODO: Add docstrings
@@ -31,7 +32,11 @@ namespace Pronounce {
 			// Go through each of the interrupt odoms in a list, the sequential order selected by the user will allow the more accurate odometry types to go last and result in the best positioning
 			for (int i = 0; i < interruptOdometrys.size(); i++) {
 				if (interruptOdometrys.at(i)->positionReady(*currentPose, this->getCurrentVelocity())) {
-					currentPose = new Pose2D(interruptOdometrys.at(i)->getPosition(*currentPose, this->getCurrentVelocity()));
+					try {
+						currentPose = new Pose2D(interruptOdometrys.at(i)->getPosition(*currentPose, this->getCurrentVelocity()));
+					} catch (std::exception e) {
+						std::cout << "Interrupt position not ready. Index: " << i << std::endl;
+					}
 				}
 			}
 

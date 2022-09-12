@@ -98,6 +98,11 @@ namespace Pronounce {
             this->setAngle(pose.getAngle());
         }
 
+		void operator=(Point pose) {
+            this->setX(pose.getX());
+            this->setY(pose.getY());
+        }
+
 		/**
 		 * @brief Set the current pose with the = operator with a pointer
 		 * 
