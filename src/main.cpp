@@ -82,6 +82,7 @@ void update() {
 
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 	}
+	
 }
 
 void updateDisplay() {
