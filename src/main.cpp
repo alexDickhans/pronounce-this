@@ -80,6 +80,7 @@ void update() {
 		odometry.update();
 		modeLogic.update();
 
+		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 	}
 }
