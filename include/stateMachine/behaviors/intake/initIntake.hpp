@@ -5,6 +5,8 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/stateController.hpp"
 #include "utils/motorGroup.hpp"
+#include "stateMachine/wait.hpp"
+#include "stateMachine/sequence.hpp"
 
 // TODO: Clean up
 // TODO: move declarations to another place
@@ -12,19 +14,30 @@
 
 namespace Pronounce {
 
-	pros::Motor intake(12, false);
-	pros::Motor intake2(20, true);
+	pros::Motor bottomIntakeMotor(20, true);
+	pros::Motor topIntakeMotor(12, false);
 
-	MotorGroup intakes;	
+	MotorGroup topIntake;
+	MotorGroup bottomIntake;
 
-	Intake intakeIntaking(&intakes, 1.0);
-	Intake intakeStopped(&intakes, 0.0);
-	Intake intakeEjecting(&intakes, -0.5);
+	Intake intakeIntaking(&bottomIntake, &topIntake, 1.0, 1.0);
+	Intake intakeStopped(&bottomIntake, &topIntake, 0.0, 0.0);
+	Intake intakeEjecting(&bottomIntake, &topIntake, -1.0, -1.0);
+	Intake intakeDejam(&bottomIntake, &topIntake, -1.0, 1.0);
 
 	StateController intakeStateController(&intakeIntaking);
+	StateController intakeStateExtensionController(new Behavior());
+
+	Wait intakeDejam1(&intakeDejam, 500);
+	Wait intakeDejam2(&intakeIntaking, 500);
+
+	Sequence intakeDejamSequence;
 
 	void initIntake() {
-		intakes.addMotor(&intake);
-		intakes.addMotor(&intake2);
+		bottomIntake.addMotor(&bottomIntakeMotor);
+		topIntake.addMotor(&topIntakeMotor);
+
+		intakeDejamSequence.addState(&intakeStateController, &intakeDejam1);
+		intakeDejamSequence.addState(&intakeStateController, &intakeDejam2);
 	}
 }

@@ -19,6 +19,8 @@ namespace Pronounce {
 		pros::Controller* controller2;
 
 		bool tilter;
+
+		uint32_t lastChangeFrame = 0;
 	public:
 		TeleopModeLogic(pros::Controller* controller1, pros::Controller* controller2) {
 			this->controller1 = controller1;
@@ -30,9 +32,13 @@ namespace Pronounce {
 		}
 
 		void update() {
-			if (controller1->get_digital_new_press(INTAKE_BUTTON)) {
+			if (abs(bottomIntakeMotor.get_target_velocity()) - abs(bottomIntakeMotor.get_actual_velocity()) < 50.0 && pros::millis() - lastChangeFrame < 200 && intakeStateExtensionController.isDone() || controller1->get_digital_new_press(DEJAM_BUTTON)) {
+				intakeStateExtensionController.setCurrentBehavior(&intakeDejamSequence);
+			} else if (controller1->get_digital_new_press(INTAKE_BUTTON)) {
+				lastChangeFrame = pros::millis();
 				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeIntaking);
-			} else if (controller1->get_digital_new_press(DEJAM_BUTTON)) {
+			} else if (controller1->get_digital_new_press(ROLLER_BUTTON)) {
+				lastChangeFrame = pros::millis();
 				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeEjecting);
 			}
 
@@ -61,10 +67,6 @@ namespace Pronounce {
 			if (controller2->is_connected()) {
 				turretAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 500.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
-			}
-
-			if (controller1->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-				tilter = !tilter;
 			}
 
 			std::cout << "FlywheelSpeed: " << flywheelAdjustment << std::endl;
