@@ -19,7 +19,11 @@ namespace Pronounce {
 
 		ProfileConstraints profileConstraints;
 	public:
-		VelocityProfile(QLength distance, ProfileConstraints profileConstraints) : distance(distance) {}
+		VelocityProfile() : distance(0.0), profileConstraints() {
+			
+		}
+
+		VelocityProfile(QLength distance, ProfileConstraints profileConstraints) : distance(distance), profileConstraints(profileConstraints) {}
 
 		virtual QTime getDuration() { return 0.0; }
 

@@ -11,6 +11,7 @@
 #include "utils/vector.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
+#include "velocityProfile/velocityProfile.hpp"
 
 namespace Pronounce {
 	/**
@@ -23,6 +24,7 @@ namespace Pronounce {
 		Vector localLookaheadVector;
 		Vector normalizedLookaheadVector;
 		double curvature;
+		QLength distanceFromBeginning;
 		QLength distanceFromEnd;
 	};
 
@@ -32,8 +34,7 @@ namespace Pronounce {
 	 */
 	struct PurePursuitProfile {
 		QLength lookaheadDistance;
-		QAcceleration maxAcceleration;
-		QSpeed speed;
+		VelocityProfile velocityProfile;
 	};
 
 	/**
@@ -84,19 +85,8 @@ namespace Pronounce {
 		 * 
 		 */
 		QTime updateTime = 10_ms;
-	public:
-		/**
-		 * @brief Default constructor
-		 * 
-		 */
-		PurePursuit();
 
-		/**
-		 * @brief Construct a new Pure Pursuit class with the lookahead
-		 * 
-		 * @param lookahead The lookahead distances
-		 */
-		PurePursuit(QLength lookahead);
+	public:
 
 		/**
 		 * @brief Construct a new Pure Pursuit class with the lookahead
@@ -104,7 +94,7 @@ namespace Pronounce {
 		 * @param odometry A pointer to the odometry object
 		 * @param lookahead The lookahead distance
 		 */
-		PurePursuit(ContinuousOdometry* odometry, QLength lookahead);
+		PurePursuit(ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
 
 		/**
 		 * @brief Start all the values

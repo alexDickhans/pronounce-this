@@ -1,19 +1,11 @@
 #include "purePursuit.hpp"
 
 namespace Pronounce {
-    PurePursuit::PurePursuit() {
-		this->path = Path();
-		this->odometry = new ContinuousOdometry();
-    }
 
-    PurePursuit::PurePursuit(QLength lookahead) : PurePursuit() {
-        this->currentProfile.lookaheadDistance = lookahead;
-    }
-
-	PurePursuit::PurePursuit(ContinuousOdometry* odometry, QLength lookahead) {
+	PurePursuit::PurePursuit(ContinuousOdometry* odometry, PurePursuitProfile currentProfile) {
 		this->path = Path();
 		this->odometry = odometry;
-		this->currentProfile.lookaheadDistance = lookahead;
+		this->currentProfile = currentProfile;
 	}
 
 	PurePursuitPointData PurePursuit::updatePointData() {
@@ -42,6 +34,7 @@ namespace Pronounce {
 		QLength xDistance = robotRelativeLookaheadVector.getCartesian().getX();
 		double signedCurvature = (2.0 * xDistance).getValue() / pow(lookaheadVector.getMagnitude().getValue(), 2);
 
+		QLength distanceFromBeginning = path.distanceFromStart(currentPoint);
 		QLength distanceFromEnd = path.distanceFromEnd(currentPoint);
 		
 		PurePursuitPointData pointData;
@@ -51,6 +44,7 @@ namespace Pronounce {
 		pointData.localLookaheadVector = robotRelativeLookaheadVector;
 		pointData.normalizedLookaheadVector = normalizedLookaheadVector;
 		pointData.curvature = signedCurvature;
+		pointData.distanceFromBeginning = distanceFromBeginning;
 		pointData.distanceFromEnd = distanceFromEnd;
 
 		return pointData;

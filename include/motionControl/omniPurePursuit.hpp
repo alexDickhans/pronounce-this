@@ -30,28 +30,6 @@ namespace Pronounce {
 		 */
 		Angle turnTarget{0.0};
 	public:
-
-		/**
-		 * @brief Construct a new Omni Pure Pursuit object with default values and no drivetrain object
-		 * 
-		 */
-		OmniPurePursuit();
-
-		/**
-		 * @brief Construct a new Omni Pure Pursuit object with drivetrain pointer ser
-		 * 
-		 * @param drivetrain Pointer to the drivetrain that you want to drive
-		 */
-		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain);
-
-		/**
-		 * @brief Construct a new Omni Pure Pursuit object with a drivetrain pointer and lookahead value 
-		 * 
-		 * @param drivetrain Pointer to the drivetrain to drive
-		 * @param lookaheadDistance The target lookahead distance
-		 */
-		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, QLength lookaheadDistance);
-
 		/**
 		 * @brief Construct a new Omni Pure Pursuit object with most variables set
 		 * 
@@ -59,7 +37,7 @@ namespace Pronounce {
 		 * @param odometry Pointer to the odometry object
 		 * @param lookaheadDistance The target lookahead distance
 		 */
-		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, QLength lookaheadDistance);
+		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
 		
 		/**
 		 * @brief Update the drivetrain object to more the drivetrain, not called by the user

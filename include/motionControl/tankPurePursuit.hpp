@@ -26,20 +26,6 @@ namespace Pronounce {
 		QSpeed speed = 0.0;
 
 	public:
-		/**
-		 * @brief Construct a new Tank Pure Pursuit object with just a pointer to a drivetrain object. All other values will be set to zero
-		 * 
-		 * @param drivetrain Pointer to the drivetrain object that it will drive
-		 */
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain);
-
-		/**
-		 * @brief Construct a new Tank Pure Pursuit object with a pointer to the drivetrain and a QLength distance
-		 * 
-		 * @param drivetrain Pointer to the drivetrain object that it will drive
-		 * @param lookaheadDistance QLength for the lookahead distance
-		 */
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain, QLength lookaheadDistance);
 
 		/**
 		 * @brief Construct a new Tank Pure Pursuit object with a pointer to the drivetrain and a QLength distance
@@ -48,7 +34,7 @@ namespace Pronounce {
 		 * @param odometry Pointer to the odometry object that it will use for the lookahead point calculation
 		 * @param lookaheadDistance QLength for the lookahead distance
 		 */
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, QLength lookaheadDistance);
+		TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
 
 		/**
 		 * @brief Update the drivetrain based on the value from the pure pursuit parent object
