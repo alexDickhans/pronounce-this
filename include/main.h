@@ -103,6 +103,7 @@
 #include "units/units.hpp"
 
 // Utils
+#include "utils/ADIDigitalOutGroup.hpp"
 #include "utils/exponentialMovingAverage.hpp"
 #include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
