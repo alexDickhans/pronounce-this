@@ -37,9 +37,10 @@ namespace Pronounce {
 		}
 
 		void update() {
-			pros::vision_object_s_t biggestTurretDetection = turretVision.get_by_size(0);
+			/// pros::vision_object_s_t biggestTurretDetection = turretVision.get_by_size(0);
 
-			double angleChange = biggestTurretDetection.x_middle_coord;
+			// double angleChange = biggestTurretDetection.x_middle_coord;
+			std::cout << "OutputDrivetrainSpeed: " << drivetrain.getSpeed().getValue() << std::endl;
 
 			if (gameMode == GameMode::Skills) {
 				// Skills aiming stuff

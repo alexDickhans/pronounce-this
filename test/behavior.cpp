@@ -36,11 +36,11 @@ int main() {
 	Wait codeGreen3Seconds = Wait(&codeGreen, 3000);
 
 	// Create a state machine for both the state extensions(Parallel/sequences) and a state machine for example a subsystem
-	StateController stateController = StateController(&defaultState);
-	StateController stateExtensions = StateController(new Behavior());
+	StateController stateController = StateController("StateController", &defaultState);
+	StateController stateExtensions = StateController("StateExtensions", new Behavior());
 
 	// Create a test sequence
-	Sequence codeBrown = Sequence();
+	Sequence codeBrown = Sequence("CodeBrown");
 
 	// Add states to the sequence
 	codeBrown.addState(&stateController, &codeOrange2Seconds);

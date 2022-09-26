@@ -2,7 +2,7 @@
 
 namespace Pronounce {
 
-	TankPurePursuit::TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile) : PurePursuit(odometry, currentProfile) {
+	TankPurePursuit::TankPurePursuit(std::string name, AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path) : PurePursuit(name, odometry, currentProfile, path) {
 		this->drivetrain = drivetrain;
 	}
 

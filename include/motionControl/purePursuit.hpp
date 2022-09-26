@@ -94,7 +94,7 @@ namespace Pronounce {
 		 * @param odometry A pointer to the odometry object
 		 * @param lookahead The lookahead distance
 		 */
-		PurePursuit(ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
+		PurePursuit(std::string name, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path);
 
 		/**
 		 * @brief Start all the values
@@ -140,6 +140,12 @@ namespace Pronounce {
 			return maxDistance > odometry->getPosition()->distance(path.getPoint(path.getPath().size() - 1));
 		}
 
+		void setPath(Path path) {
+			this->path = path;
+			this->currentProfile.velocityProfile.setDistance(path.distance());
+			this->currentProfile.velocityProfile.calculate(100);
+		}
+
 		/**
 		 * @brief Get the current Path
 		 * 
@@ -165,6 +171,8 @@ namespace Pronounce {
 		 */
 		void setCurrentProfile(PurePursuitProfile profile) {
 			this->currentProfile = profile;
+			this->currentProfile.velocityProfile.setDistance(this->path.distance());
+			this->currentProfile.velocityProfile.calculate(100);
 		}
 
 		/**

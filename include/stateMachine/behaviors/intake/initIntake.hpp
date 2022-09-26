@@ -14,24 +14,26 @@
 
 namespace Pronounce {
 
-	pros::Motor bottomIntakeMotor(20, true);
-	pros::Motor topIntakeMotor(12, false);
+	pros::Motor bottomIntakeMotor(12, false);
+	pros::Motor topIntakeMotor(20, true);
 
 	MotorGroup topIntake;
 	MotorGroup bottomIntake;
 
-	Intake intakeIntaking(&bottomIntake, &topIntake, 1.0, 1.0);
-	Intake intakeStopped(&bottomIntake, &topIntake, 0.0, 0.0);
-	Intake intakeEjecting(&bottomIntake, &topIntake, -1.0, -1.0);
-	Intake intakeDejam(&bottomIntake, &topIntake, -1.0, 1.0);
+	Intake intakeIntaking("IntakeIntaking", &bottomIntake, &topIntake, 1.0, 1.0);
+	Intake intakeStopped("IntakeStopped", &bottomIntake, &topIntake, 0.0, 0.0);
+	Intake intakeEjecting("IntakeEjecting", &bottomIntake, &topIntake, -1.0, -1.0);
+	Intake intakeDejam("IntakeDejam", &bottomIntake, &topIntake, -1.0, 1.0);
 
-	StateController intakeStateController(&intakeIntaking);
-	StateController intakeStateExtensionController(new Behavior());
+	StateController intakeStateController("IntakeStateController", &intakeIntaking);
+	StateController intakeStateExtensionController("IntakeStateExtensionController", new Behavior());
 
 	Wait intakeDejam1(&intakeDejam, 500);
 	Wait intakeDejam2(&intakeIntaking, 500);
 
-	Sequence intakeDejamSequence;
+	Wait intakeRoller(&intakeEjecting, 2000);
+
+	Sequence intakeDejamSequence("IntakeDejamSequence");
 
 	void initIntake() {
 		bottomIntake.addMotor(&bottomIntakeMotor);

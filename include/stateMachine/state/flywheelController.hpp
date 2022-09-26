@@ -28,7 +28,7 @@ namespace Pronounce {
 			flywheelValues.turretAngle = -(targetVector.getAngle() + 90_deg);
 			flywheelValues.flywheelSpeed = flywheelRPM.get(targetVector.getMagnitude().Convert(inch));
 
-			std::cout << "Flywheel Speed: " << flywheelValues.flywheelSpeed << ", Distance: " << targetVector.getMagnitude().Convert(inch) << std::endl;
+			std::cout << "TargetFlywheelSpeed: " << flywheelValues.flywheelSpeed << std::endl << "Distance: " << targetVector.getMagnitude().Convert(inch) << std::endl;
 
 			return flywheelValues;
 		}

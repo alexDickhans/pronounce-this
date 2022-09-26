@@ -9,7 +9,7 @@
 // TODO: add comments
 
 namespace Pronounce {
-	class BezierPath {
+	class BezierPath : public Path {
 	private:
 		std::vector<SplinePoint> points;
 		std::string name = "";

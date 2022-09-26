@@ -17,7 +17,7 @@ namespace Pronounce {
 
 		int currentIndex = 0;
 	public:
-		Sequence() {}
+		Sequence(std::string name) : Behavior(name) {}
 
 		void initialize() {
 			currentIndex = 0;
@@ -35,7 +35,6 @@ namespace Pronounce {
 					stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 				}
 				else {
-					std::cout << "Ending" << std::endl;
 					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					// Done

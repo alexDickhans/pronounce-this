@@ -31,7 +31,19 @@ namespace Pronounce {
 		LinearInterpolator distanceToJerk;
 		LinearInterpolator distanceToTime;
 	public:
-		SinusoidalVelocityProfile();
+		SinusoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints) : VelocityProfile(distance, profileConstraints) {
+			
+		}
+
+		SinusoidalVelocityProfile(QLength distance, QSpeed maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk) : VelocityProfile(distance, ProfileConstraints()) {
+			ProfileConstraints profileConstraints;
+			profileConstraints.maxVelocity = maxVelocity;
+			profileConstraints.maxAcceleration = maxAcceleration;
+			profileConstraints.maxJerk = maxJerk;
+
+			this->setProfileConstraints(profileConstraints);
+
+		}
 
 		void calculateValues(QTime t) {
 			QLength distance = this->getDistanceByTime(t);
@@ -73,6 +85,22 @@ namespace Pronounce {
 			}
 		}
 
+		QSpeed getVelocityByDistance(QLength length) {
+			return distanceToVelocity.get(length.getValue());
+		}
+
+		QAcceleration getAccelerationByDistance(QLength length) {
+			return distanceToAcceleration.get(length.getValue());
+		}
+
+		QJerk getJerkByDistance(QLength length) {
+			return distanceToJerk.get(length.getValue());
+		}
+
+		QTime getTimeByDistance(QLength length) {
+			return distanceToTime.get(length.getValue());
+		}
+
 		QAcceleration getAccelerationByTime(QTime t) {
 			if (t <= 0.0_s) {
 				return 0.0;
@@ -100,13 +128,13 @@ namespace Pronounce {
 		void calculate(int granularity) {
 			Yf = fabs(this->getDistance().getValue());
 			Ys = Yf / 2.0;
-			Yaux = this->getProfileConstraints().maxVelocity.getValue();
+			Yaux = pow(this->getProfileConstraints().maxVelocity.getValue(), 2) / this->getProfileConstraints().maxAcceleration.getValue();
 			Ya = Ys <= Yaux ? Ys : Yaux;
 			Vw = Ys <= Yaux ? sqrt(Ys * this->getProfileConstraints().maxAcceleration.getValue()) : this->getProfileConstraints().maxVelocity.getValue();
 			To = Vw/this->getProfileConstraints().maxAcceleration.getValue();
 			Ta = 2 * To;
-			omega = 2 * 1_pi;
-			Ks = (Ta.getValue() * Vw) / (4 * 1_pi);
+			omega = 2_pi/Ta.getValue();
+			Ks = (Ta.getValue() * Vw) / (4 * 1_pi * 1_pi);
 			Tk = 2 * ((Ys - Ya) / this->getProfileConstraints().maxVelocity.getValue());
 			Ts = Ta.getValue() + (Tk/2);
 			Tt = 2 * Ts;
@@ -117,6 +145,6 @@ namespace Pronounce {
 			}
 		}
 
-		~SinusoidalVelocityProfile();
+		~SinusoidalVelocityProfile() {}
 	};
 } // namespace Pronounce

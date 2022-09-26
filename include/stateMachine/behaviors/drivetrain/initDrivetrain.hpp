@@ -14,6 +14,12 @@
 #include "utils/runningAverage.hpp"
 #include "odometry/orientation/imu.hpp"
 #include "odometry/odomFuser.hpp"
+#include "motionControl/omniMotionProfiling.hpp"
+#include "velocityProfile/sinusoidalVelocityProfile.hpp"
+#include "utils/path.hpp"
+#include "utils/quadraticSplinePath.hpp"
+#include "motionControl/rotationController.hpp"
+#include "motionControl/omniMovement.hpp"
 
 // TODO: Clean up
 // TODO: move declarations to another place
@@ -60,16 +66,76 @@ namespace Pronounce {
 
 	OdomFuser odometry(threeWheelOdom);
 	
-	JoystickDrivetrain fieldRelativeJoystick(0.10, true, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
-	JoystickDrivetrain fieldRelativeTargetingJoystick(0.10, true, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
-	JoystickDrivetrain normalJoystick(0.10, false, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
-	JoystickDrivetrain normalTargetingJoystick(0.10, false, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain fieldRelativeJoystick("FieldRelativeNormal", 0.10, true, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain fieldRelativeTargetingJoystick("FieldRelativeTargetting", 0.10, true, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain normalJoystick("RobotRelativeJoystick", 0.10, false, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain normalTargetingJoystick("RobotRelativeTargeting", 0.10, false, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
 
-	JoystickDrivetrain drivetrainStopped(0.10, false, true, 2.4, 0.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", 0.10, false, true, 2.4, 0.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
 
-	StateController drivetrainStateController(&drivetrainStopped);
+	ProfileConstraints defaultProfileConstraints;
+	ProfileConstraints stackIntakeProfileConstraints;
+	ProfileConstraints rowIntakeProfileConstraints;
+
+	SinusoidalVelocityProfile testVelocityProfile(24_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile frontRollerToAllianceStackVelocityProfile(24_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile intakeAllianceStackVelocityProfile(24_in, stackIntakeProfileConstraints);
+	SinusoidalVelocityProfile allianceStackToAllianceDiscsVelocityProfile(24_in, rowIntakeProfileConstraints);
+	SinusoidalVelocityProfile allianceDiscsToRollerVelocityProfile(24_in, defaultProfileConstraints);
+	
+	PID turningPid(380, 0, 2000);
+	
+	OmniMotionProfiling testProfile("MotionProfilingTest", testVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, 0_deg);
+	OmniMotionProfiling frontRollerToAllianceStack("FrontRollerToAllianceStack", frontRollerToAllianceStackVelocityProfile, drivetrain, &turningPid, &odometry, 45.0_deg, 0_deg);
+	OmniMotionProfiling intakeAllianceStack("IntakeAllianceStack", intakeAllianceStackVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, -45_deg);
+	OmniMotionProfiling allianceStackToAllianceDiscs("AllianceStackToAllianceDiscs", allianceStackToAllianceDiscsVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, -45_deg);
+	OmniMotionProfiling allianceDiscsToRoller("AllianceDiscsToRoller", allianceDiscsToRollerVelocityProfile, drivetrain, &turningPid, &odometry, -45.0_deg, 180_deg);
+
+	// BezierPath testPath;
+	// PurePursuitProfile defaultPurePursuitProfile = {10.0_in, testVelocityProfile};
+	// OmniPurePursuit testPurePursuit(&drivetrain, &odometry, defaultPurePursuitProfile, testPath);
+	RotationController turnTo90("TurnTo90", &drivetrain, &odometry, &turningPid, 90_deg);
+	Wait turnTo905s(&turnTo90, 3000);
+	RotationController turnTo315("TurnTo315", &drivetrain, &odometry, &turningPid, 315_deg);
+	Wait turnTo905s(&turnTo315, 1500);
+	RotationController turnTo180("TurnTo180", &drivetrain, &odometry, &turningPid, 180_deg);
+	Wait turnTo905s(&turnTo180, 1500);
+	OmniMovement drivetrainRoller("DrivetrainRoller", &drivetrain, 50, -90_deg);
+	Wait drivetrainRollerWait(&drivetrainRoller, 2000);
+
+	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
 	void initDrivetrain() {
+
+		defaultProfileConstraints.maxVelocity = 34_in/1_s;
+		defaultProfileConstraints.maxAcceleration = 60 * inchs2;
+		defaultProfileConstraints.maxJerk = 3.0;
+
+		stackIntakeProfileConstraints.maxVelocity = 10_in/1_s;
+		stackIntakeProfileConstraints.maxAcceleration = 60 * inchs2;
+		stackIntakeProfileConstraints.maxJerk = 3.0;
+
+		rowIntakeProfileConstraints.maxVelocity = 20_in/1_s;
+		rowIntakeProfileConstraints.maxAcceleration = 60 * inchs2;
+		rowIntakeProfileConstraints.maxJerk = 3.0;
+
+		testVelocityProfile.setProfileConstraints(defaultProfileConstraints);
+		frontRollerToAllianceStackVelocityProfile.setProfileConstraints(defaultProfileConstraints);
+		intakeAllianceStackVelocityProfile.setProfileConstraints(stackIntakeProfileConstraints);
+		allianceStackToAllianceDiscsVelocityProfile.setProfileConstraints(rowIntakeProfileConstraints);
+		allianceDiscsToRollerVelocityProfile.setProfileConstraints(defaultProfileConstraints);
+
+		testVelocityProfile.calculate(100);
+		frontRollerToAllianceStackVelocityProfile.calculate(100);
+		intakeAllianceStackVelocityProfile.calculate(100);
+		allianceStackToAllianceDiscsVelocityProfile.calculate(100);
+		allianceDiscsToRollerVelocityProfile.calculate(100);
+
+		testProfile.setVelocityProfile(testVelocityProfile);
+		frontRollerToAllianceStack.setVelocityProfile(frontRollerToAllianceStackVelocityProfile);
+		intakeAllianceStack.setVelocityProfile(intakeAllianceStackVelocityProfile);
+		allianceStackToAllianceDiscs.setVelocityProfile(allianceStackToAllianceDiscsVelocityProfile);
+		allianceDiscsToRoller.setVelocityProfile(allianceDiscsToRollerVelocityProfile);
 
 		// Motor brake modes
 		frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);

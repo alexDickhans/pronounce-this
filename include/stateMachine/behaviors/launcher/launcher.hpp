@@ -47,7 +47,7 @@ namespace Pronounce {
 		bool useIsDone = false;
 
 	public:
-		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool indexerEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID, PID* turretPID, pros::Rotation& turretRotation) : rotationSensor(turretRotation) {
+		Launcher(std::string name, double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool indexerEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID, PID* turretPID, pros::Rotation& turretRotation) : rotationSensor(turretRotation), Behavior(name) {
 			this->flywheelSpeedMultiplier = flywheelSpeedMultiplier;
 			this->flywheelOutputMultiplier = flywheelOutputMultiplier;
 			this->indexerEngaged = indexerEngaged;
@@ -65,12 +65,12 @@ namespace Pronounce {
 		}
 
 		void update() {
+			std::cout << "ActualFlywheelSpeed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
 			if (flywheelSpeedMultiplier > 0.0) {
 				flywheelPID->setPosition(flywheelSpeed * flywheelSpeedMultiplier);
 				double flywheelVoltage = flywheelPID->update(flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier);
 				flywheelMotor->move_voltage(flywheelVoltage);
-				std::cout << "Flywheel speed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
-				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
+				// std::cout << "InputFlywheelVoltage: " << flywheelVoltage << std::endl;
 			}
 			indexer->set_value(indexerEngaged);
 

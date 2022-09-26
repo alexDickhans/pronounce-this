@@ -230,7 +230,11 @@ constexpr QForce poundforce = pound * G;
 constexpr QForce kilopond = kg * G;
 
 constexpr QPressure Pascal(1.0);
+
+#ifndef SIM
 constexpr QPressure bar = 100000 * Pascal;
+#endif // !SIM
+
 constexpr QPressure psi = pound * G / inch2;
 
 // Physical unit literals:
@@ -325,8 +329,10 @@ constexpr QPressure operator"" _Pa(unsigned long long int x)
 {
 	return QPressure(static_cast<double>(x));
 };
+#ifndef SIM
 constexpr QPressure operator"" _bar(long double x) { return static_cast<double>(x) * bar; };
 constexpr QPressure operator"" _bar(unsigned long long int x) { return static_cast<double>(x) * bar; };
+#endif // !SIM
 constexpr QPressure operator"" _psi(long double x) { return static_cast<double>(x) * psi; };
 constexpr QPressure operator"" _psi(unsigned long long int x) { return static_cast<double>(x) * psi; };
 

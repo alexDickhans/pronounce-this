@@ -37,7 +37,7 @@ namespace Pronounce {
 		 * @param odometry Pointer to the odometry object
 		 * @param lookaheadDistance The target lookahead distance
 		 */
-		OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
+		OmniPurePursuit(std::string name, AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path);
 		
 		/**
 		 * @brief Update the drivetrain object to more the drivetrain, not called by the user

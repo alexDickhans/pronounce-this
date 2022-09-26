@@ -113,7 +113,8 @@ namespace Pronounce {
         }
 
         void rotate(Angle angle) {
-            this->angle += angle;
+            this->angle += angleDifference(angle.getValue(), 0);
+			
         }
 
         std::string to_string() {

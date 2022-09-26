@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef SIM
 #include "units/units.hpp"
+#endif // !SIM
 
 // TODO: add docstrings
 // TODO: add comments
@@ -58,6 +60,8 @@ namespace Pronounce {
 		void setProfileConstraints(ProfileConstraints profileConstraints) {
 			this->profileConstraints = profileConstraints;
 		}
+
+		virtual void calculate(int granularity) {}
 
 		~VelocityProfile() {}
 	};

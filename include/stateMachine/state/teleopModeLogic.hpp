@@ -28,18 +28,18 @@ namespace Pronounce {
 		}
 
 		void initialize() {
-			drivetrainStateController.setCurrentBehavior(&normalJoystick);
+			drivetrainStateController.setCurrentBehavior(&fieldRelativeJoystick);
 		}
 
 		void update() {
-			if (abs(bottomIntakeMotor.get_target_velocity()) - abs(bottomIntakeMotor.get_actual_velocity()) < 50.0 && pros::millis() - lastChangeFrame < 200 && intakeStateExtensionController.isDone() || controller1->get_digital_new_press(DEJAM_BUTTON)) {
+			if (controller1->get_digital(DEJAM_BUTTON)) {
 				intakeStateExtensionController.setCurrentBehavior(&intakeDejamSequence);
 			} else if (controller1->get_digital_new_press(INTAKE_BUTTON)) {
 				lastChangeFrame = pros::millis();
 				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeIntaking);
 			} else if (controller1->get_digital_new_press(ROLLER_BUTTON)) {
 				lastChangeFrame = pros::millis();
-				intakeStateController.setCurrentBehavior(intakeStateController.isDone() ? &intakeStopped : &intakeEjecting);
+				intakeStateController.setCurrentBehavior(intakeStateController.getCurrentBehavior() == &intakeEjecting ? &intakeStopped : &intakeEjecting);
 			}
 
 			if (controller1->get_digital_new_press(LAUNCHER_STOP_BUTTON)) {
@@ -68,8 +68,6 @@ namespace Pronounce {
 				turretAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 500.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
 			}
-
-			std::cout << "FlywheelSpeed: " << flywheelAdjustment << std::endl;
 		}
 
 		void exit() {

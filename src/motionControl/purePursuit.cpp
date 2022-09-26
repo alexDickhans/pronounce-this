@@ -2,10 +2,12 @@
 
 namespace Pronounce {
 
-	PurePursuit::PurePursuit(ContinuousOdometry* odometry, PurePursuitProfile currentProfile) {
-		this->path = Path();
+	PurePursuit::PurePursuit(std::string name, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path) : Behavior(name) {
+		this->path = path;
 		this->odometry = odometry;
 		this->currentProfile = currentProfile;
+		this->currentProfile.velocityProfile.setDistance(this->path.distance());
+		// this->currentProfile.velocityProfile.calculate(100);
 	}
 
 	PurePursuitPointData PurePursuit::updatePointData() {

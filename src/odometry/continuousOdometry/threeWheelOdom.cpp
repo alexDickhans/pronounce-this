@@ -21,7 +21,6 @@ namespace Pronounce {
 	}
 
 	void ThreeWheelOdom::update() {
-		std::cout << "Three wheel odom update" << std::endl;
 
 		// Update the wheel positions
 		leftWheel->update();

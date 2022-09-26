@@ -4,6 +4,7 @@
 #include "robotStatus.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviorGroup.hpp"
+#include "stateMachine/parallel.hpp"
 #include "utils/utils.hpp"
 
 // TODO: clean up
@@ -11,13 +12,19 @@
 
 namespace Pronounce {
 
-	StateController stateExtensionController(new Behavior());
+	StateController stateExtensionController("GlobalStateExtensionsController", new Behavior());
 
 	BehaviorGroup stateControllers;
 
-	StateController teleopController(new Behavior());
+	StateController teleopController("TeleopController", new Behavior());
+
+	Parallel rollerParallel("Roller");
 
 	void initBehaviors() {
+		rollerParallel.addBehavior(&drivetrainStateController, &drivetrainRollerWait);
+		rollerParallel.addBehavior(&intakeStateController, &intakeEjecting);
+		rollerParallel.addBehavior(&launcherStateController, &launch2Disc);
+
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&launcherStateExtensionController);
@@ -58,7 +65,9 @@ namespace Pronounce {
 			launcherLaunching.setTurretAngle(turretAngle);
 			launcherFullSpeed.setTurretAngle(turretAngle);
 
-			std::cout << "Turret angle: " << turretAngle << std::endl;
+			// Intake dejam
+
+			std::cout << "InputTurretAngle: " << turretAngle << std::endl;
 			stateControllers.update();
 		}
 

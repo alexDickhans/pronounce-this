@@ -37,6 +37,7 @@ namespace Pronounce {
 		Wait(Behavior* behavior, int duration) {
 			this->duration = duration;
 			this->behavior = behavior;
+			this->setName(behavior->getName()+std::to_string(duration)+"ms");
 		}
 
 		void initialize() {

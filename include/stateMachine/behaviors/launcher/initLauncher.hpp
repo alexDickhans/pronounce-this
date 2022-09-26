@@ -15,7 +15,7 @@
 
 namespace Pronounce {
 
-	pros::Motor flywheel1(11, pros::E_MOTOR_GEARSET_36, false);
+	pros::Motor flywheel1(11, pros::E_MOTOR_GEARSET_36, true);
 
 	pros::Motor turretMotor(3, pros::E_MOTOR_GEARSET_06, false);
 
@@ -23,23 +23,27 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut indexer(1, false);
 
-	FlywheelPID flywheelPID(10.0, 0.0, -8.0, 3.2);
+	FlywheelPID flywheelPID(4.0, 0.1, 0.0, 3.55);
 	PID turretPID(30000.0, 0.0, 35000.0);
 
 	pros::Rotation turretRotation(4);
 
-	Launcher launcherStopped(0.0, 36.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
-	Launcher launcherIdle(1.0, 36.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
-	Launcher launcherFullSpeed(1.0, 36.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
-	Launcher launcherLaunching(1.0, 36.0 / 1.0, true, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
+	Launcher launcherStopped("LauncherStopped", 0.0, 30.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
+	Launcher launcherIdle("LauncherIdle", 1.0, 30.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
+	Launcher launcherFullSpeed("LauncherFullSpeed", 1.0, 30.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
+	Launcher launcherLaunching("LauncherLaunching", 1.0, 30.0 / 1.0, true, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
 
-	StateController launcherStateController(&launcherIdle);
-	StateController launcherStateExtensionController(new Behavior());
+	StateController launcherStateController("LauncherStateController", &launcherIdle);
+	StateController launcherStateExtensionController("LauncherStateExtensionController", new Behavior());
 
 	Wait launchDisc1(&launcherLaunching, 300);
 	Wait launchDisc2(&launcherFullSpeed, 700);
 
-	Sequence launchDisc;
+	Sequence launchDisc("LaunchDisc");
+
+	Sequence launch2Disc("Launch2Disc");
+
+	Sequence launch3Disc("Launch3Disc");
 
 	pros::Vision turretVision(5, VISION_ZERO_CENTER);
 
@@ -55,6 +59,18 @@ namespace Pronounce {
 
 		launchDisc.addState(&launcherStateController, &launcherFullSpeed);
 		launchDisc.addState(&launcherStateController, &launchDisc1);
+
+		launch2Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch2Disc.addState(&launcherStateController, &launchDisc1);
+		launch2Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch2Disc.addState(&launcherStateController, &launchDisc1);
+
+		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch3Disc.addState(&launcherStateController, &launchDisc1);
+		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch3Disc.addState(&launcherStateController, &launchDisc1);
+		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch3Disc.addState(&launcherStateController, &launchDisc1);
 
 		turretMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 

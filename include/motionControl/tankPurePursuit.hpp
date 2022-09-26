@@ -34,7 +34,7 @@ namespace Pronounce {
 		 * @param odometry Pointer to the odometry object that it will use for the lookahead point calculation
 		 * @param lookaheadDistance QLength for the lookahead distance
 		 */
-		TankPurePursuit(AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile);
+		TankPurePursuit(std::string name, AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path);
 
 		/**
 		 * @brief Update the drivetrain based on the value from the pure pursuit parent object

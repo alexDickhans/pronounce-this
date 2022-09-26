@@ -103,5 +103,8 @@
 		"scoped_allocator": "cpp",
 		"shared_mutex": "cpp"
 	},
-	"rpc.enabled": true
+	"rpc.enabled": true,
+	"cSpell.words": [
+		"odometry"
+	]
 }

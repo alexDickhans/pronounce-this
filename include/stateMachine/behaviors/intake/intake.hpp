@@ -15,7 +15,7 @@ namespace Pronounce {
 		double topSpeed;
 		double bottomSpeed;
 	public:
-		Intake(MotorGroup* bottomIntake, MotorGroup* topIntake, double topSpeed, double bottomSpeed) {
+		Intake(std::string name, MotorGroup* bottomIntake, MotorGroup* topIntake, double topSpeed, double bottomSpeed) : Behavior(name)  {
 			this->bottomIntake = bottomIntake;
 			this->topIntake = topIntake;
 			this->bottomSpeed = bottomSpeed;

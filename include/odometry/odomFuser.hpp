@@ -19,7 +19,6 @@ namespace Pronounce {
 		OdomFuser(ContinuousOdometry& continuousOdometry) : continuousOdometry(continuousOdometry) { }
 
 		void update() {
-			std::cout << "Fuse odom update" << std::endl;
 
 			continuousOdometry.update();
 
@@ -40,14 +39,14 @@ namespace Pronounce {
 				}
 			}
 
-			std::cout << "Current pose: " << currentPose->to_string() << std::endl;
+			currentPose->log("CurrentPose");
 
 			// Set the pose to the end result
 			this->setPose(currentPose);
 		}
 
 		void reset(Pose2D* pose) {
-			// this->continuousOdometry.setPose(pose);
+			this->continuousOdometry.setPose(pose);
 			this->setPose(pose);
 			this->setResetPose(pose);
 			this->setCurrentVelocity(Vector());

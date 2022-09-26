@@ -15,13 +15,123 @@ TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pro
  */
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 	return 0;
 }
 
 int autonTemplate() {
 	odometry.reset(new Pose2D(0.0, 0.0, 0.0));
 
+	std::cout << "Auton" << std::endl;
+
 	pros::Task::delay(500);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(500);
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	pros::Task::delay(500);
+	
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
+	launcherStateController.setCurrentBehavior(&launch2Disc);
+	// drivetrainStateController.setCurrentBehavior(&testProfile);
+	// drivetrainStateController.setCurrentBehavior(&turnTo905s);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(500);
+
+	return 0;
+}
+
+int closeFullAWP() {
+
+	odometry.reset(new Pose2D(34.0, 12.0, 0.0));
+
+	pros::Task::delay(500);
+	
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
+	launcherStateController.setCurrentBehavior(&launch2Disc);
+
+	pros::Task::delay(3000);
+
+	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&intakeAllianceStack);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	launcherStateExtensionController.setCurrentBehavior(&launch3Disc);
+
+	pros::Task::delay(50);
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	launcherStateExtensionController.setCurrentBehavior(&launch3Disc);
+
+	pros::Task::delay(50);
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&allianceDiscsToRoller);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
+	launcherStateController.setCurrentBehavior(&launch3Disc);
+
+	pros::Task::delay(3000);
 
 	return 0;
 }
@@ -74,7 +184,7 @@ void update() {
 
 	while (true) {
 		// Create stuff for exact delay
-		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
+		std::cout << "FrameTime: " << pros::millis() - startTime << std::endl;
 		startTime = pros::millis();
 
 		odometry.update();

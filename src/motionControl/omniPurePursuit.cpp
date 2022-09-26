@@ -1,7 +1,7 @@
 #include "omniPurePursuit.hpp"
 
 namespace Pronounce {
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile) : PurePursuit(odometry, currentProfile) {
+	OmniPurePursuit::OmniPurePursuit(std::string name, AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path) : PurePursuit(name, odometry, currentProfile, path) {
 		this->drivetrain = drivetrain;
 	}
 

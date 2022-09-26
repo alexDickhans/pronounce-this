@@ -3,6 +3,7 @@
 #include "pointUtil.hpp"
 #include <string>
 #include "units/units.hpp"
+#include <iostream>
 
 namespace Pronounce {
     /**
@@ -67,6 +68,12 @@ namespace Pronounce {
 		 */
         std::string to_string() {
             return "X: " + std::to_string(this->getX().Convert(inch)) + " Y:" + std::to_string(this->getY().Convert(inch)) + " T:" + std::to_string(this->angle.Convert(degree));
+        }
+
+		void log(std::string poseName) {
+            std::cout << poseName << "X: " << this->getX().Convert(inch) << std::endl;
+			std::cout << poseName + "Y:" << this->getY().Convert(inch) << std::endl;
+			std::cout << poseName + "T:" << this->angle.Convert(degree) << std::endl;
         }
 
         /**

@@ -3,6 +3,7 @@
 #include "behavior.hpp"
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 namespace Pronounce {
 	/**
@@ -29,7 +30,7 @@ namespace Pronounce {
 		 * 
 		 * @param defaultBehavior 
 		 */
-		StateController(Behavior* defaultBehavior) {
+		StateController(std::string name, Behavior* defaultBehavior) : Behavior(name) {
 			this->defaultBehavior = defaultBehavior;
 		}
 
@@ -51,6 +52,8 @@ namespace Pronounce {
 		 * 
 		 */
 		void update() {
+			std::cout << this->toString() << std::endl;
+
 			// If currentBehavior exists run it or transition
 			if (currentBehavior != nullptr) {
 				if (currentBehavior->isDone()) {
@@ -141,6 +144,14 @@ namespace Pronounce {
 				defaultBehavior->initialize();
 			}
 			// If not no transition needed.
+		}
+
+		Behavior* getCurrentBehavior() {
+			return currentBehavior;
+		}
+
+		std::string toString() {
+			return this->getName() + ": " + (this->isDone() ? defaultBehavior->getName() : currentBehavior->getName());
 		}
 
 		~StateController() {}
