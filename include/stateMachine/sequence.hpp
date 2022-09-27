@@ -28,9 +28,9 @@ namespace Pronounce {
 
 		void update() {
 			
+			// If the current behavior is done then we will move onto the next behavior
 			if (behaviors.at(currentIndex)->isDone()) {
 				if (currentIndex < stateControllers.size() - 1) {
-					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 				}

@@ -67,6 +67,17 @@ namespace Pronounce {
 			if (controller2->is_connected()) {
 				turretAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 500.0 : 0;
 				flywheelAdjustment += abs(controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) > 15 ? (double) controller2->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 10.0 : 0;
+
+				if (controller2->get_digital_new_press(DIGITAL_L2))
+					robotStatus.setFlywheelRPM(2200);
+				if (controller2->get_digital_new_press(DIGITAL_L1))
+					robotStatus.setFlywheelRPM(3000);
+
+				if (controller2->get_digital_new_press(DIGITAL_R1) && controller2.get_digital_new_press(R2))
+					endgameStateController.setCurrentBehavior(engameEnabled);
+			} else {
+				if (controller1->get_digital_new_press(DIGITAL_R1) && controller1.get_digital_new_press(R2))
+					endgameStateController.setCurrentBehavior(engameEnabled);
 			}
 		}
 

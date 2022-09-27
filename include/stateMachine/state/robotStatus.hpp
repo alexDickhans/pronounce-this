@@ -45,7 +45,7 @@ namespace Pronounce {
 			FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 
 			// this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
-			this->flywheelRPM = flywheelValues.flywheelSpeed;
+			// this->flywheelRPM = flywheelValues.flywheelSpeed;
 		}
 
 		void exit() {
@@ -58,6 +58,10 @@ namespace Pronounce {
 
 		double getActualFlywheelRpm() {
 			return launcherIdle.getFlywheelSpeed();
+		}
+
+		void setFlywheelRPM(double flywheelRPM) {
+			this->flywheelRPM = flywheelRPM;
 		}
 
 		Angle getTurretAngle() {
