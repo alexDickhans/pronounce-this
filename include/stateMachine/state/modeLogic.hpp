@@ -18,13 +18,7 @@ namespace Pronounce {
 
 	StateController teleopController("TeleopController", new Behavior());
 
-	Parallel rollerParallel("Roller");
-
 	void initBehaviors() {
-		rollerParallel.addBehavior(&drivetrainStateController, &drivetrainRollerWait);
-		rollerParallel.addBehavior(&intakeStateController, &intakeEjecting);
-		rollerParallel.addBehavior(&launcherStateController, &launch2Disc);
-
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&launcherStateExtensionController);

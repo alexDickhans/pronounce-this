@@ -78,10 +78,10 @@ namespace Pronounce {
 		turretVision.set_signature(RED_GOAL, &redGoal);	
 		turretVision.set_exposure(95);
 
-		flywheelRPM.add(38.0, 2135.0);
-		flywheelRPM.add(62.0, 2200.0);
-		flywheelRPM.add(86.0, 2410.0);
-		flywheelRPM.add(110.0, 2750.0);
-		flywheelRPM.add(134.0, 2800.0);
+		flywheelRPM.add(38.0, 2335.0);
+		flywheelRPM.add(62.0, 2400.0);
+		flywheelRPM.add(86.0, 2700.0);
+		flywheelRPM.add(110.0, 2900.0);
+		flywheelRPM.add(134.0, 3200.0);
 	}
 } // namespace Pronounce

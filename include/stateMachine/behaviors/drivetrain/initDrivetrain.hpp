@@ -38,8 +38,8 @@ namespace Pronounce {
 	pros::Motor backRightMotor(9, pros::E_MOTOR_GEARSET_18, true);
 
 	// Inertial Measurement Unit
-	pros::Imu imu(19);
-	IMU imuOrientation(imu);
+	// pros::Imu imu(19);
+	// IMU imuOrientation(imu);
 
 	AvgOrientation averageImu;
 
@@ -78,7 +78,7 @@ namespace Pronounce {
 	ProfileConstraints rowIntakeProfileConstraints;
 
 	SinusoidalVelocityProfile testVelocityProfile(24_in, defaultProfileConstraints);
-	SinusoidalVelocityProfile frontRollerToAllianceStackVelocityProfile(24_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile frontRollerToAllianceStackVelocityProfile(16_in, defaultProfileConstraints);
 	SinusoidalVelocityProfile intakeAllianceStackVelocityProfile(24_in, stackIntakeProfileConstraints);
 	SinusoidalVelocityProfile allianceStackToAllianceDiscsVelocityProfile(24_in, rowIntakeProfileConstraints);
 	SinusoidalVelocityProfile allianceDiscsToRollerVelocityProfile(24_in, defaultProfileConstraints);
@@ -97,11 +97,11 @@ namespace Pronounce {
 	RotationController turnTo90("TurnTo90", &drivetrain, &odometry, &turningPid, 90_deg);
 	Wait turnTo905s(&turnTo90, 3000);
 	RotationController turnTo315("TurnTo315", &drivetrain, &odometry, &turningPid, 315_deg);
-	Wait turnTo905s(&turnTo315, 1500);
+	Wait turnTo3155s(&turnTo315, 1500);
 	RotationController turnTo180("TurnTo180", &drivetrain, &odometry, &turningPid, 180_deg);
-	Wait turnTo905s(&turnTo180, 1500);
+	Wait turnTo1805s(&turnTo180, 1500);
 	OmniMovement drivetrainRoller("DrivetrainRoller", &drivetrain, 50, -90_deg);
-	Wait drivetrainRollerWait(&drivetrainRoller, 2000);
+	Wait drivetrainRollerWait(&drivetrainRoller, 600);
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
@@ -111,7 +111,7 @@ namespace Pronounce {
 		defaultProfileConstraints.maxAcceleration = 60 * inchs2;
 		defaultProfileConstraints.maxJerk = 3.0;
 
-		stackIntakeProfileConstraints.maxVelocity = 10_in/1_s;
+		stackIntakeProfileConstraints.maxVelocity = 5_in/1_s;
 		stackIntakeProfileConstraints.maxAcceleration = 60 * inchs2;
 		stackIntakeProfileConstraints.maxJerk = 3.0;
 
@@ -143,7 +143,7 @@ namespace Pronounce {
 		backLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 		backRightMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);
 
-		averageImu.addOrientation(&imuOrientation);
+		// averageImu.addOrientation(&imuOrientation);
 
 		double turningFactor = (((100.0 / 100.0) - 1.0) / 2);
 		double tuningFactor = 1.0;
@@ -164,7 +164,7 @@ namespace Pronounce {
 
 		pros::Task::delay(10);
 
-		threeWheelOdom.reset(new Pose2D(18.0_in, 122.5_in - 24_in, 0.0));
+		threeWheelOdom.reset(new Pose2D(34.0_in, 12.0_in, 0.0_deg));
 	}
 
 } // namespace Pronounce

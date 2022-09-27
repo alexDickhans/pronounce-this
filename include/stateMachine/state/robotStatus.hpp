@@ -15,7 +15,7 @@ namespace Pronounce {
 		Blue = 2,
 	};
 
-	const GameMode gameMode = GameMode::Red; 
+	// const GameMode gameMode = GameMode::Red;
 
 	double flywheelAdjustment = 0;
 	Angle turretAdjustment = 0.0;
@@ -42,17 +42,10 @@ namespace Pronounce {
 			// double angleChange = biggestTurretDetection.x_middle_coord;
 			std::cout << "OutputDrivetrainSpeed: " << drivetrain.getSpeed().getValue() << std::endl;
 
-			if (gameMode == GameMode::Skills) {
-				// Skills aiming stuff
-				FlywheelValue allianceGoal = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
-				FlywheelValue opponentGoal = this->opponentGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
-			} else {
-				// Competition aiming stuff
-				FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
+			FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 
-				this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
-				this->flywheelRPM = flywheelValues.flywheelSpeed;
-			}
+			this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
+			this->flywheelRPM = flywheelValues.flywheelSpeed;
 		}
 
 		void exit() {

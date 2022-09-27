@@ -31,7 +31,9 @@ namespace Pronounce {
 	Wait intakeDejam1(&intakeDejam, 500);
 	Wait intakeDejam2(&intakeIntaking, 500);
 
-	Wait intakeRoller(&intakeEjecting, 2000);
+	Wait intakeRoller1(&intakeEjecting, 1000);
+
+	Sequence intakeRoller("IntakeRollerSequence");
 
 	Sequence intakeDejamSequence("IntakeDejamSequence");
 
@@ -41,5 +43,8 @@ namespace Pronounce {
 
 		intakeDejamSequence.addState(&intakeStateController, &intakeDejam1);
 		intakeDejamSequence.addState(&intakeStateController, &intakeDejam2);
+
+		intakeRoller.addState(&intakeStateController, &intakeRoller1);
+		intakeRoller.addState(&intakeStateController, &intakeStopped);
 	}
 }

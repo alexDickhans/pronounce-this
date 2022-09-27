@@ -33,7 +33,7 @@ int autonTemplate() {
 	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
 	pros::Task::delay(500);
-	
+
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
 	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
 	launcherStateController.setCurrentBehavior(&launch2Disc);
@@ -53,15 +53,17 @@ int autonTemplate() {
 
 int closeFullAWP() {
 
-	odometry.reset(new Pose2D(34.0, 12.0, 0.0));
+	pros::Task::delay(50);
 
-	pros::Task::delay(500);
-	
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
-	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
-	launcherStateController.setCurrentBehavior(&launch2Disc);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
 
-	pros::Task::delay(3000);
+	pros::Task::delay(700);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(2500);
 
 	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
 
@@ -71,6 +73,8 @@ int closeFullAWP() {
 		pros::Task::delay(50);
 	}
 
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
 	drivetrainStateController.setCurrentBehavior(&turnTo315);
 
 	pros::Task::delay(50);
@@ -78,6 +82,8 @@ int closeFullAWP() {
 	while (!drivetrainStateController.isDone()) {
 		pros::Task::delay(50);
 	}
+
+	pros::Task::delay(700);
 
 	drivetrainStateController.setCurrentBehavior(&intakeAllianceStack);
 
@@ -95,6 +101,7 @@ int closeFullAWP() {
 		pros::Task::delay(50);
 	}
 
+/*
 	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
 
 	pros::Task::delay(50);
@@ -128,11 +135,11 @@ int closeFullAWP() {
 	}
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
-	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
+	intakeStateController.setCurrentBehavior(&intakeRoller);
 	launcherStateController.setCurrentBehavior(&launch3Disc);
 
 	pros::Task::delay(3000);
-
+*/
 	return 0;
 }
 
@@ -154,7 +161,7 @@ void renderThread() {
  * Initialize all sensors
  */
 void initSensors() {
-	imu.reset();
+	// imu.reset();
 
 	// Wait until IMU is calibrated
 	// while (imu.is_calibrating()) {
@@ -168,7 +175,7 @@ void initSensors() {
 void initController() {
 	master.setOdometry(&odometry);
 	partner.setOdometry(&odometry);
-	pros::Task renderTask(renderThread);
+	// pros::Task renderTask(renderThread);
 }
 
 /**
@@ -313,7 +320,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	autonTemplate();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -327,8 +334,9 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-	// pros::delay(10);
-	
+	pros::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&fieldRelativeJoystick);
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 
 	// Driver Control Loop

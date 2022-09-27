@@ -46,7 +46,7 @@ namespace Pronounce {
 				launcherStateController.setCurrentBehavior(&launcherStopped);
 			} else if (controller1->get_digital_new_press(PRIME_BUTTON)) {
 				launcherStateController.setCurrentBehavior(&launcherIdle);
-			} else if (controller1->get_digital(LAUNCH_BUTTON) && launcherStateExtensionController.isDone()) {
+			} else if (controller1->get_digital(LAUNCH_BUTTON) && launcherStateController.isDone()) {
 				launcherStateExtensionController.setCurrentBehavior(&launchDisc);
 			}
 

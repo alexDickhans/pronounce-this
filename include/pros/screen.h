@@ -83,7 +83,7 @@ typedef struct screen_touch_status_s {
 #endif
 #endif
 
-typedef void (*touch_event_cb_fn_t)(int16_t, int16_t);
+typedef void (*touch_event_cb_fn_t)();
 
 #ifdef __cplusplus
 namespace c {
@@ -121,7 +121,7 @@ uint32_t screen_set_pen(uint32_t color);
  * 					from the enum defined in colors.h)
  * 
  * \return Returns 1 if the mutex was successfully returned, or 
- * prosERR if there was an error either taking or returning the screen mutex.
+ * PROS_ERR if there was an error either taking or returning the screen mutex.
  */
 uint32_t screen_set_eraser(uint32_t color);
 
