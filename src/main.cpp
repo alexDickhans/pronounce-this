@@ -7,6 +7,8 @@ RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
 TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
 
+pros::Task modeLogicTask;
+
 // SECTION Auton
 
 /**
@@ -23,14 +25,6 @@ int autonTemplate() {
 	odometry.reset(new Pose2D(0.0, 0.0, 0.0));
 
 	std::cout << "Auton" << std::endl;
-
-	pros::Task::delay(500);
-
-	intakeStateController.setCurrentBehavior(&intakeStopped);
-
-	pros::Task::delay(500);
-
-	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
 	pros::Task::delay(500);
 
@@ -75,7 +69,7 @@ int closeFullAWP() {
 
 	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
-	drivetrainStateController.setCurrentBehavior(&turnTo315);
+	drivetrainStateController.setCurrentBehavior(&turnTo3155s);
 
 	pros::Task::delay(50);
 
@@ -83,7 +77,7 @@ int closeFullAWP() {
 		pros::Task::delay(50);
 	}
 
-	pros::Task::delay(700);
+	pros::Task::delay(500);
 
 	drivetrainStateController.setCurrentBehavior(&intakeAllianceStack);
 
@@ -100,7 +94,6 @@ int closeFullAWP() {
 	while (!launcherStateExtensionController.isDone()) {
 		pros::Task::delay(50);
 	}
-
 /*
 	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
 
@@ -137,9 +130,9 @@ int closeFullAWP() {
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
 	intakeStateController.setCurrentBehavior(&intakeRoller);
 	launcherStateController.setCurrentBehavior(&launch3Disc);
-
-	pros::Task::delay(3000);
 */
+	pros::Task::delay(3000);
+
 	return 0;
 }
 
@@ -167,22 +160,6 @@ void initSensors() {
 	// while (imu.is_calibrating()) {
 	// 	pros::delay(20);
 	// }
-}
-
-/**
- * Initialize the controller
- */
-void initController() {
-	master.setOdometry(&odometry);
-	partner.setOdometry(&odometry);
-	// pros::Task renderTask(renderThread);
-}
-
-/**
- * Initialize the logger for data collection after the match
- */
-void initLogger() {
-
 }
 
 void update() {
@@ -259,17 +236,15 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initDrivetrain();
-	initController();
-	initLogger();
-	initController();
 	initLauncherStates();
 	initDisplay();
 	initIntake();
+	initBehaviors();
+	initSequences();
 
 	modeLogic.initialize();
 
-	pros::Task modeLogicTask(update);
-
+	modeLogicTask = pros::Task(update);
 }
 
 // !SECTION
@@ -304,8 +279,6 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	// autonomousSelector.choose();
-
 }
 
 // !SECTION

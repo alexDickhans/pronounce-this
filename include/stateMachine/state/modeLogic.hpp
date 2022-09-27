@@ -41,9 +41,7 @@ namespace Pronounce {
 
 		void initialize() {
 			robotStatus->initialize();
-			initBehaviors();
 			stateControllers.initialize();
-			initSequences();
 		}
 
 		void update() {

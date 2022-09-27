@@ -45,8 +45,6 @@ namespace Pronounce {
 
 	Sequence launch3Disc("Launch3Disc");
 
-	pros::Vision turretVision(5, VISION_ZERO_CENTER);
-
 	LinearInterpolator flywheelRPM;
 
 	const uint8_t RED_GOAL = 1;
