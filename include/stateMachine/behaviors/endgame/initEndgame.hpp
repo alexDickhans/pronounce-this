@@ -7,15 +7,13 @@
 #include "stateMachine/wait.hpp"
 
 namespace Pronounce {
-	ADIDigitalOutGroup endgameDigitalOutputs;
+	pros::ADIDigitalOut endgameDigitalOutputs(7, false);
 
 	Endgame endgameDisabled("EndgameDisabled", endgameDigitalOutputs, false);
 	Endgame endgameEnabled("EndgameEnabled", endgameDigitalOutputs, true);
 
-	StateController endgameStateController("EndgameStateController", &endgameEnabled);
+	StateController endgameStateController("EndgameStateController", &endgameDisabled);
 
 	void initEndgame() {
-		endgameDigitalOutputs.addDigitalOutput(new pros::ADIDigitalOut(8, false));
-		endgameDigitalOutputs.addDigitalOutput(new pros::ADIDigitalOut(7, false));
 	}
 }

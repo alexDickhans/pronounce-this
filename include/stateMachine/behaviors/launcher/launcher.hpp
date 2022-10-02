@@ -86,7 +86,7 @@ namespace Pronounce {
 
 		bool isDone() {
 			if (useIsDone) {
-				return abs(this->flywheelSpeed - this->getFlywheelSpeed()) < 20;
+				return fabs(this->flywheelSpeed - this->getFlywheelSpeed()) < 20.0;
 			} else {
 				return false;
 			}

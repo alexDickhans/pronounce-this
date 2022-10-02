@@ -7,10 +7,10 @@
 namespace Pronounce {
 	class Endgame : public Behavior {
 	private:
-		ADIDigitalOutGroup& digitalOutputGroup;
+		pros::ADIDigitalOut& digitalOutputGroup;
 		bool enabled;
 	public:
-		Endgame(std::string name, ADIDigitalOutGroup& digitalOutputGroup, bool enabled);
+		Endgame(std::string name, pros::ADIDigitalOut& digitalOutputGroup, bool enabled);
 
 		void initialize() {
 			digitalOutputGroup.set_value(enabled);
@@ -31,7 +31,7 @@ namespace Pronounce {
 		~Endgame();
 	};
 	
-	Endgame::Endgame(std::string name, ADIDigitalOutGroup& digitalOutputGroup, bool enabled) : digitalOutputGroup(digitalOutputGroup), enabled(enabled), Behavior(name) {
+	Endgame::Endgame(std::string name, pros::ADIDigitalOut& digitalOutputGroup, bool enabled) : digitalOutputGroup(digitalOutputGroup), enabled(enabled), Behavior(name) {
 	}
 	
 	Endgame::~Endgame() {

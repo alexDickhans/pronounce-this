@@ -78,30 +78,38 @@ namespace Pronounce {
 	ProfileConstraints rowIntakeProfileConstraints;
 
 	SinusoidalVelocityProfile testVelocityProfile(24_in, defaultProfileConstraints);
-	SinusoidalVelocityProfile frontRollerToAllianceStackVelocityProfile(16_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile frontRollerToAllianceStackVelocityProfile(38_in, defaultProfileConstraints);
 	SinusoidalVelocityProfile intakeAllianceStackVelocityProfile(24_in, stackIntakeProfileConstraints);
-	SinusoidalVelocityProfile allianceStackToAllianceDiscsVelocityProfile(24_in, rowIntakeProfileConstraints);
+	SinusoidalVelocityProfile allianceStackToAllianceDiscsVelocityProfile(112.5_in, rowIntakeProfileConstraints);
 	SinusoidalVelocityProfile allianceDiscsToRollerVelocityProfile(24_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile moveForward8inVelocityProfile(12_in, defaultProfileConstraints);
+	SinusoidalVelocityProfile moveForward24inVelocityProfile(24_in, defaultProfileConstraints);
 	
-	PID turningPid(380, 0, 2000);
+	PID turningPid(330, 0, 2000);
 	
 	OmniMotionProfiling testProfile("MotionProfilingTest", testVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, 0_deg);
-	OmniMotionProfiling frontRollerToAllianceStack("FrontRollerToAllianceStack", frontRollerToAllianceStackVelocityProfile, drivetrain, &turningPid, &odometry, 45.0_deg, 0_deg);
+	OmniMotionProfiling frontRollerToAllianceStack("FrontRollerToAllianceStack", frontRollerToAllianceStackVelocityProfile, drivetrain, &turningPid, &odometry, 30.0_deg, 0_deg);
 	OmniMotionProfiling intakeAllianceStack("IntakeAllianceStack", intakeAllianceStackVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, -45_deg);
-	OmniMotionProfiling allianceStackToAllianceDiscs("AllianceStackToAllianceDiscs", allianceStackToAllianceDiscsVelocityProfile, drivetrain, &turningPid, &odometry, 0.0_deg, -45_deg);
-	OmniMotionProfiling allianceDiscsToRoller("AllianceDiscsToRoller", allianceDiscsToRollerVelocityProfile, drivetrain, &turningPid, &odometry, -45.0_deg, 180_deg);
+	OmniMotionProfiling allianceStackToAllianceDiscs("AllianceStackToAllianceDiscs", allianceStackToAllianceDiscsVelocityProfile, drivetrain, &turningPid, &odometry, 6.0_deg, -45_deg);
+	OmniMotionProfiling allianceDiscsToRoller("AllianceDiscsToRoller", allianceDiscsToRollerVelocityProfile, drivetrain, &turningPid, &odometry, -45.0_deg, -90_deg);
+	OmniMotionProfiling moveForward8in("MoveForward8In", moveForward8inVelocityProfile, drivetrain, &turningPid, &odometry, 90.0_deg, -45_deg);
+	OmniMotionProfiling moveForward8in0deg("MoveForward8In", moveForward8inVelocityProfile, drivetrain, &turningPid, &odometry, 90.0_deg, 0_deg);
+	OmniMotionProfiling moveBackward8in0deg("MoveBackward8In", moveForward8inVelocityProfile, drivetrain, &turningPid, &odometry, -90.0_deg, 0_deg);
+	OmniMotionProfiling moveForward24in180("MoveForward24In180", moveForward24inVelocityProfile, drivetrain, &turningPid, &odometry, 180.0_deg, -90_deg);
 
 	// BezierPath testPath;
 	// PurePursuitProfile defaultPurePursuitProfile = {10.0_in, testVelocityProfile};
 	// OmniPurePursuit testPurePursuit(&drivetrain, &odometry, defaultPurePursuitProfile, testPath);
-	RotationController turnTo90("TurnTo90", &drivetrain, &odometry, &turningPid, 90_deg);
-	Wait turnTo905s(&turnTo90, 3000);
+	RotationController turnTo90("TurnTo90", &drivetrain, &odometry, &turningPid, -90_deg);
+	Wait turnTo905s(&turnTo90, 1.5_s);
 	RotationController turnTo315("TurnTo315", &drivetrain, &odometry, &turningPid, 315_deg);
-	Wait turnTo3155s(&turnTo315, 1500);
-	RotationController turnTo180("TurnTo180", &drivetrain, &odometry, &turningPid, 180_deg);
-	Wait turnTo1805s(&turnTo180, 1500);
+	Wait turnTo3155s(&turnTo315, 1.5_s);
+	RotationController turnTo180("TurnTo180", &drivetrain, &odometry, &turningPid, 270_deg);
+	Wait turnTo1805s(&turnTo180, 1.5_s);
+	RotationController turnTo_135("turnTo_135", &drivetrain, &odometry, &turningPid, -135_deg);
+	Wait turnTo_1355s(&turnTo_135, 1.5_s);
 	OmniMovement drivetrainRoller("DrivetrainRoller", &drivetrain, 50, -90_deg);
-	Wait drivetrainRollerWait(&drivetrainRoller, 600);
+	Wait drivetrainRollerWait(&drivetrainRoller, 600_ms);
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
@@ -115,7 +123,7 @@ namespace Pronounce {
 		stackIntakeProfileConstraints.maxAcceleration = 60 * inchs2;
 		stackIntakeProfileConstraints.maxJerk = 3.0;
 
-		rowIntakeProfileConstraints.maxVelocity = 20_in/1_s;
+		rowIntakeProfileConstraints.maxVelocity = 30_in/1_s;
 		rowIntakeProfileConstraints.maxAcceleration = 60 * inchs2;
 		rowIntakeProfileConstraints.maxJerk = 3.0;
 
@@ -124,18 +132,25 @@ namespace Pronounce {
 		intakeAllianceStackVelocityProfile.setProfileConstraints(stackIntakeProfileConstraints);
 		allianceStackToAllianceDiscsVelocityProfile.setProfileConstraints(rowIntakeProfileConstraints);
 		allianceDiscsToRollerVelocityProfile.setProfileConstraints(defaultProfileConstraints);
+		moveForward8inVelocityProfile.setProfileConstraints(defaultProfileConstraints);
+		moveForward24inVelocityProfile.setProfileConstraints(defaultProfileConstraints);
 
 		testVelocityProfile.calculate(100);
 		frontRollerToAllianceStackVelocityProfile.calculate(100);
 		intakeAllianceStackVelocityProfile.calculate(100);
 		allianceStackToAllianceDiscsVelocityProfile.calculate(100);
 		allianceDiscsToRollerVelocityProfile.calculate(100);
+		moveForward8inVelocityProfile.calculate(100);
 
 		testProfile.setVelocityProfile(testVelocityProfile);
 		frontRollerToAllianceStack.setVelocityProfile(frontRollerToAllianceStackVelocityProfile);
 		intakeAllianceStack.setVelocityProfile(intakeAllianceStackVelocityProfile);
 		allianceStackToAllianceDiscs.setVelocityProfile(allianceStackToAllianceDiscsVelocityProfile);
 		allianceDiscsToRoller.setVelocityProfile(allianceDiscsToRollerVelocityProfile);
+		moveForward8in.setVelocityProfile(moveForward8inVelocityProfile);
+		moveForward8in0deg.setVelocityProfile(moveForward8inVelocityProfile);
+		moveForward24in180.setVelocityProfile(moveForward24inVelocityProfile);
+
 
 		// Motor brake modes
 		frontLeftMotor.set_brake_mode(pros::motor_brake_mode_e::E_MOTOR_BRAKE_COAST);

@@ -7,8 +7,6 @@ RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
 TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
 
-pros::Task modeLogicTask;
-
 // SECTION Auton
 
 /**
@@ -45,19 +43,60 @@ int autonTemplate() {
 	return 0;
 }
 
-int closeFullAWP() {
+int closeHalfAWP() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
 
 	pros::Task::delay(50);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
 	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(2000);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(3000);
+
+	return 0;
+}
+
+int closeFullAWP() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
+
+	pros::Task::delay(50);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
 	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
 
 	pros::Task::delay(700);
 
 	intakeStateController.setCurrentBehavior(&intakeStopped);
 
-	pros::Task::delay(2500);
+	pros::Task::delay(2000);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
 
 	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
 
@@ -67,51 +106,40 @@ int closeFullAWP() {
 		pros::Task::delay(50);
 	}
 
+	drivetrainStateController.setCurrentBehavior(&moveForward8in);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+	robotStatus.setFlywheelRPM(2700);
+
 	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
-	drivetrainStateController.setCurrentBehavior(&turnTo3155s);
-
 	pros::Task::delay(50);
 
 	while (!drivetrainStateController.isDone()) {
 		pros::Task::delay(50);
 	}
 
-	pros::Task::delay(500);
+	pros::Task::delay(200);
 
-	drivetrainStateController.setCurrentBehavior(&intakeAllianceStack);
-
-	pros::Task::delay(50);
-
-	while (!drivetrainStateController.isDone()) {
-		pros::Task::delay(50);
-	}
-
-	launcherStateExtensionController.setCurrentBehavior(&launch3Disc);
-
-	pros::Task::delay(50);
-
-	while (!launcherStateExtensionController.isDone()) {
-		pros::Task::delay(50);
-	}
-/*
 	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
 
+	turretAdjustment = -87_deg;
+
 	pros::Task::delay(50);
 
 	while (!drivetrainStateController.isDone()) {
 		pros::Task::delay(50);
 	}
 
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+	// drivetrainStateController.setCurrentBehavior(&turnTo90);
 	launcherStateExtensionController.setCurrentBehavior(&launch3Disc);
-
-	pros::Task::delay(50);
-
-	while (!launcherStateExtensionController.isDone()) {
-		pros::Task::delay(50);
-	}
-
-	drivetrainStateController.setCurrentBehavior(&turnTo180);
 
 	pros::Task::delay(50);
 
@@ -128,10 +156,102 @@ int closeFullAWP() {
 	}
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
-	intakeStateController.setCurrentBehavior(&intakeRoller);
-	launcherStateController.setCurrentBehavior(&launch3Disc);
-*/
+
 	pros::Task::delay(3000);
+
+	return 0;
+}
+
+int skills() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
+
+	pros::Task::delay(50);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
+
+	pros::Task::delay(700);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(1300);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&moveForward8in);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+	robotStatus.setFlywheelRPM(2700);
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(200);
+
+	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
+
+	turretAdjustment = -87_deg;
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo_135);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(2000);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
+	pros::Task::delay(500);
+
+	return 0;
+}
+
+int rightSideAWP() {
+
+	pros::Task::delay(1000);
+
+	turretAdjustment = 0_deg;
+	robotStatus.setFlywheelRPM(3000);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
 
 	return 0;
 }
@@ -244,7 +364,7 @@ void initialize() {
 
 	modeLogic.initialize();
 
-	modeLogicTask = pros::Task(update);
+	pros::Task modeLogicTask = pros::Task(update);
 }
 
 // !SECTION
@@ -256,6 +376,7 @@ void initialize() {
  */
 void disabled() {
 	teleopController.useDefaultBehavior();
+	launcherStateController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -308,8 +429,7 @@ void autonomous() {
  */
 void opcontrol() {
 	pros::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&fieldRelativeJoystick);
+	
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 
 	// Driver Control Loop

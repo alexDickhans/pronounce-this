@@ -15,7 +15,7 @@
 
 namespace Pronounce {
 
-	pros::Motor flywheel1(11, pros::E_MOTOR_GEARSET_36, true);
+	pros::Motor flywheel1(16, pros::E_MOTOR_GEARSET_36, true);
 
 	pros::Motor turretMotor(3, pros::E_MOTOR_GEARSET_06, false);
 
@@ -24,7 +24,7 @@ namespace Pronounce {
 	pros::ADIDigitalOut indexer(1, false);
 
 	FlywheelPID flywheelPID(4.0, 0.1, 0.0, 3.55);
-	PID turretPID(30000.0, 0.0, 35000.0);
+	PID turretPID(30000.0, 0.0, 120000.0);
 
 	pros::Rotation turretRotation(4);
 
@@ -36,8 +36,8 @@ namespace Pronounce {
 	StateController launcherStateController("LauncherStateController", &launcherIdle);
 	StateController launcherStateExtensionController("LauncherStateExtensionController", new Behavior());
 
-	Wait launchDisc1(&launcherLaunching, 300);
-	Wait launchDisc2(&launcherFullSpeed, 700);
+	Wait launchDisc1(&launcherLaunching, 300_ms);
+	Wait launchDisc2(&launcherFullSpeed, 1500_ms);
 
 	Sequence launchDisc("LaunchDisc");
 
@@ -58,23 +58,19 @@ namespace Pronounce {
 		launchDisc.addState(&launcherStateController, &launcherFullSpeed);
 		launchDisc.addState(&launcherStateController, &launchDisc1);
 
-		launch2Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch2Disc.addState(&launcherStateController, &launchDisc2);
 		launch2Disc.addState(&launcherStateController, &launchDisc1);
-		launch2Disc.addState(&launcherStateController, &launcherFullSpeed);
+		launch2Disc.addState(&launcherStateController, &launchDisc2);
 		launch2Disc.addState(&launcherStateController, &launchDisc1);
 
-		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
 		launch3Disc.addState(&launcherStateController, &launchDisc1);
-		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
-		launch3Disc.addState(&launcherStateController, &launchDisc1);
-		launch3Disc.addState(&launcherStateController, &launcherFullSpeed);
-		launch3Disc.addState(&launcherStateController, &launchDisc1);
+		launch3Disc.addState(&launcherStateController, &launchDisc2);
 
 		turretMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-		pros::vision_signature_s_t redGoal = pros::Vision::signature_from_utility(RED_GOAL, 4979, 7501, 6240, -601, 307, -147, 3.000, 0);
-		turretVision.set_signature(RED_GOAL, &redGoal);	
-		turretVision.set_exposure(95);
+		// pros::vision_signature_s_t redGoal = pros::Vision::signature_from_utility(RED_GOAL, 4979, 7501, 6240, -601, 307, -147, 3.000, 0);
+		// turretVision.set_signature(RED_GOAL, &redGoal);	
+		// turretVision.set_exposure(95);
 
 		flywheelRPM.add(38.0, 2335.0);
 		flywheelRPM.add(62.0, 2400.0);

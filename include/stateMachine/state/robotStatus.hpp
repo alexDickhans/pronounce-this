@@ -18,11 +18,11 @@ namespace Pronounce {
 	// const GameMode gameMode = GameMode::Red;
 
 	double flywheelAdjustment = 0;
-	Angle turretAdjustment = 0.0;
+	Angle turretAdjustment = 90_deg;
+	double currentFlywheelRPM = 2300;
 
 	class RobotStatus : public Behavior {
 	private:
-		double flywheelRPM = 2200;
 		Angle turretAngle = 0.0;
 
 		FlywheelController allianceGoal;
@@ -44,8 +44,10 @@ namespace Pronounce {
 
 			FlywheelValue flywheelValues = this->allianceGoal.getFlywheelValue(*odometry.getPosition(), odometry.getCurrentVelocity());
 
-			// this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
-			// this->flywheelRPM = flywheelValues.flywheelSpeed;
+			if (pros::competition::is_autonomous()) {
+				// this->turretAngle = flywheelValues.turretAngle - odometry.getAngle();
+				// currentFlywheelRPM = flywheelValues.flywheelSpeed;
+			}
 		}
 
 		void exit() {
@@ -53,15 +55,15 @@ namespace Pronounce {
 		}
 
 		double getFlywheelTarget() {
-			return flywheelRPM + flywheelAdjustment;
+			return currentFlywheelRPM + flywheelAdjustment;
 		}
 
 		double getActualFlywheelRpm() {
 			return launcherIdle.getFlywheelSpeed();
 		}
 
-		void setFlywheelRPM(double flywheelRPM) {
-			this->flywheelRPM = flywheelRPM;
+		void setFlywheelRPM(double flywheelRPM1) {
+			currentFlywheelRPM = flywheelRPM1;
 		}
 
 		Angle getTurretAngle() {

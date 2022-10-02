@@ -24,6 +24,7 @@ namespace Pronounce {
 		stateControllers.addBehavior(&launcherStateExtensionController);
 		stateControllers.addBehavior(&launcherStateController);
 		stateControllers.addBehavior(&drivetrainStateController);
+		stateControllers.addBehavior(&endgameStateController);
 		stateControllers.addBehavior(&teleopController);
 	}
 
@@ -50,7 +51,13 @@ namespace Pronounce {
 			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 
-			double turretAngle = clamp(robotStatus->getTurretAngle().getValue(), -M_PI_2, M_PI_2);
+			double turretAngle = 0;
+			
+			if (false) {
+				turretAngle = clamp(angleDifference(robotStatus->getTurretAngle().Convert(radian), 0), -M_PI_2, M_PI_2);
+			} else {
+				turretAngle = clamp(angleDifference((robotStatus->getTurretAngle() - odometry.getAngle()).getValue(), 0), -M_PI_2, M_PI_2);
+			}
 
 			launcherStopped.setTurretAngle(turretAngle);
 			launcherIdle.setTurretAngle(turretAngle);

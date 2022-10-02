@@ -28,10 +28,10 @@ namespace Pronounce {
 	StateController intakeStateController("IntakeStateController", &intakeIntaking);
 	StateController intakeStateExtensionController("IntakeStateExtensionController", new Behavior());
 
-	Wait intakeDejam1(&intakeDejam, 500);
-	Wait intakeDejam2(&intakeIntaking, 500);
+	Wait intakeDejam1(&intakeDejam, 500_ms);
+	Wait intakeDejam2(&intakeIntaking, 500_ms);
 
-	Wait intakeRoller1(&intakeEjecting, 1000);
+	Wait intakeRoller1(&intakeEjecting, 1_s);
 
 	Sequence intakeRoller("IntakeRollerSequence");
 

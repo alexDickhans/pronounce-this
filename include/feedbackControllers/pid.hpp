@@ -27,8 +27,8 @@ namespace Pronounce {
 		double prevError = 0.0;
 		double derivitive;
 
-		double integralBound = 30.0;
-		double maxIntegral = 0.3;
+		double integralBound = 3000.0;
+		double maxIntegral = 30;
 
 		double power;
 
