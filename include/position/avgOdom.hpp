@@ -4,6 +4,10 @@
 #include "units/units.hpp"
 #include <vector>
 
+// TODO: Change folder name to be something more desciptive
+// TODO: Make sure docstrings are up to date
+// TODO: Add comments
+
 namespace Pronounce {
 
     /**

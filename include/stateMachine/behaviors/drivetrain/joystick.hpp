@@ -8,8 +8,12 @@
 #include "math.h"
 #include "utils/runningAverage.hpp"
 
+// TODO: mode running average stuff to another place
+// TODO: Change to jerk and acceleration limiting
 #define RUNNING_AVERAGE_TRANSLATION 20
 #define RUNNING_AVERAGE_ROTATION 5
+
+// TODO: Add docstrings
 
 namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
@@ -49,7 +53,7 @@ namespace Pronounce {
 		}
 
 	public:
-		JoystickDrivetrain(double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) {
+		JoystickDrivetrain(std::string name, double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) : Behavior(name) {
 			this->deadband = deadband;
 			this->fieldOriented = fieldOriented;
 			this->targeting = targeting;
@@ -66,7 +70,6 @@ namespace Pronounce {
 		void initialize() {}
 
 		void update() {
-			std::cout << "drivetrain" << std::endl;
 
 			if (outputMultiplier == 0.0) {
 				drivetrain->setDriveVectorVelocity(Vector(0.0, 0.0), 0.0);
@@ -82,11 +85,17 @@ namespace Pronounce {
 			double turn = movingAverageTurn->getAverage();
 
 			Vector driveVector(new Point(x, y));
-			driveVector = filterVector(driveVector);
-
+			
 			if (fieldOriented) {
-				driveVector.rotate(odometry->getAngle());
+				Point drivePoint = driveVector.getCartesian();
+
+				double x = drivePoint.getX().getValue() * cos(odometry->getAngle()) - drivePoint.getY().getValue() * sin(odometry->getAngle());
+				double y = drivePoint.getX().getValue() * sin(odometry->getAngle()) + drivePoint.getY().getValue() * cos(odometry->getAngle());
+
+				driveVector = Vector(Point(x, y));
 			}
+
+			// driveVector = filterVector(driveVector);
 
 			driveVector = driveVector.scale(outputMultiplier);
 

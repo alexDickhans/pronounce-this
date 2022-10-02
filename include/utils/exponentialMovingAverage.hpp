@@ -1,5 +1,8 @@
 #pragma once
 
+// TODO; Fix code
+// TODO: Add docstrings
+
 namespace Pronounce
 {
 	class ExponentialMovingAverage {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "units/units.hpp"
+
 int get_time_ms();
 
 #ifdef DEBUG
@@ -24,20 +26,24 @@ int get_time_ms() {
 
 #endif // DEBUG
 
+// TODO: Add docstring
+// TODO: Add comments
+
 namespace Pronounce {
 	class Wait : public Behavior {
 	private:
-		int startTime;
-		int duration;
+		QTime startTime;
+		QTime duration;
 		Behavior* behavior;
 	public:
-		Wait(Behavior* behavior, int duration) {
+		Wait(Behavior* behavior, QTime duration) {
 			this->duration = duration;
 			this->behavior = behavior;
+			this->setName(behavior->getName()+std::to_string(duration.Convert(second))+"s");
 		}
 
 		void initialize() {
-			this->startTime = get_time_ms();
+			this->startTime = get_time_ms()*1_ms;
 			behavior->initialize();
 		}
 
@@ -46,7 +52,7 @@ namespace Pronounce {
 		}
 
 		bool isDone() {
-			return get_time_ms() - this->startTime >= this->duration;
+			return (get_time_ms()*1_ms) - this->startTime >= this->duration;
 		}
 
 		void exit() {

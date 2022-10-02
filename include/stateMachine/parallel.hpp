@@ -9,7 +9,7 @@ namespace Pronounce {
 	 * @brief A class to run several classes in parallel
 	 * 
 	 */
-	class Parallel : Behavior {
+	class Parallel : public Behavior {
 	private:
 		std::unordered_map<StateController*, Behavior*> behaviors;
 	public:
@@ -17,7 +17,7 @@ namespace Pronounce {
 		 * @brief Construct a new Parallel object
 		 * 
 		 */
-		Parallel();
+		Parallel(std::string name) : Behavior(name) {}
 
 		/**
 		 * @brief Start all the states
@@ -98,7 +98,7 @@ namespace Pronounce {
 			return done;
 		}
 
-		~Parallel();
+		~Parallel() {}
 	};
 } // namespace Pronounce
 

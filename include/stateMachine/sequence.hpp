@@ -5,6 +5,8 @@
 #include "stateController.hpp"
 #endif // !DEBUG
 
+// TODO: add docstrings
+
 #include <vector>
 #include <iostream>
 namespace Pronounce {
@@ -15,7 +17,7 @@ namespace Pronounce {
 
 		int currentIndex = 0;
 	public:
-		Sequence() {}
+		Sequence(std::string name) : Behavior(name) {}
 
 		void initialize() {
 			currentIndex = 0;
@@ -26,14 +28,14 @@ namespace Pronounce {
 
 		void update() {
 			
+			// If the current behavior is done then we will move onto the next behavior
 			if (behaviors.at(currentIndex)->isDone()) {
 				if (currentIndex < stateControllers.size() - 1) {
-					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 				}
 				else {
-					std::cout << "Ending" << std::endl;
+					std::cout << this->getName() << "Ending" << std::endl;
 					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					// Done

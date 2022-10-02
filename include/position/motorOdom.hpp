@@ -3,6 +3,10 @@
 #include "api.h"
 #include "odomWheel.hpp"
 
+// TODO: Add docstrings
+// TODO: Add comments
+// TODO: make sure code is up to date
+
 namespace Pronounce
 {
     class MotorOdom : public OdomWheel {

@@ -23,7 +23,7 @@ namespace Pronounce {
         /**
          * Get average speed of all the motors
          */
-        virtual double getSpeed() { return 0; }
+        virtual QSpeed getSpeed() { return 0.0; }
 
 		~Drivetrain() {}
     };

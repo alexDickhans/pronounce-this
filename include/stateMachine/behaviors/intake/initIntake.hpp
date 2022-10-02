@@ -5,24 +5,46 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/stateController.hpp"
 #include "utils/motorGroup.hpp"
+#include "stateMachine/wait.hpp"
+#include "stateMachine/sequence.hpp"
+
+// TODO: Clean up
+// TODO: move declarations to another place
+// TODO: Add comments
 
 namespace Pronounce {
 
-	pros::Motor intake(4, false);
-	pros::Motor intake2(12, true);
-	pros::Motor intake3(13, false);
+	pros::Motor bottomIntakeMotor(12, false);
+	pros::Motor topIntakeMotor(20, true);
 
-	MotorGroup intakes;	
+	MotorGroup topIntake;
+	MotorGroup bottomIntake;
 
-	Intake intakeIntaking(&intakes, 1.0);
-	Intake intakeStopped(&intakes, 0.0);
-	Intake intakeEjecting(&intakes, -0.5);
+	Intake intakeIntaking("IntakeIntaking", &bottomIntake, &topIntake, 1.0, 1.0);
+	Intake intakeStopped("IntakeStopped", &bottomIntake, &topIntake, 0.0, 0.0);
+	Intake intakeEjecting("IntakeEjecting", &bottomIntake, &topIntake, -1.0, -1.0);
+	Intake intakeDejam("IntakeDejam", &bottomIntake, &topIntake, -1.0, 1.0);
 
-	StateController intakeStateController(&intakeIntaking);
+	StateController intakeStateController("IntakeStateController", &intakeIntaking);
+	StateController intakeStateExtensionController("IntakeStateExtensionController", new Behavior());
+
+	Wait intakeDejam1(&intakeDejam, 500_ms);
+	Wait intakeDejam2(&intakeIntaking, 500_ms);
+
+	Wait intakeRoller1(&intakeEjecting, 1_s);
+
+	Sequence intakeRoller("IntakeRollerSequence");
+
+	Sequence intakeDejamSequence("IntakeDejamSequence");
 
 	void initIntake() {
-		intakes.addMotor(&intake);
-		intakes.addMotor(&intake2);
-		intakes.addMotor(&intake3);
+		bottomIntake.addMotor(&bottomIntakeMotor);
+		topIntake.addMotor(&topIntakeMotor);
+
+		intakeDejamSequence.addState(&intakeStateController, &intakeDejam1);
+		intakeDejamSequence.addState(&intakeStateController, &intakeDejam2);
+
+		intakeRoller.addState(&intakeStateController, &intakeRoller1);
+		intakeRoller.addState(&intakeStateController, &intakeStopped);
 	}
 }

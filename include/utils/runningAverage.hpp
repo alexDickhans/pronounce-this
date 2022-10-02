@@ -1,5 +1,8 @@
 #pragma once
 
+// TODO: Add docstrings
+// TODO: add comments
+
 namespace Pronounce{
     template<int L>
     class RunningAverage {

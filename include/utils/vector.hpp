@@ -4,6 +4,9 @@
 #include "units/units.hpp"
 #include <string>
 
+// TODO: add docstrings
+// TODO: add comments
+
 namespace Pronounce {
     /**
      * @brief A class to handle vectors
@@ -17,6 +20,13 @@ namespace Pronounce {
     public:
         Vector();
         Vector(Point* point);
+        Vector(Point point);
+		/**
+		 * @brief Construct a new Vector point2 - point 1
+		 * 
+		 * @param point1 
+		 * @param point2 
+		 */
         Vector(Point* point1, Point* point2);
         Vector(QLength magnitude, Angle angle);
 
@@ -103,12 +113,17 @@ namespace Pronounce {
         }
 
         void rotate(Angle angle) {
-            this->angle += angle;
+            this->angle += angleDifference(angle.getValue(), 0);
+			
         }
 
         std::string to_string() {
             return "Magnitude: " + std::to_string(magnitude.Convert(inch)) + " angle: " + std::to_string(angle.Convert(degree));
         }
+
+		void operator=(Point point) {
+			this->operator=(Vector(&point));
+		}
 
         ~Vector();
     };

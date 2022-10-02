@@ -44,14 +44,10 @@
 
 // 2654lib includes
 
-#include "autoPaths.hpp"
 
 #include "defines.h"
 #include "auton.h"
 #include "driver.h"
-
-// Auton
-#include "auton/auton.hpp"
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
@@ -70,19 +66,23 @@
 #include "feedbackControllers/flywheelPID.hpp"
 
 // Motion control
-#include "motionControl/balance.hpp"
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
 
+// Orientation
+#include "odometry/orientation/avgOrientation.hpp"
+#include "odometry/orientation/imu.hpp"
+#include "odometry/orientation/orientation.hpp"
+
 // Continuous Odometry
-#include "odometry/continuousOdometry/mecanumOdometry.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
 
-// TODO: Add others
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
+#include "odometry/interruptOdometry/interruptOdometry.hpp"
+#include "odometry/interruptOdometry/tapeOdometry.hpp"
 
 // Position
 #include "position/motorOdom.hpp"
@@ -103,6 +103,7 @@
 #include "units/units.hpp"
 
 // Utils
+#include "utils/ADIDigitalOutGroup.hpp"
 #include "utils/exponentialMovingAverage.hpp"
 #include "utils/motorGroup.hpp"
 #include "utils/path.hpp"

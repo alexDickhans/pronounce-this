@@ -4,15 +4,22 @@
 #include "stateMachine/behavior.hpp"
 #include "utils/motorGroup.hpp"
 
+// TODO: Add docstrings
+// TODO: add comments
+
 namespace Pronounce {
 	class Intake : public Behavior {
 	private:
-		MotorGroup* intake;
-		double speed;
+		MotorGroup* bottomIntake;
+		MotorGroup* topIntake;
+		double topSpeed;
+		double bottomSpeed;
 	public:
-		Intake(MotorGroup* intake, double speed) {
-			this->intake = intake;
-			this->speed = speed;
+		Intake(std::string name, MotorGroup* bottomIntake, MotorGroup* topIntake, double topSpeed, double bottomSpeed) : Behavior(name)  {
+			this->bottomIntake = bottomIntake;
+			this->topIntake = topIntake;
+			this->bottomSpeed = bottomSpeed;
+			this->topSpeed = topSpeed;
 		}
 
 		void initialize() {
@@ -20,11 +27,13 @@ namespace Pronounce {
 		}
 
 		void update() {
-			intake->move_velocity(200.0*speed);
+			bottomIntake->move_velocity(200.0*bottomSpeed);
+			topIntake->move_velocity(200.0*topSpeed);
 		}
 
 		void exit() {
-			intake->move_velocity(0.0);
+			bottomIntake->move_velocity(0.0);
+			topIntake->move_velocity(0.0);
 		}
 
 		bool isDone() {

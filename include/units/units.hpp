@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ratio>
+#include <math.h>
 
 // The "RQuantity" class is the prototype template container class, that just holds a double value. The
 // class SHOULD NOT BE INSTANTIATED directly by itself, rather use the quantity types defined below.
@@ -73,6 +74,7 @@ QUANTITY_TYPE(0, 1, -3, 0, QJerk);
 QUANTITY_TYPE(0, 0, -1, 0, QFrequency);
 QUANTITY_TYPE(1, 1, -2, 0, QForce);
 QUANTITY_TYPE(1, -1, -2, 0, QPressure);
+QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);
@@ -228,9 +230,12 @@ constexpr QForce poundforce = pound * G;
 constexpr QForce kilopond = kg * G;
 
 constexpr QPressure Pascal(1.0);
-constexpr QPressure bar = 100000 * Pascal;
-constexpr QPressure psi = pound * G / inch2;
 
+#ifndef SIM
+constexpr QPressure bar = 100000 * Pascal;
+#endif // !SIM
+
+constexpr QPressure psi = pound * G / inch2;
 
 // Physical unit literals:
 // -----------------------
@@ -324,11 +329,12 @@ constexpr QPressure operator"" _Pa(unsigned long long int x)
 {
 	return QPressure(static_cast<double>(x));
 };
+#ifndef SIM
 constexpr QPressure operator"" _bar(long double x) { return static_cast<double>(x) * bar; };
 constexpr QPressure operator"" _bar(unsigned long long int x) { return static_cast<double>(x) * bar; };
+#endif // !SIM
 constexpr QPressure operator"" _psi(long double x) { return static_cast<double>(x) * psi; };
 constexpr QPressure operator"" _psi(unsigned long long int x) { return static_cast<double>(x) * psi; };
-
 
 // Angular unit literals:
 // ----------------------
@@ -351,6 +357,20 @@ constexpr Angle operator"" _rad(unsigned long long int x) { return Angle(static_
 constexpr Angle operator"" _deg(long double x) { return static_cast<double>(x) * degree; };
 constexpr Angle operator"" _deg(unsigned long long int x) { return static_cast<double>(x) * degree; };
 
+constexpr QCurvature RadM(1.0);
+constexpr QCurvature DegM = degree/metre;
+constexpr QCurvature RadIn = degree/inch; 
+constexpr QCurvature DegIn = degree/inch; 
+
+constexpr QCurvature operator"" _radm(long double x) { return static_cast<double>(x); };
+constexpr QCurvature operator"" _radm(unsigned long long int x) { return static_cast<double>(x); };
+constexpr QCurvature operator"" _degm(long double x) { return static_cast<double>(x) * DegM; };
+constexpr QCurvature operator"" _degm(unsigned long long int x) { return static_cast<double>(x) * DegM; };
+constexpr QCurvature operator"" _radin(long double x) { return static_cast<double>(x) * RadIn; };
+constexpr QCurvature operator"" _radin(unsigned long long int x) { return static_cast<double>(x) * RadIn; };
+constexpr QCurvature operator"" _degin(long double x) { return static_cast<double>(x) * DegIn; };
+constexpr QCurvature operator"" _degin(unsigned long long int x) { return static_cast<double>(x) * DegIn; };
+
 // Conversion macro, which utilizes the string literals
 #define ConvertTo(_x, _y) (_x).Convert(1.0_##_y)
 
@@ -366,6 +386,18 @@ constexpr RQuantity<std::ratio_divide<M, std::ratio<2>>, std::ratio_divide<L, st
 	return RQuantity<std::ratio_divide<M, std::ratio<2>>, std::ratio_divide<L, std::ratio<2>>,
 		std::ratio_divide<T, std::ratio<2>>, std::ratio_divide<A, std::ratio<2>>>
 		(sqrt(num.getValue()));
+}
+
+// Typesafe mathematical operations:
+// ---------------------------------
+template <typename M, typename L, typename T, typename A>
+constexpr RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
+	std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
+	Qsq(const RQuantity<M, L, T, A>& num)
+{
+	return RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
+		std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
+		(pow(num.getValue(), 2));
 }
 
 // Typesafe trigonometric operations

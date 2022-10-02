@@ -5,6 +5,9 @@
 #include "feedbackControllers/flywheelPID.hpp"
 #include "utils/motorGroup.hpp"
 #include <iostream>
+#include "units/units.hpp"
+
+// TODO: Add comments
 
 namespace Pronounce {
 	class Launcher : public Behavior {
@@ -14,20 +17,19 @@ namespace Pronounce {
 		 * 
 		 */
 		double flywheelSpeedMultiplier;
+
 		/**
 		 * @brief Staticish variable that should stay the same between all states. Converts the rpm of the motor to the actual rpm of the wheel
 		 * 
 		 */
 		double flywheelOutputMultiplier = 0.0;
+
 		/**
-		 * @brief Boolean to determine if the 
+		 * @brief Boolean to determine if the indexer is engaged or not
 		 * 
 		 */
 		bool indexerEngaged;
 
-		bool tilterEngaged = false;
-
-		// double distanceFromCenter;
 		double flywheelSpeed = 0.0;
 
 		double turretAngle = 0.0;
@@ -35,9 +37,9 @@ namespace Pronounce {
 
 		MotorGroup* flywheelMotor;
 		pros::ADIDigitalOut* indexer;
-		pros::ADIDigitalOut* tilter;
 
 		pros::Motor* turretMotor;
+		pros::Rotation& rotationSensor;
 
 		FlywheelPID* flywheelPID;
 		PID* turretPID;
@@ -45,7 +47,7 @@ namespace Pronounce {
 		bool useIsDone = false;
 
 	public:
-		Launcher(double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool indexerEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, pros::ADIDigitalOut* tilter, FlywheelPID* flywheelPID, PID* turretPID) {
+		Launcher(std::string name, double flywheelSpeedMultiplier, double flywheelOutputMultiplier, bool indexerEngaged, bool useIsDone, MotorGroup* flywheelMotor, pros::Motor* turretMotor, pros::ADIDigitalOut* indexer, FlywheelPID* flywheelPID, PID* turretPID, pros::Rotation& turretRotation) : rotationSensor(turretRotation), Behavior(name) {
 			this->flywheelSpeedMultiplier = flywheelSpeedMultiplier;
 			this->flywheelOutputMultiplier = flywheelOutputMultiplier;
 			this->indexerEngaged = indexerEngaged;
@@ -53,9 +55,9 @@ namespace Pronounce {
 			this->flywheelMotor = flywheelMotor;
 			this->turretMotor = turretMotor;
 			this->indexer = indexer;
-			this->tilter = tilter;
 			this->flywheelPID = flywheelPID;
 			this->turretPID = turretPID;
+			turretPID->setTurnPid(true);
 		}
 
 		void initialize() {
@@ -63,18 +65,18 @@ namespace Pronounce {
 		}
 
 		void update() {
+			std::cout << "ActualFlywheelSpeed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
 			if (flywheelSpeedMultiplier > 0.0) {
 				flywheelPID->setPosition(flywheelSpeed * flywheelSpeedMultiplier);
 				double flywheelVoltage = flywheelPID->update(flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier);
 				flywheelMotor->move_voltage(flywheelVoltage);
-				std::cout << "Flywheel speed: " << flywheelMotor->get_actual_velocity() * flywheelOutputMultiplier << std::endl;
-				std::cout << "Flywheel voltage: " << flywheelVoltage << std::endl;
+				// std::cout << "InputFlywheelVoltage: " << flywheelVoltage << std::endl;
 			}
 			indexer->set_value(indexerEngaged);
-			tilter->set_value(tilterEngaged);
 
-			turretPID->setTarget(turretAngle * turretOutputMultiplier);
-			double turretPower = turretPID->update(turretMotor->get_position() / turretOutputMultiplier);
+			turretPID->setTarget(turretAngle);
+			double turretPower = turretPID->update(toRadians(rotationSensor.get_angle() / 100.0));
+
 			turretMotor->move_voltage(turretPower);
 		}
 
@@ -84,14 +86,10 @@ namespace Pronounce {
 
 		bool isDone() {
 			if (useIsDone) {
-				return abs(this->flywheelSpeed - this->getFlywheelSpeed()) < 50;
+				return fabs(this->flywheelSpeed - this->getFlywheelSpeed()) < 20.0;
 			} else {
 				return false;
 			}
-		}
-
-		void setTilterEngaged(bool tilterEngaged) {
-			this->tilterEngaged = tilterEngaged;
 		}
 
 		void setFlywheelSpeed(double flywheelSpeed) {

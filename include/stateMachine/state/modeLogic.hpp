@@ -4,23 +4,28 @@
 #include "robotStatus.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviorGroup.hpp"
+#include "stateMachine/parallel.hpp"
 #include "utils/utils.hpp"
+
+// TODO: clean up
+// TODO: Add docstrings
 
 namespace Pronounce {
 
-	StateController stateExtensionController(new Behavior());
+	StateController stateExtensionController("GlobalStateExtensionsController", new Behavior());
 
 	BehaviorGroup stateControllers;
 
-	StateController teleopController(new Behavior());
+	StateController teleopController("TeleopController", new Behavior());
 
 	void initBehaviors() {
-		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&launcherStateExtensionController);
 		stateControllers.addBehavior(&launcherStateController);
 		stateControllers.addBehavior(&drivetrainStateController);
+		stateControllers.addBehavior(&endgameStateController);
+		stateControllers.addBehavior(&teleopController);
 	}
 
 	void initSequences() {
@@ -37,9 +42,7 @@ namespace Pronounce {
 
 		void initialize() {
 			robotStatus->initialize();
-			initBehaviors();
 			stateControllers.initialize();
-			initSequences();
 		}
 
 		void update() {
@@ -48,12 +51,22 @@ namespace Pronounce {
 			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
 
-			launcherStopped.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherIdle.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherLaunching.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
-			launcherFullSpeed.setTurretAngle(clamp(robotStatus->getTurretAngle()/* - toDegrees(angleDifference(odometry.getPosition()->getTheta(), 0.0))*/, 0.0, 180.0));
+			double turretAngle = 0;
+			
+			if (false) {
+				turretAngle = clamp(angleDifference(robotStatus->getTurretAngle().Convert(radian), 0), -M_PI_2, M_PI_2);
+			} else {
+				turretAngle = clamp(angleDifference((robotStatus->getTurretAngle() - odometry.getAngle()).getValue(), 0), -M_PI_2, M_PI_2);
+			}
 
-			std::cout << "Turret angle: " << robotStatus->getTurretAngle() - (odometry.getPosition()->getAngle() - 0.0_rad).Convert(degree) << std::endl;
+			launcherStopped.setTurretAngle(turretAngle);
+			launcherIdle.setTurretAngle(turretAngle);
+			launcherLaunching.setTurretAngle(turretAngle);
+			launcherFullSpeed.setTurretAngle(turretAngle);
+
+			// Intake dejam
+
+			std::cout << "InputTurretAngle: " << turretAngle << std::endl;
 			stateControllers.update();
 		}
 

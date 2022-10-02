@@ -1,16 +1,36 @@
 #pragma once
 
-#include "games/spinUp/gameConstants.hpp"
+#include "spinUp/gameConstants.hpp"
+#include "stateMachine/behavior.hpp"
+#include "stateMachine/behaviors/launcher/initLauncher.hpp"
+
+// TODO: Finish implentation
 
 namespace Pronounce {
+
+	struct FlywheelValue {
+		Angle turretAngle;
+		double flywheelSpeed;
+	};
+
 	class FlywheelController {
 	private:
-		Point currentGoal;
-		bool skills = false;
+		Point targetPosition;
 	public:
-		FlywheelController(Point currentGoal, bool skills) {
-			this->currentGoal = currentGoal;
-			this->skills = skills;
+		FlywheelController(Point targetPosition) {
+			this->targetPosition = targetPosition;
+		}
+
+		FlywheelValue getFlywheelValue(Point currentPoint, Vector currentVelocity) {
+			FlywheelValue flywheelValues;
+			Vector targetVector = Vector(&targetPosition, &currentPoint);
+
+			flywheelValues.turretAngle = -(targetVector.getAngle() + 90_deg);
+			flywheelValues.flywheelSpeed = flywheelRPM.get(targetVector.getMagnitude().Convert(inch));
+
+			std::cout << "TargetFlywheelSpeed: " << flywheelValues.flywheelSpeed << std::endl << "Distance: " << targetVector.getMagnitude().Convert(inch) << std::endl;
+
+			return flywheelValues;
 		}
 		
 		~FlywheelController() {}

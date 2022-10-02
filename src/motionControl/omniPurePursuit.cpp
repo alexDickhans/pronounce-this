@@ -1,52 +1,24 @@
 #include "omniPurePursuit.hpp"
 
 namespace Pronounce {
-	OmniPurePursuit::OmniPurePursuit() : PurePursuit() {
-		drivetrain = new AbstractHolonomicDrivetrain();
-	}
-
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain) : PurePursuit() {
+	OmniPurePursuit::OmniPurePursuit(std::string name, AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path) : PurePursuit(name, odometry, currentProfile, path) {
 		this->drivetrain = drivetrain;
 	}
 
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, double lookaheadDistance) : PurePursuit(lookaheadDistance) {
-		this->drivetrain = drivetrain;
-	}
+	void OmniPurePursuit::updateDrivetrain(PurePursuitPointData pointData) {
 
-	OmniPurePursuit::OmniPurePursuit(AbstractHolonomicDrivetrain* drivetrain, ContinuousOdometry* odometry, double lookaheadDistance) : PurePursuit(odometry, lookaheadDistance) {
-		this->drivetrain = drivetrain;
-	}
+		VelocityProfile velocityProfile = this->getCurrentProfile().velocityProfile;
 
-	void OmniPurePursuit::updateDrivetrain() {
-
-		PurePursuitPointData pointData = this->getPointData();
-
-		QSpeed lastSpeed = this->drivetrain->getSpeed();
-
-		QSpeed maxSpeed = sqrt(2.0 * this->getCurrentProfile().maxAcceleration.getValue() * pointData.distanceFromEnd.getValue() + ConvertTo(2.0_in, m));
-		maxSpeed = maxSpeed > 5.0_inchs ? maxSpeed : 5_inchs;
-
-		QSpeed maxAccelerationFrame = this->getCurrentProfile().maxAcceleration * this->getUpdateTime();
-		QSpeed speed = 0.0;
-		if (maxSpeed > speed) {
-			speed = clamp(this->getCurrentProfile().speed, this->drivetrain->getSpeed() - maxAccelerationFrame, this->drivetrain->getSpeed() + maxAccelerationFrame);
-		}
-		else {
-			speed = this->getCurrentProfile().speed;
-		}
-		
-		QSpeed motorSpeed = clamp(clamp(speed.getValue(), -maxSpeed.getValue(), maxSpeed.getValue()), -this->getCurrentProfile().speed.getValue(), this->getCurrentProfile().speed.getValue());
-
-		double lateralOutput = motorSpeed.getValue() * this->getOutputMultiplier();
+		QSpeed lateralOutput = velocityProfile.getVelocityByDistance(pointData.distanceFromBeginning);
 
 		// Get the turn target
-		this->getCurrentProfile().orientationPid->setTarget(this->getTurnTarget().getValue());
+		this->orientationPid->setTarget(this->getTurnTarget().getValue());
 
 		// Get the turn output
-		double turnOutput = this->getCurrentProfile().orientationPid->update(this->getOdometry()->getPosition()->getAngle().getValue());
+		double turnOutput = this->orientationPid->update(this->getOdometry()->getPosition()->getAngle().getValue());
 
 		// Send values to the drivetrain
-		drivetrain->setDriveVectorVelocity(Vector(lateralOutput, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
+		drivetrain->setDriveVectorVelocity(Vector(lateralOutput * 1_s, pointData.normalizedLookaheadVector.getAngle()), turnOutput);
 	}
 
 	void OmniPurePursuit::stop() {

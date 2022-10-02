@@ -6,6 +6,9 @@
 #include <cmath>
 #include <algorithm>
 
+// TODO: add docstrings
+// TODO: add comments
+
 namespace Pronounce {
 	double toRadians(double degrees);
 	double toDegrees(double radians);

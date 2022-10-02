@@ -3,6 +3,9 @@
 // Gravity in in/s^2
 #define GRAVITY 385.826
 
+// TODO: Finish implmentaiton
+// TODO: Evaluate if this is necccesary
+
 namespace Pronounce {
 	class Trajectory {
 	private:

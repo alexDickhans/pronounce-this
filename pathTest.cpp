@@ -20,6 +20,7 @@
 // #include "src/utils/runningAverage.cpp"
 #include "include/utils/utils.hpp"
 #include "src/utils/utils.cpp"
+#include "include/units/units.hpp"
 // #include "include/utils/position.hpp"
 // #include "src/utils/position.cpp"
 // #include "include/utils/purePursuitProfile.hpp"
@@ -50,9 +51,9 @@ using namespace Pronounce;
 int fps = 60;
 double playbackMultiplier = 1;
 
-#define xOffset 30
-#define yOffset 30
-#define multiplier 3
+#define xOffset 30.0
+#define yOffset 30.0
+#define multiplier 3.0
 
 #define lookahead 8
 
@@ -66,12 +67,12 @@ double playbackMultiplier = 1;
 #define FIELD_WIDTH 140.6
 
 void printRobot(Point point) {
-	circle(point.getY() * multiplier, point.getX() * multiplier, 1);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 1);
 }
 
 void printRobotWithLookahead(Point point) {
-	circle(point.getY() * multiplier, point.getX() * multiplier, 1);
-	circle(point.getY() * multiplier, point.getX() * multiplier, lookahead * multiplier);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 1);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, lookahead * multiplier);
 }
 
 void printPath(Path path) {
@@ -84,7 +85,7 @@ void printPath(Path path) {
 		Point lastPoint = path.getPath().at(i - 1);
 		Point currentPoint = path.getPath().at(i);
 
-		line(lastPoint.getY() * multiplier, lastPoint.getX() * multiplier, currentPoint.getY() * multiplier, currentPoint.getX() * multiplier);
+		line(lastPoint.getY().Convert(inch) * multiplier, lastPoint.getX().Convert(inch) * multiplier, currentPoint.getY().Convert(inch) * multiplier, currentPoint.getX().Convert(inch) * multiplier);
 
 		// printRobot(lastPoint);
 	}
@@ -100,7 +101,7 @@ void printPath(std::vector<Point> path) {
 		Point lastPoint = path.at(i - 1);
 		Point currentPoint = path.at(i);
 
-		line(lastPoint.getY() * multiplier, lastPoint.getX() * multiplier, currentPoint.getY() * multiplier, currentPoint.getX() * multiplier);
+		line(lastPoint.getY().Convert(inch) * multiplier, lastPoint.getX().Convert(inch) * multiplier, currentPoint.getY().Convert(inch) * multiplier, currentPoint.getX().Convert(inch) * multiplier);
 
 		// printRobot(currentPoint);
 		// printRobot(lastPoint);
@@ -113,10 +114,10 @@ double mirror(double x) {
 }
 
 Point mirror(Point point) {
-	double beforeX = point.getX();
-	double beforeY = point.getY();
-	double resultX = FIELD_WIDTH - beforeX;
-	double resultY = FIELD_WIDTH - beforeY;
+	QLength beforeX = point.getX();
+	QLength beforeY = point.getY();
+	double resultX = FIELD_WIDTH - beforeX.Convert(inch);
+	double resultY = FIELD_WIDTH - beforeY.Convert(inch);
 	return Point(resultX, resultY);
 }
 
@@ -160,7 +161,7 @@ void printMirroredPlatform(double x1, double y1, double x2, double y2) {
 
 void printGoal(Point point) {
 	setlinestyle(SOLID_LINE, 5, 10);
-	circle(point.getY() * multiplier, point.getX() * multiplier, 6.5 * multiplier);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 6.5 * multiplier);
 }
 
 void printMirroredGoal(Point point) {
@@ -171,8 +172,8 @@ void printMirroredGoal(Point point) {
 }
 
 void printRing(Point point) {
-	circle(point.getY() * multiplier, point.getX() * multiplier, 2);
-	circle(point.getY() * multiplier, point.getX() * multiplier, 4);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 2);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 4);
 }
 
 void printRing(double x, double y) {
@@ -186,8 +187,8 @@ void printMirroredRing(Point point) {
 }
 
 void printRingGroup(Point point) {
-	double x = point.getX();
-	double y = point.getY();
+	double x = point.getX().Convert(inch);
+	double y = point.getY().Convert(inch);
 	printRing(point);
 	printRing(x + 4, y);
 	printRing(x - 4, y);
@@ -204,36 +205,11 @@ void printField() {
 
 	printFieldGrid();
 
-	printMirroredTape(0, 46.8, FIELD_WIDTH, 46.8);
-	printMirroredTape(FIELD_WIDTH, 24, FIELD_WIDTH - 24, 48);
-
-	printMirroredPlatform(46, 0, 96, 24);
-
-	printMirroredGoal(Point(40.9, 11.4));
-	printMirroredGoal(Point(129.2, 35.0));
+	printMirroredTape(1, 1, FIELD_WIDTH-1, FIELD_WIDTH-1);
 
 	setcolor(YELLOW);
 
-	printGoal(Point(70.3, 70.3));
-	printGoal(Point(35.0, 70.3));
-	printGoal(Point(105.7, 70.3));
-
 	setcolor(CYAN);
-	printMirroredRing(Point(5.8, 70.3));
-	printMirroredRing(Point(11.4, 70.3));
-	printMirroredRing(Point(17.4, 70.3));
-	printMirroredRing(Point(23.2, 70.3));
-	printMirroredRing(Point(46.8, 70.3));
-	printMirroredRing(Point(52.6, 70.3));
-	printMirroredRing(Point(58.4, 70.3));
-
-	printMirroredRing(Point(23.2, 76.5));
-	printMirroredRing(Point(23.2, 82.3));
-	printMirroredRing(Point(23.2, 88.1));
-	printMirroredRing(Point(23.2, 93.9));
-
-	printMirroredRingGroup(Point(48, 46.8));
-	printMirroredRingGroup(Point(70.3, 46.8));
 
 	setcolor(GREEN);
 }
@@ -275,12 +251,12 @@ int main() {
 	std::vector<Path> paths;
 
 	Path smoothPath;
-		QuadraticSplinePath rightNeutralGoalToNearRIghtPlatform("enterFarLeftHomeZoneToNearRightPlatform");
+		BezierPath rightNeutralGoalToNearRIghtPlatform("enterFarLeftHomeZoneToNearRightPlatform");
 
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(115, 70), Vector(25, M_PI-M_PI_4)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(80, 60), Vector(20, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35, 60), Vector(20, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35, 45), Vector(20, -M_PI_2*0.9)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(115_in, 70_in), Vector(25_in, M_PI-M_PI_4)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(80_in, 60_in), Vector(20_in, M_PI_2)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35_in, 60_in), Vector(20_in, M_PI_2)));
+		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35_in, 45_in), Vector(20_in, -M_PI_2*0.9)));
 
 	smoothPath = rightNeutralGoalToNearRIghtPlatform.getPath(0.1);
 

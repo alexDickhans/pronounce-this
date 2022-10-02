@@ -1,87 +1,129 @@
 #pragma once
 
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
+#include "odometry/interruptOdometry/interruptOdometry.hpp"
 #include "api.h"
+#include "units/units.hpp"
+
+// TODO: Add more logic to determine if the pose that we get is good
 
 namespace Pronounce {
-	class GpsOdometry : public ContinuousOdometry {
+	
+	/**
+	 * @brief Use the gps to rebase odometry measurements
+	 * 
+	 * @authors Alex Dickhans (alexDickhans)
+	 */
+	class GpsOdometry : public InterruptOdometry {
 	private:
-		pros::Gps* gps;
+		/**
+		 * @brief Refrence to the current gps object
+		 * 
+		 */
+		pros::Gps& gps;
 
-		pros::c::gps_status_s_t lastPos;
-		bool goodFixBool = false;
-		int32_t lastGoodFix = -10000;
-		int32_t lastUpdate = 0;
+		/**
+		 * @brief Last pose reading from the gps
+		 * 
+		 */
+		Pose2D lastPos;
 
-		QLength gpsX = 0_m;
-		QLength gpsY = 0_m;
+		/**
+		 * @brief Position of the gps on the robot
+		 * 
+		 */
+		QLength gpsX = 0_m, gpsY = 0_m;
+
+		/**
+		 * @brief Angle of the gps on the robot
+		 * 
+		 */
 		Angle gpsOrientation = 0_rad;
 
-		QLength convertToLocal(QLength x) {
+		/**
+		 * @brief How far from the wall the gps needs to reset odometry
+		 * 
+		 */
+		QLength outsideBuffer = 24_in;
+
+		/**
+		 * @brief Convert value from gps coordinates to global coordinates 
+		 * 
+		 * @param x Gps coordinates
+		 * @return QLength Global coordinates
+		 */
+		QLength convertFromGps(QLength x) {
 			return x - 1.8_m;
 		}
 
-		QLength convertToGlobal(QLength x) {
+		/**
+		 * @brief Convert value from global coordinates to gps coordinates
+		 * 
+		 * @param x Global coordinates
+		 * @return QLength Gps coordinates
+		 */
+		QLength convertToGps(QLength x) {
 			return x + 1.8_m;
 		}
 	public:
-		GpsOdometry();
-		GpsOdometry(pros::Gps* gps);
-
-		void update();
-		void update(Pose2D* pose);
-
-		void reset(Pose2D* pose) {
-			this->setPose(pose);
-			this->setResetPose(pose);
-			gps->initialize_full(convertToGlobal(pose->getX()).getValue(), convertToGlobal(pose->getY()).getValue(), (pose->getAngle()+ gpsOrientation).Convert(degree), gpsX.getValue(), gpsY.getValue());
+		/**
+		 * @brief Construct a new Gps Odometry object
+		 * 
+		 * @param gps Refrence to gps object
+		 * @param gpsX Gps x position on the robot
+		 * @param gpsY Gps y position on the robot
+		 * @param gpsOrientation Gps orientation on the robot
+		 */
+		GpsOdometry(pros::Gps& gps, QLength gpsX, QLength gpsY, Angle gpsOrientation) : gps(gps), lastPos(0.0, 0.0, 0.0) {
+			this->gpsX = gpsX;
+			this->gpsY = gpsY;
+			this->gpsOrientation = gpsOrientation;
 		}
 
-		pros::Gps* getGps() {
+		/**
+		 * @brief Get if the gps has a valid pose ready
+		 * 
+		 * @param currentPose The current pose of the robot
+		 * @param velocity The curent velocity of the robot
+		 * @return true If the readings are valid 
+		 * @return false If the readings are not valid
+		 */
+		bool positionReady(Pose2D currentPose, Vector velocity) {
+			Pose2D pose = this->getPosition(currentPose, velocity);
+
+			if (!(pose.getX() > outsideBuffer && pose.getX() < 144_in - outsideBuffer && pose.getY() > outsideBuffer && pose.getY() < 144_in - outsideBuffer)) {
+				return false;
+			}
+
+			// TODO: Add more conditionals
+
+			return true;
+
+			lastPos = pose;
+		}
+
+		/**
+		 * @brief Get the current position of the gps
+		 * 
+		 * @param currentPose The current pose of the robot, use in the calculations
+		 * @param velocity The current velocity of the robot, used in the calculations
+		 * @return Pose2D The refined pose of the robot
+		 */
+		Pose2D getPosition(Pose2D currentPose, Vector velocity) {
+			pros::c::gps_status_s_t currentReading = gps.get_status();
+			Pose2D readingPose = Pose2D(convertFromGps(currentReading.x), convertFromGps(currentReading.y));
+
+			return readingPose;
+		}
+
+		/**
+		 * @brief Get a reference to the gps object
+		 * 
+		 * @return pros::Gps& Reference to the gps object
+		 */
+		pros::Gps& getGps() {
 			return gps;
 		}
 
-		void setGps(pros::Gps* gps) {
-			this->gps = gps;
-		}
-
-		bool goodFix() {
-
-			pros::c::gps_status_s_t currentPos = gps->get_status();
-
-			if (pros::millis() - lastUpdate < 50) {
-				if (goodFixBool && pros::millis() - lastGoodFix > 2000) {
-					return true;
-				}
-				return false;
-			}
-
-			// If our position is 0 we invalidate it
-			if (sqrt(pow(currentPos.x, 2) + pow(currentPos.y, 2)) == 0.0) {
-				goodFixBool = false;
-				return false;
-			}
-
-			// If the robot isn't moving too far start the timer
-			if (sqrt(pow(currentPos.x - lastPos.x, 2) + pow(currentPos.y - lastPos.y, 2)) < (2.0 / (1000.0 / (double)(pros::millis() - lastUpdate))) && !goodFixBool) {
-				if (!goodFixBool) {
-					lastGoodFix = pros::millis();
-				}
-				goodFixBool = true;
-			}
-			else {
-				goodFixBool = false;
-				return false;
-			}
-
-			// Wait to return a good fix until we know that it is good for a while
-			if (goodFixBool && pros::millis() - lastGoodFix > 2000) {
-				return true;
-			}
-
-			return false;
-		}
-
-		~GpsOdometry();
+		~GpsOdometry() {}
 	};
 } // namespace Pronounce

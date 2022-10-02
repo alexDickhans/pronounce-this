@@ -8,3 +8,8 @@
 
 #include "intake/intake.hpp"
 #include "intake/initIntake.hpp"
+
+#include "endgame/endgame.hpp"
+#include "endgame/initEndgame.hpp"
+
+// TODO: Find a better solution for this

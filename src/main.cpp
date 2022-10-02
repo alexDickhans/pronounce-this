@@ -15,13 +15,243 @@ TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pro
  */
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 	return 0;
 }
 
 int autonTemplate() {
-	odometry.reset(new Pose2D(0, 0, 0));
+	odometry.reset(new Pose2D(0.0, 0.0, 0.0));
+
+	std::cout << "Auton" << std::endl;
 
 	pros::Task::delay(500);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateExtensionController.setCurrentBehavior(&intakeRoller);
+	launcherStateController.setCurrentBehavior(&launch2Disc);
+	// drivetrainStateController.setCurrentBehavior(&testProfile);
+	// drivetrainStateController.setCurrentBehavior(&turnTo905s);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(500);
+
+	return 0;
+}
+
+int closeHalfAWP() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
+
+	pros::Task::delay(50);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(2000);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(3000);
+
+	return 0;
+}
+
+int closeFullAWP() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
+
+	pros::Task::delay(50);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
+
+	pros::Task::delay(700);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(2000);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&moveForward8in);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+	robotStatus.setFlywheelRPM(2700);
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(200);
+
+	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
+
+	turretAdjustment = -87_deg;
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+	// drivetrainStateController.setCurrentBehavior(&turnTo90);
+	launcherStateExtensionController.setCurrentBehavior(&launch3Disc);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&allianceDiscsToRoller);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+
+	pros::Task::delay(3000);
+
+	return 0;
+}
+
+int skills() {
+	robotStatus.setFlywheelRPM(2970);
+	turretAdjustment = -5.0_deg;
+
+	pros::Task::delay(50);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainRollerWait);
+	intakeStateController.setCurrentBehavior(&intakeEjecting);
+
+	pros::Task::delay(700);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
+
+	pros::Task::delay(700);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	pros::Task::delay(1300);
+
+	robotStatus.setFlywheelRPM(2900);
+	turretAdjustment = -5.0_deg;
+
+	while (!launcherStateExtensionController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&frontRollerToAllianceStack);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&moveForward8in);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+	robotStatus.setFlywheelRPM(2700);
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(200);
+
+	drivetrainStateController.setCurrentBehavior(&allianceStackToAllianceDiscs);
+
+	turretAdjustment = -87_deg;
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo_135);
+
+	pros::Task::delay(50);
+
+	while (!drivetrainStateController.isDone()) {
+		pros::Task::delay(50);
+	}
+
+	pros::Task::delay(2000);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
+	pros::Task::delay(500);
+
+	return 0;
+}
+
+int rightSideAWP() {
+
+	pros::Task::delay(1000);
+
+	turretAdjustment = 0_deg;
+	robotStatus.setFlywheelRPM(3000);
+
+	launcherStateExtensionController.setCurrentBehavior(&launch2Disc);
 
 	return 0;
 }
@@ -44,7 +274,7 @@ void renderThread() {
  * Initialize all sensors
  */
 void initSensors() {
-	imu.reset();
+	// imu.reset();
 
 	// Wait until IMU is calibrated
 	// while (imu.is_calibrating()) {
@@ -52,34 +282,20 @@ void initSensors() {
 	// }
 }
 
-/**
- * Initialize the controller
- */
-void initController() {
-	master.setOdometry(&odometry);
-	partner.setOdometry(&odometry);
-	pros::Task renderTask(renderThread);
-}
-
-/**
- * Initialize the logger for data collection after the match
- */
-void initLogger() {
-
-}
-
 void update() {
 
-	uint32_t startTime = 0;
+	uint32_t startTime = pros::millis();
+
 	while (true) {
 		// Create stuff for exact delay
-		std::cout << "Frame time: " << pros::millis() - startTime << std::endl;
+		std::cout << "FrameTime: " << pros::millis() - startTime << std::endl;
 		startTime = pros::millis();
 
-		modeLogic.update();
 		odometry.update();
+		modeLogic.update();
 
-		pros::delay(10 - (pros::millis() - startTime));
+		// Wait a maximum of 10 milliseconds
+		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 	}
 }
 
@@ -107,7 +323,8 @@ void updateDisplay() {
 		// Odometry
 		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
 			+ "\nL: " + std::to_string(leftOdomWheel.getPosition().Convert(inch)) +
-			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch))).c_str());
+			", R: " + std::to_string(rightOdomWheel.getPosition().Convert(inch)) +
+			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
 		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(frontLeftMotor.get_temperature()) + " C").c_str());
@@ -139,17 +356,15 @@ void initialize() {
 	// Initialize functions
 	initSensors();
 	initDrivetrain();
-	initController();
-	initLogger();
-	initController();
 	initLauncherStates();
 	initDisplay();
 	initIntake();
+	initBehaviors();
+	initSequences();
 
 	modeLogic.initialize();
 
-	pros::Task modeLogicTask(update);
-
+	pros::Task modeLogicTask = pros::Task(update);
 }
 
 // !SECTION
@@ -161,6 +376,7 @@ void initialize() {
  */
 void disabled() {
 	teleopController.useDefaultBehavior();
+	launcherStateController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -184,8 +400,6 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-	// autonomousSelector.choose();
-
 }
 
 // !SECTION
@@ -200,7 +414,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	autonTemplate();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();
@@ -214,6 +428,7 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
+	pros::delay(10);
 	
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 

@@ -11,12 +11,19 @@ namespace Pronounce {
 	 */
 	class Behavior {
 	private:
+		std::string name = "none";
 	public:
 		/**
 		 * @brief Basic initializer
 		 * 
 		 */
 		Behavior() {}
+
+		/**
+		 * @brief Basic initializer
+		 * 
+		 */
+		Behavior(std::string name) : name(name) {}
 
 		/**
 		 * @brief Abstract function to initialize the state. Called before the state starts running
@@ -43,6 +50,14 @@ namespace Pronounce {
 		 * 
 		 */
 		virtual void exit() {}
+
+		std::string getName() {
+			return name;
+		}
+
+		void setName(std::string name) {
+			this->name = name;
+		}
 
 		~Behavior() {}
 	};	

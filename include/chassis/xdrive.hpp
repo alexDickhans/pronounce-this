@@ -4,6 +4,7 @@
 #include "drivetrain.hpp"
 #include "abstractHolonomicDrivetrain.hpp"
 #include "utils/vector.hpp"
+#include <math.h>
 
 namespace Pronounce {
 	class XDrive : public Drivetrain, public AbstractHolonomicDrivetrain {
@@ -43,6 +44,15 @@ namespace Pronounce {
 		}
 
 		void setDriveVectorVelocity(Vector vector, double rotation) {
+
+			double vectorAngle = abs(fmod(abs(vector.getAngle().getValue()), M_PI_2)) - M_PI_4;
+
+			vector.setMagnitude(abs(vector.getMagnitude().getValue() * cos(abs(vectorAngle))));
+
+			std::cout << "CommandedDrivetrainSpeed: " << vector.getMagnitude().Convert(metre) << std::endl;
+
+			// std::cout << "Magnitude: " << vector.getMagnitude().getValue() << std::endl;
+
 			double frontLeftVelocity = (vector.getCartesian().getY() + vector.getCartesian().getX()).getValue() + rotation;
 			double frontRightVelocity = (vector.getCartesian().getY() - vector.getCartesian().getX()).getValue() - rotation;
 			double backLeftVelocity = (vector.getCartesian().getY() - vector.getCartesian().getX()).getValue() + rotation;
@@ -82,7 +92,14 @@ namespace Pronounce {
 				this->frontRightMotor->get_temperature() +
 				this->backLeftMotor->get_temperature() +
 				this->backRightMotor->get_temperature();
-			return total / 4;
+			return total / 4.0;
+		}
+
+		QSpeed getSpeed() {
+			return (abs(this->frontLeftMotor->get_actual_velocity()) +
+				abs(this->frontRightMotor->get_actual_velocity()) +
+				abs(this->backLeftMotor->get_actual_velocity()) +
+				abs(this->backRightMotor->get_actual_velocity()))/4.0;
 		}
 
 		~XDrive() {}
