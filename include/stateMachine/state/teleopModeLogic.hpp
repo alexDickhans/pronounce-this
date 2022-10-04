@@ -34,11 +34,8 @@ namespace Pronounce {
 		void update() {
 
 			if (controller1->get_digital_new_press(LAUNCHER_STOP_BUTTON)) {
-				launcherStateController.setCurrentBehavior(&launcherStopped);
-			} else if (controller1->get_digital_new_press(PRIME_BUTTON)) {
-				launcherStateController.setCurrentBehavior(&launcherIdle);
-			} else if (controller1->get_digital(LAUNCH_BUTTON) && launcherStateController.isDone()) {
-				launcherStateExtensionController.setCurrentBehavior(&launchDisc);
+				//  TODO: Replace with catapult shoot
+				ptoStateController.setCurrentBehavior(new Behavior());
 			}
 
 			if (controller2->is_connected()) {

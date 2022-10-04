@@ -26,6 +26,11 @@ namespace Pronounce {
 	pros::Motor_Group leftDriveMotors({leftDrive1, leftDrive2, leftDrive3});
 	pros::Motor_Group rightDriveMotor({rightDrive1, rightDrive2, rightDrive3});
 
+	pros::ADIDigitalOut ptoPiston(1, false);
+
+	// Catapult
+	pros::ADIDigitalIn catapultLimitSwitch(2);
+
 	pros::Rotation backEncoder(7);
 	TrackingWheel backOdomWheel(&backEncoder);
 	MotorOdom leftDrive1Odom(&leftDrive1, 2.75_in);

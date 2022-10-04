@@ -2,6 +2,8 @@
 
 #include "api.h"
 #include "intake.hpp"
+#include "drive.hpp"
+#include "catapult.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/stateController.hpp"
 #include "utils/motorGroup.hpp"
@@ -14,8 +16,8 @@
 
 namespace Pronounce {
 
-	StateController ptoStateController("PtoStateController", &intakeIntaking);
-	
-	void initIntake() {
+	StateController ptoStateController("PtoStateController", new Behavior());
+
+	void initPto() {
 	}
 }

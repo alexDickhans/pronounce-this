@@ -61,7 +61,7 @@ void updateDisplay() {
 	lv_table_set_col_width(drivetrainTable, 1, 200);
 
 	// Flywheels
-	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Flywheel");
+	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Catapult");
 	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
 
 	while (true) {
@@ -84,9 +84,7 @@ void updateDisplay() {
 		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel, ("\nTarget Speed: " + std::to_string(robotStatus.getFlywheelTarget()) +
-			"\nCurrent Speed: " + std::to_string(robotStatus.getActualFlywheelRpm()) +
-			"\nVoltage: " + std::to_string(flywheel1.get_voltage())).c_str());
+		lv_label_set_text(flywheelLabel, "catapult");
 
 		pros::Task::delay(50);
 	}
@@ -106,9 +104,8 @@ void initialize() {
 
 	// Initialize functions
 	initDrivetrain();
-	initLauncherStates();
 	initDisplay();
-	initIntake();
+	initPto();
 	initBehaviors();
 
 	modeLogic.initialize();
@@ -125,7 +122,6 @@ void initialize() {
  */
 void disabled() {
 	teleopController.useDefaultBehavior();
-	launcherStateController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);

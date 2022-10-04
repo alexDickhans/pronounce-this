@@ -2,9 +2,13 @@
 
 #include "stateMachine/behavior.hpp"
 #include "hardware/hardware.hpp"
+#include "stateMachine/behaviors/drivetrain/initDrivetrain.hpp"
 #include <iostream>
 
+
+
 namespace Pronounce {
+	// TODO: Add to the modelogic behavior group
 	/**
 	 * @brief Logs data from the robot that is not logged in the individual files
 	 * 
@@ -17,13 +21,13 @@ namespace Pronounce {
 		void initialize() {
 			
 		}
-
+		
 		void update() {
-
+			std::cout << "OutputDrivetrainSpeed: " << drivetrain.getSpeed().getValue() << std::endl;
 		}
 
 		void exit() {
-			
+
 		}
 
 		~LoggerService();

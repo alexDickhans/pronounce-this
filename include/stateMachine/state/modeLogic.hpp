@@ -20,9 +20,7 @@ namespace Pronounce {
 
 	void initBehaviors() {
 		stateControllers.addBehavior(&stateExtensionController);
-		stateControllers.addBehavior(&intakeStateController);
-		stateControllers.addBehavior(&launcherStateExtensionController);
-		stateControllers.addBehavior(&launcherStateController);
+		stateControllers.addBehavior(&ptoStateController);
 		stateControllers.addBehavior(&drivetrainStateController);
 		stateControllers.addBehavior(&endgameStateController);
 		stateControllers.addBehavior(&teleopController);
@@ -43,26 +41,6 @@ namespace Pronounce {
 
 		void update() {
 			robotStatus->update();
-			launcherIdle.setFlywheelSpeed(robotStatus->getFlywheelTarget());
-			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
-			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
-
-			double turretAngle = 0;
-			
-			if (false) {
-				turretAngle = clamp(angleDifference(robotStatus->getTurretAngle().Convert(radian), 0), -M_PI_2, M_PI_2);
-			} else {
-				turretAngle = clamp(angleDifference((robotStatus->getTurretAngle() - odometry.getAngle()).getValue(), 0), -M_PI_2, M_PI_2);
-			}
-
-			launcherStopped.setTurretAngle(turretAngle);
-			launcherIdle.setTurretAngle(turretAngle);
-			launcherLaunching.setTurretAngle(turretAngle);
-			launcherFullSpeed.setTurretAngle(turretAngle);
-
-			// Intake dejam
-
-			std::cout << "InputTurretAngle: " << turretAngle << std::endl;
 			stateControllers.update();
 		}
 
