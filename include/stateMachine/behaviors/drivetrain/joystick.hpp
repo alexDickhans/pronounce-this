@@ -19,14 +19,9 @@ namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
 	private:
 		double deadband = 0.10;
-		bool fieldOriented = false;
 		bool targeting = false;
 		double exponentializeValue = 1.0;
 		double outputMultiplier = 1.0;
-
-		RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX;
-		RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY;
-		RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn;
 
 		/**
 		 * @brief Used for field oriented and targeting control
@@ -38,33 +33,19 @@ namespace Pronounce {
 
 		AbstractHolonomicDrivetrain* drivetrain;
 
-		Vector filterVector(Vector vector) {
-			vector.setMagnitude(vector.getMagnitude().getValue() < deadband ? 0.0 : vector.getMagnitude());
-			return vector;
-		}
-
 		double filterAxis(double axis) {
 			return axis < deadband ? 0.0 : axis;
 		}
 
-		Vector exponentialize(Vector vector) {
-			vector.setMagnitude(pow(vector.getMagnitude().getValue(), exponentializeValue));
-			return vector;
-		}
-
 	public:
-		JoystickDrivetrain(std::string name, double deadband, bool fieldOriented, bool targeting, double exponentializerValue, double outputMultiplier, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageX, RunningAverage<RUNNING_AVERAGE_TRANSLATION>* movingAverageY, RunningAverage<RUNNING_AVERAGE_ROTATION>* movingAverageTurn, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) : Behavior(name) {
+		JoystickDrivetrain(std::string name, double deadband, bool targeting, double exponentializerValue, double outputMultiplier, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) : Behavior(name) {
 			this->deadband = deadband;
-			this->fieldOriented = fieldOriented;
 			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
 			this->outputMultiplier = outputMultiplier;
 			this->odometry = odometry;
 			this->controller = controller;
 			this->drivetrain = drivetrain;
-			this->movingAverageX = movingAverageX;
-			this->movingAverageY = movingAverageY;
-			this->movingAverageTurn = movingAverageTurn;
 		}
 
 		void initialize() {}

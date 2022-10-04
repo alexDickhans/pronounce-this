@@ -98,6 +98,7 @@
 #include "stateMachine/state/modeLogic.hpp"
 #include "stateMachine/state/teleopModeLogic.hpp"
 #include "stateMachine/state/modeLogic.hpp"
+#include "hardware/hardware.hpp"
 
 // Units
 #include "units/units.hpp"

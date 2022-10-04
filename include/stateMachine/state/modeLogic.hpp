@@ -28,10 +28,6 @@ namespace Pronounce {
 		stateControllers.addBehavior(&teleopController);
 	}
 
-	void initSequences() {
-		
-	}
-
 	class ModeLogic : public Behavior {
 	private:
 		RobotStatus* robotStatus;

@@ -15,19 +15,6 @@
 
 namespace Pronounce {
 
-	pros::Motor flywheel1(16, pros::E_MOTOR_GEARSET_36, true);
-
-	pros::Motor turretMotor(3, pros::E_MOTOR_GEARSET_06, false);
-
-	MotorGroup flywheels;
-
-	pros::ADIDigitalOut indexer(1, false);
-
-	FlywheelPID flywheelPID(4.0, 0.1, 0.0, 3.55);
-	PID turretPID(30000.0, 0.0, 120000.0);
-
-	pros::Rotation turretRotation(4);
-
 	Launcher launcherStopped("LauncherStopped", 0.0, 30.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
 	Launcher launcherIdle("LauncherIdle", 1.0, 30.0 / 1.0, false, false, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);
 	Launcher launcherFullSpeed("LauncherFullSpeed", 1.0, 30.0 / 1.0, false, true, &flywheels, &turretMotor, &indexer, &flywheelPID, &turretPID, turretRotation);

@@ -3,6 +3,7 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/state/flywheelController.hpp"
 #include "api.h"
+#include "hardware/hardware.hpp"
 
 // TODO: Clean up
 // TODO: Implement more sensors with classes
@@ -15,24 +16,16 @@ namespace Pronounce {
 		Blue = 2,
 	};
 
-	// const GameMode gameMode = GameMode::Red;
-
-	double flywheelAdjustment = 0;
-	Angle turretAdjustment = 90_deg;
-	double currentFlywheelRPM = 2300;
+	const GameMode gameMode = GameMode::Red;
 
 	class RobotStatus : public Behavior {
 	private:
 		Angle turretAngle = 0.0;
-
-		FlywheelController allianceGoal;
-		FlywheelController opponentGoal;
 	public:
 
-		RobotStatus() : allianceGoal(ALLIANCE_GOAL), opponentGoal(OPPONENT_GOAL) {}
+		RobotStatus() {}
 
 		void initialize() {
-			// Init beambreaks
 			return;
 		}
 

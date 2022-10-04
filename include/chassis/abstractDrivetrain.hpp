@@ -23,5 +23,4 @@ namespace Pronounce {
 
 		~AbstractDrivetrain() {}
 	};
-		
 } // namespace Pronounce
