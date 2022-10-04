@@ -3,10 +3,10 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 #include "api.h"
-#include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "utils/utils.hpp"
 #include "math.h"
 #include "utils/runningAverage.hpp"
+#include "chassis/abstractTankDrivetrain.hpp"
 
 // TODO: mode running average stuff to another place
 // TODO: Change to jerk and acceleration limiting
@@ -27,25 +27,22 @@ namespace Pronounce {
 		 * @brief Used for field oriented and targeting control
 		 *
 		 */
-		ContinuousOdometry* odometry;
+		ContinuousOdometry& odometry;
 
-		pros::Controller* controller;
+		pros::Controller& controller;
 
-		AbstractHolonomicDrivetrain* drivetrain;
+		AbstractTankDrivetrain& drivetrain;
 
 		double filterAxis(double axis) {
 			return axis < deadband ? 0.0 : axis;
 		}
 
 	public:
-		JoystickDrivetrain(std::string name, double deadband, bool targeting, double exponentializerValue, double outputMultiplier, ContinuousOdometry* odometry, pros::Controller* controller, AbstractHolonomicDrivetrain* drivetrain) : Behavior(name) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, pros::Controller& controller, AbstractTankDrivetrain& drivetrain, double deadband, bool targeting, double exponentializerValue, double outputMultiplier) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
 			this->outputMultiplier = outputMultiplier;
-			this->odometry = odometry;
-			this->controller = controller;
-			this->drivetrain = drivetrain;
 		}
 
 		void initialize() {}
@@ -53,7 +50,7 @@ namespace Pronounce {
 		void update() {
 
 			if (outputMultiplier == 0.0) {
-				drivetrain->setDriveVectorVelocity(Vector(0.0, 0.0), 0.0);
+				drivetrain.skidSteerVelocity(0.0, 0.0);
 				return;
 			}
 

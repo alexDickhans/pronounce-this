@@ -1,0 +1,21 @@
+#pragma once
+
+#include "api.h"
+#include "intake.hpp"
+#include "stateMachine/behavior.hpp"
+#include "stateMachine/stateController.hpp"
+#include "utils/motorGroup.hpp"
+#include "stateMachine/wait.hpp"
+#include "stateMachine/sequence.hpp"
+
+// TODO: Clean up
+// TODO: move declarations to another place
+// TODO: Add comments
+
+namespace Pronounce {
+
+	StateController ptoStateController("PtoStateController", &intakeIntaking);
+	
+	void initIntake() {
+	}
+}
