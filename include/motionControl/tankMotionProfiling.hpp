@@ -4,7 +4,7 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "stateMachine/behavior.hpp"
-#include "api.h"
+#include "time/robotTime.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 
 namespace Pronounce {
@@ -15,6 +15,8 @@ namespace Pronounce {
 		AbstractTankDrivetrain& drivetrain;
 		VelocityProfile velocityProfile;
 
+		QTime startTime = 0.0;
+
 		ContinuousOdometry& odometry;
 	public:
 		TankMotionProfiling(std::string name, AbstractTankDrivetrain& drivetrain, VelocityProfile velocityProfile, ContinuousOdometry& odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex) {
@@ -23,6 +25,25 @@ namespace Pronounce {
 
 		TankMotionProfiling(std::string name, AbstractTankDrivetrain& drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry& odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
 			velocityProfile = SinusoidalVelocityProfile(distance, profileConstraints);
+			velocityProfile.calculate(100);
+		}
+
+		void initialize() {
+			startTime = currentTime();
+		}
+
+		void update() {
+			QTime duration = currentTime() - startTime;
+
+			drivetrain.skidSteerVelocity(velocityProfile.getVelocityByTime(duration), 0.0);
+		}
+
+		void exit() {
+			drivetrain.skidSteerVelocity(0.0, 0.0);
+		}
+
+		bool isDone() {
+			return currentTime() - startTime > velocityProfile.getDuration();
 		}
 
 		~TankMotionProfiling() {}
