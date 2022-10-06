@@ -6,7 +6,6 @@
 #include "catapult.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/stateController.hpp"
-#include "utils/motorGroup.hpp"
 #include "stateMachine/wait.hpp"
 #include "stateMachine/sequence.hpp"
 
@@ -19,5 +18,8 @@ namespace Pronounce {
 	StateController ptoStateController("PtoStateController", new Behavior());
 
 	void initPto() {
+		ptoMutex.take();
+
+		ptoMutex.give();
 	}
 }

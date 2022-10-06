@@ -7,13 +7,7 @@
 #include "math.h"
 #include "utils/runningAverage.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
-
-// TODO: mode running average stuff to another place
-// TODO: Change to jerk and acceleration limiting
-#define RUNNING_AVERAGE_TRANSLATION 20
-#define RUNNING_AVERAGE_ROTATION 5
-
-// TODO: Add docstrings
+#include "hardware/hardware.hpp"
 
 namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
@@ -21,7 +15,7 @@ namespace Pronounce {
 		double deadband = 0.10;
 		bool targeting = false;
 		double exponentializeValue = 1.0;
-		double outputMultiplier = 1.0;
+		QSpeed maxDriveSpeed;
 
 		/**
 		 * @brief Used for field oriented and targeting control
@@ -38,50 +32,33 @@ namespace Pronounce {
 		}
 
 	public:
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, pros::Controller& controller, AbstractTankDrivetrain& drivetrain, double deadband, bool targeting, double exponentializerValue, double outputMultiplier) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, pros::Controller& controller, AbstractTankDrivetrain& drivetrain, double deadband, bool targeting, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
-			this->outputMultiplier = outputMultiplier;
+			this->maxDriveSpeed = maxDriveSpeed;
 		}
 
 		void initialize() {}
 
 		void update() {
+			drivetrainMutex.take();
 
-			if (outputMultiplier == 0.0) {
+			if (maxDriveSpeed == 0.0_in/second) {
 				drivetrain.skidSteerVelocity(0.0, 0.0);
 				return;
 			}
 
-			movingAverageX->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X), -127.0, 127.0, -1.0, 1.0));
-			movingAverageY->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y), -127.0, 127.0, -1.0, 1.0));
-			movingAverageTurn->add(map(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X), -127.0, 127.0, -1.0, 1.0));
+			double y = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
 
-			double x = movingAverageX->getAverage();
-			double y = movingAverageY->getAverage();
-			double turn = movingAverageTurn->getAverage();
+			drivetrain.skidSteerVelocity(y * maxDriveSpeed, turn);
 
-			Vector driveVector(new Point(x, y));
-			
-			if (fieldOriented) {
-				Point drivePoint = driveVector.getCartesian();
-
-				double x = drivePoint.getX().getValue() * cos(odometry->getAngle()) - drivePoint.getY().getValue() * sin(odometry->getAngle());
-				double y = drivePoint.getX().getValue() * sin(odometry->getAngle()) + drivePoint.getY().getValue() * cos(odometry->getAngle());
-
-				driveVector = Vector(Point(x, y));
-			}
-
-			// driveVector = filterVector(driveVector);
-
-			driveVector = driveVector.scale(outputMultiplier);
-
-			drivetrain->setDriveVectorVelocity(driveVector, turn * outputMultiplier);
+			drivetrainMutex.give();
 		}
 
 		void exit() {
-			drivetrain->setDriveVectorVelocity(Vector(0.0, 0.0));
+			drivetrain.skidSteerVelocity(0.0, 0.0);
 		}
 
 		bool isDone() {

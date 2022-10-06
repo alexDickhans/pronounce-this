@@ -51,13 +51,10 @@
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
-#include "chassis/drivetrain.hpp"
+#include "chassis/hardwareDrivetrain.hpp"
 #include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
 #include "chassis/xdrive.hpp"
-
-// Driver
-#include "driver/controller.hpp"
 
 // FeedbackControllers
 #include "feedbackControllers/bangBang.hpp"
@@ -106,7 +103,6 @@
 // Utils
 #include "utils/ADIDigitalOutGroup.hpp"
 #include "utils/exponentialMovingAverage.hpp"
-#include "utils/motorGroup.hpp"
 #include "utils/path.hpp"
 #include "utils/pointUtil.hpp"
 #include "utils/pose2d.hpp"
@@ -116,7 +112,6 @@
 #include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
-#include "utils/motorGroup.hpp"
 
 // Vision
 

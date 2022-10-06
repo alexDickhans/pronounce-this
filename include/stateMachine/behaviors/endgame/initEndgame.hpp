@@ -5,10 +5,9 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/wait.hpp"
+#include "hardware/hardware.hpp"
 
 namespace Pronounce {
-	pros::ADIDigitalOut endgameDigitalOutputs(7, false);
-
 	Endgame endgameDisabled("EndgameDisabled", endgameDigitalOutputs, false);
 	Endgame endgameEnabled("EndgameEnabled", endgameDigitalOutputs, true);
 

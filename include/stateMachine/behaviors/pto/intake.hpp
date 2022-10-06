@@ -15,15 +15,23 @@ namespace Pronounce {
 		PtoIntake(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed);
 
 		void initialize() {
+			ptoMutex.take();
+
 			ptoPiston.set_value(pistonState);
 			leftPtoMotor.move_velocity(speed*600);
 			rightPtoMotor.move_velocity(speed*600);
+
+			ptoMutex.give();
 		}
 
 		void update() {
+			ptoMutex.take();
+
 			ptoPiston.set_value(pistonState);
 			leftPtoMotor.move_velocity(speed*600);
 			rightPtoMotor.move_velocity(speed*600);
+
+			ptoMutex.give();
 		}
 
 		void exit() {

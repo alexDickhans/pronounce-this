@@ -1,10 +1,9 @@
 #pragma once
 
 namespace Pronounce {
-	class TankMotionProfiling
-	{
+	class TankMotionProfiling {
 	private:
-		/* data */
+		
 	public:
 		TankMotionProfiling(/* args */);
 		~TankMotionProfiling();

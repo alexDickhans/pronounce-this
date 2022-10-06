@@ -16,14 +16,22 @@ namespace Pronounce {
 		PtoDrive(pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor);
 
 		void initialize() {
+			ptoMutex.take();
+
 			this->ptoPiston.set_value(pistonState);
+			
+			ptoMutex.give();
 		}
 
 		void update() {
+			ptoMutex.take();
+
 			this->ptoPiston.set_value(pistonState);
 
 			this->leftPtoMotor.move_velocity(leftDriveMotor.get_target_velocity());
 			this->rightDriveMotor.move_velocity(rightDriveMotor.get_target_velocity());
+
+			ptoMutex.take();
 		}
 
 		void exit() {

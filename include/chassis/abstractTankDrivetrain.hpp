@@ -21,6 +21,12 @@ namespace Pronounce {
 		 * 
 		 */
 		QLength trackWidth;
+
+		/**
+		 * @brief Max speed of the drivetrain
+		 * 
+		 */
+		QSpeed maxSpeed;
 	public:
 		/**
 		 * @brief Construct a new Abstract Tank Drivetrain object with all values set to zero. 
@@ -34,7 +40,7 @@ namespace Pronounce {
 		 * 
 		 * @param trackWidth The trackWidth of the drivetrain
 		 */
-		AbstractTankDrivetrain(QLength trackWidth) : trackWidth(trackWidth) {}
+		AbstractTankDrivetrain(QLength trackWidth, QSpeed maxSpeed) : trackWidth(trackWidth) {}
 
 		/**
 		 * @brief Get the current speed of the robot
@@ -133,7 +139,11 @@ namespace Pronounce {
 		 */
 		virtual void tankSteerVoltage(double leftVoltage, double rightVoltage) {}
 
-		~AbstractTankDrivetrain();
+		QSpeed getMaxSpeed() {
+			return maxSpeed;
+		}
+
+		~AbstractTankDrivetrain() {}
 	};
 } // namespace Pronounce
 

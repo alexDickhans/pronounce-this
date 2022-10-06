@@ -2,14 +2,12 @@
 
 #include "joystick.hpp"
 #include "api.h"
-#include "utils/motorGroup.hpp"
 #include "stateMachine/wait.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "position/trackingWheel.hpp"
 #include "chassis/xdrive.hpp"
-#include "driver/controller.hpp"
 #include "utils/runningAverage.hpp"
 #include "odometry/odomFuser.hpp"
 #include "motionControl/omniMotionProfiling.hpp"
@@ -20,16 +18,17 @@
 #include "motionControl/omniMovement.hpp"
 #include "hardware/hardware.hpp"
 
-// TODO: Clean up
-// TODO: move declarations to another place
+#include "chassis/tankDrive.hpp"
+
 // TODO: Add comments
 
 namespace Pronounce {
 	
-	JoystickDrivetrain normalJoystick("RobotRelativeJoystick", 0.10, false, false, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
-	JoystickDrivetrain normalTargetingJoystick("RobotRelativeTargeting", 0.10, false, true, 2.4, 200.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	// Drivetrain states for driving around the field and shooting at the goal
+	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, 0.10, false, 2.4, 73_in / second);
+	JoystickDrivetrain targetingJoystick("TargetingJoystick", odometry, master, drivetrain, 0.10, true, 2.4, 73_in / second);
 
-	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", 0.10, false, true, 2.4, 0.0, &movingAverageX, &movingAverageY, &movingAverageTurn, &odometry, &master, &drivetrain);
+	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", odometry, master, drivetrain, 0.10, true, 2.4, 0.0);
 
 	PID turningPid(330, 0, 2000);
 
