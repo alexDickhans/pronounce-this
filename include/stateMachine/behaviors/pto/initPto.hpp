@@ -9,17 +9,17 @@
 #include "stateMachine/wait.hpp"
 #include "stateMachine/sequence.hpp"
 
-// TODO: Clean up
-// TODO: move declarations to another place
 // TODO: Add comments
 
 namespace Pronounce {
 
-	StateController ptoStateController("PtoStateController", new Behavior());
+	PtoIntake ptoIntaking("PtoIntaking", ptoPiston, false, leftPtoMotor, rightPtoMotor, 600);
+	PtoCatapult ptoCatapult("PtoCatapult", ptoPiston, false, leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -600);
+	PtoDrive ptoDrive("PtoDrivetrain", ptoPiston, true, leftPtoMotor, leftDrive1, rightPtoMotor, rightDrive1);
+
+	StateController ptoStateController("PtoStateController", ptoIntaking);
 
 	void initPto() {
-		ptoMutex.take();
 
-		ptoMutex.give();
 	}
 }

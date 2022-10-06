@@ -13,7 +13,7 @@ namespace Pronounce {
 		pros::Motor& rightDriveMotor;
 		bool pistonState;
 	public:
-		PtoDrive(pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor);
+		PtoDrive(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor);
 
 		void initialize() {
 			ptoMutex.take();
@@ -45,7 +45,7 @@ namespace Pronounce {
 		~PtoDrive();
 	};
 	
-	PtoDrive::PtoDrive(pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor) : ptoPiston(ptoPiston), pistonState(pistonState), leftPtoMotor(leftPtoMotor), leftDriveMotor(leftDriveMotor), rightPtoMotor(rightPtoMotor), rightDriveMotor(rightDriveMotor) {
+	PtoDrive::PtoDrive(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor) : Behavior(name), ptoPiston(ptoPiston), pistonState(pistonState), leftPtoMotor(leftPtoMotor), leftDriveMotor(leftDriveMotor), rightPtoMotor(rightPtoMotor), rightDriveMotor(rightDriveMotor) {
 	}
 	
 	PtoDrive::~PtoDrive() {

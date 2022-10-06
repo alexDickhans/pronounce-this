@@ -38,8 +38,6 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut ptoPiston(1, false);
 
-	pros::Mutex catapultMutex;
-
 	// Catapult
 	pros::ADIDigitalIn catapultLimitSwitch(2);
 
