@@ -4,17 +4,19 @@
 #include "feedbackControllers/pid.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviors/drivetrain/initDrivetrain.hpp"
+#include "pros/rtos.hpp"
 
 namespace Pronounce
 {
 	class RotationController : public Behavior {
 	private:
+		pros::Mutex& drivetrainMutex;
 		PID& rotationPID;
 		AbstractTankDrivetrain& drivetrain;
 		ContinuousOdometry& odometry;
 
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID& rotationPID, Angle target) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name) {
+		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID& rotationPID, Angle target, pros::Mutex drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
 		}

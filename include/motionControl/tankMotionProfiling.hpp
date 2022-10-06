@@ -35,11 +35,19 @@ namespace Pronounce {
 		void update() {
 			QTime duration = currentTime() - startTime;
 
+			drivetrainMutex.take();
+
 			drivetrain.skidSteerVelocity(velocityProfile.getVelocityByTime(duration), 0.0);
+
+			drivetrainMutex.give();
 		}
 
 		void exit() {
+			drivetrainMutex.take();
+			
 			drivetrain.skidSteerVelocity(0.0, 0.0);
+
+			drivetrainMutex.give();
 		}
 
 		bool isDone() {
