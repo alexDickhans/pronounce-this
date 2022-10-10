@@ -137,7 +137,7 @@ namespace Pronounce {
 		 * @param leftVoltage The desired left voltage
 		 * @param rightVoltage The desired right voltage
 		 */
-		virtual void tankSteerVoltage(double leftVoltage, double rightVoltage) {}
+		virtual void tankSteerVoltage(int16_t leftVoltage, int16_t rightVoltage) {}
 
 		QSpeed getMaxSpeed() {
 			return maxSpeed;
