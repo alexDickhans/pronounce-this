@@ -33,9 +33,8 @@ namespace Pronounce {
 
 		void update() {
 
-			if (controller1->get_digital_new_press(LAUNCHER_STOP_BUTTON)) {
-				//  TODO: Replace with catapult shoot
-				ptoStateController.setCurrentBehavior(new Behavior());
+			if (controller1->get_digital_new_press(LAUNCH_BUTTON)) {
+				ptoStateController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
 
 			if (controller2->is_connected()) {

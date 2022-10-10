@@ -8,7 +8,6 @@
 
 
 namespace Pronounce {
-	// TODO: Add to the modelogic behavior group
 	/**
 	 * @brief Logs data from the robot that is not logged in the individual files
 	 * 
@@ -16,13 +15,14 @@ namespace Pronounce {
 	class LoggerService : public Behavior {
 	private:
 	public:
-		LoggerService();
+		LoggerService() {}
 
 		void initialize() {
 			
 		}
 		
 		void update() {
+			std::cout << "InputDrivetrainSpeed: " << (leftDrive1.get_target_velocity() + rightDrive1.get_target_velocity()) / 2.0 << std::endl;
 			std::cout << "OutputDrivetrainSpeed: " << drivetrain.getSpeed().getValue() << std::endl;
 		}
 
@@ -30,6 +30,6 @@ namespace Pronounce {
 
 		}
 
-		~LoggerService();
-	}	
+		~LoggerService() {}
+	};
 } // namespace Pronounce

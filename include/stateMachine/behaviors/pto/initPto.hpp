@@ -19,7 +19,9 @@ namespace Pronounce {
 
 	StateController ptoStateController("PtoStateController", &ptoIntaking);
 
-	void initPto() {
+	Wait ptoCatapultLaunch(&ptoCatapult, 500_ms);
 
+	void initPto() {
+		
 	}
 }

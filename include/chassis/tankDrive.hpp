@@ -19,7 +19,33 @@ namespace Pronounce {
 			return ((leftMotors.get_actual_velocities().at(1) + rightMotors.get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed);
 		}
 
+		void skidSteerVelocity(QSpeed speed, double turn) {
+			double power = speed.getValue();
 
+			double turnSpeed = turn * this->getMaxSpeed().Convert(metre/second);
+
+			double leftSpeed = power + turnSpeed;
+			double rightSpeed = power - turnSpeed;
+
+			double maxValue = max(leftSpeed, rightSpeed);
+
+			if (maxValue > maxMotorSpeed) {
+				leftSpeed = leftSpeed * (maxMotorSpeed/maxValue);
+				rightSpeed = rightSpeed * (maxMotorSpeed/maxValue);
+			}
+
+			this->tankSteerVelocity(leftSpeed, rightSpeed);
+		}
+
+		void tankSteerVelocity(QSpeed leftSpeed, QSpeed rightSpeed) {
+			this->leftMotors.move_velocity(leftSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
+			this->rightMotors.move_velocity(rightSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
+		}
+
+		void tankSteerVoltage(int16_t leftVoltage, int16_t rightVoltage) {
+			this->leftMotors.move_voltage(leftVoltage);
+			this->rightMotors.move_voltage(rightVoltage);
+		}
 
 		~TankDrivetrain() {
 

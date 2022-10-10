@@ -30,17 +30,21 @@ int postAuton() {
 void update() {
 
 	uint32_t startTime = pros::millis();
+	uint32_t startTimeMicros = pros::micros();
 
 	while (true) {
 		// Create stuff for exact delay
-		std::cout << "FrameTime: " << pros::millis() - startTime << std::endl;
 		startTime = pros::millis();
+		startTimeMicros = pros::micros();
+
 
 		odometry.update();
 		modeLogic.update();
 
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
+
+		std::cout << "FrameTime: " << pros::micros() - startTimeMicros << std::endl;
 	}
 }
 
@@ -70,8 +74,6 @@ void updateDisplay() {
 			+ "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
 			", R: " + std::to_string(rightDrive1Odom.getPosition().Convert(inch)) +
 			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());
-
-		
 
 		// Drivetrain
 		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
@@ -103,6 +105,7 @@ void initialize() {
 	tabview = lv_tabview_create(lv_scr_act(), NULL);
 
 	// Initialize functions
+	initHardware();
 	initDrivetrain();
 	initDisplay();
 	initPto();

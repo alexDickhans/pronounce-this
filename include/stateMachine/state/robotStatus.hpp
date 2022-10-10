@@ -28,9 +28,6 @@ namespace Pronounce {
 		}
 
 		void update() {
-			/// pros::vision_object_s_t biggestTurretDetection = turretVision.get_by_size(0);
-
-			// double angleChange = biggestTurretDetection.x_middle_coord;
 		}
 
 		void exit() {

@@ -3,6 +3,7 @@
 #include "api.h"
 #include "utils/ADIDigitalOutGroup.hpp"
 #include "stateMachine/behavior.hpp"
+#include "hardware/hardware.hpp"
 
 namespace Pronounce {
 	class Endgame : public Behavior {
@@ -13,11 +14,15 @@ namespace Pronounce {
 		Endgame(std::string name, pros::ADIDigitalOut& digitalOutputGroup, bool enabled);
 
 		void initialize() {
+			endgameMutex.take();
 			digitalOutputGroup.set_value(enabled);
+			endgameMutex.give();
 		}
 
 		void update() {
+			endgameMutex.take();
 			digitalOutputGroup.set_value(enabled);
+			endgameMutex.give();
 		}
 
 		void exit() {
