@@ -70,7 +70,7 @@ void updateDisplay() {
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel, (odometry.getPosition()->to_string()
+		lv_label_set_text(odomLabel, (odometry.getPosition().to_string()
 			+ "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
 			", R: " + std::to_string(rightDrive1Odom.getPosition().Convert(inch)) +
 			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());

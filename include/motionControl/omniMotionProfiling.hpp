@@ -37,7 +37,7 @@ namespace Pronounce {
 		void update() {
 			QTime duration = currentTime() - startTime;
 
-			double outputPower = pid->update(odometry->getPose()->getAngle().Convert(radian));
+			double outputPower = pid->update(odometry->getPose().getAngle().Convert(radian));
 
 			drivetrain.setDriveVectorVelocity(Vector((velocityProfile.getVelocityByTime(duration) * 1_s).Convert(inch) * speedMultiplier, direction), outputPower);
 		}

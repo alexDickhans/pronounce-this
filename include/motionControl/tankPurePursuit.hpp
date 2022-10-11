@@ -92,7 +92,7 @@ namespace Pronounce {
 		 * @return false Still more than max distance from the end of the path
 		 */
 		bool isDone(QLength maxDistance) {
-			return maxDistance > this->getPath().distanceFromEnd(Point(this->getOdometry()->getPosition()->getX(), this->getOdometry()->getPosition()->getY()));
+			return maxDistance > this->getPath().distanceFromEnd(Point(this->getOdometry()->getPosition().getX(), this->getOdometry()->getPosition().getY()));
 		}
 
 		~TankPurePursuit();

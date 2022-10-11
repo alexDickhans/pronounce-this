@@ -26,7 +26,7 @@ namespace Pronounce
 		}
 
 		void update() {
-			double output = rotationPID.update(odometry.getPose()->getAngle().Convert(radian));
+			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
 
 			drivetrain.skidSteerVelocity(0.0, output);
 		}

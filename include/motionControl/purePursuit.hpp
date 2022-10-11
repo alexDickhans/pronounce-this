@@ -137,7 +137,7 @@ namespace Pronounce {
 		 * @return false It isn't within maxDistance of the end
 		 */
 		bool isDone(QLength maxDistance) {
-			return maxDistance > odometry->getPosition()->distance(path.getPoint(path.getPath().size() - 1));
+			return maxDistance > odometry->getPosition().distance(path.getPoint(path.getPath().size() - 1));
 		}
 
 		void setPath(Path path) {
