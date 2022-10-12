@@ -17,11 +17,15 @@ namespace Pronounce {
 	PtoCatapult ptoCatapult("PtoCatapult", ptoPiston, false, leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -600);
 	PtoDrive ptoDrive("PtoDrivetrain", ptoPiston, true, leftPtoMotor, leftDrive1, rightPtoMotor, rightDrive1);
 
-	StateController ptoStateController("PtoStateController", &ptoDrive);
+	StateController ptoStateController("PtoStateController", &ptoIntaking);
+	StateController ptoStateExtensionController("PtoStateExtensionController", new Behavior());
 
-	Wait ptoCatapultLaunch(&ptoCatapult, 500_ms);
+	Wait ptoCatapultLaunch1(&ptoCatapult, 500_ms);
+
+	Sequence ptoCatapultLaunch("PtoCatapultLaunch");
 
 	void initPto() {
-		
+		ptoCatapultLaunch.addState(&ptoStateController, &ptoCatapultLaunch1);
+		ptoCatapultLaunch.addState(&ptoStateController, &ptoCatapult);
 	}
 }

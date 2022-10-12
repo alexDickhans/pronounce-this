@@ -34,7 +34,7 @@ namespace Pronounce {
 		void update() {
 
 			if (controller1->get_digital_new_press(LAUNCH_BUTTON)) {
-				ptoStateController.setCurrentBehavior(&ptoCatapultLaunch);
+				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
 
 			if (controller2->is_connected()) {

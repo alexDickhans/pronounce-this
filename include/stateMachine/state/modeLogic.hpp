@@ -25,6 +25,7 @@ namespace Pronounce {
 
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&ptoStateController);
+		stateControllers.addBehavior(&ptoStateExtensionController);
 		stateControllers.addBehavior(&drivetrainStateController);
 		stateControllers.addBehavior(&endgameStateController);
 		stateControllers.addBehavior(&teleopController);
@@ -52,6 +53,10 @@ namespace Pronounce {
 
 		void update() {
 			robotBehaviorMutex.take();
+
+			if (ptoStateController.isDone() && !catapultLimitSwitch.get_value()) {
+				ptoStateController.setCurrentBehavior(&ptoCatapult);
+			}
 
 			robotStatus->update();
 			stateControllers.update();

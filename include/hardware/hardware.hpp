@@ -39,7 +39,7 @@ namespace Pronounce {
 	pros::ADIDigitalOut ptoPiston(1, false);
 
 	// Catapult
-	pros::ADIDigitalIn catapultLimitSwitch(2);
+	pros::ADIDigitalIn catapultLimitSwitch('b');
 
 	pros::Rotation backEncoder(7);
 	TrackingWheel backOdomWheel(&backEncoder);
