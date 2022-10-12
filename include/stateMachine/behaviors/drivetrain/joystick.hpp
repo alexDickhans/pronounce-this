@@ -46,6 +46,7 @@ namespace Pronounce {
 
 			if (maxDriveSpeed == 0.0_in/second) {
 				drivetrain.skidSteerVelocity(0.0, 0.0);
+				drivetrainMutex.give();
 				return;
 			}
 

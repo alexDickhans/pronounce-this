@@ -2,6 +2,7 @@
 
 #include "api.h"
 #include "stateMachine/behavior.hpp"
+#include "hardware/hardware.hpp"
 
 namespace Pronounce {
 	class PtoIntake : public Behavior {

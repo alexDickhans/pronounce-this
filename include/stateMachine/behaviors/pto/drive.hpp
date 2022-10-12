@@ -31,7 +31,7 @@ namespace Pronounce {
 			this->leftPtoMotor.move_velocity(leftDriveMotor.get_target_velocity());
 			this->rightDriveMotor.move_velocity(rightDriveMotor.get_target_velocity());
 
-			ptoMutex.take();
+			ptoMutex.give();
 		}
 
 		void exit() {

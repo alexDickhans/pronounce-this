@@ -34,7 +34,7 @@ namespace Pronounce {
 	pros::Mutex ptoMutex;
 
 	pros::Motor leftPtoMotor(1, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightPtoMotor(1, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightPtoMotor(2, pros::E_MOTOR_GEAR_600, true);
 
 	pros::ADIDigitalOut ptoPiston(1, false);
 

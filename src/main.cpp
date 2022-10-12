@@ -35,7 +35,7 @@ void update() {
 	while (true) {
 		// Create stuff for exact delay
 		startTime = pros::millis();
-		startTimeMicros = pros::micros();
+		// startTimeMicros = pros::micros();
 
 
 		odometry.update();

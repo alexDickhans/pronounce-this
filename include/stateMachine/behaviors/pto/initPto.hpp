@@ -17,7 +17,7 @@ namespace Pronounce {
 	PtoCatapult ptoCatapult("PtoCatapult", ptoPiston, false, leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -600);
 	PtoDrive ptoDrive("PtoDrivetrain", ptoPiston, true, leftPtoMotor, leftDrive1, rightPtoMotor, rightDrive1);
 
-	StateController ptoStateController("PtoStateController", &ptoIntaking);
+	StateController ptoStateController("PtoStateController", &ptoDrive);
 
 	Wait ptoCatapultLaunch(&ptoCatapult, 500_ms);
 
