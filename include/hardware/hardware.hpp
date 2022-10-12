@@ -87,7 +87,7 @@ namespace Pronounce {
 
 		pros::Task::delay(10);
 
-		threeWheelOdom.reset(new Pose2D(34.0_in, 12.0_in, 0.0_deg));
+		threeWheelOdom.reset(Pose2D(34.0_in, 12.0_in, 0.0_deg));
 
 		odometryMutex.give();
 	}

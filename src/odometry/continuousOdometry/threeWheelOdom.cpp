@@ -2,14 +2,14 @@
 
 namespace Pronounce {
 	ThreeWheelOdom::ThreeWheelOdom(/* args */) : ContinuousOdometry() {
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* Orientation) : ContinuousOdometry() {
@@ -17,7 +17,7 @@ namespace Pronounce {
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
 		this->externalOrientation = externalOrientation;
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	void ThreeWheelOdom::update() {

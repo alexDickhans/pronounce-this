@@ -44,7 +44,7 @@ namespace Pronounce {
 		 * 
 		 * @param pose 
 		 */
-        ContinuousOdometry(Pose2D* pose);
+        ContinuousOdometry(Pose2D pose);
 
 		/**
 		 * @brief Get the Position object in a pointer
@@ -160,7 +160,7 @@ namespace Pronounce {
 		 * 
 		 */
         void reset() {
-            this->reset(new Pose2D());
+            this->reset(Pose2D());
         }
 
         ~ContinuousOdometry();

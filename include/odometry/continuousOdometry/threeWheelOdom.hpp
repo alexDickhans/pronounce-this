@@ -78,7 +78,7 @@ namespace Pronounce {
 		 * 
 		 * @param position The new position
 		 */
-        void reset(Pose2D* position) {
+        void reset(Pose2D position) {
             this->setPose(position);
             this->setResetPose(position);
             this->leftWheel->reset();
