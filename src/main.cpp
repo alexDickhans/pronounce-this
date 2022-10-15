@@ -68,7 +68,7 @@ void updateDisplay() {
 	lv_table_set_col_width(drivetrainTable, 1, 200);
 
 	// Flywheels
-	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Catapult");
+	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "PTO");
 	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
 
 	while (true) {
@@ -89,7 +89,7 @@ void updateDisplay() {
 		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel, "catapult");
+		lv_label_set_text(flywheelLabel, ("Speed: " + std::to_string(leftPtoMotor.get_actual_velocity())).c_str());
 
 		pros::Task::delay(50);
 	}
