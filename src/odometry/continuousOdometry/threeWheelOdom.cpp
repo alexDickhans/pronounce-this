@@ -2,14 +2,14 @@
 
 namespace Pronounce {
 	ThreeWheelOdom::ThreeWheelOdom(/* args */) : ContinuousOdometry() {
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* Orientation) : ContinuousOdometry() {
@@ -17,7 +17,7 @@ namespace Pronounce {
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
 		this->externalOrientation = externalOrientation;
-		this->reset(new Pose2D());
+		this->reset(Pose2D());
 	}
 
 	void ThreeWheelOdom::update() {
@@ -33,10 +33,10 @@ namespace Pronounce {
 		QLength deltaBack = backWheel->getChange();
 
 		// Get the last robot position
-		Pose2D* lastPose = this->getPose();
+		Pose2D lastPose = this->getPose();
 
 		// Calculate the change in orientation
-		Angle lastAngle = lastPose->getAngle();
+		Angle lastAngle = lastPose.getAngle();
 		Angle currentAngle = 0.0;
 
 		// If we are using external orientation and it is set we will use that values instead of the current angle
@@ -44,7 +44,7 @@ namespace Pronounce {
 			currentAngle = externalOrientation->getAngle();
 		}
 		else {
-			currentAngle = this->getResetPose()->getAngle().getValue() + (leftWheel->getPosition() - rightWheel->getPosition()).getValue() / (leftOffset + rightOffset).getValue();
+			currentAngle = this->getResetPose().getAngle().getValue() + (leftWheel->getPosition() - rightWheel->getPosition()).getValue() / (leftOffset + rightOffset).getValue();
 		}
 
 		// Calculate some values to use later
@@ -74,8 +74,8 @@ namespace Pronounce {
 		this->setCurrentVelocity(Vector(&localOffset));
 
 		// Add localOffset to the global offset
-		lastPose->add(localOffset);
-		lastPose->setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));// + orientationOffset.getValue());
+		lastPose.add(localOffset);
+		lastPose.setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));// + orientationOffset.getValue());
 
 		// Update the position
 		this->setPose(lastPose);

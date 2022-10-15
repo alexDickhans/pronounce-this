@@ -5,7 +5,7 @@ namespace Pronounce {
     OdomWheel::OdomWheel() {
     }
 
-    OdomWheel::OdomWheel(double radius) {
+    OdomWheel::OdomWheel(QLength radius) {
         this->radius = radius;
     }
 

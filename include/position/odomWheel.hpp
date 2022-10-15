@@ -22,7 +22,7 @@ namespace Pronounce {
         double tuningFactor = 1.0;
     public:
         OdomWheel();
-        OdomWheel(double radius);
+        OdomWheel(QLength radius);
 
         virtual void reset() {
             position = 0.0;

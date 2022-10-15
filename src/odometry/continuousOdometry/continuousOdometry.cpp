@@ -2,13 +2,13 @@
 
 namespace Pronounce {
     ContinuousOdometry::ContinuousOdometry() {
-        this->pose = new Pose2D();
-        this->resetPose = new Pose2D();
+        this->pose = Pose2D();
+        this->resetPose = Pose2D();
     }
 
-    ContinuousOdometry::ContinuousOdometry(Pose2D* position) {
+    ContinuousOdometry::ContinuousOdometry(Pose2D position) {
         this->pose = pose;
-        this->resetPose = new Pose2D();
+        this->resetPose = Pose2D();
     }
     
     ContinuousOdometry::~ContinuousOdometry() {

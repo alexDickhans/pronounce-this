@@ -14,14 +14,14 @@ namespace Pronounce {
 
         // Set position and path variables
         std::vector<Point> pathVector = path.getPath();
-        Pose2D* currentPose = odometry->getPose();
-        Point currentPoint = Point(currentPose->getX(), currentPose->getY());
+        Pose2D currentPose = odometry->getPose();
+        Point currentPoint = Point(currentPose.getX(), currentPose.getY());
 		QLength lookahead = this->currentProfile.lookaheadDistance;
 
         // Get lookahead point and vector from robot
         Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
         Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
-        lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPose->getAngle());
+        lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPose.getAngle());
 
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
         // PID controller behaves the same for different lookahead paths
@@ -31,7 +31,7 @@ namespace Pronounce {
 
 		Vector robotRelativeLookaheadVector(&currentPoint, &lookaheadPoint);
 		
-		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPose->getAngle());
+		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPose.getAngle());
 
 		QLength xDistance = robotRelativeLookaheadVector.getCartesian().getX();
 		double signedCurvature = (2.0 * xDistance).getValue() / pow(lookaheadVector.getMagnitude().getValue(), 2);

@@ -6,11 +6,13 @@
 #include "stateMachine/behaviorGroup.hpp"
 #include "stateMachine/parallel.hpp"
 #include "utils/utils.hpp"
+#include "loggerService.hpp"
 
-// TODO: clean up
 // TODO: Add docstrings
 
 namespace Pronounce {
+
+	LoggerService loggerService;
 
 	StateController stateExtensionController("GlobalStateExtensionsController", new Behavior());
 
@@ -19,17 +21,17 @@ namespace Pronounce {
 	StateController teleopController("TeleopController", new Behavior());
 
 	void initBehaviors() {
+		robotBehaviorMutex.take();
+
 		stateControllers.addBehavior(&stateExtensionController);
-		stateControllers.addBehavior(&intakeStateController);
-		stateControllers.addBehavior(&launcherStateExtensionController);
-		stateControllers.addBehavior(&launcherStateController);
+		stateControllers.addBehavior(&ptoStateController);
+		stateControllers.addBehavior(&ptoStateExtensionController);
 		stateControllers.addBehavior(&drivetrainStateController);
 		stateControllers.addBehavior(&endgameStateController);
 		stateControllers.addBehavior(&teleopController);
-	}
+		stateControllers.addBehavior(&loggerService);
 
-	void initSequences() {
-		
+		robotBehaviorMutex.give();
 	}
 
 	class ModeLogic : public Behavior {
@@ -41,38 +43,34 @@ namespace Pronounce {
 		}
 
 		void initialize() {
+			robotBehaviorMutex.take();
+
 			robotStatus->initialize();
 			stateControllers.initialize();
+
+			robotBehaviorMutex.give();
 		}
 
 		void update() {
-			robotStatus->update();
-			launcherIdle.setFlywheelSpeed(robotStatus->getFlywheelTarget());
-			launcherLaunching.setFlywheelSpeed(robotStatus->getFlywheelTarget());
-			launcherFullSpeed.setFlywheelSpeed(robotStatus->getFlywheelTarget());
+			robotBehaviorMutex.take();
 
-			double turretAngle = 0;
-			
-			if (false) {
-				turretAngle = clamp(angleDifference(robotStatus->getTurretAngle().Convert(radian), 0), -M_PI_2, M_PI_2);
-			} else {
-				turretAngle = clamp(angleDifference((robotStatus->getTurretAngle() - odometry.getAngle()).getValue(), 0), -M_PI_2, M_PI_2);
+			if (ptoStateController.isDone() && !catapultLimitSwitch.get_value()) {
+				ptoStateController.setCurrentBehavior(&ptoCatapult);
 			}
 
-			launcherStopped.setTurretAngle(turretAngle);
-			launcherIdle.setTurretAngle(turretAngle);
-			launcherLaunching.setTurretAngle(turretAngle);
-			launcherFullSpeed.setTurretAngle(turretAngle);
-
-			// Intake dejam
-
-			std::cout << "InputTurretAngle: " << turretAngle << std::endl;
+			robotStatus->update();
 			stateControllers.update();
+
+			robotBehaviorMutex.give();
 		}
 
 		void exit() {
+			robotBehaviorMutex.take();
+
 			robotStatus->exit();
 			stateControllers.exit();
+
+			robotBehaviorMutex.give();
 		}
 
 		bool isDone() {

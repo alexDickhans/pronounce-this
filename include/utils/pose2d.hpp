@@ -57,10 +57,6 @@ namespace Pronounce {
 		 */
         Pose2D(QLength x, QLength y, Angle angle) : Point(x, y), angle(angle) {}
 
-		Pose2D(Pose2D* pose) {
-			Pose2D(pose->getX(), pose->getY(), pose->getAngle());
-		}
-
 		/**
 		 * @brief Get a formatted string of the object
 		 * 
@@ -108,17 +104,6 @@ namespace Pronounce {
 		void operator=(Point pose) {
             this->setX(pose.getX());
             this->setY(pose.getY());
-        }
-
-		/**
-		 * @brief Set the current pose with the = operator with a pointer
-		 * 
-		 * @param pose The new pose
-		 */
-        void operator=(Pose2D* position) {
-            this->setX(position->getX());
-            this->setY(position->getY());
-            this->setAngle(position->getAngle());
         }
 
 		/**

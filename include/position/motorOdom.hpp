@@ -13,7 +13,7 @@ namespace Pronounce
     private:
         pros::Motor* motor;
     public:
-        MotorOdom(pros::Motor* motor, double radius);
+        MotorOdom(pros::Motor* motor, QLength radius);
 
         void reset() {
             motor->tare_position();

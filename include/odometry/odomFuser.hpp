@@ -26,26 +26,26 @@ namespace Pronounce {
 			this->setCurrentVelocity(continuousOdometry.getCurrentVelocity());
 
 			// get the pose from the continuous odometry and use that as the baseline
-			Pose2D* currentPose = continuousOdometry.getPose();
+			Pose2D currentPose = continuousOdometry.getPose();
 
 			// Go through each of the interrupt odoms in a list, the sequential order selected by the user will allow the more accurate odometry types to go last and result in the best positioning
 			for (int i = 0; i < interruptOdometrys.size(); i++) {
-				if (interruptOdometrys.at(i)->positionReady(*currentPose, this->getCurrentVelocity())) {
+				if (interruptOdometrys.at(i)->positionReady(currentPose, this->getCurrentVelocity())) {
 					try {
-						currentPose = new Pose2D(interruptOdometrys.at(i)->getPosition(*currentPose, this->getCurrentVelocity()));
+						currentPose = Pose2D(interruptOdometrys.at(i)->getPosition(currentPose, this->getCurrentVelocity()));
 					} catch (std::exception e) {
 						std::cout << "Interrupt position not ready. Index: " << i << std::endl;
 					}
 				}
 			}
 
-			currentPose->log("CurrentPose");
+			currentPose.log("CurrentPose");
 
 			// Set the pose to the end result
 			this->setPose(currentPose);
 		}
 
-		void reset(Pose2D* pose) {
+		void reset(Pose2D pose) {
 			this->setPose(pose);
 			this->setResetPose(pose);
 			this->setCurrentVelocity(Vector());

@@ -32,8 +32,8 @@ int main() {
 	TestBehavior defaultState = TestBehavior("Default");
 
 	// Create wait states to test the wait class with
-	Wait codeOrange2Seconds = Wait(&codeOrange, 2000);
-	Wait codeGreen3Seconds = Wait(&codeGreen, 3000);
+	Wait codeOrange2Seconds = Wait(&codeOrange, 2_s);
+	Wait codeGreen3Seconds = Wait(&codeGreen, 3_s);
 
 	// Create a state machine for both the state extensions(Parallel/sequences) and a state machine for example a subsystem
 	StateController stateController = StateController("StateController", &defaultState);

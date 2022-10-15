@@ -1,13 +1,13 @@
 #pragma once
 
 #include "api.h"
-#include "drivetrain.hpp"
+#include "hardwareDrivetrain.hpp"
 #include "abstractHolonomicDrivetrain.hpp"
 #include "utils/vector.hpp"
 #include <math.h>
 
 namespace Pronounce {
-	class XDrive : public Drivetrain, public AbstractHolonomicDrivetrain {
+	class XDrive : public HardwareDrivetrain, public AbstractHolonomicDrivetrain {
 	private:
 
 		pros::Motor* frontLeftMotor;

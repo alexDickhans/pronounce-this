@@ -18,13 +18,13 @@ namespace Pronounce {
 		 * @brief The updated pose of the robot
 		 * 
 		 */
-        Pose2D* pose;
+        Pose2D pose;
 
 		/**
 		 * @brief The pose on the last reset
 		 * 
 		 */
-        Pose2D* resetPose;
+        Pose2D resetPose;
 
 		/**
 		 * @brief The current velocity and direction of the velocity in the form of a vector
@@ -44,14 +44,14 @@ namespace Pronounce {
 		 * 
 		 * @param pose 
 		 */
-        ContinuousOdometry(Pose2D* pose);
+        ContinuousOdometry(Pose2D pose);
 
 		/**
 		 * @brief Get the Position object in a pointer
 		 * 
 		 * @return Pose2D* Pointer to the current position
 		 */
-        Pose2D* getPosition() {
+        Pose2D getPosition() {
             return this->pose;
         }
 
@@ -61,7 +61,7 @@ namespace Pronounce {
 		 * @return QLength The x distance from the bottom left corner of the field
 		 */
 		QLength getX() {
-			return this->pose->getX();
+			return this->pose.getX();
 		}
 
 		/**
@@ -70,7 +70,7 @@ namespace Pronounce {
 		 * @return QLength The y distance from the bottom of the field
 		 */
 		QLength getY() {
-			return this->pose->getY();
+			return this->pose.getY();
 		}
 
 		/**
@@ -79,7 +79,7 @@ namespace Pronounce {
 		 * @return Angle Angle from the driver station
 		 */
 		Angle getAngle() {
-			return this->pose->getAngle();
+			return this->pose.getAngle();
 		}
 
 		/**
@@ -87,7 +87,7 @@ namespace Pronounce {
 		 * 
 		 * @return Pose2D* Pose2D relative to the bottom left corner of the field
 		 */
-		Pose2D* getPose() {
+		Pose2D getPose() {
 			return pose;
 		}
 
@@ -98,8 +98,8 @@ namespace Pronounce {
 		 * 
 		 * @param pose The new pose
 		 */
-        void setPose(Pose2D* pose) {
-            this->pose->operator=(pose);
+        void setPose(Pose2D pose) {
+            this->pose = pose;
         }
 
 		/**
@@ -107,7 +107,7 @@ namespace Pronounce {
 		 * 
 		 * @return Pose2D* The last reset pose
 		 */
-        Pose2D* getResetPose() {
+        Pose2D getResetPose() {
             return this->resetPose;
         }
 
@@ -116,8 +116,8 @@ namespace Pronounce {
 		 * 
 		 * @param resetPose 
 		 */
-        void setResetPose(Pose2D* resetPose) {
-            this->resetPose->operator=(resetPose);
+        void setResetPose(Pose2D resetPose) {
+            this->resetPose = resetPose;
         }
 		
 		/**
@@ -149,9 +149,9 @@ namespace Pronounce {
 		 * 
 		 * @param pose The current pose of the robot
 		 */
-        virtual void reset(Pose2D* pose) {
-            this->pose->operator=(pose);
-            this->resetPose->operator=(pose);
+        virtual void reset(Pose2D pose) {
+            this->pose.operator=(pose);
+            this->resetPose.operator=(pose);
 			this->currentVelocity.operator=(Vector());
         }
 
@@ -160,7 +160,7 @@ namespace Pronounce {
 		 * 
 		 */
         void reset() {
-            this->reset(new Pose2D());
+            this->reset(Pose2D());
         }
 
         ~ContinuousOdometry();

@@ -1,13 +1,16 @@
 #pragma once
 
-#include "launcher/launcher.hpp"
-#include "launcher/initLauncher.hpp"
+#include "pros/rtos.hpp"
+
+pros::Mutex robotBehaviorMutex;
 
 #include "drivetrain/joystick.hpp"
 #include "drivetrain/initDrivetrain.hpp"
 
-#include "intake/intake.hpp"
-#include "intake/initIntake.hpp"
+#include "pto/intake.hpp"
+#include "pto/initPto.hpp"
+#include "pto/drive.hpp"
+#include "pto/catapult.hpp"
 
 #include "endgame/endgame.hpp"
 #include "endgame/initEndgame.hpp"
