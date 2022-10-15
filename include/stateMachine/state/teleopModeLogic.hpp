@@ -6,6 +6,7 @@
 #include "robotStatus.hpp"
 #include "driver.h"
 #include "modeLogic.hpp"
+#include "hardware/hardware.hpp"
 
 // TODO: Clean up
 // TODO: Add docstring
@@ -35,6 +36,14 @@ namespace Pronounce {
 
 			if (controller1->get_digital_new_press(LAUNCH_BUTTON)) {
 				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+			}
+
+			if (controller1->get_digital_new_press(INTAKE_BUTTON)) {
+				ptoStateController.setCurrentBehavior(&ptoIntaking);
+			}
+
+			if (controller1->get_digital_new_press(PTO_DRIVE_BUTTON)) {
+				ptoStateController.setCurrentBehavior(&ptoDrive);
 			}
 
 			if (controller2->is_connected()) {

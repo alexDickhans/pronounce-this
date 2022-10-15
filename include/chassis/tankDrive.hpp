@@ -12,7 +12,7 @@ namespace Pronounce {
 		double maxMotorSpeed = 0.0;
 	public:
 		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group& leftMotors, pros::Motor_Group& rightMotors, double maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
-
+			this->maxMotorSpeed = maxMotorSpeed;
 		}
 
 		QSpeed getSpeed() {
@@ -29,15 +29,16 @@ namespace Pronounce {
 
 			double maxValue = max(leftSpeed, rightSpeed);
 
-			if (maxValue > maxMotorSpeed) {
-				leftSpeed = leftSpeed * (maxMotorSpeed/maxValue);
-				rightSpeed = rightSpeed * (maxMotorSpeed/maxValue);
+			if (maxValue > this->getMaxSpeed().getValue()) {
+				leftSpeed = leftSpeed * (this->getMaxSpeed().getValue()/maxValue);
+				rightSpeed = rightSpeed * (this->getMaxSpeed().getValue()/maxValue);
 			}
 
 			this->tankSteerVelocity(leftSpeed, rightSpeed);
 		}
 
 		void tankSteerVelocity(QSpeed leftSpeed, QSpeed rightSpeed) {
+			std::cout << "LeftVelocity: " << leftSpeed.Convert(inch/second) << std::endl << "RightVelocity: " << rightSpeed.Convert(inch/second) << std::endl;
 			this->leftMotors.move_velocity(leftSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
 			this->rightMotors.move_velocity(rightSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
 		}

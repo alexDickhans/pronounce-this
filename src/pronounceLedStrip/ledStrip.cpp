@@ -14,15 +14,11 @@ namespace PronounceLedLib {
 
 		int currentLed = fmod(timeSinceUpdate, 1.0) * ledStrip.length();
 
-		std::cout << currentLed << std::endl;
-
 		if ((int)timeSinceUpdate % 2 == 1.0) {
-			std::cout << "Color 1" << std::endl;
 			ledStrip[currentLed] = colors.color1;
 			ledStrip.update();
 		}
 		else {
-			std::cout << "Color 2" << std::endl;
 			ledStrip[currentLed] = colors.color2;
 			ledStrip.update();
 		}

@@ -16,6 +16,9 @@ namespace Pronounce {
 		PtoIntake(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed);
 
 		void initialize() {
+			leftLedController.setColors(greenColors);
+			rightLedController.setColors(greenColors);
+
 			ptoMutex.take();
 
 			ptoPiston.set_value(pistonState);

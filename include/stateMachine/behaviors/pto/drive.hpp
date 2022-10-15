@@ -2,6 +2,7 @@
 
 #include "api.h"
 #include "stateMachine/behavior.hpp"
+#include "hardware/hardware.hpp"
 
 namespace Pronounce {
 	class PtoDrive : public Behavior {
@@ -16,6 +17,8 @@ namespace Pronounce {
 		PtoDrive(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor);
 
 		void initialize() {
+			leftLedController.setColors(blueColors);
+			rightLedController.setColors(blueColors);
 			ptoMutex.take();
 
 			this->ptoPiston.set_value(pistonState);
@@ -28,8 +31,10 @@ namespace Pronounce {
 
 			this->ptoPiston.set_value(pistonState);
 
-			this->leftPtoMotor.move_velocity(leftDriveMotor.get_target_velocity());
-			this->rightDriveMotor.move_velocity(rightDriveMotor.get_target_velocity());
+			std::cout << "DrivetrainLeftVoltage: " << rightDriveMotor.get_voltage() << std::endl;
+
+			this->leftPtoMotor.move_voltage(leftVoltage);
+			this->rightPtoMotor.move_voltage(rightVoltage);
 
 			ptoMutex.give();
 		}

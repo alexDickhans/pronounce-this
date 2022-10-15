@@ -36,7 +36,7 @@ namespace Pronounce {
 			this->deadband = deadband;
 			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
-			this->maxDriveSpeed = maxDriveSpeed;
+			this->maxDriveSpeed = maxSpeed;
 		}
 
 		void initialize() {}
@@ -50,10 +50,16 @@ namespace Pronounce {
 				return;
 			}
 
-			double y = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+			double left = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double right = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
 
-			drivetrain.skidSteerVelocity(y * maxDriveSpeed, turn);
+			std::cout << "DriverInputLeft: " << left << std::endl;
+			std::cout << "DriverInputRight: " << right << std::endl;
+
+			drivetrain.tankSteerVoltage(left*12000, right*12000);
+
+			leftVoltage = left*12000;
+			rightVoltage = right*12000;
 
 			drivetrainMutex.give();
 		}

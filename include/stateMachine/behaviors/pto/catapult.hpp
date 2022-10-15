@@ -4,7 +4,7 @@
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {
-	class PtoCatapult : public Behavior{
+	class PtoCatapult : public Behavior {
 	private:
 		pros::ADIDigitalOut& ptoPiston;
 		pros::ADIDigitalIn& catapultLimitSwitch;
@@ -16,11 +16,14 @@ namespace Pronounce {
 		PtoCatapult(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::ADIDigitalIn& catapultLimitSwitch, double speed);
 
 		void initialize() {
+			leftLedController.setColors(redColors);
+			rightLedController.setColors(redColors);
+			
 			ptoMutex.take();
 
 			ptoPiston.set_value(pistonState);
-			leftPtoMotor.move_velocity(speed*600);
-			rightPtoMotor.move_velocity(speed*600);
+			leftPtoMotor.move_velocity(speed * 600);
+			rightPtoMotor.move_velocity(speed * 600);
 
 			ptoMutex.give();
 		}
@@ -29,14 +32,14 @@ namespace Pronounce {
 			ptoMutex.take();
 
 			ptoPiston.set_value(pistonState);
-			leftPtoMotor.move_velocity(speed*600);
-			rightPtoMotor.move_velocity(speed*600);
+			leftPtoMotor.move_velocity(speed * 600);
+			rightPtoMotor.move_velocity(speed * 600);
 
 			ptoMutex.give();
 		}
 
 		void exit() {
-			
+
 		}
 
 		bool isDone() {
@@ -45,12 +48,12 @@ namespace Pronounce {
 
 		~PtoCatapult();
 	};
-	
+
 	PtoCatapult::PtoCatapult(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::ADIDigitalIn& catapultLimitSwitch, double speed) : Behavior(name), ptoPiston(ptoPiston), pistonState(pistonState), leftPtoMotor(leftPtoMotor), rightPtoMotor(rightPtoMotor), catapultLimitSwitch(catapultLimitSwitch), speed(speed) {
 	}
-	
+
 	PtoCatapult::~PtoCatapult()
 	{
 	}
-	
+
 } // namespace Pronounce

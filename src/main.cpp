@@ -7,6 +7,8 @@ RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
 TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
 
+pros::Mutex robotMutex;
+
 // SECTION Auton
 
 /**
@@ -35,11 +37,12 @@ void update() {
 	while (true) {
 		// Create stuff for exact delay
 		startTime = pros::millis();
-		// startTimeMicros = pros::micros();
+		startTimeMicros = pros::micros();
 
-
+		robotMutex.take();
 		odometry.update();
 		modeLogic.update();
+		robotMutex.give();
 
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
@@ -92,8 +95,18 @@ void updateDisplay() {
 	}
 }
 
+void ledUpdate() {
+	while(1) {
+		leftLedController.update();
+		pros::Task::delay(10);
+		rightLedController.update();
+		pros::Task::delay(10);
+	}
+}
+
 void initDisplay() {
 	pros::Task display(updateDisplay);
+	pros::Task leds(ledUpdate);
 }
 
 /**
@@ -101,19 +114,23 @@ void initDisplay() {
  */
 void initialize() {
 
+	robotMutex.take();
+
 	lv_init();
 	tabview = lv_tabview_create(lv_scr_act(), NULL);
 
 	// Initialize functions
 	initHardware();
 	initDrivetrain();
-	initDisplay();
 	initPto();
 	initBehaviors();
+	initDisplay();
 
 	modeLogic.initialize();
 
 	pros::Task modeLogicTask = pros::Task(update);
+
+	robotMutex.give();
 }
 
 // !SECTION
@@ -175,14 +192,9 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-	pros::delay(10);
-	
+	robotMutex.take();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
-
-	// Driver Control Loop
-	while (true) {
-		pros::delay(10);
-	}
+	robotMutex.give();
 }
 
 // !SECTION
