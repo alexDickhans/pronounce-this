@@ -31,6 +31,10 @@ int postAuton() {
 
 void update() {
 
+	robotMutex.take();
+	modeLogic.initialize();
+	robotMutex.give();
+
 	uint32_t startTime = pros::millis();
 	uint32_t startTimeMicros = pros::micros();
 
@@ -61,8 +65,8 @@ void updateDisplay() {
 	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
 	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
 
-	lv_table_set_row_cnt(drivetrainTable, 2);
-	lv_table_set_col_cnt(drivetrainTable, 4);
+	lv_table_set_row_cnt(drivetrainTable, 4);
+	lv_table_set_col_cnt(drivetrainTable, 2);
 
 	lv_table_set_col_width(drivetrainTable, 0, 200);
 	lv_table_set_col_width(drivetrainTable, 1, 200);
@@ -125,8 +129,6 @@ void initialize() {
 	initPto();
 	initBehaviors();
 	initDisplay();
-
-	modeLogic.initialize();
 
 	pros::Task modeLogicTask = pros::Task(update);
 
