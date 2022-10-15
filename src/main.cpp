@@ -1,7 +1,7 @@
 #include "main.h"
 
 // LVGL
-lv_obj_t* tabview;
+std::shared_ptr<lv_obj_t> tabview;
 
 RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
@@ -58,42 +58,42 @@ void update() {
 void updateDisplay() {
 
 	// Odom
-	lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
-	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
+	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
+	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
 
 	// Drivetrain
-	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
-	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
+	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Drivetrain"));
+	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get(), NULL));
 
-	lv_table_set_row_cnt(drivetrainTable, 4);
-	lv_table_set_col_cnt(drivetrainTable, 2);
+	lv_table_set_row_cnt(drivetrainTable.get(), 4);
+	lv_table_set_col_cnt(drivetrainTable.get(), 2);
 
-	lv_table_set_col_width(drivetrainTable, 0, 200);
-	lv_table_set_col_width(drivetrainTable, 1, 200);
+	lv_table_set_col_width(drivetrainTable.get(), 0, 200);
+	lv_table_set_col_width(drivetrainTable.get(), 1, 200);
 
 	// Flywheels
-	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "PTO");
-	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
+	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
+	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel, (odometry.getPosition().to_string()
+		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()
 			+ "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
 			", R: " + std::to_string(rightDrive1Odom.getPosition().Convert(inch)) +
 			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
-		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(leftPtoMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 2, 0, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(leftPtoMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel, ("Speed: " + std::to_string(leftPtoMotor.get_actual_velocity())).c_str());
+		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(leftPtoMotor.get_actual_velocity())).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -109,8 +109,8 @@ void ledUpdate() {
 }
 
 void initDisplay() {
-	pros::Task display(updateDisplay);
-	pros::Task leds(ledUpdate);
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
+	pros::Task leds(ledUpdate, TASK_PRIORITY_MIN);
 }
 
 /**
@@ -121,7 +121,7 @@ void initialize() {
 	robotMutex.take();
 
 	lv_init();
-	tabview = lv_tabview_create(lv_scr_act(), NULL);
+	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
 
 	// Initialize functions
 	initHardware();
@@ -130,7 +130,7 @@ void initialize() {
 	initBehaviors();
 	initDisplay();
 
-	pros::Task modeLogicTask = pros::Task(update);
+	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
 
 	robotMutex.give();
 }
@@ -143,7 +143,9 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
+	robotMutex.take();
 	teleopController.useDefaultBehavior();
+	robotMutex.give();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -156,7 +158,6 @@ void disabled() {
 
 		pros::delay(200);
 	}
-
 }
 
 // !SECTION
