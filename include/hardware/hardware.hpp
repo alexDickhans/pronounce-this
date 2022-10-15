@@ -47,8 +47,8 @@ namespace Pronounce {
 
 	pros::Rotation backEncoder(11);
 	TrackingWheel backOdomWheel(&backEncoder);
-	MotorOdom leftDrive1Odom(&leftDrive1, 2.75_in);
-	MotorOdom rightDrive1Odom(&rightDrive1, 2.75_in);
+	MotorOdom leftDrive1Odom(&leftDrive1, 3.25_in);
+	MotorOdom rightDrive1Odom(&rightDrive1, 3.25_in);
 
 	// Inertial Measurement Unit
 	// pros::Imu imu(19);
@@ -58,7 +58,7 @@ namespace Pronounce {
 
 	pros::Mutex odometryMutex;
 
-	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, &backOdomWheel, &averageImu);
+	ThreeWheelOdom threeWheelOdom(std::make_shared<OdomWheel>(leftDrive1Odom), std::make_shared<OdomWheel>(rightDrive1Odom), std::make_shared<OdomWheel>(backOdomWheel), std::make_shared<Orientation>(averageImu));
 
 	// GPS sensor
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);

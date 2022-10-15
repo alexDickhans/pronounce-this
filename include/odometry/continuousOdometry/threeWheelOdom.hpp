@@ -19,7 +19,7 @@ namespace Pronounce {
 		 * @brief Odometry wheels
 		 * 
 		 */
-        OdomWheel* leftWheel, * rightWheel, * backWheel;
+        std::shared_ptr<OdomWheel> leftWheel, rightWheel, backWheel;
 
 		/**
 		 * @brief Offset from the center of rotation
@@ -31,7 +31,7 @@ namespace Pronounce {
 		 * @brief The inertial measurement unit that can be used for orientation
 		 * 
 		 */
-		Orientation* externalOrientation;
+		std::shared_ptr<Orientation> externalOrientation;
 
 		/**
 		 * @brief If true it will use the imu for orientation calculations instead of the parallel wheels
@@ -55,7 +55,7 @@ namespace Pronounce {
 		 * @param rightWheel The right odom wheel
 		 * @param backWheel The back odom wheel
 		 */
-        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel);
+        ThreeWheelOdom(std::shared_ptr<OdomWheel> leftWheel, std::shared_ptr<OdomWheel> rightWheel, std::shared_ptr<OdomWheel> backWheel);
 
 		/**
 		 * @brief Construct a new Three Wheel Odom object with all values set to zero and odom and imus set
@@ -65,7 +65,7 @@ namespace Pronounce {
 		 * @param backWheel The back odom wheel
 		 * @param imu The inertial measurement system for the robot
 		 */
-        ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* externalOrientation);
+        ThreeWheelOdom(std::shared_ptr<OdomWheel> leftWheel, std::shared_ptr<OdomWheel> rightWheel, std::shared_ptr<OdomWheel> backWheel, std::shared_ptr<Orientation> externalOrientation);
 
 		/**
 		 * @brief Update all the values using the new data
@@ -145,7 +145,7 @@ namespace Pronounce {
 		 * 
 		 * @return OdomWheel* Pointer to the left odom wheel
 		 */
-        OdomWheel* getLeftWheel() {
+        std::shared_ptr<OdomWheel> getLeftWheel() {
             return leftWheel;
         }
 
@@ -154,7 +154,7 @@ namespace Pronounce {
 		 * 
 		 * @param leftWheel Pointer to the new left odom wheel
 		 */
-        void setLeftWheel(OdomWheel* leftWheel) {
+        void setLeftWheel(std::shared_ptr<OdomWheel> leftWheel) {
             this->leftWheel = leftWheel;
         }
 
@@ -163,7 +163,7 @@ namespace Pronounce {
 		 * 
 		 * @return OdomWheel* Pointer to the right odom wheel
 		 */
-        OdomWheel* getRightWheel() {
+        std::shared_ptr<OdomWheel> getRightWheel() {
             return rightWheel;
         }
 
@@ -172,7 +172,7 @@ namespace Pronounce {
 		 * 
 		 * @param rightWheel Pointer to the new right odom wheel
 		 */
-        void setRightWheel(OdomWheel* rightWheel) {
+        void setRightWheel(std::shared_ptr<OdomWheel> rightWheel) {
             this->rightWheel = rightWheel;
         }
 
@@ -181,7 +181,7 @@ namespace Pronounce {
 		 * 
 		 * @return OdomWheel* Pointer to the right odom wheel
 		 */
-        OdomWheel* getBackWheel() {
+        std::shared_ptr<OdomWheel> getBackWheel() {
             return backWheel;
         }
 
@@ -190,7 +190,7 @@ namespace Pronounce {
 		 * 
 		 * @param backWheel Pointer to the new back odom wheel
 		 */
-        void setBackWheel(OdomWheel* backWheel) {
+        void setBackWheel(std::shared_ptr<OdomWheel> backWheel) {
             this->backWheel = backWheel;
         }
 
