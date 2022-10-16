@@ -11,19 +11,15 @@ namespace Pronounce
 {
     class MotorOdom : public OdomWheel {
     private:
-        pros::Motor* motor;
+        pros::Motor& motor;
     public:
-        MotorOdom(pros::Motor* motor, QLength radius);
+        MotorOdom(pros::Motor& motor, QLength radius);
 
         void reset() {
-            motor->tare_position();
+            motor.tare_position();
         }
 
-        void setMotor(pros::Motor* motor) {
-            this->motor = motor;
-        }
-
-        pros::Motor* getMotor() {
+        pros::Motor& getMotor() {
             return this->motor;
         }
 
