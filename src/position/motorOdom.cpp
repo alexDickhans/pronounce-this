@@ -1,8 +1,8 @@
 #include "motorOdom.hpp"
 
 namespace Pronounce {
-    MotorOdom::MotorOdom(pros::Motor& motor, QLength radius) : OdomWheel(radius), motor(motor) {
-        this->motor.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+    MotorOdom::MotorOdom(std::shared_ptr<pros::Motor> motor, QLength radius) : OdomWheel(radius), motor(motor) {
+        this->motor->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
     }
 
     MotorOdom::~MotorOdom() {

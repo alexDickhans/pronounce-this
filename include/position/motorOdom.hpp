@@ -11,15 +11,15 @@ namespace Pronounce
 {
     class MotorOdom : public OdomWheel {
     private:
-        pros::Motor& motor;
+        std::shared_ptr<pros::Motor> motor;
     public:
-        MotorOdom(pros::Motor& motor, QLength radius);
+        MotorOdom(std::shared_ptr<pros::Motor> motor, QLength radius);
 
         void reset() {
-            motor.tare_position();
+            motor->tare_position();
         }
 
-        pros::Motor& getMotor() {
+        std::shared_ptr<pros::Motor> getMotor() {
             return this->motor;
         }
 

@@ -47,8 +47,8 @@ namespace Pronounce {
 
 	pros::Rotation backEncoder(11);
 	TrackingWheel backOdomWheel(&backEncoder);
-	MotorOdom leftDrive1Odom(&leftDrive1, 3.25_in);
-	MotorOdom rightDrive1Odom(&rightDrive1, 3.25_in);
+	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive1), 3.25_in);
+	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive1), 3.25_in);
 
 	// Inertial Measurement Unit
 	// pros::Imu imu(19);
