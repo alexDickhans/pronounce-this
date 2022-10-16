@@ -46,7 +46,7 @@ namespace Pronounce {
 	pros::ADIDigitalIn catapultLimitSwitch('b');
 
 	pros::Rotation backEncoder(11);
-	TrackingWheel backOdomWheel(&backEncoder);
+	TrackingWheel backOdomWheel(std::make_shared<pros::Rotation>(backEncoder), 2.75_in);
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive1), 3.25_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive1), 3.25_in);
 

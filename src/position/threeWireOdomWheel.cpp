@@ -4,7 +4,7 @@ namespace Pronounce {
     AdiOdomWheel::AdiOdomWheel() {
     }
 
-    AdiOdomWheel::AdiOdomWheel(pros::ADIEncoder* encoder) {
+    AdiOdomWheel::AdiOdomWheel(std::shared_ptr<pros::ADIEncoder> encoder) {
         this->encoder = encoder;
     }
     

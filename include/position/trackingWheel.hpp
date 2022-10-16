@@ -11,10 +11,10 @@ namespace Pronounce
 {
     class TrackingWheel : public OdomWheel {
     private:
-        pros::Rotation* rotationSensor;
+        std::shared_ptr<pros::Rotation> rotationSensor;
     public:
         TrackingWheel();
-        TrackingWheel(pros::Rotation* rotationSensor);
+        TrackingWheel(std::shared_ptr<pros::Rotation> rotationSensor, QLength radius);
 
         void reset() {
             rotationSensor->reset_position();

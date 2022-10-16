@@ -9,12 +9,12 @@
 // TODO: add comments
 
 namespace Pronounce {
-    class  AdiOdomWheel : public OdomWheel {
+    class AdiOdomWheel : public OdomWheel {
     private:
-        pros::ADIEncoder* encoder;
+        std::shared_ptr<pros::ADIEncoder> encoder;
     public:
         AdiOdomWheel();
-        AdiOdomWheel(pros::ADIEncoder* encoder);
+        AdiOdomWheel(std::shared_ptr<pros::ADIEncoder> encoder);
 
         void update() {
             this->setPosition((encoder->get_value()/360.0) * this->getRadius().Convert(metre) * 1_pi * 2.0 * this->getTuningFactor());
