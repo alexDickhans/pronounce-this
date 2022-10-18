@@ -82,6 +82,8 @@ namespace Pronounce {
 	PronounceLedLib::LedStripController leftLedController(leftLeds, whiteColors, 0.7);
 	PronounceLedLib::LedStripController rightLedController(rightLeds, whiteColors, 0.7);
 
+	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
+
 	void initHardware() {
 
 		odometryMutex.take();

@@ -16,7 +16,7 @@ namespace Pronounce
 		ContinuousOdometry& odometry;
 
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID& rotationPID, Angle target, pros::Mutex drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID& rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
 		}
