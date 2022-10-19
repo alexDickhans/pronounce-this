@@ -23,9 +23,9 @@ namespace Pronounce {
 	pros::Motor leftDrive1(3, pros::E_MOTOR_GEAR_600, false);
 	pros::Motor leftDrive2(5, pros::E_MOTOR_GEAR_600, false);
 	pros::Motor leftDrive3(7, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive1(4, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive1(4, pros::E_MOTOR_GEAR_600, true);
 	pros::Motor rightDrive2(6, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive3(8, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive3(8, pros::E_MOTOR_GEAR_600, true);
 
 	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
 	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
@@ -75,7 +75,7 @@ namespace Pronounce {
 
 	PronounceLedLib::AnimationColors blueColors = { 0x0000008B, 0x00004B4B };
 	PronounceLedLib::AnimationColors redColors = { 0x008C2427, 0x008C142C };
-	PronounceLedLib::AnimationColors orangeColors = { 0x007F3000, 0x00754300 };
+	PronounceLedLib::AnimationColors orangeColors = { 0x00804000, 0x00854300 };
 	PronounceLedLib::AnimationColors greenColors = { 0x00008000, 0x00308020 };
 	PronounceLedLib::AnimationColors whiteColors = { 0x00808080, 0x00707070 };
 

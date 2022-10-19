@@ -64,6 +64,12 @@ namespace Pronounce {
 				right = power - turn;
 			}
 
+			double power = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+
+			left = power + turn;
+			right = power - turn;
+
 			std::cout << "DriverInputLeft: " << left << std::endl;
 			std::cout << "DriverInputRight: " << right << std::endl;
 
