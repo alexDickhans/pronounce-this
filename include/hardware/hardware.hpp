@@ -70,8 +70,8 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut endgameDigitalOutputs(7, false);
 
-	pros::ADILed leftLeds({ 20, 'a' }, 20);
-	pros::ADILed rightLeds({ 20, 'b' }, 20);
+	pros::ADILed leftLeds({ 10, 'a' }, 20);
+	pros::ADILed rightLeds({ 10, 'b' }, 20);
 
 	PronounceLedLib::AnimationColors blueColors = { 0x0000008B, 0x00004B4B };
 	PronounceLedLib::AnimationColors redColors = { 0x008C2427, 0x008C142C };
