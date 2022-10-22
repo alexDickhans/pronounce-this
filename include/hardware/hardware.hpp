@@ -45,10 +45,10 @@ namespace Pronounce {
 	// Catapult
 	pros::ADIDigitalIn catapultLimitSwitch('b');
 
-	pros::Rotation backEncoder(11);
+	pros::Rotation backEncoder(9);
 	TrackingWheel backOdomWheel(std::make_shared<pros::Rotation>(backEncoder), 2.75_in);
-	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive1), 3.25_in);
-	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive1), 3.25_in);
+	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 3.25_in);
+	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 3.25_in);
 
 	// Inertial Measurement Unit
 	// pros::Imu imu(19);
@@ -58,7 +58,7 @@ namespace Pronounce {
 
 	pros::Mutex odometryMutex;
 
-	ThreeWheelOdom threeWheelOdom(std::make_shared<OdomWheel>(leftDrive1Odom), std::make_shared<OdomWheel>(rightDrive1Odom), std::make_shared<OdomWheel>(backOdomWheel), std::make_shared<Orientation>(averageImu));
+	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, &backOdomWheel, &averageImu);
 
 	// GPS sensor
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
@@ -86,16 +86,25 @@ namespace Pronounce {
 
 	void initHardware() {
 
+		drivetrainMutex.take();
+
+		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+		leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
+		drivetrainMutex.give();
+
 		odometryMutex.take();
 
-		double turningFactor = (((100.0 / 100.0) - 1.0) / 2);
+		double turningFactor = 450.0/600.0;
 		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(2.75_in / 2.0);
-		leftDrive1Odom.setTuningFactor(tuningFactor * (1 - turningFactor));
-		rightDrive1Odom.setRadius(2.75_in / 2.0);
-		rightDrive1Odom.setTuningFactor(tuningFactor * (1 + turningFactor));
+		leftDrive1Odom.setRadius(3.25_in / 2.0);
+		leftDrive1Odom.setTuningFactor(tuningFactor);
+		rightDrive1Odom.setRadius(3.25_in / 2.0);
+		rightDrive1Odom.setTuningFactor(tuningFactor);
 		backOdomWheel.setRadius(2.75_in / 2.0);
-		backOdomWheel.setTuningFactor(tuningFactor * 1.0);
+		backOdomWheel.setTuningFactor(1.0);
 
 		backEncoder.set_reversed(false);
 

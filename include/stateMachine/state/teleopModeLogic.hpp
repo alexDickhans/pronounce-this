@@ -30,6 +30,11 @@ namespace Pronounce {
 
 		void initialize() {
 			drivetrainStateController.setCurrentBehavior(&normalJoystick);
+			
+			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 		}
 
 		void update() {
@@ -46,10 +51,15 @@ namespace Pronounce {
 				ptoStateController.setCurrentBehavior(&ptoDrive);
 			}
 
+			if (controller1->get_digital(DIGITAL_L2)) {
+				drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+			}
+
 			if (controller2->is_connected()) {
 				if (controller2->get_digital(DIGITAL_X) && controller1->get_digital(DIGITAL_X))
 					endgameStateController.setCurrentBehavior(&endgameEnabled);
-			} else {
+			}
+			else {
 			}
 		}
 

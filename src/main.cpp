@@ -21,6 +21,158 @@ int preAutonRun() {
 	return 0;
 }
 
+int closeFullAWP() {
+	threeWheelOdom.setPose(Pose2D(34_in, 13_in, 0_deg));
+
+	// NOTE: First roller
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	pros::Task::delay(20);
+
+	stateExtensionController.setCurrentBehavior(&rollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	// NOTE: Move to the middle of the field 
+
+	drivetrainStateController.setCurrentBehavior(&turnTo225);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&closeToMidField);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	// NOTE: Shoot first disc 
+
+	drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	// NOTE: Shoot second disc 
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	while(!ptoStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&autonLineMidField);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	// NOTE: Shoot third disc 
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&autonLineToMidDiscs);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&midDiscsToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	// NOTE: Forth disc
+
+	/*
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo325);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&autonLineToMidDiscs);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&midDiscsToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	*/
+
+	// NOTE: Move to roller
+
+	drivetrainStateController.setCurrentBehavior(&autonLineMidField);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&midFieldToFarField);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	// NOTE: Spin roller
+
+	stateExtensionController.setCurrentBehavior(&rollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	pros::Task::delay(50);
+
+	return 0;
+}
+
 int postAuton() {
 	return 0;
 }
@@ -87,10 +239,10 @@ void updateDisplay() {
 		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(leftPtoMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 1, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 1, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
 		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(leftPtoMotor.get_actual_velocity())).c_str());
@@ -182,6 +334,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();

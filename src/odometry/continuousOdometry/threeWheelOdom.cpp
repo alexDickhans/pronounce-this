@@ -5,14 +5,14 @@ namespace Pronounce {
 		this->reset(Pose2D());
 	}
 
-	ThreeWheelOdom::ThreeWheelOdom(std::shared_ptr<OdomWheel> leftWheel, std::shared_ptr<OdomWheel> rightWheel, std::shared_ptr<OdomWheel> backWheel) : ContinuousOdometry() {
+	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
 		this->reset(Pose2D());
 	}
 
-	ThreeWheelOdom::ThreeWheelOdom(std::shared_ptr<OdomWheel> leftWheel, std::shared_ptr<OdomWheel> rightWheel, std::shared_ptr<OdomWheel> backWheel, std::shared_ptr<Orientation> externalOrientation) : ContinuousOdometry() {
+	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* externalOrientation) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;

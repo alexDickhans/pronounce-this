@@ -13,8 +13,9 @@
 
 namespace Pronounce {
 
-	PtoIntake ptoIntaking("PtoIntaking", ptoPiston, false, leftPtoMotor, rightPtoMotor, 600);
-	PtoCatapult ptoCatapult("PtoCatapult", ptoPiston, false, leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -600);
+	PtoIntake ptoIntaking("PtoIntaking", ptoPiston, false, leftPtoMotor, rightPtoMotor, .8);
+	PtoIntake ptoIntakeStopped("PtoIntakeStopped", ptoPiston, false, leftPtoMotor, rightPtoMotor, 0);
+	PtoCatapult ptoCatapult("PtoCatapult", ptoPiston, false, leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -1);
 	PtoDrive ptoDrive("PtoDrivetrain", ptoPiston, true, leftPtoMotor, leftDrive2, rightPtoMotor, rightDrive2);
 
 	StateController ptoStateController("PtoStateController", &ptoIntaking);
