@@ -40,6 +40,7 @@ namespace Pronounce {
 		void update() {
 
 			if (controller1->get_digital_new_press(LAUNCH_BUTTON)) {
+				drivetrainStateController.setCurrentBehavior(&normalJoystick);
 				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
 
@@ -51,8 +52,8 @@ namespace Pronounce {
 				ptoStateController.setCurrentBehavior(&ptoDrive);
 			}
 
-			if (controller1->get_digital(DIGITAL_L2)) {
-				drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+			if (controller1->get_digital_new_press(DIGITAL_L2)) {
+				drivetrainStateController.setCurrentBehavior(drivetrainStateController.getCurrentBehavior() == &targetingJoystick ? &normalJoystick : &targetingJoystick);
 			}
 
 			if (controller2->is_connected()) {

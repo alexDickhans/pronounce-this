@@ -77,9 +77,9 @@ namespace Pronounce {
 			if (t <= 0.0_s) {
 				return 0.0;
 			} else if (t <= Ta) {
-				return Ks * omega * (omega * t.getValue() - sin(omega * t.getValue()));
+				return signnum_c(this->getDistance().getValue()) * Ks * omega * (omega * t.getValue() - sin(omega * t.getValue()));
 			} else if (t <= Ts) {
-				return Vw;
+				return signnum_c(this->getDistance().getValue()) * Vw;
 			} else {
 				return getVelocityByTime(Tt - t);
 			}
