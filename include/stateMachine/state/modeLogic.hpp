@@ -30,6 +30,7 @@ namespace Pronounce {
 		rollerSequence.addState(&drivetrainStateController, &moveBackward5in);
 		rollerSequence.addState(&drivetrainStateController, &moveForward5in);
 		rollerSequence.addState(&drivetrainStateController, &moveBackward5in);
+		rollerSequence.addState(&drivetrainStateController, &moveBackward5in);
 
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&ptoStateController);

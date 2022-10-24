@@ -37,6 +37,8 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
+			std::cout << "InputDrivetrainSpeed: " << velocityProfile->getVelocityByTime(duration).Convert(inch/second) << std::endl;
+
 			drivetrain->skidSteerVelocity(velocityProfile->getVelocityByTime(duration), 0.0);
 
 			drivetrainMutex.give();

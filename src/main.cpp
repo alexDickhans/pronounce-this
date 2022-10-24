@@ -22,7 +22,7 @@ int preAutonRun() {
 }
 
 int closeFullAWP() {
-	threeWheelOdom.setPose(Pose2D(34_in, 13_in, 0_deg));
+	threeWheelOdom.setPose(Pose2D(34_in, 13_in, 180_deg));
 
 	// NOTE: First roller
 
@@ -39,10 +39,9 @@ int closeFullAWP() {
 
 	// NOTE: Move to the middle of the field 
 
-	drivetrainStateController.setCurrentBehavior(&turnTo225);
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	pros::Task::delay(1000);
 
 	drivetrainStateController.setCurrentBehavior(&closeToMidField);
 
@@ -51,15 +50,18 @@ int closeFullAWP() {
 	
 	drivetrainStateController.setCurrentBehavior(&turnTo315);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	pros::Task::delay(1000);
 
-	// NOTE: Shoot first disc 
+	// NOTE: Shoot first disc
 
 	drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	pros::Task::delay(500);
 	
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -69,9 +71,6 @@ int closeFullAWP() {
 	// NOTE: Shoot second disc 
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	while(!ptoStateController.isDone()) 
-		pros::Task::delay(10);
 	
 	drivetrainStateController.setCurrentBehavior(&autonLineMidField);
 
@@ -87,6 +86,7 @@ int closeFullAWP() {
 
 	// NOTE: Shoot third disc 
 
+	/*
 	while(!ptoStateExtensionController.isDone()) 
 		pros::Task::delay(10);
 	
@@ -104,6 +104,8 @@ int closeFullAWP() {
 
 	while(!ptoStateExtensionController.isDone()) 
 		pros::Task::delay(10);
+	
+	*/
 	
 	// NOTE: Forth disc
 
@@ -144,10 +146,9 @@ int closeFullAWP() {
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 	
-	drivetrainStateController.setCurrentBehavior(&turnTo45);
+	drivetrainStateController.setCurrentBehavior(&turnTo225);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	pros::Task::delay(1000);
 	
 	drivetrainStateController.setCurrentBehavior(&midFieldToFarField);
 
@@ -156,8 +157,7 @@ int closeFullAWP() {
 	
 	drivetrainStateController.setCurrentBehavior(&turnTo90);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	pros::Task::delay(1000);
 
 	// NOTE: Spin roller
 
@@ -170,6 +170,35 @@ int closeFullAWP() {
 
 	pros::Task::delay(50);
 
+	return 0;
+}
+
+int tunePid() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(1000);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1000);
+
+	return 0;
+}
+
+int drive24inBackward() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+
+	drivetrainStateController.setCurrentBehavior(&backwards48in);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	pros::Task::delay(1000);
+	
 	return 0;
 }
 
@@ -334,7 +363,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	closeFullAWP();
+	drive24inBackward();
 	postAuton();
 
 	// autonomousSelector.run();

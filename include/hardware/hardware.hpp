@@ -84,6 +84,8 @@ namespace Pronounce {
 
 	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
 
+	pros::vision_signature_s_t RED_GOAL;
+
 	void initHardware() {
 
 		drivetrainMutex.take();
@@ -100,22 +102,27 @@ namespace Pronounce {
 		double turningFactor = 450.0/600.0;
 		double tuningFactor = 1.0;
 		leftDrive1Odom.setRadius(3.25_in / 2.0);
-		leftDrive1Odom.setTuningFactor(tuningFactor);
+		leftDrive1Odom.setTuningFactor(turningFactor);
 		rightDrive1Odom.setRadius(3.25_in / 2.0);
-		rightDrive1Odom.setTuningFactor(tuningFactor);
+		rightDrive1Odom.setTuningFactor(turningFactor);
 		backOdomWheel.setRadius(2.75_in / 2.0);
 		backOdomWheel.setTuningFactor(1.0);
 
 		backEncoder.set_reversed(false);
 
-		threeWheelOdom.setLeftOffset(10_in / 2.0);
-		threeWheelOdom.setRightOffset(10.0_in / 2.0);
+		threeWheelOdom.setLeftOffset(10_in / 1.5);
+		threeWheelOdom.setRightOffset(10.0_in / 1.5);
 		threeWheelOdom.setBackOffset(0.0_in);
 
-		pros::Task::delay(10);
+		pros::Task::delay(50);
 
-		threeWheelOdom.reset(Pose2D(34.0_in, 12.0_in, 0.0_deg));
+		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
 		odometryMutex.give();
+
+		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
+
+		aimingVisionSensor.set_signature(1, &RED_GOAL);
+		aimingVisionSensor.set_exposure(116);
 	}
 } // namespace Pronoucne

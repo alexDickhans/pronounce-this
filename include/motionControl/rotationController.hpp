@@ -11,22 +11,28 @@ namespace Pronounce
 	class RotationController : public Behavior {
 	private:
 		pros::Mutex& drivetrainMutex;
-		PID& rotationPID;
+		PID rotationPID;
 		AbstractTankDrivetrain& drivetrain;
 		ContinuousOdometry& odometry;
+		Angle target;
 
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID& rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
+			this->target = target;
 		}
 
 		void initialize() {
 			rotationPID.reset();
+			rotationPID.setTarget(target.Convert(radian));
 		}
 
 		void update() {
 			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
+
+			std::cout << output << std::endl;
+			std::cout << rotationPID.getError() << std::endl;
 
 			drivetrain.skidSteerVelocity(0.0, output);
 		}
@@ -36,7 +42,7 @@ namespace Pronounce
 		}
 
 		bool isDone() {
-			return rotationPID.getError() < (0.05_rad).Convert(radian) && rotationPID.getDerivitive() < 0.0005;
+			return false; // rotationPID.getError() < (1_deg).Convert(radian) && rotationPID.getDerivitive() < 0.00005;
 		}
 
 		~RotationController();
