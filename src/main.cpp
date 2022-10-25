@@ -18,6 +18,8 @@ pros::Mutex robotMutex;
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+	leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+	rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 	return 0;
 }
 
@@ -41,23 +43,18 @@ int closeFullAWP() {
 
 	drivetrainStateController.setCurrentBehavior(&turnTo45);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(1250);
 
 	drivetrainStateController.setCurrentBehavior(&closeToMidField);
 
-	while(!drivetrainStateController.isDone()) 
+	while(!drivetrainStateController.isDone())
 		pros::Task::delay(10);
 	
 	drivetrainStateController.setCurrentBehavior(&turnTo315);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(1500);
 
 	// NOTE: Shoot first disc
-
-	drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
@@ -65,7 +62,7 @@ int closeFullAWP() {
 	
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	while(!ptoStateExtensionController.isDone()) 
+	while(!ptoStateController.isDone()) 
 		pros::Task::delay(10);
 	
 	// NOTE: Shoot second disc 
@@ -81,8 +78,12 @@ int closeFullAWP() {
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
+
+	pros::Task::delay(500);
 	
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(700);
 
 	// NOTE: Shoot third disc 
 
@@ -140,11 +141,6 @@ int closeFullAWP() {
 	*/
 
 	// NOTE: Move to roller
-
-	drivetrainStateController.setCurrentBehavior(&autonLineMidField);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
 	
 	drivetrainStateController.setCurrentBehavior(&turnTo225);
 
@@ -155,7 +151,7 @@ int closeFullAWP() {
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 	
-	drivetrainStateController.setCurrentBehavior(&turnTo90);
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
 
 	pros::Task::delay(1000);
 
@@ -179,11 +175,11 @@ int tunePid() {
 
 	drivetrainStateController.setCurrentBehavior(&turnTo180);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(1500);
 
 	drivetrainStateController.setCurrentBehavior(&turnTo0);
 
-	pros::Task::delay(1000);
+	pros::Task::delay(1500);
 
 	return 0;
 }
@@ -363,7 +359,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	drive24inBackward();
+	tunePid();
 	postAuton();
 
 	// autonomousSelector.run();

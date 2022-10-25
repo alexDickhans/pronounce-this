@@ -51,14 +51,12 @@ namespace Pronounce {
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 3.25_in);
 
 	// Inertial Measurement Unit
-	// pros::Imu imu(19);
-	// IMU imuOrientation(imu);
-
-	AvgOrientation averageImu;
+	pros::Imu imu(19);
+	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
 
-	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, &backOdomWheel, &averageImu);
+	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, &backOdomWheel, &imuOrientation);
 
 	// GPS sensor
 	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
@@ -85,6 +83,7 @@ namespace Pronounce {
 	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
 
 	pros::vision_signature_s_t RED_GOAL;
+	pros::vision_signature_s_t BLUE_GOAL;
 
 	void initHardware() {
 
@@ -118,11 +117,18 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
+		imu.reset();
+
+		while (imu.is_calibrating())
+			pros::Task::delay(50);
+
 		odometryMutex.give();
 
 		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
+		BLUE_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
 
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
+		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
 		aimingVisionSensor.set_exposure(116);
 	}
 } // namespace Pronoucne

@@ -41,6 +41,7 @@ namespace Pronounce {
 
 		// If we are using external orientation and it is set we will use that values instead of the current angle
 		if (useExternalOrientation && externalOrientation != nullptr) {
+			externalOrientation->update();
 			currentAngle = externalOrientation->getAngle();
 		}
 		else {

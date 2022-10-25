@@ -37,7 +37,7 @@ namespace Pronounce {
 		 * @brief If true it will use the imu for orientation calculations instead of the parallel wheels
 		 * 
 		 */
-		bool useExternalOrientation = false;
+		bool useExternalOrientation = true;
 
 		Angle orientationOffset{0.0};
 
