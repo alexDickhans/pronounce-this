@@ -55,10 +55,6 @@ int closeFullAWP() {
 	pros::Task::delay(1500);
 
 	// NOTE: Shoot first disc
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	pros::Task::delay(500);
 	
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -67,23 +63,23 @@ int closeFullAWP() {
 	
 	// NOTE: Shoot second disc 
 
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
+	// ptoStateController.setCurrentBehavior(&ptoIntaking);
 	
-	drivetrainStateController.setCurrentBehavior(&autonLineMidField);
+	// drivetrainStateController.setCurrentBehavior(&autonLineMidField);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	// while(!drivetrainStateController.isDone()) 
+	// 	pros::Task::delay(10);
 
-	drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
+	// drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
+	// while(!drivetrainStateController.isDone()) 
+	// 	pros::Task::delay(10);
 
-	pros::Task::delay(500);
+	// pros::Task::delay(500);
 	
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	// ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	pros::Task::delay(700);
+	// pros::Task::delay(700);
 
 	// NOTE: Shoot third disc 
 
@@ -157,7 +153,7 @@ int closeFullAWP() {
 
 	// NOTE: Spin roller
 
-	stateExtensionController.setCurrentBehavior(&rollerSequence);
+	stateExtensionController.setCurrentBehavior(&rollerSequence2);
 
 	pros::Task::delay(50);
 
@@ -359,7 +355,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	tunePid();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();

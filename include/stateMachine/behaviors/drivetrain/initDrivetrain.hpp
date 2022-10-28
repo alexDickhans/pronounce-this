@@ -24,7 +24,7 @@
 namespace Pronounce {
 	
 	PID turningPid(0.30, 0, 0.6, 0.0, 0.0, true);
-	PID visionPid(0.006, 0, 0.08);
+	PID visionPid(0.004, 0, 0.08);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, visionPid, 0.10, false, 2.4, 73_in / second);
@@ -53,11 +53,11 @@ namespace Pronounce {
 
 	// Rotation Controllers
 	RotationController turnTo0("turnTo0", drivetrain, odometry, turningPid, 0_deg, drivetrainMutex);
-	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 45_deg, drivetrainMutex);
+	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 46_deg, drivetrainMutex);
 	RotationController turnTo90("turnTo90", drivetrain, odometry, turningPid, 90_deg, drivetrainMutex);
 	RotationController turnTo135("turnTo135", drivetrain, odometry, turningPid, 135_deg, drivetrainMutex);
 	RotationController turnTo180("turnTo180", drivetrain, odometry, turningPid, 180_deg, drivetrainMutex);
-	RotationController turnTo225("turnTo225", drivetrain, odometry, turningPid, 235_deg, drivetrainMutex);
+	RotationController turnTo225("turnTo225", drivetrain, odometry, turningPid, 225_deg, drivetrainMutex);
 	RotationController turnTo270("turnTo270", drivetrain, odometry, turningPid, 270_deg, drivetrainMutex);
 	RotationController turnTo315("TurnTo315", drivetrain, odometry, turningPid, 315_deg, drivetrainMutex);
 

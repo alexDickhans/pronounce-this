@@ -29,7 +29,7 @@ namespace Pronounce {
 
 		PID visionPid;
 
-		RunningAverage<5> visionSensorX;
+		RunningAverage<20> visionSensorX;
 
 		double filterAxis(double axis) {
 			return axis < deadband ? 0.0 : axis;
@@ -59,11 +59,11 @@ namespace Pronounce {
 			double left = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
 			double right = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
 
-			double power = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+			double power = (left + right) / 2.0; //  controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double turn = (left-right)/2.0; //  controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
 			
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
-				visionSensorX.add(-(aimingVisionSensor.get_by_code(0, 1).x_middle_coord == 0 ? aimingVisionSensor.get_by_code(0, 2).x_middle_coord : aimingVisionSensor.get_by_code(0, 1).x_middle_coord));
+				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord));
 				turn = visionPid.update(visionSensorX.getAverage());
 			}
 

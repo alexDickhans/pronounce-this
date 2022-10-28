@@ -66,7 +66,7 @@ namespace Pronounce {
 
 	pros::Mutex endgameMutex;
 
-	pros::ADIDigitalOut endgameDigitalOutputs(7, false);
+	pros::ADIDigitalOut endgameDigitalOutputs('c', false);
 
 	pros::ADILed leftLeds({ 10, 'a' }, 20);
 	pros::ADILed rightLeds({ 10, 'b' }, 20);
@@ -125,10 +125,10 @@ namespace Pronounce {
 		odometryMutex.give();
 
 		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
-		BLUE_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
-
+		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -1317, -595, -956, 3619, 5717, 4668, 3.000, 0);
+		
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(116);
+		aimingVisionSensor.set_exposure(71);
 	}
 } // namespace Pronoucne

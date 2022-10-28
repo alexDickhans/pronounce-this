@@ -21,6 +21,7 @@ namespace Pronounce {
 	StateController teleopController("TeleopController", new Behavior());
 
 	Sequence rollerSequence("RollerSequence");
+	Sequence rollerSequence2("RollerSequence");
 
 	void initBehaviors() {
 
@@ -31,6 +32,10 @@ namespace Pronounce {
 		rollerSequence.addState(&drivetrainStateController, &moveForward5in);
 		rollerSequence.addState(&drivetrainStateController, &moveBackward5in);
 		rollerSequence.addState(&drivetrainStateController, &moveBackward5in);
+
+		rollerSequence2.addState(&drivetrainStateController, &moveForward5in);
+		rollerSequence2.addState(&drivetrainStateController, &moveBackward5in);
+		rollerSequence2.addState(&drivetrainStateController, &moveForward5in);
 
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&ptoStateController);
