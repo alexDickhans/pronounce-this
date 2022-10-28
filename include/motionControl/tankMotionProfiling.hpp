@@ -12,20 +12,20 @@ namespace Pronounce {
 	private:
 		pros::Mutex& drivetrainMutex;
 
-		AbstractTankDrivetrain& drivetrain;
-		VelocityProfile velocityProfile;
+		AbstractTankDrivetrain* drivetrain;
+		VelocityProfile* velocityProfile;
 
 		QTime startTime = 0.0;
 
-		ContinuousOdometry& odometry;
+		ContinuousOdometry* odometry;
 	public:
-		TankMotionProfiling(std::string name, AbstractTankDrivetrain& drivetrain, VelocityProfile velocityProfile, ContinuousOdometry& odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex) {
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex) {
 
 		}
 
-		TankMotionProfiling(std::string name, AbstractTankDrivetrain& drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry& odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
-			velocityProfile = SinusoidalVelocityProfile(distance, profileConstraints);
-			velocityProfile.calculate(100);
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
+			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints);
+			velocityProfile->calculate(100);
 		}
 
 		void initialize() {
@@ -37,7 +37,9 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
-			drivetrain.skidSteerVelocity(velocityProfile.getVelocityByTime(duration), 0.0);
+			std::cout << "InputDrivetrainSpeed: " << velocityProfile->getVelocityByTime(duration).Convert(inch/second) << std::endl;
+
+			drivetrain->skidSteerVelocity(velocityProfile->getVelocityByTime(duration), 0.0);
 
 			drivetrainMutex.give();
 		}
@@ -45,13 +47,13 @@ namespace Pronounce {
 		void exit() {
 			drivetrainMutex.take();
 			
-			drivetrain.skidSteerVelocity(0.0, 0.0);
+			drivetrain->skidSteerVelocity(0.0, 0.0);
 
 			drivetrainMutex.give();
 		}
 
 		bool isDone() {
-			return currentTime() - startTime > velocityProfile.getDuration();
+			return currentTime() - startTime > velocityProfile->getDuration();
 		}
 
 		~TankMotionProfiling() {}

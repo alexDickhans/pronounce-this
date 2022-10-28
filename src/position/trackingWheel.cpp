@@ -4,7 +4,7 @@ namespace Pronounce {
     TrackingWheel::TrackingWheel(/* args */) {
     }
 
-    TrackingWheel::TrackingWheel(pros::Rotation* rotationSensor) {
+    TrackingWheel::TrackingWheel(std::shared_ptr<pros::Rotation> rotationSensor, QLength radius) : OdomWheel(radius) {
         this->rotationSensor = rotationSensor;
     }
 

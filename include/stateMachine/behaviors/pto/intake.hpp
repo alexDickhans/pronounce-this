@@ -22,8 +22,8 @@ namespace Pronounce {
 			ptoMutex.take();
 
 			ptoPiston.set_value(pistonState);
-			leftPtoMotor.move_velocity(speed*600);
-			rightPtoMotor.move_velocity(speed*600);
+			leftPtoMotor.move_voltage(speed * 12000);
+			rightPtoMotor.move_voltage(speed * 12000);
 
 			ptoMutex.give();
 		}
@@ -32,8 +32,8 @@ namespace Pronounce {
 			ptoMutex.take();
 
 			ptoPiston.set_value(pistonState);
-			leftPtoMotor.move_velocity(speed*600);
-			rightPtoMotor.move_velocity(speed*600);
+			leftPtoMotor.move_voltage(speed * 12000);
+			rightPtoMotor.move_voltage(speed * 12000);
 
 			ptoMutex.give();
 		}

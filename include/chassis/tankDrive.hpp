@@ -27,7 +27,7 @@ namespace Pronounce {
 			double leftSpeed = power + turnSpeed;
 			double rightSpeed = power - turnSpeed;
 
-			double maxValue = max(leftSpeed, rightSpeed);
+			double maxValue = max(abs(leftSpeed), abs(rightSpeed));
 
 			if (maxValue > this->getMaxSpeed().getValue()) {
 				leftSpeed = leftSpeed * (this->getMaxSpeed().getValue()/maxValue);

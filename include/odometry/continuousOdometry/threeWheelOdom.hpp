@@ -19,7 +19,7 @@ namespace Pronounce {
 		 * @brief Odometry wheels
 		 * 
 		 */
-        OdomWheel* leftWheel, * rightWheel, * backWheel;
+        OdomWheel* leftWheel, *rightWheel, *backWheel;
 
 		/**
 		 * @brief Offset from the center of rotation
@@ -37,9 +37,9 @@ namespace Pronounce {
 		 * @brief If true it will use the imu for orientation calculations instead of the parallel wheels
 		 * 
 		 */
-		bool useExternalOrientation = false;
+		bool useExternalOrientation = true;
 
-		Angle orientationOffset{90.0};
+		Angle orientationOffset{0.0};
 
     public:
 		/**

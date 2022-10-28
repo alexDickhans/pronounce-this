@@ -12,7 +12,7 @@ namespace Pronounce {
 		this->reset(Pose2D());
 	}
 
-	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* Orientation) : ContinuousOdometry() {
+	ThreeWheelOdom::ThreeWheelOdom(OdomWheel* leftWheel, OdomWheel* rightWheel, OdomWheel* backWheel, Orientation* externalOrientation) : ContinuousOdometry() {
 		this->leftWheel = leftWheel;
 		this->rightWheel = rightWheel;
 		this->backWheel = backWheel;
@@ -41,6 +41,7 @@ namespace Pronounce {
 
 		// If we are using external orientation and it is set we will use that values instead of the current angle
 		if (useExternalOrientation && externalOrientation != nullptr) {
+			externalOrientation->update();
 			currentAngle = externalOrientation->getAngle();
 		}
 		else {

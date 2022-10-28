@@ -3,6 +3,7 @@
 #include "pointUtil.hpp"
 #include "units/units.hpp"
 #include <string>
+#include "utils/pose2d.hpp"
 
 // TODO: add docstrings
 // TODO: add comments
@@ -127,4 +128,39 @@ namespace Pronounce {
 
         ~Vector();
     };
+
+	template<uint32_t inputSize, uint32_t outputSize>
+	class Matrix {
+	private:
+		std::array<std::array<double, inputSize>, outputSize> matrix;
+	public:
+		Matrix();
+		Matrix(std::initializer_list<std::initializer_list<double>> matrix);
+		Matrix(std::array<std::array<double, inputSize>, outputSize> matrix);
+
+		/**
+		 * @brief This vector * x
+		 * 
+		 * @param x The other matrix to multiply
+		 * @return Matrix<inputSize, outputSize> matrix of the same size
+		 */
+		Matrix<inputSize, outputSize> multiply(Matrix<inputSize, outputSize> x);
+
+		Vector transformVector(Vector x);
+
+		Pose2D transformPose(Pose2D x) {
+			if (!(inputSize == 3 && outputSize == 3)) {
+				Pose2D poseI = Pose2D(x.getX() * matrix.at(0).at(0), x.getX() * matrix.at(0).at(1), x.getX() * matrix.at(0).at(2));
+				Pose2D poseJ = Pose2D(x.getY() * matrix.at(1).at(0), x.getY() * matrix.at(1).at(1), x.getY() * matrix.at(1).at(2));
+				Pose2D poseK = Pose2D(x.getAngle() * matrix.at(2).at(0), x.getAngle() * matrix.at(2).at(1), x.getAngle() * matrix.at(2).at(2));
+
+				Pose2D pose = poseI + poseJ + poseK;
+
+				return pose;
+			}
+			throw "Sizes of the matrix does not match pose2D!";
+		}
+
+		~Matrix();
+	};
 } // namespace Pronounce

@@ -33,14 +33,14 @@ namespace Pronounce {
 		 * Doing any functions that require the track width will require the value set
 		 * 
 		 */
-		AbstractTankDrivetrain() : trackWidth(0.0) {}
+		AbstractTankDrivetrain() : trackWidth(0.0), maxSpeed(0.0) {}
 
 		/**
 		 * @brief Construct a new Abstract Tank Drivetrain object with trackWidth set
 		 * 
 		 * @param trackWidth The trackWidth of the drivetrain
 		 */
-		AbstractTankDrivetrain(QLength trackWidth, QSpeed maxSpeed) : trackWidth(trackWidth) {}
+		AbstractTankDrivetrain(QLength trackWidth, QSpeed maxSpeed) : trackWidth(trackWidth), maxSpeed(maxSpeed) {}
 
 		/**
 		 * @brief Get the current speed of the robot

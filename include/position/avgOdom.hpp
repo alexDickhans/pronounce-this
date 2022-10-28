@@ -13,8 +13,6 @@ namespace Pronounce {
     /**
      * @brief Class to average multiple odom wheels, useful for tank drives and similar base designs.
      *
-     * @tparam I Wheel count
-     *
      * @authors Alex(ad101-lab)
      */
     class AvgOdom : public OdomWheel {

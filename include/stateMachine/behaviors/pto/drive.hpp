@@ -17,8 +17,8 @@ namespace Pronounce {
 		PtoDrive(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& leftDriveMotor, pros::Motor& rightPtoMotor, pros::Motor& rightDriveMotor);
 
 		void initialize() {
-			leftLedController.setColors(blueColors);
-			rightLedController.setColors(blueColors);
+			leftLedController.setColors(orangeColors);
+			rightLedController.setColors(orangeColors);
 			ptoMutex.take();
 
 			this->ptoPiston.set_value(pistonState);

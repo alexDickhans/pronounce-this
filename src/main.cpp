@@ -1,7 +1,7 @@
 #include "main.h"
 
 // LVGL
-lv_obj_t* tabview;
+std::shared_ptr<lv_obj_t> tabview;
 
 RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
@@ -18,6 +18,179 @@ pros::Mutex robotMutex;
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+	leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+	rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+	return 0;
+}
+
+int closeFullAWP() {
+	threeWheelOdom.setPose(Pose2D(34_in, 13_in, 180_deg));
+
+	// NOTE: First roller
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	pros::Task::delay(20);
+
+	stateExtensionController.setCurrentBehavior(&rollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	// NOTE: Move to the middle of the field 
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&closeToMidField);
+
+	while(!drivetrainStateController.isDone())
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	pros::Task::delay(1500);
+
+	// NOTE: Shoot first disc
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	// NOTE: Shoot second disc 
+
+	// ptoStateController.setCurrentBehavior(&ptoIntaking);
+	
+	// drivetrainStateController.setCurrentBehavior(&autonLineMidField);
+
+	// while(!drivetrainStateController.isDone()) 
+	// 	pros::Task::delay(10);
+
+	// drivetrainStateController.setCurrentBehavior(&midFieldToAutonLine);
+
+	// while(!drivetrainStateController.isDone()) 
+	// 	pros::Task::delay(10);
+
+	// pros::Task::delay(500);
+	
+	// ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	// pros::Task::delay(700);
+
+	// NOTE: Shoot third disc 
+
+	/*
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&autonLineToMidDiscs);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&midDiscsToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	*/
+	
+	// NOTE: Forth disc
+
+	/*
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo325);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&autonLineToMidDiscs);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&midDiscsToAutonLine);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	*/
+
+	// NOTE: Move to roller
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo225);
+
+	pros::Task::delay(1000);
+	
+	drivetrainStateController.setCurrentBehavior(&midFieldToFarField);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
+
+	pros::Task::delay(1000);
+
+	// NOTE: Spin roller
+
+	stateExtensionController.setCurrentBehavior(&rollerSequence2);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	pros::Task::delay(50);
+
+	return 0;
+}
+
+int tunePid() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(1500);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1500);
+
+	return 0;
+}
+
+int drive24inBackward() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+
+	drivetrainStateController.setCurrentBehavior(&backwards48in);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	pros::Task::delay(1000);
+	
 	return 0;
 }
 
@@ -30,6 +203,10 @@ int postAuton() {
 // SECTION INIT
 
 void update() {
+
+	robotMutex.take();
+	modeLogic.initialize();
+	robotMutex.give();
 
 	uint32_t startTime = pros::millis();
 	uint32_t startTimeMicros = pros::micros();
@@ -54,42 +231,42 @@ void update() {
 void updateDisplay() {
 
 	// Odom
-	lv_obj_t* odomTab = lv_tabview_add_tab(tabview, "Odom");
-	lv_obj_t* odomLabel = lv_label_create(odomTab, NULL);
+	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
+	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
 
 	// Drivetrain
-	lv_obj_t* drivetrainTab = lv_tabview_add_tab(tabview, "Drivetrain");
-	lv_obj_t* drivetrainTable = lv_table_create(drivetrainTab, NULL);
+	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Drivetrain"));
+	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get(), NULL));
 
-	lv_table_set_row_cnt(drivetrainTable, 2);
-	lv_table_set_col_cnt(drivetrainTable, 4);
+	lv_table_set_row_cnt(drivetrainTable.get(), 4);
+	lv_table_set_col_cnt(drivetrainTable.get(), 2);
 
-	lv_table_set_col_width(drivetrainTable, 0, 200);
-	lv_table_set_col_width(drivetrainTable, 1, 200);
+	lv_table_set_col_width(drivetrainTable.get(), 0, 200);
+	lv_table_set_col_width(drivetrainTable.get(), 1, 200);
 
 	// Flywheels
-	lv_obj_t* flywheelTab = lv_tabview_add_tab(tabview, "Catapult");
-	lv_obj_t* flywheelLabel = lv_label_create(flywheelTab, NULL);
+	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
+	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel, (odometry.getPosition().to_string()
+		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()
 			+ "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
 			", R: " + std::to_string(rightDrive1Odom.getPosition().Convert(inch)) +
 			", S: " + std::to_string(backOdomWheel.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
-		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(leftPtoMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 0, 0, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 1, 0, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 2, 0, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable, 3, 0, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(leftPtoMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 1, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 1, (std::to_string(rightPtoMotor.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel, "catapult");
+		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(leftPtoMotor.get_actual_velocity())).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -105,8 +282,8 @@ void ledUpdate() {
 }
 
 void initDisplay() {
-	pros::Task display(updateDisplay);
-	pros::Task leds(ledUpdate);
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
+	pros::Task leds(ledUpdate, TASK_PRIORITY_MIN);
 }
 
 /**
@@ -117,7 +294,7 @@ void initialize() {
 	robotMutex.take();
 
 	lv_init();
-	tabview = lv_tabview_create(lv_scr_act(), NULL);
+	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
 
 	// Initialize functions
 	initHardware();
@@ -126,9 +303,7 @@ void initialize() {
 	initBehaviors();
 	initDisplay();
 
-	modeLogic.initialize();
-
-	pros::Task modeLogicTask = pros::Task(update);
+	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
 
 	robotMutex.give();
 }
@@ -141,7 +316,9 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
+	robotMutex.take();
 	teleopController.useDefaultBehavior();
+	robotMutex.give();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
@@ -154,7 +331,6 @@ void disabled() {
 
 		pros::delay(200);
 	}
-
 }
 
 // !SECTION
@@ -179,6 +355,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();
