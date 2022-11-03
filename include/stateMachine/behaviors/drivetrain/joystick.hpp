@@ -59,8 +59,8 @@ namespace Pronounce {
 			double left = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
 			double right = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
 
-			double power = (left + right) / 2.0; //  controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-			double turn = (left-right)/2.0; //  controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+			double power = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
 			
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
 				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord));

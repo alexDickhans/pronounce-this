@@ -194,6 +194,313 @@ int drive24inBackward() {
 	return 0;
 }
 
+int testRamseteAuton() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	drivetrainStateController.setCurrentBehavior(&testRamsete);
+
+	pros::Task::delay(10000);
+
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+
+	return 0;
+}
+
+
+int skills() {
+
+	threeWheelOdom.reset(Pose2D(34_in, 13_in, 180_deg));
+
+	stateExtensionController.setCurrentBehavior(&skillsRollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToBottomLeftCorner);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToBottomLeftCorner);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
+
+	pros::Task::delay(1250);
+
+	stateExtensionController.setCurrentBehavior(&skillsRollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo175);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&leftRollerToGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(50);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo145);
+
+	pros::Task::delay(1250);
+	
+	drivetrainStateController.setCurrentBehavior(&leftGoalToMiddleDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&collectMiddleDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+		
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&middleDiscsToTopGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&toTopGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(50);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo125);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&leftGoalToMiddleStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&intakeMiddleStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&middleStackToTopGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(1000);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(1000);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(50);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo115);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&topGoalToTopMiddleStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&intakeMiddleStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&topMiddleStackToTopGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(1000);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(1000);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(50);
+
+	while(!ptoStateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo115);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&moveToTopAutonLineDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1250);
+	
+	drivetrainStateController.setCurrentBehavior(&intakeAutonLineDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&moveBackward5in);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&autonLineToLeftRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	stateExtensionController.setCurrentBehavior(&skillsRollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToBottomLeftCorner);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToBottomLeftCorner);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(1250);
+
+	stateExtensionController.setCurrentBehavior(&skillsRollerSequence);
+
+	pros::Task::delay(50);
+
+	while(!stateExtensionController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo135);
+
+	pros::Task::delay(1250);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
+	pros::Task::delay(1250);
+	
+	return 0;
+}
+
 int postAuton() {
 	return 0;
 }
@@ -355,7 +662,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	closeFullAWP();
+	skills();
 	postAuton();
 
 	// autonomousSelector.run();

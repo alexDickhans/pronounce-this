@@ -22,6 +22,7 @@ namespace Pronounce {
 
 	Sequence rollerSequence("RollerSequence");
 	Sequence rollerSequence2("RollerSequence");
+	Sequence skillsRollerSequence("SkillsRollerSequence");
 
 	void initBehaviors() {
 
@@ -36,6 +37,9 @@ namespace Pronounce {
 		rollerSequence2.addState(&drivetrainStateController, &moveForward5in);
 		rollerSequence2.addState(&drivetrainStateController, &moveBackward5in);
 		rollerSequence2.addState(&drivetrainStateController, &moveForward5in);
+
+		skillsRollerSequence.addState(&drivetrainStateController, &moveForward5in);
+		skillsRollerSequence.addState(&drivetrainStateController, &moveBackward5in);
 
 		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&ptoStateController);

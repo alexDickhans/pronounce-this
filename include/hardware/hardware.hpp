@@ -129,6 +129,6 @@ namespace Pronounce {
 		
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(71);
+		aimingVisionSensor.set_exposure(116);
 	}
 } // namespace Pronoucne

@@ -18,6 +18,7 @@
 #include "hardware/hardware.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 #include "chassis/tankDrive.hpp"
+#include "motionControl/ramsete.hpp"
 
 // TODO: Add comments
 
@@ -35,7 +36,8 @@ namespace Pronounce {
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
 	ProfileConstraints defaultProfileConstraints = {70_in/second, 200_in/second/second, 0.0};
-	ProfileConstraints intakeProfileConstraints = {40_in/second, 200_in/second/second, 0.0};
+	ProfileConstraints intakeProfileConstraints = {30_in/second, 200_in/second/second, 0.0};
+	ProfileConstraints stackIntakeProfileConstraints = {5_in/second, 200_in/second/second, 0.0};
 
 	// Autonomous states
 
@@ -51,18 +53,39 @@ namespace Pronounce {
 
 	TankMotionProfiling backwards48in("Backwards48in", &drivetrain, defaultProfileConstraints, -48_in, &odometry, drivetrainMutex);
 
+	// SKILLS
+	TankMotionProfiling closeRollerToBottomLeftCorner("CloseRollerToBottomLeftCorner", &drivetrain, defaultProfileConstraints, 19_in, &odometry, drivetrainMutex);
+	TankMotionProfiling leftRollerToGoal("LeftRollerToGoal", &drivetrain, defaultProfileConstraints, -72_in, &odometry, drivetrainMutex);
+	TankMotionProfiling leftGoalToMiddleDiscs("LeftGoalToMiddleDiscs", &drivetrain, defaultProfileConstraints, 48_in, &odometry, drivetrainMutex);
+	TankMotionProfiling collectMiddleDiscs("CollectMiddleDiscs", &drivetrain, intakeProfileConstraints, 40_in, &odometry, drivetrainMutex);
+	TankMotionProfiling middleDiscsToTopGoal("MiddleDiscsToTopGoal", &drivetrain, defaultProfileConstraints, 42_in, &odometry, drivetrainMutex);
+	TankMotionProfiling toTopGoal("ToTopGoal", &drivetrain, defaultProfileConstraints, -15_in, &odometry, drivetrainMutex);
+	TankMotionProfiling middleStackToTopGoal("MiddleStackToTopGoal", &drivetrain, defaultProfileConstraints, -40_in, &odometry, drivetrainMutex);
+	TankMotionProfiling intakeMiddleStack("IntakeMiddleStack", &drivetrain, stackIntakeProfileConstraints, 15_in, &odometry, drivetrainMutex);
+	TankMotionProfiling leftGoalToMiddleStack("LeftGoalToMiddleStack", &drivetrain, defaultProfileConstraints, 25_in, &odometry, drivetrainMutex);
+	TankMotionProfiling topGoalToTopMiddleStack("TopGoalToTopMiddleStack", &drivetrain, defaultProfileConstraints, 45_in, &odometry, drivetrainMutex);
+	TankMotionProfiling topMiddleStackToTopGoal("TopMiddleStackToTopGoal", &drivetrain, defaultProfileConstraints, -60_in, &odometry, drivetrainMutex);
+	TankMotionProfiling moveToTopAutonLineDiscs("MoveToTopAutonLineDiscs", &drivetrain, defaultProfileConstraints, 65_in, &odometry, drivetrainMutex);
+	TankMotionProfiling intakeAutonLineDiscs("IntakeAutonLineDiscs", &drivetrain, defaultProfileConstraints, 35_in, &odometry, drivetrainMutex);
+	TankMotionProfiling autonLineToLeftRoller("AutonLineToLeftRoller", &drivetrain, defaultProfileConstraints, 35_in, &odometry, drivetrainMutex);
+	
 	// Rotation Controllers
 	RotationController turnTo0("turnTo0", drivetrain, odometry, turningPid, 0_deg, drivetrainMutex);
 	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 46_deg, drivetrainMutex);
 	RotationController turnTo90("turnTo90", drivetrain, odometry, turningPid, 90_deg, drivetrainMutex);
+	RotationController turnTo115("turnTo115", drivetrain, odometry, turningPid, 115_deg, drivetrainMutex);
+	RotationController turnTo125("turnTo125", drivetrain, odometry, turningPid, 125_deg, drivetrainMutex);
 	RotationController turnTo135("turnTo135", drivetrain, odometry, turningPid, 135_deg, drivetrainMutex);
+	RotationController turnTo145("turnTo145", drivetrain, odometry, turningPid, 145_deg, drivetrainMutex);
 	RotationController turnTo180("turnTo180", drivetrain, odometry, turningPid, 180_deg, drivetrainMutex);
+	RotationController turnTo175("turnTo175", drivetrain, odometry, turningPid, 175_deg, drivetrainMutex);
 	RotationController turnTo225("turnTo225", drivetrain, odometry, turningPid, 225_deg, drivetrainMutex);
 	RotationController turnTo270("turnTo270", drivetrain, odometry, turningPid, 270_deg, drivetrainMutex);
 	RotationController turnTo315("TurnTo315", drivetrain, odometry, turningPid, 315_deg, drivetrainMutex);
-
 	RotationController turnTo325("TurnTo325", drivetrain, odometry, turningPid, 325_deg, drivetrainMutex);
 	RotationController turnTo305("TurnTo305", drivetrain, odometry, turningPid, 305_deg, drivetrainMutex);
+
+	RamseteController testRamsete(&drivetrain, &odometry, intakeProfileConstraints, Pose2D(0_in, 24_in, 0_deg), 0.1, 0.0);
 
 	void initDrivetrain() {
 	}
