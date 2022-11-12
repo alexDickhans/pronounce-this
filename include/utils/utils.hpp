@@ -10,6 +10,16 @@
 // TODO: add comments
 
 namespace Pronounce {
+	/**
+	 * @brief Simple linear interpolation
+	 *
+	 * @param a The start value
+	 * @param b The end value
+	 * @param t
+	 * @return double The interpolated value
+	 */
+	double lerp(double a, double b, double t);
+
 	double toRadians(double degrees);
 	double toDegrees(double radians);
 	double angleDifference(double angle1, double angle2);

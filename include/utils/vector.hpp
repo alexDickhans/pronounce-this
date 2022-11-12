@@ -19,15 +19,8 @@ namespace Pronounce {
         Angle angle;
     public:
         Vector();
-        Vector(Point* point);
         Vector(Point point);
-		/**
-		 * @brief Construct a new Vector point2 - point 1
-		 * 
-		 * @param point1 
-		 * @param point2 
-		 */
-        Vector(Point* point1, Point* point2);
+		Vector(Point point1, Point point2);
         Vector(QLength magnitude, Angle angle);
 
         void operator=(Vector vector) {
@@ -122,7 +115,7 @@ namespace Pronounce {
         }
 
 		void operator=(Point point) {
-			this->operator=(Vector(&point));
+			this->operator=(Vector(point));
 		}
 
         ~Vector();

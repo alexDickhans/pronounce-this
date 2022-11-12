@@ -3,6 +3,7 @@
 #include "purePursuit.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include <iostream>
+#include "velocityProfile/sinusoidalVelocityProfile.hpp"
 
 namespace Pronounce {
 	/**
@@ -36,6 +37,11 @@ namespace Pronounce {
 		 */
 		TankPurePursuit(std::string name, AbstractTankDrivetrain* drivetrain, ContinuousOdometry* odometry, PurePursuitProfile currentProfile, Path path);
 
+		void initialize() {
+			this->setCurrentProfile({this->getCurrentProfile().lookaheadDistance, SinusoidalVelocityProfile(this->getPath().distance(), this->getCurrentProfile().velocityProfile.getProfileConstraints())});
+			calculate();
+		}
+
 		/**
 		 * @brief Update the drivetrain based on the value from the pure pursuit parent object
 		 * 
@@ -47,6 +53,10 @@ namespace Pronounce {
 		 * 
 		 */
 		void stop();
+
+		void exit() {
+			this->stop();
+		}
 
 		/**
 		 * @brief Get the Drivetrain Pointer

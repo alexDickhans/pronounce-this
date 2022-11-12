@@ -108,7 +108,7 @@ namespace Pronounce {
 			std::pair<Point, int32_t> detection = this->lineSensors.getMax();
 
 			// Find which line it is, and find the point on this line that it is closest to
-			Vector sensorPosition = Vector(&detection.first);
+			Vector sensorPosition = Vector(detection.first);
 			sensorPosition.rotate(currentPose.getAngle());
 
 			Point sensorPoint = currentPose + sensorPosition.getCartesian();

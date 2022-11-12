@@ -77,8 +77,8 @@ namespace Pronounce {
 	PronounceLedLib::AnimationColors greenColors = { 0x00008000, 0x00308020 };
 	PronounceLedLib::AnimationColors whiteColors = { 0x00808080, 0x00707070 };
 
-	PronounceLedLib::LedStripController leftLedController(leftLeds, whiteColors, 0.7);
-	PronounceLedLib::LedStripController rightLedController(rightLeds, whiteColors, 0.7);
+	PronounceLedLib::LedStripController leftLedController(leftLeds, orangeColors, 0.7);
+	PronounceLedLib::LedStripController rightLedController(rightLeds, orangeColors, 0.7);
 
 	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
 

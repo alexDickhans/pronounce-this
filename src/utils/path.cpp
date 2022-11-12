@@ -6,7 +6,7 @@ namespace Pronounce {
     Point Path::getLookAheadPoint(Point currentPosition, QLength lookaheadDistance) {
         Point lookaheadPoint = Point();
         bool pointFound = false;
-
+		
         if (path.at(path.size() - 1).distance(currentPosition) <= lookaheadDistance && !continuePath) {
             return path.at(path.size() - 1);
         }
@@ -15,8 +15,8 @@ namespace Pronounce {
             Point pathStart = path.at(i - 1);
             Point pathEnd = path.at(i);
 
-            Vector d = Vector(&pathStart, &pathEnd);
-            Vector f = Vector(&currentPosition, &pathStart);
+            Vector d = Vector(pathStart, pathEnd);
+            Vector f = Vector(currentPosition, pathStart);
 
             double a = d.dot(d);
             double b = 2 * f.dot(d);
@@ -95,14 +95,14 @@ namespace Pronounce {
             Point lastPoint = path.at(i - 1);
             Point thisPoint = path.at(i);
 
-            Vector thisMinusLast(&thisPoint, &lastPoint);
-            Vector positionMinusLast(&currentPosition, &lastPoint);
+            Vector thisMinusLast(thisPoint, lastPoint);
+            Vector positionMinusLast(currentPosition, lastPoint);
 
             // https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
             double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
 
             if (0 < t && t < 1) {
-                lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+                lastPoint += Vector(lastPoint, thisPoint).scale(t).getCartesian();
             } else if (t > 1) {
                 lastPoint = thisPoint;
             } else if (t < 0) {

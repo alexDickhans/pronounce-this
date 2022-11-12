@@ -48,74 +48,6 @@ namespace Pronounce {
 		Path(std::string name);
 
 		/**
-		 * @brief Fill in the path with points
-		 * 
-		 * @param spacing The points to inject per line
-		 */
-		void fill(QLength spacing) {
-			std::vector<Point> oldPath = path;
-			path.clear();
-
-			for (int i = 0; i < oldPath.size() - 1; i++) {
-				// Fill every point in the path with the spacing
-				Point point = oldPath.at(i);
-				Vector vector = Vector(&point, &oldPath.at(i + 1));
-				double pointCount = ceil((vector.getMagnitude() / spacing).getValue());
-				vector.normalize();
-				vector = vector.scale(spacing.getValue());
-
-				for (int i = 0; i < pointCount - 1; i++) {
-					point.add(vector.getCartesian());
-					path.emplace_back(point);
-				}
-
-				path.emplace_back(oldPath.at(i + 1));
-			}
-		}
-
-		/**
-		 * @brief Smooth the path
-		 *
-		 * @deprecated Not working yet
-		 *
-		 * @param weightSmooth
-		 * @param tolerance
-		 */
-		void smooth(double weightSmooth, double tolerance) {
-			double weightData = 1 - weightSmooth;
-
-			std::vector<Point> oldPath = path;
-
-			double change = tolerance;
-
-			while (change >= tolerance) {
-				change = 0.0;
-				for (int i = 1; i < oldPath.size() - 1; i++) {
-					Point oldPoint = oldPath.at(i);
-					Point newPoint = path.at(i);
-
-					// x
-					QLength aux = path.at(i).getX();
-					path.at(i).setX(path.at(i).getX()
-						+ (weightData * (oldPoint.getX() - newPoint.getX()))
-						+ (weightSmooth * (path.at(i - 1).getX() + path.at(i + 1).getX() - 2.0 * newPoint.getX()))
-					);
-
-					change += abs((aux - newPoint.getX()).getValue());
-
-					// y
-					aux = path.at(i).getY();
-					path.at(i).setY(path.at(i).getY()
-						+ (weightData * (oldPoint.getY() - newPoint.getY()))
-						+ (weightSmooth * (path.at(i - 1).getY() + path.at(i + 1).getY() - 2.0 * newPoint.getY()))
-					);
-
-					change += abs((aux - newPoint.getX()).getValue());
-				}
-			}
-		}
-
-		/**
 		 * @brief Get the Path object
 		 * 
 		 * @return std::vector<Point> List of points in the path
@@ -198,14 +130,14 @@ namespace Pronounce {
 				Point lastPoint = path.at(i - 1);
 				Point thisPoint = path.at(i);
 
-				Vector thisMinusLast(&thisPoint, &lastPoint);
-				Vector positionMinusLast(&currentPosition, &lastPoint);
+				Vector thisMinusLast(thisPoint, lastPoint);
+				Vector positionMinusLast(currentPosition, lastPoint);
 
 				// https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
 				double t = positionMinusLast.dot(thisMinusLast) / thisMinusLast.dot(thisMinusLast);
 
 				if (0 < t && t < 1) {
-					lastPoint += Vector(&lastPoint, &thisPoint).scale(t).getCartesian();
+					lastPoint += Vector(lastPoint, thisPoint).scale(t).getCartesian();
 				}
 				else if (t > 1) {
 					lastPoint = thisPoint;

@@ -34,7 +34,7 @@ namespace Pronounce {
 					Point startPoint = points.at(i);
 					Point endPoint = points.at(i + 1);
 					
-					newPoints.emplace_back(startPoint.lerp(endPoint, t));
+					newPoints.emplace_back(startPoint.lerpPoint(endPoint, t));
 				}
 
 				return getPoint(t, newPoints);
@@ -43,7 +43,7 @@ namespace Pronounce {
 			Point startPoint = points.at(0);
 			Point endPoint = points.at(1);
 
-			return startPoint.lerp(endPoint, t);
+			return startPoint.lerpPoint(endPoint, t);
 		}
 
 		Point getPoint(double t) {

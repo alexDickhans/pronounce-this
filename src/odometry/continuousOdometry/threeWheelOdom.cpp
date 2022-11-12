@@ -72,7 +72,7 @@ namespace Pronounce {
 		localOffset = Point(localOffset.getX().Convert(metre) * rotationCos + localOffset.getY().Convert(metre) * rotationSin, - localOffset.getX().Convert(metre) * rotationSin + localOffset.getY().Convert(metre) * rotationCos);
 		
 		// Set the global velocity vector
-		this->setCurrentVelocity(Vector(&localOffset));
+		this->setCurrentVelocity(Vector(localOffset));
 
 		// Add localOffset to the global offset
 		lastPose.add(localOffset);

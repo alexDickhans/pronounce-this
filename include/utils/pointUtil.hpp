@@ -71,7 +71,7 @@ namespace Pronounce {
 		 * @param t The fraction to interpolate between the two points
 		 * @return Point The result of the linear interpolation
 		 */
-		static Point lerp(Point point1, Point point2, double t) {
+		static Point lerpPoint(Point point1, Point point2, double t) {
 			Point result = Point(map(t, 0, 1, point1.getX().getValue(), point2.getX().getValue()), map(t, 0, 1, point1.getY().getValue(), point2.getY().getValue()));
 			return result;
 		}
@@ -83,8 +83,8 @@ namespace Pronounce {
 		 * @param t The fraction to interpolate between the two points
 		 * @return Point The result of the linear interpolation
 		 */
-		Point lerp(Point point2, double t) {
-			return lerp(*this, point2, t);
+		Point lerpPoint(Point point2, double t) {
+			return lerpPoint(*this, point2, t);
 		}
 
 		/**

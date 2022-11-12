@@ -68,9 +68,7 @@ namespace Pronounce {
         }
 
 		void log(std::string poseName) {
-            std::cout << poseName << "X: " << this->getX().Convert(inch) << std::endl;
-			std::cout << poseName + "Y:" << this->getY().Convert(inch) << std::endl;
-			std::cout << poseName + "T:" << this->angle.Convert(degree) << std::endl;
+            std::cout << poseName << ";X: " << this->getX().Convert(inch) << ",Y: " << this->getY().Convert(inch) << ",T: " << this->angle.Convert(degree) << std::endl;
         }
 
         /**

@@ -497,7 +497,19 @@ int skills() {
 	endgameStateController.setCurrentBehavior(&endgameEnabled);
 
 	pros::Task::delay(1250);
-	
+
+	return 0;
+}
+
+int testPurePursuit() {
+
+	drivetrainStateController.setCurrentBehavior(&testPathPurePursuit);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
 	return 0;
 }
 
@@ -662,7 +674,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	skills();
+	testPurePursuit();
 	postAuton();
 
 	// autonomousSelector.run();

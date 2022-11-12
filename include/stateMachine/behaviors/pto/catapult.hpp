@@ -16,8 +16,8 @@ namespace Pronounce {
 		PtoCatapult(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::ADIDigitalIn& catapultLimitSwitch, double speed);
 
 		void initialize() {
-			leftLedController.setColors(redColors);
-			rightLedController.setColors(redColors);
+			leftLedController.setColors(orangeColors);
+			rightLedController.setColors(orangeColors);
 			
 			ptoMutex.take();
 
