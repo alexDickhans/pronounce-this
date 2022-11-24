@@ -18,14 +18,17 @@ namespace Pronounce {
 		QTime startTime = 0.0;
 
 		ContinuousOdometry* odometry;
+
+		QCurvature curvature = 0.0;
 	public:
 		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex) {
 
 		}
 
-		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex, QCurvature curvature) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints);
 			velocityProfile->calculate(100);
+			this->curvature = curvature;
 		}
 
 		void initialize() {
@@ -39,7 +42,7 @@ namespace Pronounce {
 
 			std::cout << "InputDrivetrainSpeed: " << velocityProfile->getVelocityByTime(duration).Convert(inch/second) << std::endl;
 
-			drivetrain->skidSteerVelocity(velocityProfile->getVelocityByTime(duration), 0.0);
+			drivetrain->driveCurvature(velocityProfile->getVelocityByTime(duration), curvature);
 
 			drivetrainMutex.give();
 		}

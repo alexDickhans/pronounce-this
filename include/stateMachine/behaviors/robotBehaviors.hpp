@@ -9,7 +9,6 @@ pros::Mutex robotBehaviorMutex;
 
 #include "pto/intake.hpp"
 #include "pto/initPto.hpp"
-#include "pto/drive.hpp"
 #include "pto/catapult.hpp"
 
 #include "endgame/endgame.hpp"
