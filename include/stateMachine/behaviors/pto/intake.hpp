@@ -7,13 +7,11 @@
 namespace Pronounce {
 	class PtoIntake : public Behavior {
 	private:
-		pros::ADIDigitalOut& ptoPiston;
 		pros::Motor& leftPtoMotor;
 		pros::Motor& rightPtoMotor;
-		bool pistonState;
 		double speed;
 	public:
-		PtoIntake(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed);
+		PtoIntake(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed);
 
 		void initialize() {
 			leftLedController.setColors(greenColors);
@@ -21,7 +19,6 @@ namespace Pronounce {
 
 			ptoMutex.take();
 
-			ptoPiston.set_value(pistonState);
 			leftPtoMotor.move_voltage(speed * 12000);
 			rightPtoMotor.move_voltage(speed * 12000);
 
@@ -31,7 +28,6 @@ namespace Pronounce {
 		void update() {
 			ptoMutex.take();
 
-			ptoPiston.set_value(pistonState);
 			leftPtoMotor.move_voltage(speed * 12000);
 			rightPtoMotor.move_voltage(speed * 12000);
 
@@ -49,7 +45,7 @@ namespace Pronounce {
 		~PtoIntake();
 	};
 	
-	PtoIntake::PtoIntake(std::string name, pros::ADIDigitalOut& ptoPiston, bool pistonState, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed) : Behavior(name), ptoPiston(ptoPiston), pistonState(pistonState), leftPtoMotor(leftPtoMotor), rightPtoMotor(rightPtoMotor), speed(speed) {
+	PtoIntake::PtoIntake(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, double speed) : Behavior(name), leftPtoMotor(leftPtoMotor), rightPtoMotor(rightPtoMotor), speed(speed) {
 	}
 	
 	PtoIntake::~PtoIntake()

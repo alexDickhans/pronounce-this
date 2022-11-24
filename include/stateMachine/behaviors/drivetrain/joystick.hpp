@@ -2,12 +2,12 @@
 
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
-#include "api.h"
 #include "utils/utils.hpp"
 #include "math.h"
 #include "utils/runningAverage.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "hardware/hardware.hpp"
+#include "hardwareAbstractions/joystick/joystick.hpp"
 
 namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
@@ -23,7 +23,7 @@ namespace Pronounce {
 		 */
 		ContinuousOdometry& odometry;
 
-		pros::Controller& controller;
+		AbstractJoystick* controller;
 
 		AbstractTankDrivetrain& drivetrain;
 
@@ -36,7 +36,7 @@ namespace Pronounce {
 		}
 
 	public:
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, pros::Controller& controller, AbstractTankDrivetrain& drivetrain, PID visionPid, double deadband, bool targeting, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, PID visionPid, double deadband, bool targeting, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
@@ -56,11 +56,14 @@ namespace Pronounce {
 				return;
 			}
 
-			double left = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-			double right = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
+			double left = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double right = controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
 
-			double power = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-			double turn = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+			double power = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+			double turn = controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+
+			// double power = (left + right)/2.0;
+			// double turn = (left - right)/2.0;
 			
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
 				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord));

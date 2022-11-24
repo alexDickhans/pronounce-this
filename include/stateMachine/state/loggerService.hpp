@@ -24,7 +24,7 @@ namespace Pronounce {
 		void update() {
 			std::cout << "OutputDrivetrainSpeed: " << drivetrain.getSpeed().getValue() << std::endl;
 			std::cout << "PtoSpeed: " << leftPtoMotor.get_actual_velocity() << std::endl;
-			std::cout << "CatapultLimitSwitch: " << catapultLimitSwitch.get_value() << std::endl;
+			std::cout << "CatapultLimitSwitch: " << catapultLimitSwitch.get_angle() << std::endl;
 		}
 
 		void exit() {
