@@ -2,6 +2,10 @@
 
 namespace Pronounce
 {
+	double lerp(double a, double b, double t) {
+		return a + t * (b - a);
+	}
+	
     double toRadians(double degrees) {
         return degrees * M_PI / 180;
     }

@@ -42,7 +42,7 @@ namespace Pronounce {
 		// If we are using external orientation and it is set we will use that values instead of the current angle
 		if (useExternalOrientation && externalOrientation != nullptr) {
 			externalOrientation->update();
-			currentAngle = externalOrientation->getAngle();
+			currentAngle = externalOrientation->getAngle() + this->getResetPose().getAngle();
 		}
 		else {
 			currentAngle = this->getResetPose().getAngle().getValue() + (leftWheel->getPosition() - rightWheel->getPosition()).getValue() / (leftOffset + rightOffset).getValue();
@@ -72,7 +72,7 @@ namespace Pronounce {
 		localOffset = Point(localOffset.getX().Convert(metre) * rotationCos + localOffset.getY().Convert(metre) * rotationSin, - localOffset.getX().Convert(metre) * rotationSin + localOffset.getY().Convert(metre) * rotationCos);
 		
 		// Set the global velocity vector
-		this->setCurrentVelocity(Vector(&localOffset));
+		this->setCurrentVelocity(Vector(localOffset));
 
 		// Add localOffset to the global offset
 		lastPose.add(localOffset);

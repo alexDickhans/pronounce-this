@@ -3,7 +3,6 @@
 #include "pointUtil.hpp"
 #include "units/units.hpp"
 #include <string>
-#include "utils/pose2d.hpp"
 
 // TODO: add docstrings
 // TODO: add comments
@@ -20,15 +19,8 @@ namespace Pronounce {
         Angle angle;
     public:
         Vector();
-        Vector(Point* point);
         Vector(Point point);
-		/**
-		 * @brief Construct a new Vector point2 - point 1
-		 * 
-		 * @param point1 
-		 * @param point2 
-		 */
-        Vector(Point* point1, Point* point2);
+		Vector(Point point1, Point point2);
         Vector(QLength magnitude, Angle angle);
 
         void operator=(Vector vector) {
@@ -123,7 +115,7 @@ namespace Pronounce {
         }
 
 		void operator=(Point point) {
-			this->operator=(Vector(&point));
+			this->operator=(Vector(point));
 		}
 
         ~Vector();
@@ -147,19 +139,6 @@ namespace Pronounce {
 		Matrix<inputSize, outputSize> multiply(Matrix<inputSize, outputSize> x);
 
 		Vector transformVector(Vector x);
-
-		Pose2D transformPose(Pose2D x) {
-			if (!(inputSize == 3 && outputSize == 3)) {
-				Pose2D poseI = Pose2D(x.getX() * matrix.at(0).at(0), x.getX() * matrix.at(0).at(1), x.getX() * matrix.at(0).at(2));
-				Pose2D poseJ = Pose2D(x.getY() * matrix.at(1).at(0), x.getY() * matrix.at(1).at(1), x.getY() * matrix.at(1).at(2));
-				Pose2D poseK = Pose2D(x.getAngle() * matrix.at(2).at(0), x.getAngle() * matrix.at(2).at(1), x.getAngle() * matrix.at(2).at(2));
-
-				Pose2D pose = poseI + poseJ + poseK;
-
-				return pose;
-			}
-			throw "Sizes of the matrix does not match pose2D!";
-		}
 
 		~Matrix();
 	};

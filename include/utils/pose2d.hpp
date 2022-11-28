@@ -4,6 +4,7 @@
 #include <string>
 #include "units/units.hpp"
 #include <iostream>
+#include "utils/vector.hpp"
 
 namespace Pronounce {
     /**
@@ -67,9 +68,7 @@ namespace Pronounce {
         }
 
 		void log(std::string poseName) {
-            std::cout << poseName << "X: " << this->getX().Convert(inch) << std::endl;
-			std::cout << poseName + "Y:" << this->getY().Convert(inch) << std::endl;
-			std::cout << poseName + "T:" << this->angle.Convert(degree) << std::endl;
+            std::cout << poseName << ";X: " << this->getX().Convert(inch) << ",Y: " << this->getY().Convert(inch) << ",T: " << this->angle.Convert(degree) << std::endl;
         }
 
         /**
@@ -126,7 +125,12 @@ namespace Pronounce {
 			return Pose2D(this->getX() + b.getX(), this->getY() + b.getY(), this->getAngle());
 		}
 
+		Pose2D operator-(Pose2D x) {
+			Vector currentPose(Point(x.getX() - this->getX(), x.getY() - this->getY()));
+			currentPose.rotate(-x.getAngle());
+			return Pose2D(currentPose.getCartesian().getX(), currentPose.getCartesian().getY(), angleDifference((x.getAngle() - this->getAngle()).getValue(), 0));
+		}
+
         ~Pose2D();
     };
-
 } // namespace Pronounce

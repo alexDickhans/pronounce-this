@@ -4,6 +4,7 @@
 #include "units/units.hpp"
 #include "utils/linearInterpolator.hpp"
 #include <cmath>
+#include <iostream>
 
 // TODO: add docstrings
 // TODO: add comments
@@ -140,7 +141,8 @@ namespace Pronounce {
 			Tt = 2 * Ts;
 
 			for (int i = 0; i < granularity; i ++) {
-				QTime time = 1.0/(double) granularity * (double) i * Tt;
+				QTime time = ((double) i/(double) granularity) * Tt;
+				// std::cout << "SinusoidalVelocityProfileTime: " << time.getValue() << std::endl;
 				calculateValues(time);
 			}
 		}

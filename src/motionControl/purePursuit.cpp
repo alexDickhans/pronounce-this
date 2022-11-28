@@ -13,14 +13,13 @@ namespace Pronounce {
 	PurePursuitPointData PurePursuit::updatePointData() {
 
         // Set position and path variables
-        std::vector<Point> pathVector = path.getPath();
         Pose2D currentPose = odometry->getPose();
         Point currentPoint = Point(currentPose.getX(), currentPose.getY());
 		QLength lookahead = this->currentProfile.lookaheadDistance;
 
         // Get lookahead point and vector from robot
         Point lookaheadPoint = path.getLookAheadPoint(currentPoint, lookahead);
-        Vector lookaheadVector = Vector(&currentPoint, &lookaheadPoint);
+        Vector lookaheadVector = Vector(currentPoint, lookaheadPoint);
         lookaheadVector.setAngle(lookaheadVector.getAngle() + currentPose.getAngle());
 
         // Map the magnitude to the distance from the lookahead distance to make sure that the robot's
@@ -29,7 +28,7 @@ namespace Pronounce {
         double mappedMagnitude = map(magnitude.getValue(), 0.0, lookahead.getValue(), 0, 1.0);
 		Vector normalizedLookaheadVector = Vector(mappedMagnitude, lookaheadVector.getAngle());
 
-		Vector robotRelativeLookaheadVector(&currentPoint, &lookaheadPoint);
+		Vector robotRelativeLookaheadVector(currentPoint, lookaheadPoint);
 		
 		robotRelativeLookaheadVector.setAngle(robotRelativeLookaheadVector.getAngle() + currentPose.getAngle());
 

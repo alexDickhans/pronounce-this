@@ -7,6 +7,7 @@ namespace Pronounce {
 	}
 
 	void TankPurePursuit::updateDrivetrain(PurePursuitPointData pointData) {
+		std::cout << "Tank" << std::endl;
 
 		if (isDone(this->getStopDistance())) {
 			this->stop();
@@ -17,11 +18,15 @@ namespace Pronounce {
 
 		side = abs(side) < 0.5 ? signnum_c(side) : side;
 
-		QSpeed speed = this->getCurrentProfile().velocityProfile.getVelocityByDistance(pointData.distanceFromBeginning).getValue() * side;
+		QAcceleration maxAcceleration = 200_in/second/second;
 
-		double motorSpeed = clamp(clamp(speed.getValue(), -speed.getValue(), speed.getValue()), -this->getSpeed().getValue(), this->getSpeed().getValue());
+		QSpeed speed = clamp(this->getCurrentProfile().velocityProfile.getProfileConstraints().maxVelocity, -this->timeSinceStart() * maxAcceleration, this->timeSinceStart() * maxAcceleration);
 
-		drivetrain->driveCurvature(motorSpeed, pointData.curvature);
+		speed = std::max(std::min(speed.getValue(), (2 * maxAcceleration*(pointData.distanceFromEnd-1_in)).getValue()), (1_in/second).getValue()) * side;
+
+		std::cout << "MaxEndAcceleration: " << (2 * maxAcceleration*pointData.distanceFromEnd).getValue() << std::endl;
+
+		drivetrain->driveCurvature(speed, pointData.curvature);
 	}
 
 	void TankPurePursuit::stop() {

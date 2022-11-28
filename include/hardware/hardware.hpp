@@ -77,8 +77,8 @@ namespace Pronounce {
 	PronounceLedLib::AnimationColors greenColors = { 0x00008000, 0x00308020 };
 	PronounceLedLib::AnimationColors whiteColors = { 0x00808080, 0x00707070 };
 
-	PronounceLedLib::LedStripController leftLedController(leftLeds, whiteColors, 0.7);
-	PronounceLedLib::LedStripController rightLedController(rightLeds, whiteColors, 0.7);
+	PronounceLedLib::LedStripController leftLedController(leftLeds, orangeColors, 0.7);
+	PronounceLedLib::LedStripController rightLedController(rightLeds, orangeColors, 0.7);
 
 	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
 
@@ -129,6 +129,6 @@ namespace Pronounce {
 		
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(71);
+		aimingVisionSensor.set_exposure(116);
 	}
 } // namespace Pronoucne

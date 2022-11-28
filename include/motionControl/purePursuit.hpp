@@ -12,6 +12,7 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 #include "velocityProfile/velocityProfile.hpp"
+#include "api.h"
 
 namespace Pronounce {
 	/**
@@ -66,7 +67,7 @@ namespace Pronounce {
 		 * @brief The distance from the target to stop the robot at
 		 * 
 		 */
-		QLength stopDistance = 1_in;
+		QLength stopDistance = 0.25_in;
 
 		/**
 		 * @brief The current pure pursuit profile
@@ -86,6 +87,8 @@ namespace Pronounce {
 		 */
 		QTime updateTime = 10_ms;
 
+		QTime startTime = 0_ms;
+
 	public:
 
 		/**
@@ -100,7 +103,17 @@ namespace Pronounce {
 		 * @brief Start all the values
 		 * 
 		 */
-		void initialize() {
+		virtual void initialize() {
+			startTime = pros::millis() * 1_ms;
+			this->currentProfile.velocityProfile.calculate(100);
+		}
+
+		void calculate() {
+			
+		}
+
+		QTime timeSinceStart() {
+			return (pros::millis() * 1_ms) - startTime;
 		}
 
 		/**
@@ -129,6 +142,10 @@ namespace Pronounce {
 		 */
 		virtual void exit() {}
 
+		bool isDone() {
+			return this->isDone(stopDistance);
+		}
+
 		/**
 		 * @brief Return a boolean if the path is done
 		 * 
@@ -137,7 +154,7 @@ namespace Pronounce {
 		 * @return false It isn't within maxDistance of the end
 		 */
 		bool isDone(QLength maxDistance) {
-			return maxDistance > odometry->getPosition().distance(path.getPoint(path.getPath().size() - 1));
+			return maxDistance > this->getPath().distanceFromEnd(Point(this->getOdometry()->getPosition().getX(), this->getOdometry()->getPosition().getY()));
 		}
 
 		void setPath(Path path) {
