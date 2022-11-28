@@ -19,6 +19,9 @@ namespace Pronounce {
 
 	class RobotStatus : public Behavior {
 	private:
+		int differentFrameCount = 0;
+		int discCount;
+		bool inIntakePath;
 	public:
 
 		RobotStatus() {}
@@ -28,12 +31,40 @@ namespace Pronounce {
 		}
 
 		void update() {
+			if (inIntakePath ? intakeLineSensor.get_value() > 2000 : intakeLineSensor.get_value() < 2000) {
+				differentFrameCount++;
+			}
+			else {
+				differentFrameCount = 0;
+			}
+
+			if (differentFrameCount == 10) {
+				inIntakePath = !inIntakePath;
+				if (!inIntakePath) {
+					discCount++;
+					std::cout << "DiscCount: " << discCount << std::endl;
+					if (discCount == 3) {
+						ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+					}
+				}
+			}
+
+			if (ptoStateController.getCurrentBehavior() == &ptoCatapult) {
+				discCount = 0;
+				std::cout << "DiscCount: " << discCount << std::endl;
+			}
+
+			std::cout << "IntakeLineSensor: " << intakeLineSensor.get_value() << std::endl;
 		}
 
 		void exit() {
 			return;
 		}
-		
+
+		void setDiscCount(int discCount) {
+			this->discCount = discCount;
+		} 
+
 		~RobotStatus() {}
 	};
 } // namespace Pronounce
