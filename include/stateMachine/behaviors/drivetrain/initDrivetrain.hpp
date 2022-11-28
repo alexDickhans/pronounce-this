@@ -35,9 +35,9 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	ProfileConstraints defaultProfileConstraints = { 60_in / second, 200_in / second / second, 0.0 };
-	ProfileConstraints intakeProfileConstraints = { 30_in / second, 200_in / second / second, 0.0 };
-	ProfileConstraints stackIntakeProfileConstraints = { 5_in / second, 200_in / second / second, 0.0 };
+	ProfileConstraints defaultProfileConstraints = { 60_in / second, 100_in / second / second, 0.0 };
+	ProfileConstraints intakeProfileConstraints = { 30_in / second, 100_in / second / second, 0.0 };
+	ProfileConstraints stackIntakeProfileConstraints = { 10_in / second, 200_in / second / second, 0.0 };
 
 	// Autonomous states
 
@@ -46,16 +46,34 @@ namespace Pronounce {
 	TankMotionProfiling moveBackward5in("MoveBackward5in", &drivetrain, defaultProfileConstraints, -5_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling testCurvatureDrive("TestCurvatureDrive", &drivetrain, intakeProfileConstraints, 45_in, &odometry, drivetrainMutex, (90_deg / 20_in));
 
+	TankMotionProfiling intakeDiscStack("IntakeDiscStack", &drivetrain, stackIntakeProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling intakeBarrierDiscs("IntakeBarrierDiscs", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
+
 	// Skills
-	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, intakeProfileConstraints, 45_in, &odometry, drivetrainMutex, (90_deg / 20_in));
-	TankMotionProfiling intoLeftRoller("IntoLeftRoller", &drivetrain, intakeProfileConstraints, 10_in, &odometry, drivetrainMutex, 0.0);
-	TankMotionProfiling fromLeftRoller("FromLeftRoller", &drivetrain, intakeProfileConstraints, -10_in, &odometry, drivetrainMutex, 0.0);
-	TankMotionProfiling rollerToGoal("RollerToGoal", &drivetrain, intakeProfileConstraints, 50_in, &odometry, drivetrainMutex, 0.0);
-	TankMotionProfiling goalToMiddleLine("GoalToMiddleLine", &drivetrain, intakeProfileConstraints, -50_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, defaultProfileConstraints, 45_in, &odometry, drivetrainMutex, (90_deg / 20_in));
+	TankMotionProfiling intoLeftRoller("IntoLeftRoller", &drivetrain, defaultProfileConstraints, 10_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling fromLeftRoller("FromLeftRoller", &drivetrain, defaultProfileConstraints, -10_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling rollerToGoal("RollerToGoal", &drivetrain, defaultProfileConstraints, 50_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling goalToFarSideDiscLine("GoalToFarSideDiscLine", &drivetrain, defaultProfileConstraints, -50_in, &odometry, drivetrainMutex, (-15_deg/-50_in));
+	TankMotionProfiling intakeFarSideDiscLine("IntakeFarSideDiscLine", &drivetrain, intakeProfileConstraints, 50_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling farSideDiscLineToBarrier("FarSideDiscLineToBarrier", &drivetrain, intakeProfileConstraints, 20_in, &odometry, drivetrainMutex, (-90_deg/20_in));
+	TankMotionProfiling farBarrierToMiddleFarField("FarSideDiscLineToBarrier", &drivetrain, defaultProfileConstraints, 10_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling middleFarFieldToDiscStack("MiddleFarFieldToDiscStack", &drivetrain, defaultProfileConstraints, 40_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling discStackToFarGoalApproach("DiscStackToFarGoalApproach", &drivetrain, defaultProfileConstraints, 24_in, &odometry, drivetrainMutex, (-225_deg/24_in));
+	TankMotionProfiling farGoalApproachToFarGoal("FarGoalApproachToFarGoal", &drivetrain, defaultProfileConstraints, 40_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling farGoalToFarMatchLoader("FarGoalToFarMatchLoader", &drivetrain, defaultProfileConstraints, -20_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling farMatchLoaderToBarrierDiscs("FarMatchLoaderToBarrierDiscs", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, (-90_deg/20_in));
+
+	// Close full AWP
+	TankMotionProfiling toCloseRoller("ToCloseRoller", &drivetrain, stackIntakeProfileConstraints, -15_in, &odometry, drivetrainMutex, (8_deg/-10_in));
+	TankMotionProfiling fromCloseRoller("FromCloseRoller", &drivetrain, stackIntakeProfileConstraints, 20_in, &odometry, drivetrainMutex, (45_deg/10_in));
+	TankMotionProfiling fromCloseRollerToMiddleStack("FromCloseRollerToMiddleStack", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling middleStackToMiddle("MiddleStackToMiddle", &drivetrain, defaultProfileConstraints, 30_in, &odometry, drivetrainMutex, 0.0);
 
 	// Rotation Controllers
 	RotationController turnTo0("turnTo0", drivetrain, odometry, turningPid, 0_deg, drivetrainMutex);
-	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 46_deg, drivetrainMutex);
+	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 45_deg, drivetrainMutex);
+	RotationController turnTo65("turnTo65", drivetrain, odometry, turningPid, 65_deg, drivetrainMutex);
 	RotationController turnTo90("turnTo90", drivetrain, odometry, turningPid, 90_deg, drivetrainMutex);
 	RotationController turnTo115("turnTo115", drivetrain, odometry, turningPid, 120_deg, drivetrainMutex);
 	RotationController turnTo125("turnTo125", drivetrain, odometry, turningPid, 128_deg, drivetrainMutex);

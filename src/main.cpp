@@ -24,7 +24,69 @@ int preAutonRun() {
 }
 
 int closeFullAWP() {
-	threeWheelOdom.setPose(Pose2D(34_in, 13_in, 180_deg));
+	threeWheelOdom.setPose(Pose2D(34_in, 12_in, -8.238_deg));
+	robotStatus.setDiscCount(2);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(700);
+
+	drivetrainStateController.setCurrentBehavior(&toCloseRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	dragPad.set_value(true);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo65);
+
+	pros::Task::delay(1250);
+
+	dragPad.set_value(false);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRollerToMiddleStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&intakeDiscStack);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&middleStackToMiddle);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo225);
+
+	pros::Task::delay(1250);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(700);
+
+	pros::Task::delay(100);
 
 	return 0;
 }
@@ -77,7 +139,8 @@ int testCurvatureAuton() {
 
 int skills() {
 
-	threeWheelOdom.reset(Pose2D(34_in, 13_in, 180_deg));
+	threeWheelOdom.reset(Pose2D(34_in, 13_in, 0_deg));
+	robotStatus.setDiscCount(2);
 
 	return 0;
 }
@@ -254,7 +317,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	testCurvatureAuton();
+	closeFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();

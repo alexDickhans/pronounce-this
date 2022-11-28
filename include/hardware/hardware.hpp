@@ -73,10 +73,13 @@ namespace Pronounce {
 	pros::Mutex endgameMutex;
 
 	pros::ADIDigitalOut bandRelease('a', false);
-	pros::ADIDigitalOut endgameDigitalOutputs('b', false);
+	pros::ADIAnalogIn catapultLineSensor('b');
+	pros::ADIAnalogIn intakeLineSensor('c');
+	pros::ADIDigitalOut endgameDigitalOutputs('d', false);
+	pros::ADIDigitalOut dragPad('e', false);
 
-	pros::ADILed leftLeds({ 16, 'a' }, 20);
-	pros::ADILed rightLeds({ 16, 'b' }, 20);
+	pros::ADILed leftLeds({ 17, 'a' }, 20);
+	pros::ADILed rightLeds({ 17, 'b' }, 20);
 
 	PronounceLedLib::AnimationColors blueColors = { 0x0000008B, 0x00004B4B };
 	PronounceLedLib::AnimationColors redColors = { 0x008C2427, 0x008C142C };
