@@ -86,6 +86,121 @@ int closeFullAWP() {
 
 	pros::Task::delay(700);
 
+	drivetrainStateController.setCurrentBehavior(&turnTo135);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&middleToMiddleDiscLine);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&intakeMiddleDiscLine);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&spinRoller1);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&spinRoller2);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	pros::Task::delay(100);
+
+	return 0;
+}
+
+int badCloseFullAWP() {
+	threeWheelOdom.setPose(Pose2D(34_in, 12_in, 0_deg));
+	robotStatus.setDiscCount(2);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	dragPad.set_value(true);
+
+	pros::Task::delay(700);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1000);
+
+	dragPad.set_value(false);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToMiddleField);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo315);
+
+	pros::Task::delay(1000);
+
+	drivetrainStateController.setCurrentBehavior(&backUp10In);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(700);
+
+	// drivetrainStateController.setCurrentBehavior(&turnTo135);
+
+	// pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1250);
+
+	drivetrainStateController.setCurrentBehavior(&intakeMiddleDiscLine);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&spinRoller1);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&spinRoller2);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
 	pros::Task::delay(100);
 
 	return 0;
@@ -317,7 +432,7 @@ void autonomous() {
 	// autonRoutines.hpp and the implementation is autonRoutines.cpp
 	// autonomousSelector.run();
 	preAutonRun();
-	closeFullAWP();
+	badCloseFullAWP();
 	postAuton();
 
 	// autonomousSelector.run();

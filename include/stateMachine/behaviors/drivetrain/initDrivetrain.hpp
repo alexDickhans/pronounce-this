@@ -66,13 +66,21 @@ namespace Pronounce {
 
 	// Close full AWP
 	TankMotionProfiling toCloseRoller("ToCloseRoller", &drivetrain, stackIntakeProfileConstraints, -15_in, &odometry, drivetrainMutex, (8_deg/-10_in));
-	TankMotionProfiling fromCloseRoller("FromCloseRoller", &drivetrain, stackIntakeProfileConstraints, 20_in, &odometry, drivetrainMutex, (45_deg/10_in));
+	TankMotionProfiling fromCloseRoller("FromCloseRoller", &drivetrain, defaultProfileConstraints, 30_in, &odometry, drivetrainMutex, (45_deg/15_in));
 	TankMotionProfiling fromCloseRollerToMiddleStack("FromCloseRollerToMiddleStack", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling middleStackToMiddle("MiddleStackToMiddle", &drivetrain, defaultProfileConstraints, 30_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling middleToMiddleDiscLine("MiddleToMiddleDiscLine", &drivetrain, defaultProfileConstraints, 5_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling intakeMiddleDiscLine("IntakeMiddleDiscLine", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling spinRoller1("SpinRoller1", &drivetrain, defaultProfileConstraints, 30_in, &odometry, drivetrainMutex, (-20_deg/20_in));
+	TankMotionProfiling spinRoller2("SpinRoller2", &drivetrain, defaultProfileConstraints, 40_in, &odometry, drivetrainMutex, (50_deg/20_in));
+
+	// Bad Close Full AWP
+	TankMotionProfiling closeRollerToMiddleField("CloseRollerToMiddleField", &drivetrain, defaultProfileConstraints, 45_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling backUp10In("BackUp10In", &drivetrain, defaultProfileConstraints, -10_in, &odometry, drivetrainMutex, 0.0);
 
 	// Rotation Controllers
 	RotationController turnTo0("turnTo0", drivetrain, odometry, turningPid, 0_deg, drivetrainMutex);
-	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 45_deg, drivetrainMutex);
+	RotationController turnTo45("turnTo45", drivetrain, odometry, turningPid, 47_deg, drivetrainMutex);
 	RotationController turnTo65("turnTo65", drivetrain, odometry, turningPid, 65_deg, drivetrainMutex);
 	RotationController turnTo90("turnTo90", drivetrain, odometry, turningPid, 90_deg, drivetrainMutex);
 	RotationController turnTo115("turnTo115", drivetrain, odometry, turningPid, 120_deg, drivetrainMutex);

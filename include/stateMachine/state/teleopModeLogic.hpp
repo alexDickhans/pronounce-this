@@ -36,7 +36,7 @@ namespace Pronounce {
 			leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
-			// bandRelease.set_value(true);
+			bandRelease.set_value(true);
 		}
 
 		void update() {
@@ -45,14 +45,10 @@ namespace Pronounce {
 				drivetrainStateController.setCurrentBehavior(&normalJoystick);
 				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
+			std::cout << "IntakeStatus: " << ptoStateController.isDone() << std::endl;
 
 			if (controller1->get_digital_new_press(DIGITAL_L1) && ptoStateController.getCurrentBehavior() != &ptoCatapult) {
-				if (ptoStateController.getCurrentBehavior()->getName().size() == ptoIntaking.getName().size()) {
-					ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-				}
-				else {
-					ptoStateController.setCurrentBehavior(&ptoIntaking);
-				}
+				ptoStateController.setCurrentBehavior(ptoStateController.isDone() ? &ptoIntakeStopped : &ptoIntaking);
 			}
 
 			if (controller1->get_digital_new_press(DIGITAL_L2)) {
