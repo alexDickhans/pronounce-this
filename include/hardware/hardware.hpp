@@ -72,14 +72,15 @@ namespace Pronounce {
 
 	pros::Mutex endgameMutex;
 
-	pros::ADIDigitalOut bandRelease('a', false);
+	std::shared_ptr<pros::ADIDigitalOut> pistonBoost(new pros::ADIDigitalOut('b', false));
+	std::shared_ptr<pros::ADIDigitalOut> pistonOverfill(new pros::ADIDigitalOut('a', false));
+
 	pros::ADIAnalogIn catapultLineSensor('b');
 	pros::ADIAnalogIn intakeLineSensor('c');
 	pros::ADIDigitalOut endgameDigitalOutputs('d', false);
-	pros::ADIDigitalOut dragPad('e', false);
 
-	pros::ADILed leftLeds({ 17, 'a' }, 20);
-	pros::ADILed rightLeds({ 17, 'b' }, 20);
+	pros::ADILed leftLeds({ 20, 'a' }, 20);
+	pros::ADILed rightLeds({ 20, 'b' }, 20);
 
 	PronounceLedLib::AnimationColors blueColors = { 0x0000008B, 0x00004B4B };
 	PronounceLedLib::AnimationColors redColors = { 0x008C2427, 0x008C142C };
@@ -90,7 +91,7 @@ namespace Pronounce {
 	PronounceLedLib::LedStripController leftLedController(leftLeds, orangeColors, 0.7);
 	PronounceLedLib::LedStripController rightLedController(rightLeds, orangeColors, 0.7);
 
-	pros::Vision aimingVisionSensor(20, pros::E_VISION_ZERO_CENTER);
+	pros::Vision aimingVisionSensor(17, pros::E_VISION_ZERO_CENTER);
 
 	pros::vision_signature_s_t RED_GOAL;
 	pros::vision_signature_s_t BLUE_GOAL;

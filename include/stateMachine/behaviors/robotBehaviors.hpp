@@ -14,4 +14,7 @@ pros::Mutex robotBehaviorMutex;
 #include "endgame/endgame.hpp"
 #include "endgame/initEndgame.hpp"
 
+#include "pistonBoost/pistonBoost.hpp"
+#include "pistonBoost/initBoost.hpp"
+
 // TODO: Find a better solution for this

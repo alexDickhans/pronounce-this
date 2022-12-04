@@ -38,7 +38,7 @@ int closeFullAWP() {
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 
-	dragPad.set_value(true);
+	// dragPad.set_value(true);
 
 	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
 
@@ -51,7 +51,7 @@ int closeFullAWP() {
 
 	pros::Task::delay(1250);
 
-	dragPad.set_value(false);
+	// dragPad.set_value(false);
 
 	drivetrainStateController.setCurrentBehavior(&fromCloseRollerToMiddleStack);
 
@@ -133,7 +133,7 @@ int badCloseFullAWP() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	dragPad.set_value(true);
+	// dragPad.set_value(true);
 
 	pros::Task::delay(700);
 
@@ -148,7 +148,7 @@ int badCloseFullAWP() {
 
 	pros::Task::delay(1000);
 
-	dragPad.set_value(false);
+	// dragPad.set_value(false);
 
 	drivetrainStateController.setCurrentBehavior(&closeRollerToMiddleField);
 
@@ -256,6 +256,84 @@ int skills() {
 
 	threeWheelOdom.reset(Pose2D(34_in, 13_in, 0_deg));
 	robotStatus.setDiscCount(2);
+
+	// dragPad.set_value(true);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&intoLeftRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&fromLeftRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(1000);
+	
+	drivetrainStateController.setCurrentBehavior(&rollerToGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(700);
+	
+	drivetrainStateController.setCurrentBehavior(&goalToFarSideDiscLine);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&turnTo45);
+
+	pros::Task::delay(1000);
+	
+	drivetrainStateController.setCurrentBehavior(&intakeFarSideDiscLine);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	drivetrainStateController.setCurrentBehavior(&farSideDiscLineToBarrier);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	pros::Task::delay(100);
+
+	return 0;
+}
+
+int expansionSkills() {
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	pros::Task::delay(55000);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
+	pros::Task::delay(2000);
 
 	return 0;
 }
@@ -376,7 +454,9 @@ void initialize() {
 	// Initialize functions
 	initHardware();
 	initDrivetrain();
+	initBoost();
 	initPto();
+	initEndgame();
 	initBehaviors();
 	initDisplay();
 
@@ -428,14 +508,9 @@ void competition_initialize() {
  * Runs during the autonomous. NO user control
  */
 void autonomous() {
-	// This calls the user selection, all the functions prototypes are in 
-	// autonRoutines.hpp and the implementation is autonRoutines.cpp
-	// autonomousSelector.run();
 	preAutonRun();
 	badCloseFullAWP();
 	postAuton();
-
-	// autonomousSelector.run();
 }
 
 // !SECTION

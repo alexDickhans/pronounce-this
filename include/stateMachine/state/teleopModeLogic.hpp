@@ -36,7 +36,7 @@ namespace Pronounce {
 			leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
-			bandRelease.set_value(true);
+			// bandRelease.set_value(true);
 		}
 
 		void update() {
