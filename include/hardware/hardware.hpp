@@ -11,6 +11,7 @@
 #include "pros/rtos.hpp"
 #include "pronounceLedStrip/ledStrip.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
+#include "pros/apix.h"
 
 #ifndef SIM
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
@@ -44,20 +45,20 @@ namespace Pronounce {
 
 	pros::Mutex ptoMutex;
 
-	pros::Motor leftPtoMotor(16, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightPtoMotor(15, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftPtoMotor(16, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightPtoMotor(15, pros::E_MOTOR_GEAR_600, false);
 
 	int32_t leftVoltage = 0;
 	int32_t rightVoltage = 0;
 
 	// Catapult
-	pros::Rotation catapultLimitSwitch(12);
+	pros::Rotation catapultLimitSwitch(14);
 
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 3.25_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 3.25_in);
 
 	// Inertial Measurement Unit
-	pros::Imu imu(6);
+	pros::Imu imu(18);
 	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
@@ -72,8 +73,8 @@ namespace Pronounce {
 
 	pros::Mutex endgameMutex;
 
-	std::shared_ptr<pros::ADIDigitalOut> pistonBoost(new pros::ADIDigitalOut('b', false));
-	std::shared_ptr<pros::ADIDigitalOut> pistonOverfill(new pros::ADIDigitalOut('a', false));
+	pros::ADIDigitalOut pistonBoost('b', false);
+	pros::ADIDigitalOut pistonOverfill('a', false);
 
 	pros::ADIAnalogIn catapultLineSensor('b');
 	pros::ADIAnalogIn intakeLineSensor('c');
@@ -126,7 +127,7 @@ namespace Pronounce {
 
 		imu.reset();
 
-		while (imu.is_calibrating())
+		while (imu.is_calibrating() && !(pros::c::registry_get_plugged_type(18) == pros::c::v5_device_e_t::E_DEVICE_NONE))
 			pros::Task::delay(50);
 
 		odometryMutex.give();

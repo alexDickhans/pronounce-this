@@ -446,23 +446,30 @@ void initDisplay() {
  */
 void initialize() {
 
+	std::cout << "INIT" << std::endl;
+
 	robotMutex.take();
 
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
 
 	// Initialize functions
+	std::cout << "INIT" << std::endl;
 	initHardware();
+	std::cout << "INIT" << std::endl;
 	initDrivetrain();
+	std::cout << "INIT" << std::endl;
 	initBoost();
 	initPto();
+
+	std::cout << "INIT" << std::endl;
 	initEndgame();
 	initBehaviors();
 	initDisplay();
 
-	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
-
 	robotMutex.give();
+
+	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
 }
 
 // !SECTION

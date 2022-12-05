@@ -13,13 +13,13 @@ namespace Pronounce
 
 	class PistonBoost : public Behavior {
 	private:
-		std::shared_ptr<pros::ADIDigitalOut> boostPiston;
-		std::shared_ptr<pros::ADIDigitalOut> overfillPiston;
+		pros::ADIDigitalOut* boostPiston;
+		pros::ADIDigitalOut* overfillPiston;
 
 		BoostState boostState;
 
 	public:
-		PistonBoost(std::string name, std::shared_ptr<pros::ADIDigitalOut> boostPiston, std::shared_ptr<pros::ADIDigitalOut> overfillPiston, BoostState boostState);
+		PistonBoost(std::string name, pros::ADIDigitalOut* boostPiston, pros::ADIDigitalOut* overfillPiston, BoostState boostState);
 
 		void initialize() {
 			boostPiston->set_value(boostState == BoostState::boost);
@@ -41,7 +41,7 @@ namespace Pronounce
 		~PistonBoost();
 	};
 	
-	PistonBoost::PistonBoost(std::string name, std::shared_ptr<pros::ADIDigitalOut> boostPiston, std::shared_ptr<pros::ADIDigitalOut> overfillPiston, BoostState boostState) : boostPiston(boostPiston), overfillPiston(overfillPiston), Behavior(name) {
+	PistonBoost::PistonBoost(std::string name, pros::ADIDigitalOut* boostPiston, pros::ADIDigitalOut* overfillPiston, BoostState boostState) : boostPiston(boostPiston), overfillPiston(overfillPiston), Behavior(name) {
 		this->boostState = boostState;
 	}
 	
