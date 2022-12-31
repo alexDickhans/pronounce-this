@@ -19,7 +19,7 @@ namespace Pronounce {
 	StateController ptoStateController("PtoStateController", &ptoIntaking);
 	StateController ptoStateExtensionController("PtoStateExtensionController", new Behavior());
 
-	Wait ptoCatapultLaunch1(&ptoCatapult, 500_ms);
+	Wait ptoCatapultLaunch1(&ptoCatapult, 1000_ms);
 
 	Sequence ptoCatapultLaunch("PtoCatapultLaunch");
 

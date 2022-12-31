@@ -23,200 +23,34 @@ int preAutonRun() {
 	return 0;
 }
 
-int closeFullAWP() {
-	threeWheelOdom.setPose(Pose2D(34_in, 12_in, -8.238_deg));
-	robotStatus.setDiscCount(2);
+void turnTo(Angle angle, int waitTimeMS) {
+	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	drivetrainStateController.setCurrentBehavior(&angleRotation);
 
-	pros::Task::delay(700);
+	pros::Task::delay(waitTimeMS);
 
-	drivetrainStateController.setCurrentBehavior(&toCloseRoller);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	// dragPad.set_value(true);
-
-	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo65);
-
-	pros::Task::delay(1250);
-
-	// dragPad.set_value(false);
-
-	drivetrainStateController.setCurrentBehavior(&fromCloseRollerToMiddleStack);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&intakeDiscStack);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo315);
-
-	pros::Task::delay(1250);
-
-	drivetrainStateController.setCurrentBehavior(&middleStackToMiddle);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo225);
-
-	pros::Task::delay(1250);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(700);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo135);
-
-	pros::Task::delay(1250);
-
-	drivetrainStateController.setCurrentBehavior(&middleToMiddleDiscLine);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo45);
-
-	pros::Task::delay(1250);
-
-	drivetrainStateController.setCurrentBehavior(&intakeMiddleDiscLine);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&spinRoller1);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&spinRoller2);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-	
-	pros::Task::delay(100);
-
-	return 0;
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-int badCloseFullAWP() {
-	threeWheelOdom.setPose(Pose2D(34_in, 12_in, 0_deg));
-	robotStatus.setDiscCount(2);
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature) {
+	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, drivetrainMutex, curvature);
 
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	// dragPad.set_value(true);
-
-	pros::Task::delay(700);
-
-	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
-
-	pros::Task::delay(50);
+	drivetrainStateController.setCurrentBehavior(&motionProfiling);
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 
-	drivetrainStateController.setCurrentBehavior(&turnTo45);
-
-	pros::Task::delay(1000);
-
-	// dragPad.set_value(false);
-
-	drivetrainStateController.setCurrentBehavior(&closeRollerToMiddleField);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo315);
-
-	pros::Task::delay(1000);
-
-	drivetrainStateController.setCurrentBehavior(&backUp10In);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(700);
-
-	// drivetrainStateController.setCurrentBehavior(&turnTo135);
-
-	// pros::Task::delay(1250);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo45);
-
-	pros::Task::delay(1250);
-
-	drivetrainStateController.setCurrentBehavior(&intakeMiddleDiscLine);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&spinRoller1);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-
-	drivetrainStateController.setCurrentBehavior(&spinRoller2);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-	
-	pros::Task::delay(100);
-
-	return 0;
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
 int tunePid() {
 
 	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
 
-	drivetrainStateController.setCurrentBehavior(&turnTo180);
+	turnTo(180_deg, 1500);
 
-	pros::Task::delay(1500);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo0);
-
-	pros::Task::delay(1500);
+	turnTo(0_deg, 1500);
 
 	return 0;
 }
@@ -254,24 +88,55 @@ int testCurvatureAuton() {
 
 int skills() {
 
-	threeWheelOdom.reset(Pose2D(34_in, 13_in, 0_deg));
-	robotStatus.setDiscCount(2);
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+	robotStatus.setDiscCount(1);
 
-	// dragPad.set_value(true);
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	drivetrainStateController.setCurrentBehavior(&fromCloseRoller);
+	drivetrainStateController.setCurrentBehavior(&intoCloseRoller2);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	pros::Task::delay(700);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(500);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRoller2);
 
 	pros::Task::delay(50);
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 
-	drivetrainStateController.setCurrentBehavior(&intoLeftRoller);
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
+
+	pros::Task::delay(700);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToLeftRoller);
 
 	pros::Task::delay(50);
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
+	
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	pros::Task::delay(300);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	turnTo(270_deg, 300);
 
 	drivetrainStateController.setCurrentBehavior(&fromLeftRoller);
 
@@ -279,12 +144,79 @@ int skills() {
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
-	
-	drivetrainStateController.setCurrentBehavior(&turnTo0);
 
-	pros::Task::delay(1000);
-	
-	drivetrainStateController.setCurrentBehavior(&rollerToGoal);
+	turnTo(1_deg, 700);
+
+	drivetrainStateController.setCurrentBehavior(&leftRollerToGoal);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(300);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(750);
+
+	drivetrainStateController.setCurrentBehavior(&intakeFarBarrierCloseDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&backIntakeFarBarrierCloseDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo10);
+
+	pros::Task::delay(600);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(400);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(400);
+
+	turnTo(145_deg, 800);
+
+	drivetrainStateController.setCurrentBehavior(&toMiddleLineDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	turnTo(42_deg, 800);
+
+	drivetrainStateController.setCurrentBehavior(&intakeMiddleLineDiscs);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	turnTo(310_deg, 400);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(400);
+
+	drivetrainStateController.setCurrentBehavior(&toFarBarrier);
 
 	pros::Task::delay(50);
 
@@ -293,47 +225,95 @@ int skills() {
 	
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	pros::Task::delay(700);
-	
-	drivetrainStateController.setCurrentBehavior(&goalToFarSideDiscLine);
+	pros::Task::delay(400);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo0);
+
+	pros::Task::delay(800);
+
+	drivetrainStateController.setCurrentBehavior(&intakeFarBarrierFarDiscs);
 
 	pros::Task::delay(50);
 
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 	
-	drivetrainStateController.setCurrentBehavior(&turnTo45);
+	drivetrainStateController.setCurrentBehavior(&turnTo270);
 
-	pros::Task::delay(1000);
-	
-	drivetrainStateController.setCurrentBehavior(&intakeFarSideDiscLine);
+	pros::Task::delay(400);
 
-	pros::Task::delay(50);
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-	
-	drivetrainStateController.setCurrentBehavior(&farSideDiscLineToBarrier);
+	pros::Task::delay(400);
 
-	pros::Task::delay(50);
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
-	
-	pros::Task::delay(100);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(400);
 
 	return 0;
 }
 
-int expansionSkills() {
-	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+int closeFullAWP() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+	robotStatus.setDiscCount(1);
+
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	pros::Task::delay(55000);
+	move(4_in, defaultProfileConstraints, 0.0);
 
-	endgameStateController.setCurrentBehavior(&endgameEnabled);
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	pros::Task::delay(2000);
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(300);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-5_in, defaultProfileConstraints, 0.0);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(345_deg, 800);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(51_deg, 800);
+
+	move(20_in, defaultProfileConstraints, 0.0);
+
+	move(30_in, intakeProfileConstraints, 0.0);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(320_deg, 800);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(50_deg, 800);
+
+	move(75_in, defaultProfileConstraints, 0.0);
+
+	move(15_in, defaultProfileConstraints, 90_deg/15_in);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo90);
+
+	pros::Task::delay(300);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	pros::Task::delay(1000);
 
 	return 0;
 }
@@ -389,6 +369,25 @@ void updateDisplay() {
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
 	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
+
+	std::shared_ptr<lv_obj_t> portsTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Ports"));
+	std::shared_ptr<lv_obj_t> portsPage = std::shared_ptr<lv_obj_t>(lv_page_create(portsTab.get(), NULL));
+	std::shared_ptr<lv_obj_t> portsLabel = std::shared_ptr<lv_obj_t>(lv_label_create(portsTab.get(), NULL));
+	std::shared_ptr<lv_obj_t> portsTable = std::shared_ptr<lv_obj_t>(lv_table_create(portsPage.get(), NULL));
+	
+	lv_obj_set_width(portsPage.get(), 400);
+	lv_obj_set_height(portsPage.get(), 100);
+
+	int count = checkPorts(portsTable.get());
+
+	std::cout << count << std::endl;
+
+	if (count > 0) {
+		lv_label_set_text(portsLabel.get(), "SOMETHING IS MISSING");
+		// lv_label_set_style(portsLabel.get(), )
+	} else {
+		lv_label_set_text(portsLabel.get(), "All Good");
+	}
 
 	// Drivetrain
 	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Drivetrain"));
@@ -516,7 +515,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	badCloseFullAWP();
+	closeFullAWP();
 	postAuton();
 }
 

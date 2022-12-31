@@ -45,7 +45,7 @@ namespace Pronounce {
 		stateControllers.addBehavior(&ptoStateController);
 		stateControllers.addBehavior(&ptoStateExtensionController);
 		stateControllers.addBehavior(&drivetrainStateController);
-		// stateControllers.addBehavior(&pistonBoostStateController);
+		stateControllers.addBehavior(&pistonBoostStateController);
 		stateControllers.addBehavior(&endgameStateController);
 		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&loggerService);
@@ -73,7 +73,7 @@ namespace Pronounce {
 		void update() {
 			robotBehaviorMutex.take();
 
-			if (ptoStateController.isDone() && !(angleDifference((catapultLimitSwitch.get_angle() * degree / 100.0).getValue(), 0) < 1.0)) {
+			if (ptoStateController.isDone() && (catapultLimitSwitch.get_angle() < 34500 && catapultLimitSwitch.get_angle() > 1500)) {
 				ptoStateController.setCurrentBehavior(&ptoCatapult);
 			}
 

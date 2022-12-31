@@ -53,8 +53,20 @@ namespace Pronounce {
 				drivetrainStateController.setCurrentBehavior(drivetrainStateController.getCurrentBehavior() == &targetingJoystick ? &normalJoystick : &targetingJoystick);
 			}
 
-			if (controller1->get_digital(DIGITAL_B) && controller1->get_digital(DIGITAL_DOWN))
+			if (controller2->get_digital(DIGITAL_L2) && controller2->get_digital(DIGITAL_R2))
 				endgameStateController.setCurrentBehavior(&endgameEnabled);
+			
+			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+				pistonBoostStateController.setCurrentBehavior(&pistonBoostOverfill);
+			}
+
+			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+				pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+			}
+
+			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+				pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+			}
 		}
 
 		void exit() {

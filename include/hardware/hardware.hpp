@@ -12,6 +12,7 @@
 #include "pronounceLedStrip/ledStrip.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "pros/apix.h"
+#include <map>
 
 #ifndef SIM
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
@@ -41,7 +42,7 @@ namespace Pronounce {
 	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
 	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
 
-	TankDrivetrain drivetrain(7.5_in, 61_in / second, leftDriveMotors, rightDriveMotors, 600);
+	TankDrivetrain drivetrain(9_in, 61_in / second, leftDriveMotors, rightDriveMotors, 600);
 
 	pros::Mutex ptoMutex;
 
@@ -76,9 +77,9 @@ namespace Pronounce {
 	pros::ADIDigitalOut pistonBoost('b', false);
 	pros::ADIDigitalOut pistonOverfill('a', false);
 
-	pros::ADIAnalogIn catapultLineSensor('b');
-	pros::ADIAnalogIn intakeLineSensor('c');
-	pros::ADIDigitalOut endgameDigitalOutputs('d', false);
+	// pros::ADIAnalogIn catapultLineSensor('e');
+	pros::ADIAnalogIn intakeLineSensor('d');
+	pros::ADIDigitalOut endgameDigitalOutputs('c', false);
 
 	pros::ADILed leftLeds({ 20, 'a' }, 20);
 	pros::ADILed rightLeds({ 20, 'b' }, 20);
@@ -125,20 +126,60 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		imu.reset();
+		if (pros::c::registry_get_plugged_type(17) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+			imu.reset();
 
-		while (imu.is_calibrating() && !(pros::c::registry_get_plugged_type(18) == pros::c::v5_device_e_t::E_DEVICE_NONE))
-			pros::Task::delay(50);
+			while (imu.is_calibrating())
+				pros::Task::delay(50);
+		}
 
 		odometryMutex.give();
-
-		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 6167, 8375, 7270, -977, 77, -450, 3.000, 0);
-		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -1317, -595, -956, 3619, 5717, 4668, 3.000, 0);
+		
+		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 6819, 9047, 7932, -1379, 121, -628, 3.000, 0);
+		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -2521, -1559, -2040, 6869, 8869, 7870, 3.000, 0);
 
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(116);
+		aimingVisionSensor.set_exposure(85);
 
 		// catapultLimitSwitch.reverse();
+	}
+
+	int checkPorts(lv_obj_t* table) {
+		std::map<uint8_t, pros::c::v5_device_e_t> portsList;
+
+		portsList.emplace(8, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(9, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(7, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(2, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(3, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(4, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(16, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(15, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(14, pros::c::v5_device_e_t::E_DEVICE_ROTATION);
+		portsList.emplace(17, pros::c::v5_device_e_t::E_DEVICE_VISION);
+		portsList.emplace(21, pros::c::v5_device_e_t::E_DEVICE_RADIO);
+		portsList.emplace(18, pros::c::v5_device_e_t::E_DEVICE_IMU);
+
+		lv_table_set_col_cnt(table, 3);
+		lv_table_set_row_cnt(table, portsList.size());
+
+		int count = 0;
+		int missingCount = 0;
+
+		for (auto i = portsList.begin(); i != portsList.end(); i++) {
+			lv_table_set_cell_value(table, count, 0, std::to_string(i->first).c_str());
+			lv_table_set_cell_value(table, count, 1, std::to_string(i->second).c_str());
+			lv_table_set_cell_value(table, count, 2, std::to_string(pros::c::registry_get_plugged_type(i->first-1) == i->second).c_str());
+
+			if (pros::c::registry_get_plugged_type(i->first-1) != i->second) {
+				missingCount ++;
+				std::cout << "PortMissing: " << std::to_string(i->first) << std::endl;
+			}
+
+			count ++;
+		}
+
+		return missingCount;
 	}
 } // namespace Pronoucne

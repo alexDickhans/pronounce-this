@@ -28,7 +28,7 @@ namespace Pronounce {
 		double derivitive;
 
 		double integralBound = 3000.0;
-		double maxIntegral = 30;
+		double maxIntegral = 30.0;
 
 		double power;
 
@@ -38,14 +38,13 @@ namespace Pronounce {
 		double calculatePidValues(double input) {
 			position = input;
 
+			this->error = target - position;
+			
 			if (turnPid) {
 				this->error = angleDifference(target, position);
 			}
-			else {
-				this->error = target - position;
-			}
 
-			this->derivitive = error - prevError;
+			this->derivitive = this->error - this->prevError;
 
 			if (abs(error) < integralBound) {
 				totalError += error;
@@ -56,9 +55,9 @@ namespace Pronounce {
 
 			totalError = abs(totalError) > maxIntegral ? signnum_c(totalError) * maxIntegral : totalError;
 
-			this->power = error * kP + derivitive * kD + totalError * kI;
+			this->power = (error * kP) + (derivitive * kD) + (totalError * kI);
 
-			prevError = error;
+			this->prevError = this->error;
 
 			return this->power;
 		}
