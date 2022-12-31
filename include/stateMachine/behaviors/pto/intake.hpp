@@ -31,6 +31,8 @@ namespace Pronounce {
 			leftPtoMotor.move_voltage(speed * 12000);
 			rightPtoMotor.move_voltage(speed * 12000);
 
+			std::cout << "CommandedIntakeVoltage: " << speed * 12000.0 << std::endl;
+
 			ptoMutex.give();
 		}
 

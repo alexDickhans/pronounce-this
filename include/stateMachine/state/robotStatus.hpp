@@ -17,11 +17,12 @@ namespace Pronounce {
 
 	const GameMode gameMode = GameMode::Red;
 
-	class RobotStatus : public Behavior {
+	class RobotStatus: public Behavior {
 	private:
 		int differentFrameCount = 0;
 		int discCount;
 		bool inIntakePath;
+		int discCountFrames;
 	public:
 
 		RobotStatus() {}
@@ -31,22 +32,29 @@ namespace Pronounce {
 		}
 
 		void update() {
-			if (inIntakePath ? intakeLineSensor.get_value() > 2000 : intakeLineSensor.get_value() < 2000) {
+			if (inIntakePath ? intakeLineSensor.get_value() > 2600 : intakeLineSensor.get_value() < 2000) {
 				differentFrameCount++;
 			}
 			else {
 				differentFrameCount = 0;
 			}
 
-			if (differentFrameCount == 10) {
+			if (differentFrameCount == 2) {
 				inIntakePath = !inIntakePath;
 				if (!inIntakePath) {
 					discCount++;
 					std::cout << "DiscCount: " << discCount << std::endl;
-					if (discCount == 3) {
-						ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-					}
 				}
+			}
+
+			if (discCount >= 3) {
+				discCountFrames ++;
+			} else {
+				discCountFrames = 0;
+			}
+
+			if (discCountFrames == 30) {
+				ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 			}
 
 			if (ptoStateController.getCurrentBehavior() == &ptoCatapult) {
@@ -63,7 +71,7 @@ namespace Pronounce {
 
 		void setDiscCount(int discCount) {
 			this->discCount = discCount;
-		} 
+		}
 
 		~RobotStatus() {}
 	};

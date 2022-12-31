@@ -25,7 +25,8 @@ namespace Pronounce
 
 		void initialize() {
 			rotationPID.reset();
-			rotationPID.setTarget(target.Convert(radian));
+			rotationPID.setTurnPid(true);
+			rotationPID.setTarget(angleDifference(target.Convert(radian), 0.0));
 		}
 
 		void update() {
