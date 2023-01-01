@@ -45,7 +45,7 @@ namespace Pronounce {
 			}
 			std::cout << "IntakeStatus: " << ptoStateController.isDone() << std::endl;
 
-			if (controller1->get_digital_new_press(DIGITAL_L1) && ptoStateController.getCurrentBehavior() != &ptoCatapult) {
+			if (controller1->get_digital_new_press(DIGITAL_L1)) {
 				ptoStateController.setCurrentBehavior(ptoStateController.isDone() ? &ptoIntakeStopped : &ptoIntaking);
 			}
 
