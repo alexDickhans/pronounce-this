@@ -54,7 +54,7 @@ namespace Pronounce {
 	TankMotionProfiling fromCloseRoller2("FromCloseRoller", &drivetrain, defaultProfileConstraints, -30_in, &odometry, drivetrainMutex, (80_deg/-12_in));
 	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, defaultProfileConstraints, 38_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling intoLeftRoller("ToCloseRoller", &drivetrain, stackIntakeProfileConstraints, 3_in, &odometry, drivetrainMutex, (8_deg/-10_in));
-	TankMotionProfiling fromLeftRoller("FromLeftRoller", &drivetrain, defaultProfileConstraints, -10_in, &odometry, drivetrainMutex, (90_deg/-10_in));
+	TankMotionProfiling fromLeftRoller("FromLeftRoller", &drivetrain, defaultProfileConstraints, -8_in, &odometry, drivetrainMutex, (130_deg/-10_in));
 	TankMotionProfiling leftRollerToGoal("RollerToGoal", &drivetrain, defaultProfileConstraints, 67_in, &odometry, drivetrainMutex, (20_deg/85_in));
 	TankMotionProfiling intakeFarBarrierCloseDiscs("IntakeFarBarrierCloseDiscs", &drivetrain, intakeProfileConstraints, 35_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling backIntakeFarBarrierCloseDiscs("IntakeFarBarrierCloseDiscs", &drivetrain, defaultProfileConstraints, -35_in, &odometry, drivetrainMutex, 0.0);

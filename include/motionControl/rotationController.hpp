@@ -30,7 +30,7 @@ namespace Pronounce
 		}
 
 		void update() {
-			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
+			double output = rotationPID.update(angleDifference(odometry.getPose().getAngle().Convert(radian), 0.0));
 
 			std::cout << output << std::endl;
 			std::cout << rotationPID.getError() << std::endl;

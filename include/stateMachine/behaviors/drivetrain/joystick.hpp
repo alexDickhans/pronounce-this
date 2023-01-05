@@ -81,7 +81,7 @@ namespace Pronounce {
 
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
 				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord));
-				turn = visionPid.update(visionSensorX.getAverage() - 25);
+				turn = visionPid.update(visionSensorX.getAverage() - 20);
 			}
 
 			double left = power + turn;
