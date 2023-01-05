@@ -255,6 +255,273 @@ int skills() {
 	return 0;
 }
 
+int skillsMax() {
+
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+	robotStatus.setDiscCount(1);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	drivetrainStateController.setCurrentBehavior(&intoCloseRoller2);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrainStateController.setCurrentBehavior(&turnTo180);
+
+	pros::Task::delay(600);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	drivetrainStateController.setCurrentBehavior(&fromCloseRoller2);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	turnTo(265_deg, 300);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrainStateController.setCurrentBehavior(&closeRollerToLeftRoller);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+	
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(270_deg, 400);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-8_in, defaultProfileConstraints, 0.0);
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(1_deg, 700);
+
+	move(55_in, defaultProfileConstraints, (30_deg/85_in));
+
+	pros::Task::delay(50);
+
+	while(!drivetrainStateController.isDone()) 
+		pros::Task::delay(10);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(135_deg, 800);
+
+	move(27_in, defaultProfileConstraints, 0.0);
+
+	turnTo(45_deg, 800);
+
+	move(37_in, { 45_in / second, 200_in / second / second, 0.0 }, 0.0);
+
+	turnTo(305_deg, 500);
+
+	move(5_in, defaultProfileConstraints, 0.0);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(275_deg, 800);
+
+	move(30_in, intakeProfileConstraints, 0.0);
+
+	move(-29_in, defaultProfileConstraints, 0.0);
+
+	turnTo(315_deg, 500);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(357_deg, 800);
+
+	move(30_in, intakeProfileConstraints, 0.0);
+
+	move(-30_in, defaultProfileConstraints, 0.0);
+
+	turnTo(315_deg, 500);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+	
+	turnTo(60_deg, 800);
+
+	move(30_in, defaultProfileConstraints, 0.0);
+
+	move(22_in, intakeProfileConstraints, 0.0);
+
+	move(20_in, defaultProfileConstraints, -90_deg/20_in);
+	
+	move(5_in, defaultProfileConstraints, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(0_deg, 600);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-8_in, defaultProfileConstraints, 0.0);
+
+	turnTo(270_deg, 800);
+
+	move(30_in, defaultProfileConstraints, 0.0);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(135_deg, 800);
+
+	move(30_in, defaultProfileConstraints, 0.0);
+
+	turnTo(90_deg, 800);
+
+	move(35_in, intakeProfileConstraints, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(5_in, defaultProfileConstraints, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(90_deg, 300);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-10_in, defaultProfileConstraints, 0.0);
+
+	turnTo(180_deg, 800);
+
+	move(45_in, defaultProfileConstraints, 0.0);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(315_deg, 800);
+
+	move(35_in, defaultProfileConstraints, 0.0);
+
+	turnTo(225_deg, 800);
+
+	move(45_in, defaultProfileConstraints, 0.0);
+
+	turnTo(135_deg, 800);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(90_deg, 800);
+
+	move(30_in, intakeProfileConstraints, 0.0);
+
+	move(-30_in, defaultProfileConstraints, 0.0);
+
+	turnTo(135_deg, 500);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(180_deg, 800);
+	
+	move(30_in, intakeProfileConstraints, 0.0);
+
+	move(-30_in, defaultProfileConstraints, 0.0);
+
+	turnTo(135_deg, 500);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+	
+	turnTo(240_deg, 800);
+
+	move(30_in, defaultProfileConstraints, 0.0);
+
+	move(20_in, intakeProfileConstraints, 0.0);
+
+	turnTo(115_deg, 800);
+	
+	move(40_in, defaultProfileConstraints, 0.0);
+
+	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
+
+	pros::Task::delay(300);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
+
+	turnTo(75_deg, 800);
+
+	move(-80_in, defaultProfileConstraints, 0.0);
+
+	turnTo(45_deg, 800);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
+	pros::Task::delay(1000);
+
+	return 0;
+}
+
 int closeFullAWP() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
 	robotStatus.setDiscCount(1);
@@ -710,7 +977,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	disc8RightAuton();
+	skillsMax();
 	postAuton();
 }
 
