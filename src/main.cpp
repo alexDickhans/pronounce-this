@@ -727,7 +727,7 @@ int disc8RightAuton() {
 	
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(42_in, defaultProfileConstraints, 220_deg/30_in);
+	move(45_in, defaultProfileConstraints, 220_deg/30_in);
 
 	move(10_in, defaultProfileConstraints, 0.0);
 
@@ -743,9 +743,9 @@ int disc8RightAuton() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(229_deg, 800);
+	turnTo(232_deg, 800);
 
-	move(65_in, {30_in / second, 150_in / second / second, 0.0}, 0.0);
+	move(65_in, {45_in / second, 150_in / second / second, 0.0}, 0.0);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
@@ -759,9 +759,9 @@ int disc8RightAuton() {
 
 	pros::Task::delay(50);
 
-	turnTo(95_deg, 900);
+	turnTo(100_deg, 900);
 
-	move(40_in, { 20_in / second, 200_in / second / second, 0.0 }, 0.0);
+	move(40_in, intakeProfileConstraints, 0.0);
 
 	move(-40_in, defaultProfileConstraints, 0.0);
 
@@ -977,7 +977,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	skillsMax();
+	disc8RightAuton();
 	postAuton();
 }
 

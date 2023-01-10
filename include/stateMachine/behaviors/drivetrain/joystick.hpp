@@ -44,7 +44,7 @@ namespace Pronounce {
 			this->exponentializeValue = exponentializerValue;
 			this->maxDriveSpeed = maxSpeed;
 			this->visionPid = visionPid;
-			this->arcade = true;
+			this->arcade = false;
 
 		}
 
