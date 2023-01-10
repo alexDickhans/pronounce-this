@@ -5,6 +5,7 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviors/drivetrain/initDrivetrain.hpp"
 #include "pros/rtos.hpp"
+#include "hardware/hardware.hpp"
 
 namespace Pronounce
 {
@@ -16,6 +17,8 @@ namespace Pronounce
 		ContinuousOdometry& odometry;
 		Angle target;
 
+		pros::motor_brake_mode_e_t beforeBrakeMode;
+
 	public:
 		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTurnPid(true);
@@ -24,6 +27,12 @@ namespace Pronounce
 		}
 
 		void initialize() {
+
+			beforeBrakeMode = leftDrive1.get_brake_mode();
+
+			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+
 			rotationPID.reset();
 			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
@@ -40,6 +49,8 @@ namespace Pronounce
 
 		void exit() {
 			drivetrain.skidSteerVelocity(0.0, 0.0);
+			leftDriveMotors.set_brake_modes(beforeBrakeMode);
+			rightDriveMotors.set_brake_modes(beforeBrakeMode);
 		}
 
 		bool isDone() {

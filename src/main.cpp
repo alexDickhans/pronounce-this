@@ -18,6 +18,7 @@ pros::Mutex robotMutex;
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+	drivetrainStateController.setDefaultBehavior(&drivetrainStopped);
 	leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 	rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 	return 0;
@@ -977,7 +978,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	disc8RightAuton();
+	tunePid();
 	postAuton();
 }
 
@@ -991,6 +992,7 @@ void autonomous() {
 void opcontrol() {
 	robotMutex.take();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
+	drivetrainStateController.setDefaultBehavior(&normalJoystick);
 	robotMutex.give();
 }
 

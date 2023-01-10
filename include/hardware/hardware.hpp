@@ -30,6 +30,9 @@ namespace Pronounce {
 	AbstractJoystick* master = new SimJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
 #endif // !SIM
 
+	bool hardwareOverride = false;
+	bool autoVisionAim = true;
+
 	pros::Mutex drivetrainMutex;
 
 	pros::Motor leftDrive1(9, pros::E_MOTOR_GEAR_600, true);

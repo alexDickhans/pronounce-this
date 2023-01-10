@@ -73,7 +73,7 @@ namespace Pronounce {
 		void update() {
 			robotBehaviorMutex.take();
 
-			if (ptoStateController.isDone() && (catapultLimitSwitch.get_angle() < 34500 && catapultLimitSwitch.get_angle() > 1500)) {
+			if ((ptoStateController.isDone() || ptoStateController.getCurrentBehavior() == &ptoIntakeStopped) && (catapultLimitSwitch.get_angle() < 34500 && catapultLimitSwitch.get_angle() > 1500) && !hardwareOverride) {
 				ptoStateController.setCurrentBehavior(&ptoCatapult);
 			}
 
