@@ -45,10 +45,11 @@ namespace Pronounce {
 			this->maxDriveSpeed = maxSpeed;
 			this->visionPid = visionPid;
 			this->arcade = false;
-
 		}
 
-		void initialize() {}
+		void initialize() {
+			
+		}
 
 		void update() {
 			drivetrainMutex.take();
@@ -80,8 +81,11 @@ namespace Pronounce {
 
 
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
-				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord));
-				turn = visionPid.update(visionSensorX.getAverage() - 20);
+				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord) - 20);
+				turn = visionPid.update(visionSensorX.getAverage());
+				aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
+			} else {
+				aimingVisionSensor.clear_led();
 			}
 
 			double left = power + turn;
