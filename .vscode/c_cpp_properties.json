@@ -1,17 +1,25 @@
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64",
-            "compileCommands": "${workspaceFolder}/compile_commands.json"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/home/alex/Documents/pronounce-this/include"
+      ],
+      "defines": [],
+      "compilerPath": "/home/alex/.config/Code/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/arm-none-eabi-g++",
+      "cStandard": "c17",
+      "cppStandard": "c++14",
+      "intelliSenseMode": "gcc-arm",
+      "compileCommands": "/home/alex/Documents/pronounce-this/compile_commands.json",
+      "browse": {
+        "path": [
+          "/home/alex/Documents/pronounce-this"
+        ],
+        "limitSymbolsToIncludedHeaders": true,
+        "databaseFilename": ""
+      }
+    }
+  ],
+  "version": 4
 }

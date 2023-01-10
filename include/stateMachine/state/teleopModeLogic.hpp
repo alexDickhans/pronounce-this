@@ -53,7 +53,7 @@ namespace Pronounce {
 				drivetrainStateController.setCurrentBehavior(drivetrainStateController.getCurrentBehavior() == &targetingJoystick ? &normalJoystick : &targetingJoystick);
 			}
 
-			if (controller2->get_digital(DIGITAL_L2) && controller2->get_digital(DIGITAL_R2))
+			if (controller2->get_digital(DIGITAL_L2) && controller2->get_digital(DIGITAL_R2) && controller2->get_digital(DIGITAL_L1) && controller2->get_digital(DIGITAL_R1))
 				endgameStateController.setCurrentBehavior(&endgameEnabled);
 			
 			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {

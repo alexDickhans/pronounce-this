@@ -26,11 +26,11 @@ namespace Pronounce
 		void initialize() {
 			rotationPID.reset();
 			rotationPID.setTurnPid(true);
-			rotationPID.setTarget(angleDifference(target.Convert(radian), 0.0));
+			rotationPID.setTarget(target.Convert(radian));
 		}
 
 		void update() {
-			double output = rotationPID.update(angleDifference(odometry.getPose().getAngle().Convert(radian), 0.0));
+			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
 
 			std::cout << output << std::endl;
 			std::cout << rotationPID.getError() << std::endl;
