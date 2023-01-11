@@ -321,29 +321,9 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	pros::Task::delay(500);
-	
-	turnTo(240_deg, 800);
+	turnTo(160_deg, 800);
 
-	move(30_in, defaultProfileConstraints, 0.0);
-
-	move(20_in, intakeProfileConstraints, 0.0);
-
-	turnTo(115_deg, 800);
-	
-	move(40_in, defaultProfileConstraints, 0.0);
-
-	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(500);
-
-	turnTo(75_deg, 800);
-
-	move(-80_in, defaultProfileConstraints, 0.0);
+	move(80_in, defaultProfileConstraints, 0.0);
 
 	turnTo(45_deg, 800);
 
@@ -608,18 +588,6 @@ int disc8RightAuton() {
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	pros::Task::delay(50);
-
-	return 0;
-}
-
-int testPurePursuit() {
-
-	drivetrainStateController.setCurrentBehavior(&testPathPurePursuit);
-
-	pros::Task::delay(50);
-
-	while(!drivetrainStateController.isDone()) 
-		pros::Task::delay(10);
 
 	return 0;
 }
