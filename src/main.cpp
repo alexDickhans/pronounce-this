@@ -92,6 +92,8 @@ int skillsMax() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
 	robotStatus.setDiscCount(1);
 
+	// Spin close roller
+
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	drivetrainStateController.setCurrentBehavior(&intoCloseRoller2);
@@ -108,6 +110,8 @@ int skillsMax() {
 	pros::Task::delay(600);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	// Spin left roller
 
 	drivetrainStateController.setCurrentBehavior(&fromCloseRoller2);
 
@@ -140,6 +144,8 @@ int skillsMax() {
 	while(!drivetrainStateController.isDone()) 
 		pros::Task::delay(10);
 
+	// Move to first shot
+
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
 	turnTo(1_deg, 700);
@@ -159,6 +165,8 @@ int skillsMax() {
 
 	pros::Task::delay(500);
 
+	// Intake disc line
+
 	turnTo(135_deg, 800);
 
 	move(27_in, defaultProfileConstraints, 0.0);
@@ -171,11 +179,15 @@ int skillsMax() {
 
 	move(5_in, defaultProfileConstraints, 0.0);
 
+	// Shoot disc line
+
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
 	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	// Intake first barrier discs
 
 	pros::Task::delay(500);
 
@@ -193,6 +205,8 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
+	// Intake second barrier discs
+
 	pros::Task::delay(500);
 
 	turnTo(357_deg, 800);
@@ -209,6 +223,8 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
+	// Intake far side disc stack
+
 	pros::Task::delay(500);
 	
 	turnTo(60_deg, 800);
@@ -220,6 +236,8 @@ int skillsMax() {
 	move(20_in, defaultProfileConstraints, -90_deg/20_in);
 	
 	move(5_in, defaultProfileConstraints, 0.0);
+
+	// Spin far roller
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
@@ -233,11 +251,15 @@ int skillsMax() {
 
 	move(30_in, defaultProfileConstraints, 0.0);
 
+	// Shoot far side stack
+
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
 	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	// Intake far line stack
 
 	pros::Task::delay(500);
 
@@ -252,6 +274,8 @@ int skillsMax() {
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	move(5_in, defaultProfileConstraints, 0.0);
+
+	// Spin right roller
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
@@ -271,6 +295,8 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
+	// Intake close side disc line
+
 	pros::Task::delay(500);
 
 	turnTo(315_deg, 800);
@@ -283,11 +309,15 @@ int skillsMax() {
 
 	turnTo(135_deg, 800);
 
+	// Shoot close line discs
+
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
 	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	// Intake first discs on close barrier
 
 	pros::Task::delay(500);
 
@@ -305,6 +335,8 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
+	// Intake second discs on close barrier
+
 	pros::Task::delay(500);
 
 	turnTo(180_deg, 800);
@@ -321,11 +353,15 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
+	// Position to shoot expansion
+
 	turnTo(160_deg, 800);
 
 	move(80_in, defaultProfileConstraints, 0.0);
 
 	turnTo(45_deg, 800);
+
+	// Fire endgame
 
 	endgameStateController.setCurrentBehavior(&endgameEnabled);
 
