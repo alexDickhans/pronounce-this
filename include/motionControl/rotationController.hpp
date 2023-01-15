@@ -28,11 +28,6 @@ namespace Pronounce
 
 		void initialize() {
 
-			beforeBrakeMode = leftDrive1.get_brake_mode();
-
-			// leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-			// rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
 			rotationPID.reset();
 			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
@@ -49,8 +44,6 @@ namespace Pronounce
 
 		void exit() {
 			drivetrain.skidSteerVelocity(0.0, 0.0);
-			// leftDriveMotors.set_brake_modes(beforeBrakeMode);
-			// rightDriveMotors.set_brake_modes(beforeBrakeMode);
 		}
 
 		bool isDone() {

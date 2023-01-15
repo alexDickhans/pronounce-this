@@ -25,7 +25,7 @@
 namespace Pronounce {
 
 	PID turningPid(0.30, 0.0, 1.1, 0.0, 0.0, true);
-	PID visionPid(0.0045, 0.0, 0.050);
+	PID visionPid(0.0035, 0.0, 0.050);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, visionPid, 0.10, false, 2.4, 73_in / second);
@@ -51,7 +51,7 @@ namespace Pronounce {
 	TankMotionProfiling intakeBarrierDiscs("IntakeBarrierDiscs", &drivetrain, defaultProfileConstraints, 20_in, &odometry, drivetrainMutex, 0.0);
 
 	// Skills
-	TankMotionProfiling intoCloseRoller2("IntoCloseRoller2", &drivetrain, intakeProfileConstraints, 5_in, &odometry, drivetrainMutex, 0.0/*180_deg/-4_in*/);
+	TankMotionProfiling intoCloseRoller2("IntoCloseRoller2", &drivetrain, intakeProfileConstraints, 3_in, &odometry, drivetrainMutex, 0.0/*180_deg/-4_in*/);
 	TankMotionProfiling fromCloseRoller2("FromCloseRoller", &drivetrain, defaultProfileConstraints, -30_in, &odometry, drivetrainMutex, (80_deg/-12_in));
 	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, defaultProfileConstraints, 38_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling intoLeftRoller("ToCloseRoller", &drivetrain, stackIntakeProfileConstraints, 3_in, &odometry, drivetrainMutex, (8_deg/-10_in));
