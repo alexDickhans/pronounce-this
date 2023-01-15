@@ -32,6 +32,8 @@ void turnTo(Angle angle, int waitTimeMS) {
 	pros::Task::delay(waitTimeMS);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+
+	pros::Task::delay(5);
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature) {
@@ -105,9 +107,7 @@ int skillsMax() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	drivetrainStateController.setCurrentBehavior(&turnTo180);
-
-	pros::Task::delay(600);
+	turnTo(180_deg, 600);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -133,7 +133,7 @@ int skillsMax() {
 	
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(270_deg, 400);
+	turnTo(270_deg, 350);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -148,7 +148,7 @@ int skillsMax() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(1_deg, 700);
+	turnTo(1_deg, 600);
 
 	move(55_in, defaultProfileConstraints, (30_deg/85_in));
 
@@ -159,8 +159,6 @@ int skillsMax() {
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
-	pros::Task::delay(300);
-
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
 	pros::Task::delay(500);
@@ -169,21 +167,19 @@ int skillsMax() {
 
 	turnTo(135_deg, 800);
 
-	move(27_in, defaultProfileConstraints, 0.0);
+	move(25_in, defaultProfileConstraints, 0.0);
 
 	turnTo(45_deg, 800);
 
-	move(37_in, { 45_in / second, 200_in / second / second, 0.0 }, 0.0);
+	move(35_in, { 50_in / second, 150_in / second / second, 0.0 }, 0.0);
 
-	turnTo(305_deg, 500);
+	turnTo(308_deg, 700);
 
-	move(5_in, defaultProfileConstraints, 0.0);
+	move(5_in, intakeProfileConstraints, 0.0);
 
 	// Shoot disc line
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -191,17 +187,15 @@ int skillsMax() {
 
 	pros::Task::delay(500);
 
-	turnTo(275_deg, 800);
+	turnTo(275_deg, 600);
 
-	move(30_in, intakeProfileConstraints, 0.0);
+	move(36_in, intakeProfileConstraints, 0.0);
 
-	move(-29_in, defaultProfileConstraints, 0.0);
+	move(-40_in, defaultProfileConstraints, 0.0);
 
-	turnTo(315_deg, 500);
+	turnTo(308_deg, 500);
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -213,13 +207,11 @@ int skillsMax() {
 
 	move(30_in, intakeProfileConstraints, 0.0);
 
-	move(-30_in, defaultProfileConstraints, 0.0);
+	move(-28_in, defaultProfileConstraints, 0.0);
 
-	turnTo(315_deg, 500);
+	turnTo(308_deg, 500);
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -253,6 +245,8 @@ int skillsMax() {
 
 	// Shoot far side stack
 
+	turnTo(260_deg, 500);
+
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
 	pros::Task::delay(300);
@@ -265,9 +259,9 @@ int skillsMax() {
 
 	turnTo(135_deg, 800);
 
-	move(30_in, defaultProfileConstraints, 0.0);
+	move(27_in, defaultProfileConstraints, 0.0);
 
-	turnTo(90_deg, 800);
+	turnTo(90_deg, 600);
 
 	move(35_in, intakeProfileConstraints, 0.0);
 
@@ -279,7 +273,7 @@ int skillsMax() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(90_deg, 300);
+	turnTo(90_deg, 600);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -287,11 +281,9 @@ int skillsMax() {
 
 	turnTo(180_deg, 800);
 
-	move(45_in, defaultProfileConstraints, 0.0);
+	move(40_in, defaultProfileConstraints, 0.0);
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -301,11 +293,11 @@ int skillsMax() {
 
 	turnTo(315_deg, 800);
 
-	move(35_in, defaultProfileConstraints, 0.0);
+	move(27_in, defaultProfileConstraints, 0.0);
 
 	turnTo(225_deg, 800);
 
-	move(45_in, defaultProfileConstraints, 0.0);
+	move(37_in, { 50_in / second, 150_in / second / second, 0.0 }, 0.0);
 
 	turnTo(135_deg, 800);
 
@@ -313,25 +305,23 @@ int skillsMax() {
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
-	pros::Task::delay(300);
-
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	// Intake first discs on close barrier
-
 	pros::Task::delay(500);
+
+	move(4_in, intakeProfileConstraints, 0.0);
+
+	// Intake first discs on close barrier
 
 	turnTo(90_deg, 800);
 
 	move(30_in, intakeProfileConstraints, 0.0);
 
-	move(-30_in, defaultProfileConstraints, 0.0);
+	move(-23.5_in, defaultProfileConstraints, 0.0);
 
 	turnTo(135_deg, 500);
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
-
-	pros::Task::delay(300);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -339,27 +329,23 @@ int skillsMax() {
 
 	pros::Task::delay(500);
 
-	turnTo(180_deg, 800);
+	turnTo(180_deg, 600);
 	
-	move(30_in, intakeProfileConstraints, 0.0);
+	move(38_in, intakeProfileConstraints, 0.0);
 
-	move(-30_in, defaultProfileConstraints, 0.0);
-
-	turnTo(135_deg, 500);
+	turnTo(90_deg, 500);
 
 	drivetrainStateController.setCurrentBehavior(&targetingJoystick);
 
-	pros::Task::delay(300);
-
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(500);
 
 	// Position to shoot expansion
 
-	turnTo(160_deg, 800);
+	move(-70_in, defaultProfileConstraints, (15_deg/-80_in));
 
-	move(80_in, defaultProfileConstraints, 0.0);
-
-	turnTo(45_deg, 800);
+	turnTo(225_deg, 800);
 
 	// Fire endgame
 
@@ -443,9 +429,7 @@ int closeFullAWPMax() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	drivetrainStateController.setCurrentBehavior(&turnTo180);
-
-	pros::Task::delay(300);
+	turnTo(180_deg, 300);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -453,7 +437,7 @@ int closeFullAWPMax() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(345_deg, 800);
+	turnTo(-15_deg, 800);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -813,7 +797,7 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	tunePid();
+	closeFullAWPMax();
 	postAuton();
 }
 

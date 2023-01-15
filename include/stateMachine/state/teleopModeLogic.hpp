@@ -86,7 +86,7 @@ namespace Pronounce {
 				controller2->clear_line(1);
 			}
 
-			if (controller2->get_digital(DIGITAL_L2) && controller2->get_digital(DIGITAL_R2) && controller2->get_digital(DIGITAL_L1) && controller2->get_digital(DIGITAL_R1))
+			if (controller2->get_digital(DIGITAL_DOWN) && controller2->get_digital(DIGITAL_B))
 				endgameStateController.setCurrentBehavior(&endgameEnabled);
 
 			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
