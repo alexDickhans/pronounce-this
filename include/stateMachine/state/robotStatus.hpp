@@ -20,10 +20,10 @@ namespace Pronounce {
 	class RobotStatus: public Behavior {
 	private:
 		int differentFrameCount = 0;
-		int discCount;
 		bool inIntakePath;
 		int discCountFrames;
 	public:
+		int discCount;
 
 		RobotStatus() {}
 
@@ -57,7 +57,7 @@ namespace Pronounce {
 				ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 			}
 
-			if (ptoStateController.getCurrentBehavior() == &ptoCatapult) {
+			if (catapultLimitSwitch.get_angle() < 20000) {
 				discCount = 0;
 				std::cout << "DiscCount: " << discCount << std::endl;
 			}
