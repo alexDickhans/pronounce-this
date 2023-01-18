@@ -82,8 +82,12 @@ namespace Pronounce {
 
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
 				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord) - 20);
-				turn = visionPid.update(visionSensorX.getAverage());
-				aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
+				if ((aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature && gameMode == GameMode::Red)
+					|| (aimingVisionSensor.get_by_sig(0, 1).signature != aimingVisionSensor.get_by_size(0).signature && gameMode == GameMode::Blue)
+					|| gameMode == GameMode::Skills) {
+					aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
+					turn = visionPid.update(visionSensorX.getAverage());
+				}
 			} else {
 				aimingVisionSensor.clear_led();
 			}
