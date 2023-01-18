@@ -807,15 +807,10 @@ void initialize() {
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
 
 	// Initialize functions
-	std::cout << "INIT" << std::endl;
 	initHardware();
-	std::cout << "INIT" << std::endl;
 	initDrivetrain();
-	std::cout << "INIT" << std::endl;
 	initBoost();
 	initPto();
-
-	std::cout << "INIT" << std::endl;
 	initEndgame();
 	initBehaviors();
 	initDisplay();
@@ -869,7 +864,23 @@ void competition_initialize() {
  */
 void autonomous() {
 	preAutonRun();
-	skillsMax();
+
+	#if AUTON == 0
+		closeFullAWPMax();
+	#endif // !1
+	#if AUTON == 1
+		close5DiscAuton();
+	#endif // !1
+	#if AUTON == 2
+		disc5RightAuton();
+	#endif // !1
+	#if AUTON == 3
+		disc8RightAuton();
+	#endif // !1
+	#if AUTON == 4
+		skillsMax();
+	#endif // !1
+
 	postAuton();
 }
 

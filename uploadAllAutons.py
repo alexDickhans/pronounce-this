@@ -1,11 +1,11 @@
 import os
 import time
 
-autons = ["SLeft LAWP", "SMid LAWP", "SMid RAWP", "SRight RAWP", "SRR RAWP", "Right Double Steal", "None", "Skills"]
+autons = ["FULL AWP", "CLOSE 5 DISC", "RIGHT 5 DISC", "RIGHT 8 DISC", "Skills"]
 
 for i in range(len(autons)):
     f = open("include/auton.h", "w")
-    f.write("#define AUTON " + str(i+1));
+    f.write("#define AUTON " + str(i));
     f.close()
 
     print ("pros mu --slot " + str(i+1) + " --name \"" + autons[i] + "\"")
