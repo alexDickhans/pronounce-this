@@ -191,7 +191,7 @@ int skillsMax() {
 
 	move(36_in, intakeProfileConstraints, 0.0);
 
-	move(-40_in, defaultProfileConstraints, 0.0);
+	move(-41_in, defaultProfileConstraints, 0.0);
 
 	turnTo(308_deg, 500);
 
@@ -319,7 +319,7 @@ int skillsMax() {
 
 	move(30_in, intakeProfileConstraints, 0.0);
 
-	move(-28_in, defaultProfileConstraints, 0.0);
+	move(-31_in, defaultProfileConstraints, 0.0);
 
 	turnTo(135_deg, 500);
 
@@ -358,69 +358,6 @@ int skillsMax() {
 	return 0;
 }
 
-int closeFullAWP() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
-	robotStatus.setDiscCount(1);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(4_in, defaultProfileConstraints, 0.0);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo180);
-
-	pros::Task::delay(300);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(-5_in, defaultProfileConstraints, 0.0);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(345_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(300);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(51_deg, 800);
-
-	move(20_in, defaultProfileConstraints, 0.0);
-
-	move(30_in, intakeProfileConstraints, 0.0);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(320_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(300);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(50_deg, 800);
-
-	move(75_in, defaultProfileConstraints, 0.0);
-
-	move(15_in, defaultProfileConstraints, 90_deg/15_in);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	drivetrainStateController.setCurrentBehavior(&turnTo90);
-
-	pros::Task::delay(300);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	pros::Task::delay(1000);
-
-	return 0;
-}
-
 int closeFullAWPMax() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
 	robotStatus.setDiscCount(1);
@@ -449,13 +386,13 @@ int closeFullAWPMax() {
 
 	turnTo(51_deg, 800);
 
-	move(20_in, defaultProfileConstraints, 0.0);
+	move(23_in, defaultProfileConstraints, 0.0);
 
-	move(30_in, intakeProfileConstraints, 0.0);
+	move(27_in, intakeProfileConstraints, 0.0);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(319_deg, 1300);
+	turnTo(319_deg, 1500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -463,7 +400,7 @@ int closeFullAWPMax() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(47_deg, 800);
+	turnTo(45_deg, 800);
 
 	if (robotStatus.discCount > 0) {
 		return 1;
@@ -633,7 +570,6 @@ int disc8RightAuton() {
 }
 
 int close5DiscAuton() {
-	
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
 	robotStatus.setDiscCount(1);
 
@@ -661,13 +597,13 @@ int close5DiscAuton() {
 
 	turnTo(51_deg, 800);
 
-	move(25_in, defaultProfileConstraints, 0.0);
+	move(23_in, defaultProfileConstraints, 0.0);
 
-	move(25_in, intakeProfileConstraints, 0.0);
+	move(27_in, intakeProfileConstraints, 0.0);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(320_deg, 800);
+	turnTo(319_deg, 1500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
