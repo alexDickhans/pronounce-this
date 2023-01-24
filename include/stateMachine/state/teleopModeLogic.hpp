@@ -101,7 +101,7 @@ namespace Pronounce {
 				pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 			}
 
-			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_A) && gameMode != GameMode::Skills) {
+			if (controller2->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A) && gameMode != GameMode::Skills) {
 				gameMode = gameMode == GameMode::Red ? GameMode::Blue : GameMode::Red;
 			}
 		}

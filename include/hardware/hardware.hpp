@@ -33,7 +33,7 @@ namespace Pronounce {
 	#else
 		GameMode gameMode = GameMode::Red;
 	#endif // AUTON == 4
-	
+
 	pros::Mutex controllerMutex;
 
 #ifndef SIM
@@ -155,7 +155,7 @@ namespace Pronounce {
 
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(105);
+		aimingVisionSensor.set_exposure(108);
 
 		// catapultLimitSwitch.reverse();
 	}

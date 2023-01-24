@@ -81,12 +81,24 @@ namespace Pronounce {
 
 
 			if (targeting && aimingVisionSensor.get_object_count() >= 1) {
-				visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord) - 20);
-				if ((aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature && gameMode == GameMode::Red)
-					|| (aimingVisionSensor.get_by_sig(0, 1).signature != aimingVisionSensor.get_by_size(0).signature && gameMode == GameMode::Blue)
-					|| gameMode == GameMode::Skills) {
+				if (true) {
+					visionSensorX.add(-(aimingVisionSensor.get_by_size(0).x_middle_coord) - 20);
 					aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
 					turn = visionPid.update(visionSensorX.getAverage());
+				}
+				else if (gameMode == GameMode::Red) {
+					if (aimingVisionSensor.get_by_sig(0, 1).x_middle_coord != EDOM) {
+						visionSensorX.add(-(aimingVisionSensor.get_by_sig(0, 1).x_middle_coord) - 20);
+						aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
+						turn = visionPid.update(visionSensorX.getAverage());
+					}
+				}
+				else if (gameMode == GameMode::Blue) {
+					if (aimingVisionSensor.get_by_sig(0, 2).x_middle_coord != EDOM) {
+						visionSensorX.add(-(aimingVisionSensor.get_by_sig(0, 2).x_middle_coord) - 20);
+						aimingVisionSensor.set_led(fabs(visionSensorX.getAverage()) < 8.0 ? COLOR_GREEN : aimingVisionSensor.get_by_sig(0, 1).signature == aimingVisionSensor.get_by_size(0).signature ? COLOR_RED : COLOR_BLUE);
+						turn = visionPid.update(visionSensorX.getAverage());
+					}
 				}
 			} else {
 				aimingVisionSensor.clear_led();

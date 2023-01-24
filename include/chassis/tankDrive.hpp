@@ -43,7 +43,7 @@ namespace Pronounce {
 			this->rightMotors.move_velocity(rightSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
 		}
 
-		void tankSteerVoltage(int16_t leftVoltage, int16_t rightVoltage) {
+		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) {
 			this->leftMotors.move_voltage(leftVoltage);
 			this->rightMotors.move_voltage(rightVoltage);
 		}
