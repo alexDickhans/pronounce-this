@@ -53,7 +53,7 @@ namespace Pronounce {
 	// Skills
 	TankMotionProfiling intoCloseRoller2("IntoCloseRoller2", &drivetrain, intakeProfileConstraints, 3_in, &odometry, drivetrainMutex, 0.0/*180_deg/-4_in*/);
 	TankMotionProfiling fromCloseRoller2("FromCloseRoller", &drivetrain, defaultProfileConstraints, -30_in, &odometry, drivetrainMutex, (80_deg/-12_in));
-	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, defaultProfileConstraints, 38_in, &odometry, drivetrainMutex, 0.0);
+	TankMotionProfiling closeRollerToLeftRoller("CloseRollerToLeftRoller", &drivetrain, defaultProfileConstraints, 36_in, &odometry, drivetrainMutex, 0.0);
 	TankMotionProfiling intoLeftRoller("ToCloseRoller", &drivetrain, stackIntakeProfileConstraints, 3_in, &odometry, drivetrainMutex, (8_deg/-10_in));
 	TankMotionProfiling fromLeftRoller("FromLeftRoller", &drivetrain, defaultProfileConstraints, -8_in, &odometry, drivetrainMutex, (130_deg/-10_in));
 	TankMotionProfiling leftRollerToGoal("RollerToGoal", &drivetrain, defaultProfileConstraints, 67_in, &odometry, drivetrainMutex, (20_deg/85_in));

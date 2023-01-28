@@ -57,7 +57,7 @@ namespace Pronounce {
 	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
 	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
 
-	TankDrivetrain drivetrain(9_in, 61_in / second, leftDriveMotors, rightDriveMotors, 600);
+	TankDrivetrain drivetrain(9_in, 73_in / second, leftDriveMotors, rightDriveMotors, 600);
 
 	pros::Mutex ptoMutex;
 
@@ -70,8 +70,8 @@ namespace Pronounce {
 	// Catapult
 	pros::Rotation catapultLimitSwitch(14);
 
-	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 3.25_in);
-	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 3.25_in);
+	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 4_in);
+	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 4_in);
 
 	// Inertial Measurement Unit
 	pros::Imu imu(18);
@@ -126,11 +126,11 @@ namespace Pronounce {
 
 		odometryMutex.take();
 
-		double turningFactor = 360.0 / 600.0;
+		double turningFactor = 342.0 / 600.0;
 		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(3.25_in / 2.0);
+		leftDrive1Odom.setRadius(4_in / 2.0);
 		leftDrive1Odom.setTuningFactor(turningFactor);
-		rightDrive1Odom.setRadius(3.25_in / 2.0);
+		rightDrive1Odom.setRadius(4_in / 2.0);
 		rightDrive1Odom.setTuningFactor(turningFactor);
 
 		threeWheelOdom.setLeftOffset(10_in / 1.5);
