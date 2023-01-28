@@ -291,7 +291,7 @@ int skillsMax() {
 
 	// Intake close side disc line
 
-	pros::Task::delay(500);
+	pros::Task::delay(400);
 
 	turnTo(315_deg, 800);
 
@@ -301,7 +301,7 @@ int skillsMax() {
 
 	move(37_in, { 50_in / second, 150_in / second / second, 0.0 }, 0.0);
 
-	turnTo(135_deg, 800);
+	turnTo(135_deg, 700);
 
 	// Shoot close line discs
 
@@ -309,13 +309,13 @@ int skillsMax() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	pros::Task::delay(500);
+	pros::Task::delay(400);
 
 	move(4_in, intakeProfileConstraints, 0.0);
 
 	// Intake first discs on close barrier
 
-	turnTo(90_deg, 800);
+	turnTo(90_deg, 700);
 
 	move(30_in, intakeProfileConstraints, 0.0);
 
@@ -329,7 +329,7 @@ int skillsMax() {
 
 	// Intake second discs on close barrier
 
-	pros::Task::delay(500);
+	pros::Task::delay(300);
 
 	turnTo(180_deg, 600);
 	
