@@ -76,7 +76,7 @@ namespace Pronounce {
 
 		// Add localOffset to the global offset
 		lastPose.add(localOffset);
-		lastPose.setAngle(fmod(angleDifference(currentAngle.Convert(radian), 0) + M_PI * 2, M_PI * 2));// + orientationOffset.getValue());
+		lastPose.setAngle(currentAngle + orientationOffset);
 
 		// Update the position
 		this->setPose(lastPose);

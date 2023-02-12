@@ -110,7 +110,7 @@ namespace Pronounce {
 			std::cout << "DriverInputLeft: " << left << std::endl;
 			std::cout << "DriverInputRight: " << right << std::endl;
 
-			drivetrain.tankSteerVoltage(left * 12000, right * 12000);
+			drivetrain.tankSteerVoltage(left * 12000.0, right * 12000.0);
 
 			leftVoltage = left * 12000;
 			rightVoltage = right * 12000;

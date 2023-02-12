@@ -7,16 +7,16 @@
 namespace Pronounce {
 	class TankDrivetrain : public AbstractTankDrivetrain, public HardwareDrivetrain {
 	private:
-		pros::Motor_Group& leftMotors;
-		pros::Motor_Group& rightMotors;
+		pros::Motor_Group* leftMotors;
+		pros::Motor_Group* rightMotors;
 		double maxMotorSpeed = 0.0;
 	public:
-		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group& leftMotors, pros::Motor_Group& rightMotors, double maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
+		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group* leftMotors, pros::Motor_Group* rightMotors, double maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
 			this->maxMotorSpeed = maxMotorSpeed;
 		}
 
 		QSpeed getSpeed() {
-			return ((leftMotors.get_actual_velocities().at(1) + rightMotors.get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed);
+			return ((leftMotors->get_actual_velocities().at(1) + rightMotors->get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed);
 		}
 
 		void skidSteerVelocity(QSpeed speed, double turn) {
@@ -39,13 +39,28 @@ namespace Pronounce {
 
 		void tankSteerVelocity(QSpeed leftSpeed, QSpeed rightSpeed) {
 			std::cout << "LeftVelocity: " << leftSpeed.Convert(inch/second) << std::endl << "RightVelocity: " << rightSpeed.Convert(inch/second) << std::endl;
-			this->leftMotors.move_velocity(leftSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
-			this->rightMotors.move_velocity(rightSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
+			this->leftMotors->move_velocity(leftSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
+			this->rightMotors->move_velocity(rightSpeed.getValue() * (maxMotorSpeed/this->getMaxSpeed()).getValue());
 		}
 
 		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) {
-			this->leftMotors.move_voltage(leftVoltage);
-			this->rightMotors.move_voltage(rightVoltage);
+			this->leftMotors->move_voltage(leftVoltage);
+			this->rightMotors->move_voltage(rightVoltage);
+		}
+
+		void reset() {
+			for (int i = 0; i < this->leftMotors->size(); i++) {
+				this->leftMotors[i].tare_position();
+			}
+			for (int i = 0; i < this->rightMotors->size(); i++) {
+				this->rightMotors[i].tare_position();
+			}
+		}
+
+		QLength getDistanceSinceReset() {
+			leftMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+			rightMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+			return ((leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in) + (leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in)) / 2.0;
 		}
 
 		~TankDrivetrain() {

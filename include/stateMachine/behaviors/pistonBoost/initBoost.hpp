@@ -8,6 +8,7 @@
 namespace Pronounce {
 	PistonBoost pistonBoostBoosting("PistonBoostBoost", &pistonBoost, &pistonOverfill, BoostState::boost);
 	PistonBoost pistonBoostOverfill("PistonBoostOverfill", &pistonBoost, &pistonOverfill, BoostState::overfill);
+	PistonBoost pistonBoostBoth("PistonBoostBoth", &pistonBoost, &pistonOverfill, BoostState::both);
 	PistonBoost pistonBoostNone("PistonBoostNone", &pistonBoost, &pistonOverfill, BoostState::none);
 
 	StateController pistonBoostStateController("PistonBoost", &pistonBoostNone);

@@ -21,7 +21,6 @@ namespace Pronounce
 
 	public:
 		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
-			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
 			this->target = target;
 		}
@@ -29,8 +28,13 @@ namespace Pronounce
 		void initialize() {
 
 			rotationPID.reset();
-			rotationPID.setTurnPid(true);
 			rotationPID.setTarget(target.Convert(radian));
+
+			beforeBrakeMode = leftDriveMotors.get_brake_modes().at(0);
+
+			drivetrain.tankSteerVoltage(0, 0);
+			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		}
 
 		void update() {
@@ -39,11 +43,18 @@ namespace Pronounce
 			std::cout << output << std::endl;
 			std::cout << rotationPID.getError() << std::endl;
 
-			drivetrain.skidSteerVelocity(0.0, output);
+			drivetrain.tankSteerVoltage(output * 12000, -output * 12000);
 		}
 
 		void exit() {
 			drivetrain.skidSteerVelocity(0.0, 0.0);
+			leftDriveMotors.set_brake_modes(beforeBrakeMode);
+			rightDriveMotors.set_brake_modes(beforeBrakeMode);
+
+			leftDriveMotors.tare_position();
+			rightDriveMotors.tare_position();
+
+			drivetrain.tankSteerVoltage(0, 0);
 		}
 
 		bool isDone() {

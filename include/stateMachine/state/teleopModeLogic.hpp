@@ -97,6 +97,10 @@ namespace Pronounce {
 				pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 			}
 
+			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+				pistonBoostStateController.setCurrentBehavior(&pistonBoostBoth);
+			}
+
 			if (controller2->get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
 				pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 			}
@@ -104,6 +108,8 @@ namespace Pronounce {
 			if (controller2->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A) && gameMode != GameMode::Skills) {
 				gameMode = gameMode == GameMode::Red ? GameMode::Blue : GameMode::Red;
 			}
+
+			intakeSolenoid.set_value(controller2->get_digital(pros::E_CONTROLLER_DIGITAL_A));
 		}
 
 		void exit() {
