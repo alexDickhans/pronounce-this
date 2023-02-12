@@ -47,54 +47,50 @@ namespace Pronounce {
 
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(9, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive2(8, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive3(7, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive1(2, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive2(3, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive3(4, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive1(18, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive2(19, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive3(20, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive1(8, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive2(9, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive3(10, pros::E_MOTOR_GEAR_600, false);
 
 	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
 	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
 
-	TankDrivetrain drivetrain(9_in, 73_in / second, leftDriveMotors, rightDriveMotors, 600);
+	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 2_in);
+	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 2_in);
+
+	TankDrivetrain drivetrain(23_in, 73_in / second, &leftDriveMotors, &rightDriveMotors, 600);
 
 	pros::Mutex ptoMutex;
 
-	pros::Motor leftPtoMotor(16, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightPtoMotor(15, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftPtoMotor(17, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightPtoMotor(7, pros::E_MOTOR_GEAR_600, false);
 
 	int32_t leftVoltage = 0;
 	int32_t rightVoltage = 0;
 
-	// Catapult
-	pros::Rotation catapultLimitSwitch(14);
-
-	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 4_in);
-	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 4_in);
+	// Catapult 
+	pros::Rotation catapultLimitSwitch(21);
 
 	// Inertial Measurement Unit
-	pros::Imu imu(18);
+	pros::Imu imu(16);
 	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
 
 	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
 
-	// GPS sensor
-	pros::Gps gps(4, 0, 0, 90, 0.2, 0.2);
-	GpsOdometry gpsOdometry(gps, 7.5_in, 7.5_in, 180_deg);
-
 	OdomFuser odometry(threeWheelOdom);
 
 	pros::Mutex endgameMutex;
 
-	pros::ADIDigitalOut pistonBoost('b', false);
-	pros::ADIDigitalOut pistonOverfill('a', false);
+	pros::ADIDigitalOut pistonBoost('a', false);
+	pros::ADIDigitalOut pistonOverfill('b', false);
+	pros::ADIDigitalOut intakeSolenoid ('c', false);
 
 	// pros::ADIAnalogIn catapultLineSensor('e');
-	pros::ADIAnalogIn intakeLineSensor('d');
-	pros::ADIDigitalOut endgameDigitalOutputs('c', false);
+	pros::ADIDigitalOut endgameDigitalOutputs('d', false);
 
 	pros::ADILed leftLeds({ 20, 'a' }, 20);
 	pros::ADILed rightLeds({ 20, 'b' }, 20);
@@ -108,7 +104,7 @@ namespace Pronounce {
 	PronounceLedLib::LedStripController leftLedController(leftLeds, orangeColors, 0.7);
 	PronounceLedLib::LedStripController rightLedController(rightLeds, orangeColors, 0.7);
 
-	pros::Vision aimingVisionSensor(17, pros::E_VISION_ZERO_CENTER);
+	pros::Vision aimingVisionSensor(5, pros::E_VISION_ZERO_CENTER);
 
 	pros::vision_signature_s_t RED_GOAL;
 	pros::vision_signature_s_t BLUE_GOAL;
@@ -141,7 +137,7 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		if (pros::c::registry_get_plugged_type(17) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
 			while (imu.is_calibrating())

@@ -1,5 +1,6 @@
 {
     "files.associations": {
+		"*.pros": "jsonc",
 		"ios": "cpp",
 		"type_traits": "cpp",
 		"cmath": "cpp",
@@ -101,7 +102,8 @@
 		"regex": "cpp",
 		"future": "cpp",
 		"scoped_allocator": "cpp",
-		"shared_mutex": "cpp"
+		"shared_mutex": "cpp",
+		"ranges": "cpp"
 	},
 	"rpc.enabled": true,
 	"cSpell.words": [

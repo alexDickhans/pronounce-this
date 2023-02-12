@@ -19,13 +19,24 @@ namespace Pronounce {
 
 		ContinuousOdometry* odometry;
 
+		Angle targetAngle = 0.0;
+
+		PID* distancePid;
+		PID* turnPid = nullptr;
+
 		QCurvature curvature = 0.0;
 	public:
-		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex) {
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
 
 		}
 
-		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, pros::Mutex& drivetrainMutex, QCurvature curvature) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex) {
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
+			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints);
+			velocityProfile->calculate(100);
+			this->curvature = curvature;
+		}
+
+		TankMotionProfiling(std::string name, AbstractTankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature, Angle targetAngle, PID* turnPid) : Behavior(name), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), targetAngle(targetAngle), turnPid(turnPid), distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints);
 			velocityProfile->calculate(100);
 			this->curvature = curvature;
@@ -33,6 +44,20 @@ namespace Pronounce {
 
 		void initialize() {
 			startTime = currentTime();
+
+			drivetrain->reset();
+
+			aimingVisionSensor.set_led(COLOR_WHITE);
+
+			drivetrain->tankSteerVelocity(0.0, 0.0);
+
+			double curvatureAdjustment = std::min(((2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0), ((2.0 - curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0));
+
+			QSpeed adjustedSpeed = (1.0 - ((1-curvatureAdjustment)/2)) * velocityProfile->getProfileConstraints().maxVelocity;
+
+			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
+
+			this->velocityProfile->calculate(100);
 		}
 
 		void update() {
@@ -40,9 +65,41 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
-			std::cout << "InputDrivetrainSpeed: " << velocityProfile->getVelocityByTime(duration).Convert(inch/second) << std::endl;
+			QSpeed speed = velocityProfile->getVelocityByTime(duration);
+			QLength distance = velocityProfile->getDistanceByTime(duration);
 
-			drivetrain->driveCurvature(velocityProfile->getVelocityByTime(duration), curvature);
+			double turnPower = 0;
+
+			// calculate average wheel velocites
+			QLength currentDistance = drivetrain->getDistanceSinceReset();
+
+			distancePid->setTarget(distance.getValue());
+
+			double wheelVoltage = distancePid->update(currentDistance.getValue());
+
+			// add curvature
+			double leftCurvatureAdjustment = (2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
+			double rightCurvatureAdjustment = (2.0 - curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
+
+			double leftVoltage = leftCurvatureAdjustment * wheelVoltage;
+			double rightVoltage = rightCurvatureAdjustment * wheelVoltage;
+
+			// integrate turnPid
+			if (turnPid != nullptr) {
+				Angle offset = curvature * distance;
+
+				Angle targetAngleWithOffset = targetAngle + offset;
+
+				turnPid->setTarget(targetAngleWithOffset.getValue());
+				
+				turnPower = turnPid->update(odometry->getAngle().getValue());
+
+				leftVoltage += turnPower;
+				rightVoltage -= turnPower;
+			}
+
+			// send to motors
+			drivetrain->tankSteerVoltage(leftVoltage, rightVoltage);
 
 			drivetrainMutex.give();
 		}
@@ -51,6 +108,9 @@ namespace Pronounce {
 			drivetrainMutex.take();
 			
 			drivetrain->skidSteerVelocity(0.0, 0.0);
+			drivetrain->tankSteerVoltage(0.0, 0.0);
+
+			aimingVisionSensor.clear_led();
 
 			drivetrainMutex.give();
 		}

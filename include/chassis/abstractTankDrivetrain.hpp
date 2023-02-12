@@ -139,6 +139,10 @@ namespace Pronounce {
 		 */
 		virtual void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) {}
 
+		virtual void reset() {}
+
+		virtual QLength getDistanceSinceReset() { return 0.0; }
+
 		QSpeed getMaxSpeed() {
 			return maxSpeed;
 		}

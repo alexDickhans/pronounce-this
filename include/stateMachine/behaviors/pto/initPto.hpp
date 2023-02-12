@@ -14,13 +14,12 @@ namespace Pronounce {
 
 	PtoIntake ptoIntaking("PtoIntaking", leftPtoMotor, rightPtoMotor, .8);
 	PtoIntake ptoIntakeStopped("PtoIntakeStopped", leftPtoMotor, rightPtoMotor, 0);
-	PtoIntake ptoIntakeReversed("PtoIntakeStopped", leftPtoMotor, rightPtoMotor, -1.0);
 	PtoCatapult ptoCatapult("PtoCatapult", leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -1);
 
 	StateController ptoStateController("PtoStateController", &ptoIntaking);
 	StateController ptoStateExtensionController("PtoStateExtensionController", new Behavior());
 
-	Wait ptoCatapultLaunch1(&ptoCatapult, 1000_ms);
+	Wait ptoCatapultLaunch1(&ptoCatapult, 400_ms);
 
 	Sequence ptoCatapultLaunch("PtoCatapultLaunch");
 
