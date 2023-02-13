@@ -24,11 +24,11 @@
 
 namespace Pronounce {
 
-	PID turningPid(6.0, 0.0, 30.0, 0.0, 0.0, false);
-	PID movingTurnPid(6.0, 0.0, 0.0, 0.0, 0.0, false);
+	PID turningPid(4.8, 0.0, 28.0, 0.0, 0.0, false);
+	PID movingTurnPid(25000.0, 0.0, 100000.0, 0.0, 0.0, false);
 	PID visionPid(0.0035, 0.0, 0.050);
 
-	PID distancePid(0.0, 0.0, 0.0);
+	PID distancePid(240000.0, 0.0, 300000.0);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, visionPid, 0.10, false, 2.4, 73_in / second);
@@ -39,7 +39,7 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	ProfileConstraints defaultProfileConstraints = { 70_in / second, 150_in / second / second, 0.0 };
+	ProfileConstraints defaultProfileConstraints = { 70_in / second, 130_in / second / second, 0.0 };
 	ProfileConstraints intakeProfileConstraints = { 50_in / second, 200_in / second / second, 0.0 };
 	ProfileConstraints stackIntakeProfileConstraints = { 10_in / second, 200_in / second / second, 0.0 };
 

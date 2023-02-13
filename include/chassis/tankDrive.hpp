@@ -46,21 +46,32 @@ namespace Pronounce {
 		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) {
 			this->leftMotors->move_voltage(leftVoltage);
 			this->rightMotors->move_voltage(rightVoltage);
+
+			std::cout << "LeftVoltage: " << leftVoltage << std::endl << "RightVoltage: " << rightVoltage << std::endl;
 		}
 
 		void reset() {
 			for (int i = 0; i < this->leftMotors->size(); i++) {
-				this->leftMotors[i].tare_position();
+				this->leftMotors->operator[](i).tare_position();
 			}
 			for (int i = 0; i < this->rightMotors->size(); i++) {
-				this->rightMotors[i].tare_position();
+				this->rightMotors->operator[](i).tare_position();
 			}
 		}
 
 		QLength getDistanceSinceReset() {
 			leftMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 			rightMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			return ((leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in) + (leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in)) / 2.0;
+			return (((leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in) + (leftMotors->get_positions()[0] * 2.0 * 1_pi * 2_in)) / 2.0).getValue() * 343.0/600.0;
+		}
+
+		void setBrakeMode(pros::motor_brake_mode_e_t brakeMode) {
+			leftMotors->set_brake_modes(brakeMode);
+			rightMotors->set_brake_modes(brakeMode);
+		}
+
+		pros::motor_brake_mode_e_t getBrakeMode() {
+			return leftMotors->operator[](0).get_brake_mode();
 		}
 
 		~TankDrivetrain() {
