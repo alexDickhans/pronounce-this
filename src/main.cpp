@@ -62,7 +62,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-int tunePid() {
+int tuneTurnPid() {
 
 	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
 
@@ -89,6 +89,26 @@ int tunePid() {
 	return 0;
 }
 
+int tuneDistancePid() {
+
+	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
+
+	move(24_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	// turnTo(90_deg, 1000);
+
+	// move(24_in, defaultProfileConstraints, 0.0, 90_deg);
+	// move(-24_in, defaultProfileConstraints, 0.0, 90_deg);
+
+	// turnTo(0_deg, 1000);
+
+	// move(-30_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	pros::Task::delay(50);
+
+	return 0;
+}
+
 int testRamseteAuton() {
 
 	threeWheelOdom.setPose(Pose2D(0_in, 0_in, 0_deg));
@@ -103,25 +123,25 @@ int testRamseteAuton() {
 	return 0;
 }
 
-int close9Disc() {
+int close8Disc() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(6_in, defaultProfileConstraints, 0.0);
+	move(6_in, defaultProfileConstraints, 0.0, 0.0);
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoth);
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	pros::delay(200);
+	turnTo(180_deg, 200);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(-25_in, defaultProfileConstraints, (130_deg/-28_in));
+	move(-15_in, defaultProfileConstraints, (130_deg/-28_in));
 
-	turnTo(-8_deg, 1000);
+	turnTo(347_deg, 1000);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -131,7 +151,7 @@ int close9Disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(-30_deg, 800);
+	turnTo(270_deg, 800);
 
 	move(10_in, defaultProfileConstraints, 0.0);
 
@@ -145,13 +165,100 @@ int close9Disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-8_deg, 400);
+	turnTo(328_deg, 400);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
 	pros::Task::delay(400);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(450_deg, 800);
+
+	move(24_in, defaultProfileConstraints, 0.0);
+
+	move(10_in, intakeProfileConstraints, 0.0);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(320_deg, 800);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(400);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	return 0;
+}
+
+int closeFullAWP() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(6_in, defaultProfileConstraints, 0.0, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoth);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(180_deg, 200);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-15_in, defaultProfileConstraints, (130_deg/-28_in));
+
+	turnTo(347_deg, 1000);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(450_deg, 800);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	move(15_in, defaultProfileConstraints, 0.0);
+
+	move(10_in, intakeProfileConstraints, 0.0);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(320_deg, 800);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(390_deg, 800);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	move(24_in, defaultProfileConstraints, 0.0, 390_deg);
+	
+	move(20_in, defaultProfileConstraints, 15_deg/20_in, 390_deg);
+
+	move(50_in, defaultProfileConstraints, 0.0);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(270_deg, 800);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(405_deg, 800);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	move(30_in, defaultProfileConstraints, 45_deg/30_in, 405_deg);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(4_in, defaultProfileConstraints, 0.0, 0.0, 450_deg);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(450_deg, 200);
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoIntakeStopped);
 
 	return 0;
 }
@@ -337,7 +444,7 @@ void competition_initialize() {
 void autonomous() {
 	preAutonRun();
 
-	tunePid();
+	close8Disc();
 
 	// #if AUTON == 0
 	// 	closeFullAWPMax();

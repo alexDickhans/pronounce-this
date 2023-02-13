@@ -12,7 +12,7 @@
 
 namespace Pronounce {
 
-	PtoIntake ptoIntaking("PtoIntaking", leftPtoMotor, rightPtoMotor, .8);
+	PtoIntake ptoIntaking("PtoIntaking", leftPtoMotor, rightPtoMotor, 1);
 	PtoIntake ptoIntakeStopped("PtoIntakeStopped", leftPtoMotor, rightPtoMotor, 0);
 	PtoCatapult ptoCatapult("PtoCatapult", leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -1);
 
