@@ -24,9 +24,9 @@
 
 namespace Pronounce {
 
-	PID turningPid(4.8, 0.0, 28.0, 0.0, 0.0, false);
+	PID turningPid(4.5, 0.0, 34.0, 0.0, 0.0, false);
 	PID movingTurnPid(25000.0, 0.0, 100000.0, 0.0, 0.0, false);
-	PID visionPid(0.0035, 0.0, 0.050);
+	PID visionPid(0.0045, 0.0, 0.10);
 
 	PID distancePid(240000.0, 0.0, 300000.0);
 
@@ -41,7 +41,7 @@ namespace Pronounce {
 
 	ProfileConstraints defaultProfileConstraints = { 70_in / second, 130_in / second / second, 0.0 };
 	ProfileConstraints intakeProfileConstraints = { 50_in / second, 200_in / second / second, 0.0 };
-	ProfileConstraints stackIntakeProfileConstraints = { 30_in / second, 130_in / second / second, 0.0 };
+	ProfileConstraints stackIntakeProfileConstraints = { 25_in / second, 130_in / second / second, 0.0 };
 
 	RamseteController testRamsete(&drivetrain, &odometry, intakeProfileConstraints, Pose2D(0_in, 24_in, 0_deg), 0.0, 0.0);
 

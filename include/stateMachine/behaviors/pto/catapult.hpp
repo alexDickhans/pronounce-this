@@ -28,7 +28,7 @@ namespace Pronounce {
 		void update() {
 			ptoMutex.take();
 
-			double multiplier = catapultLimitSwitch.get_angle() > 28000 ? 0.8 : 1.0;
+			double multiplier = catapultLimitSwitch.get_angle() > 26000 ? 0.7 : 1.0;
 
 			leftPtoMotor.move_voltage(speed * 12000.0 * multiplier);
 			rightPtoMotor.move_voltage(speed * 12000.0 * multiplier);
@@ -43,7 +43,7 @@ namespace Pronounce {
 		}
 
 		bool isDone() {
-			return (catapultLimitSwitch.get_angle() > 35500);
+			return (catapultLimitSwitch.get_angle() > 35500) && (catapultLimitSwitch.get_angle() > 1);
 		}
 
 		~PtoCatapult();

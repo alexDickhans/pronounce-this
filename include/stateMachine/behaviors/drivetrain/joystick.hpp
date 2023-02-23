@@ -29,7 +29,7 @@ namespace Pronounce {
 
 		PID visionPid;
 
-		RunningAverage<15> visionSensorX;
+		RunningAverage<10> visionSensorX;
 
 		bool arcade;
 
