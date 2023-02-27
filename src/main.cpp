@@ -561,9 +561,11 @@ int testMatchLoad() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	move(-1_in, defaultProfileConstraints, 0.0);
+	drivetrain.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 
 	pros::Task::delay(500);
+
+	drivetrain.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 
 	turnTo(180_deg, 800);
 
@@ -771,18 +773,20 @@ void competition_initialize() {
 void autonomous() {
 	preAutonRun();
 
-	#if AUTON == 0
-		closeFullAWP();
-	#endif // !1
-	#if AUTON == 1
-		close8Disc();
-	#endif // !1
-	#if AUTON == 2
-		right8disc();
-	#endif // !1
-	#if AUTON == 3
-		skills();
-	#endif // !1
+	testMatchLoad();
+
+	// #if AUTON == 0
+	// 	closeFullAWP();
+	// #endif // !1
+	// #if AUTON == 1
+	// 	close8Disc();
+	// #endif // !1
+	// #if AUTON == 2
+	// 	right8disc();
+	// #endif // !1
+	// #if AUTON == 3
+	// 	skills();
+	// #endif // !1
 
 	postAuton();
 }

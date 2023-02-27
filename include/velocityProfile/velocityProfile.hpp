@@ -20,12 +20,25 @@ namespace Pronounce {
 		QLength distance;
 
 		ProfileConstraints profileConstraints;
+
+		QSpeed initialSpeed = 0.0;
+		QSpeed endSpeed = 0.0;
 	public:
 		VelocityProfile() : distance(0.0), profileConstraints() {
 			
 		}
 
 		VelocityProfile(QLength distance, ProfileConstraints profileConstraints) : distance(distance), profileConstraints(profileConstraints) {}
+
+		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed) : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {}
+
+		QSpeed getInitialSpeed() {
+			return initialSpeed;
+		}
+
+		QSpeed getEndSpeed() {
+			return endSpeed;
+		}
 
 		virtual QTime getDuration() { return 0.0; }
 
