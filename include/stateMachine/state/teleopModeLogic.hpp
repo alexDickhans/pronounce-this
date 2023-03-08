@@ -59,9 +59,9 @@ namespace Pronounce {
 				ptoStateController.setCurrentBehavior(ptoStateController.isDone() ? &ptoIntakeStopped : &ptoIntaking);
 			}
 
-			if (controller1->get_digital_new_press(DIGITAL_L2)) {
-				drivetrainStateController.setCurrentBehavior(drivetrainStateController.getCurrentBehavior() == &targetingJoystick ? &normalJoystick : &targetingJoystick);
-			}
+			// if (controller1->get_digital_new_press(DIGITAL_L2)) {
+			// 	drivetrainStateController.setCurrentBehavior(drivetrainStateController.getCurrentBehavior() == &targetingJoystick ? &normalJoystick : &targetingJoystick);
+			// }
 			
 			if (controller2->get_digital_new_press(DIGITAL_L2)) {
 				ptoStateExtensionController.useDefaultBehavior();
@@ -73,7 +73,7 @@ namespace Pronounce {
 				ptoStateController.setCurrentBehavior(&ptoIntaking);
 			}
 
-			if (controller2->get_digital_new_press(DIGITAL_R1)) {
+			if (controller2->get_digital_new_press(DIGITAL_R1) || controller1->get_digital_new_press(DIGITAL_R2)) {
 				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
 			
