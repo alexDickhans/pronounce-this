@@ -40,7 +40,7 @@ namespace Pronounce {
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
 	ProfileConstraints defaultProfileConstraints = { 70_in / second, 130_in / second / second, 0.0 };
-	ProfileConstraints intakeProfileConstraints = { 50_in / second, 200_in / second / second, 0.0 };
+	ProfileConstraints intakeProfileConstraints = { 50_in / second, 125_in / second / second, 0.0 };
 	ProfileConstraints stackIntakeProfileConstraints = { 25_in / second, 130_in / second / second, 0.0 };
 
 	RamseteController testRamsete(&drivetrain, &odometry, intakeProfileConstraints, Pose2D(0_in, 24_in, 0_deg), 0.0, 0.0);

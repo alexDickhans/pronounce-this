@@ -28,22 +28,23 @@ namespace Pronounce {
 		void update() {
 			ptoMutex.take();
 
-			double multiplier = catapultLimitSwitch.get_angle() > 26000 ? 0.7 : 1.0;
+			double multiplier = catapultLimitSwitch.get_angle() > 30000 ? 0.6 : 1.0;
 
 			leftPtoMotor.move_voltage(speed * 12000.0 * multiplier);
 			rightPtoMotor.move_voltage(speed * 12000.0 * multiplier);
 
-			std::cout << "CommandedIntakeVoltage: " << speed * 12000.0 << std::endl;
+			std::cout << "CommandedIntakeVoltage: " << speed * 12000.0 * multiplier << std::endl;
 
 			ptoMutex.give();
 		}
 
 		void exit() {
-
+			leftPtoMotor.move_voltage(0.0);
+			rightPtoMotor.move_voltage(0.0);
 		}
 
 		bool isDone() {
-			return (catapultLimitSwitch.get_angle() > 35500) && (catapultLimitSwitch.get_angle() > 1);
+			return (catapultLimitSwitch.get_angle() > 35650) && (catapultLimitSwitch.get_angle() > 1);
 		}
 
 		~PtoCatapult();
