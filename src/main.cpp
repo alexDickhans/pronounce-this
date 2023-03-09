@@ -104,7 +104,8 @@ int tuneTurnPid() {
 
 	// pros::delay(50);
 
-	turnTo(-90_deg, 1500);
+	return 0;
+}
 
 int tuneDistancePid() {
 
@@ -121,7 +122,7 @@ int tuneDistancePid() {
 
 	// move(-30_in, defaultProfileConstraints, 0.0, 0_deg);
 
-	// pros::Task::delay(200);
+	pros::Task::delay(50);
 
 	return 0;
 }
@@ -135,7 +136,7 @@ int testRamseteAuton() {
 
 	pros::Task::delay(10000);
 
-	// pros::delay(50);
+	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 
 	return 0;
 }
@@ -263,7 +264,7 @@ int skills() {
 
 	pros::Task::delay(800);
 
-	turnTo(317_deg, 800);
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
 	move(5_in, defaultProfileConstraints, 0.0, 180_deg);
 
@@ -487,11 +488,11 @@ int right8disc() {
 
 	pros::Task::delay(200);
 
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, {40_in/second, 200_in/second/second, 0.0}, 25_in, &odometry, &distancePid, drivetrainMutex, 0.0, 328_deg, &movingTurnPid);
-
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
 	pros::Task::delay(500);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	move(40_in, defaultProfileConstraints, 156_deg/40_in, 294_deg);
 
@@ -503,7 +504,7 @@ int right8disc() {
 
 	turnTo(455_deg, 100);
 
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	move(-5_in, defaultProfileConstraints, 0.0, 450_deg);
 
@@ -529,7 +530,7 @@ int right8disc() {
 
 	move(-40_in, defaultProfileConstraints, 0.0, 845_deg);
 
-	move(-3_in, defaultProfileConstraints, 0.0, 180_deg);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
 	turnTo(677_deg, 800);
 
@@ -569,11 +570,11 @@ int right9Disc() {
 
 	turnTo(455_deg, 100);
 
-	turnTo(326_deg, 800);
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	move(-5_in, defaultProfileConstraints, 0.0, 450_deg);
 
-	pros::Task::delay(500);
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
 	turnTo(590_deg, 800);
 
@@ -583,7 +584,7 @@ int right9Disc() {
 
 	turnTo(681_deg, 800);
 
-	move(5_in, {60_in/second, 175_in/second/second, 1_in/second/second/second}, 0.0, 291_deg);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
 	turnTo(681_deg, 400);
 
@@ -713,7 +714,7 @@ int close9Disc() {
 
 	move(9_in, defaultProfileConstraints, -45_deg/10_in, -135_deg);
 
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
 	move(-11_in, stackIntakeProfileConstraints, -50_deg/-8.8_in, -180_deg);
 
@@ -737,7 +738,7 @@ int close9Disc() {
 
 	pros::Task::delay(600);
 
-	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
 	move(-13_in, defaultProfileConstraints, 0.0, -45_deg);
 
@@ -745,7 +746,7 @@ int close9Disc() {
 
 	shootWhileMoving(8_in, 50_in/second, -16_deg);
 
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	pros::Task::delay(500);
 
@@ -755,7 +756,7 @@ int close9Disc() {
 int testLongShot() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	turnTo(263_deg, 800);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
 	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, {30_in/second, 150_in/second/second, 150_in/second/second/second}, 10_in, &odometry, &distancePid, drivetrainMutex, 0.0, 0_deg, &movingTurnPid);
 

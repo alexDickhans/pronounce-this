@@ -9,7 +9,7 @@
 #include <iostream>
 
 int main() {
-	Pronounce::SinusoidalVelocityProfile velocityProfile = Pronounce::SinusoidalVelocityProfile(50_in, 15_in/second, 150_in/(second*second), 0.0, 70_in/second, 0_in/second);
+	Pronounce::SinusoidalVelocityProfile velocityProfile = Pronounce::SinusoidalVelocityProfile(50_in, 70_in/second, 125_in/(second*second), 0.0, 0_in/second, 0_in/second);
 
 	QTime frameTime = 10_ms;
 

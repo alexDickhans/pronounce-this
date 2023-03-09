@@ -55,27 +55,25 @@ namespace Pronounce {
 		}
 
 		QLength getDistanceByTime(QTime t) {
-			return 0.0;
-			// if (t <= 0.0_s) {
-			// 	return 0.0;
-			// } else if (t <= Ta) {
-			// 	return ((this->getProfileConstraints().maxAcceleration.getValue()/4) * pow(t.getValue(), 2)) + (Ks * (cos(omega * t.getValue()) - 1));
-			// } else if (t <= Ts) {
-			// 	return Ys + Vw * (t - Ts).getValue();
-			// } else {
-			// 	return Yf - getDistanceByTime(Tt - t).getValue();
-			// }
+			if (t.getValue() < startTime.getValue()) {
+				return (startB*startOmega*t.getValue() + startSlope*sin(startOmega*t.getValue()))/startOmega;
+				// return -sin(startOmega * t.getValue()) * startSlope + startB;
+			} else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {
+				return (this->getProfileConstraints().maxVelocity * (t-startTime)) + startDistance;
+			} else if (t.getValue() < Tt.getValue() && !isSingleSine) {
+				return -sin(endOmega * (t - endStartTime).getValue()) * endSlope + endB;
+			} else {
+				return 0.0;
+			}
 		}
 
 		QSpeed getVelocityByTime(QTime t) {
 
-			// std::cout << "Initial Speed: " << 
-
 			if (t.getValue() < startTime.getValue()) {
 				return cos(startOmega * t.getValue()) * startSlope + startB;
-			} else if (t.getValue() < endStartTime.getValue()) {
+			} else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {
 				return this->getProfileConstraints().maxVelocity;
-			} else if (t.getValue() < Tt.getValue()) {
+			} else if (t.getValue() < Tt.getValue() && !isSingleSine) {
 				return cos(endOmega * (t - endStartTime).getValue()) * endSlope + endB;
 			} else {
 				return 0.0;
@@ -123,21 +121,24 @@ namespace Pronounce {
 
 			middleDuration = (this->getDistance() - (startDistance + endDistance)) / this->getProfileConstraints().maxVelocity;
 
+			if (middleDuration < 0_s) {
+				isSingleSine = true;
+				if (signnum_c(this->getDistance().getValue()) * 5_in/second < ((this->getInitialSpeed() + this->getEndSpeed())/2.0)) {
+					startSlope = (this->getInitialSpeed() - this->getEndSpeed()).getValue()/2.0;
+					startB = (this->getInitialSpeed() + this->getEndSpeed()).getValue()/2.0;
+					startTime = this->getDistance()/(startB*1_m/second);
+					startOmega = 1_pi/startTime.getValue();
+
+					Tt = startTime;
+				}
+
+				return;
+			}
+
 			endStartTime = startTime + middleDuration;
 
 			Tt = endStartTime + endTime;
 
-			if (middleDuration < 0_s) {
-				isSingleSine = true;
-				if (this->getInitialSpeed() != 0.0 && this->getEndSpeed() != 0.0) {
-					startSlope = (this->getInitialSpeed() - this->getEndSpeed()).getValue()/2.0;
-					startB = (this->getInitialSpeed() + this->getEndSpeed()).getValue()/2.0;
-					startOmega = this->getProfileConstraints().maxAcceleration.getValue()/startSlope;
-					startTime = 1_pi/fabs(startOmega);
-
-					Tt = startTime;
-				}
-			}
 			// std::cout << Tt.getValue() << std::endl;
 		}
 
