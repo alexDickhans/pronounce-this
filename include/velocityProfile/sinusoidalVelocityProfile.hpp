@@ -18,6 +18,7 @@ namespace Pronounce {
 		QTime Tt = 3.0_s;
 
 		bool isSingleSine = false;
+		bool speedDifferenceTooLow = false;
 
 		QTime startTime;
 		QTime endTime;
@@ -57,11 +58,10 @@ namespace Pronounce {
 		QLength getDistanceByTime(QTime t) {
 			if (t.getValue() < startTime.getValue()) {
 				return (startB*startOmega*t.getValue() + startSlope*sin(startOmega*t.getValue()))/startOmega;
-				// return -sin(startOmega * t.getValue()) * startSlope + startB;
-			} else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {
-				return (this->getProfileConstraints().maxVelocity * (t-startTime)) + startDistance;
+			} else if (t.getValue() <= endStartTime.getValue() && !isSingleSine) {
+				return startDistance + this->getProfileConstraints().maxVelocity * (t-startTime);
 			} else if (t.getValue() < Tt.getValue() && !isSingleSine) {
-				return -sin(endOmega * (t - endStartTime).getValue()) * endSlope + endB;
+				return this->getDistance().getValue() + ((endB*endOmega*(t-endStartTime).getValue() + endSlope*sin(endOmega*(t-endStartTime).getValue()))/endOmega) - endB*endTime.getValue();
 			} else {
 				return 0.0;
 			}
@@ -123,11 +123,20 @@ namespace Pronounce {
 
 			if (middleDuration < 0_s) {
 				isSingleSine = true;
+
 				if (signnum_c(this->getDistance().getValue()) * 5_in/second < ((this->getInitialSpeed() + this->getEndSpeed())/2.0)) {
 					startSlope = (this->getInitialSpeed() - this->getEndSpeed()).getValue()/2.0;
 					startB = (this->getInitialSpeed() + this->getEndSpeed()).getValue()/2.0;
 					startTime = this->getDistance()/(startB*1_m/second);
 					startOmega = 1_pi/startTime.getValue();
+
+					Tt = startTime;
+				} else {
+					double a = sqrt(this->getDistance().getValue()/(2*1_pi*this->getProfileConstraints().maxAcceleration.getValue()));
+					startSlope = - a * this->getProfileConstraints().maxAcceleration.getValue();
+					startB = a * this->getProfileConstraints().maxAcceleration.getValue();
+					startTime = 2 * 1_pi * a;
+					startOmega = 1.0/a;
 
 					Tt = startTime;
 				}
