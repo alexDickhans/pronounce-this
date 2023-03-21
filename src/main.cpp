@@ -36,8 +36,8 @@ void turnTo(Angle angle, int waitTimeMS) {
 	pros::Task::delay(10);
 }
 
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature) {
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature);
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
+	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, initialSpeed, endSpeed);
 
 	drivetrainStateController.setCurrentBehavior(&motionProfiling);
 
@@ -49,8 +49,8 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle) {
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid);
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
+	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed);
 
 	drivetrainStateController.setCurrentBehavior(&motionProfiling);
 
@@ -78,6 +78,14 @@ void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTi
 		pros::Task::delay(10);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
+}
+
+int spinRoller(Angle angle) {
+	QLength distanceToRoller = frontDistanceSensor.get()*1_mm;
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+
+	return 0;
 }
 
 int tuneTurnPid() {
@@ -812,6 +820,26 @@ int testMatchLoad() {
 	move(-1_in, defaultProfileConstraints, 0.0);
 
 	pros::Task::delay(500);
+}
+
+int testMotionProfiling() {
+
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
+
+	move(50_in, defaultProfileConstraints, 0.0, 0.0, 0_in/second, 20_in/second);
+
+	move(50_in, { 30_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
+
+	return 0;
+}
+
+int testSpinRoller() {
+
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
+
+	spinRoller(0_deg);
+
+	return 0;
 }
 
 int postAuton() {

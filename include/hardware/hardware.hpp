@@ -109,6 +109,8 @@ namespace Pronounce {
 	pros::vision_signature_s_t RED_GOAL;
 	pros::vision_signature_s_t BLUE_GOAL;
 
+	pros::Distance frontDistanceSensor(4);
+
 	void initHardware() {
 
 		drivetrainMutex.take();

@@ -36,18 +36,23 @@ namespace Pronounce {
 
 		QTime middleDuration;
 
+		bool reversed;
+
 	public:
-		SinusoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints) : VelocityProfile(distance, profileConstraints) {
+		SinusoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initalVelocity = 0.0, QSpeed endVelocity = 0.0) : VelocityProfile(fabs(distance.getValue()) * 1_m, profileConstraints, initalVelocity, endVelocity) {
 			
+			reversed = signnum_c(distance.getValue()) == -1;
 		}
 
-		SinusoidalVelocityProfile(QLength distance, QSpeed maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QSpeed initalSpeed = 0.0, QSpeed endSpeed = 0.0) : VelocityProfile(distance, ProfileConstraints(), initalSpeed, endSpeed) {
+		SinusoidalVelocityProfile(QLength distance, QSpeed maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QSpeed initalSpeed = 0.0, QSpeed endSpeed = 0.0) : VelocityProfile(fabs(distance.getValue()) * 1_m, ProfileConstraints(), initalSpeed.getValue() * signnum_c(distance.getValue()), endSpeed.getValue() * signnum_c(distance.getValue())) {
 			ProfileConstraints profileConstraints;
 			profileConstraints.maxVelocity = maxVelocity;
 			profileConstraints.maxAcceleration = maxAcceleration;
 			profileConstraints.maxJerk = maxJerk;
 
 			this->setProfileConstraints(profileConstraints);
+
+			reversed = signnum_c(distance.getValue()) == -1;
 
 		}
 
@@ -57,11 +62,11 @@ namespace Pronounce {
 
 		QLength getDistanceByTime(QTime t) {
 			if (t.getValue() < startTime.getValue()) {
-				return (startB*startOmega*t.getValue() + startSlope*sin(startOmega*t.getValue()))/startOmega;
+				return (reversed ? -1 : 1) * ((startB*startOmega*t.getValue() + startSlope*sin(startOmega*t.getValue()))/startOmega);
 			} else if (t.getValue() <= endStartTime.getValue() && !isSingleSine) {
-				return startDistance + this->getProfileConstraints().maxVelocity * (t-startTime);
+				return (reversed ? -1 : 1) * ((startDistance + this->getProfileConstraints().maxVelocity * (t-startTime)).getValue());
 			} else if (t.getValue() < Tt.getValue() && !isSingleSine) {
-				return this->getDistance().getValue() + ((endB*endOmega*(t-endStartTime).getValue() + endSlope*sin(endOmega*(t-endStartTime).getValue()))/endOmega) - endB*endTime.getValue();
+				return (reversed ? -1 : 1) * (this->getDistance().getValue() + ((endB*endOmega*(t-endStartTime).getValue() + endSlope*sin(endOmega*(t-endStartTime).getValue()))/endOmega) - endB*endTime.getValue());
 			} else {
 				return 0.0;
 			}
@@ -70,11 +75,11 @@ namespace Pronounce {
 		QSpeed getVelocityByTime(QTime t) {
 
 			if (t.getValue() < startTime.getValue()) {
-				return cos(startOmega * t.getValue()) * startSlope + startB;
+				return (reversed ? -1 : 1) * (cos(startOmega * t.getValue()) * startSlope + startB);
 			} else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {
-				return this->getProfileConstraints().maxVelocity;
+				return (reversed ? -1 : 1) * (this->getProfileConstraints().maxVelocity).getValue();
 			} else if (t.getValue() < Tt.getValue() && !isSingleSine) {
-				return cos(endOmega * (t - endStartTime).getValue()) * endSlope + endB;
+				return (reversed ? -1 : 1) * (cos(endOmega * (t - endStartTime).getValue()) * endSlope + endB);
 			} else {
 				return 0.0;
 			}
@@ -90,17 +95,17 @@ namespace Pronounce {
 			// }
 		}
 
-		QAcceleration getAccelerationByTime(QTime t) {
-			// if (t <= 0.0_s) {
-			// 	return 0.0;
-			// } else if (t <= Ta) {
-			// 	return (this->getProfileConstraints().maxAcceleration/2).getValue() * (1-cos(omega * t.getValue()));
-			// } else if (t <= Ts) {
-			// 	return 0.0;
-			// } else {
-			// 	return -getAccelerationByTime(Tt - t);
-			// }
-		}
+		// QAcceleration getAccelerationByTime(QTime t) {
+		// 	// if (t <= 0.0_s) {
+		// 	// 	return 0.0;
+		// 	// } else if (t <= Ta) {
+		// 	// 	return (this->getProfileConstraints().maxAcceleration/2).getValue() * (1-cos(omega * t.getValue()));
+		// 	// } else if (t <= Ts) {
+		// 	// 	return 0.0;
+		// 	// } else {
+		// 	// 	return -getAccelerationByTime(Tt - t);
+		// 	// }
+		// }
 
 		void calculate(int granularity) {
 			
