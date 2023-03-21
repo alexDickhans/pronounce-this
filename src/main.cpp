@@ -81,11 +81,45 @@ void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTi
 }
 
 int spinRoller(Angle angle) {
-	QLength distanceToRoller = frontDistanceSensor.get()*1_mm;
+	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 90_mm;
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
 
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(250);
+
+	drivetrain.tankSteerVoltage(0, 0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-5_in, defaultProfileConstraints, 0.0, 0_deg);
+
 	return 0;
+}
+
+int matchLoad(Angle angle, Angle goalAngle) {
+	pros::Task::delay(50);
+
+	intakeStopper.set_value(true);
+
+	pros::Task::delay(500);
+
+	// ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	move(10_in, defaultProfileConstraints, 0.0, angle);
+
+	turnTo(goalAngle, 800);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+
+	turnTo(angle, 800);
+
+	move(-12_in, defaultProfileConstraints, 0.0, angle);
 }
 
 int tuneTurnPid() {
@@ -785,50 +819,24 @@ int testLongShot() {
 
 int testMatchLoad() {
 
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	pros::Task::delay(1000);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	move(5_in, defaultProfileConstraints, 0.0, 180_deg);
-
-	turnTo(263_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
-
-	move(-1_in, defaultProfileConstraints, 0.0);
-
-	pros::Task::delay(500);
-
-	turnTo(180_deg, 800);
-
-	move(-5_in, defaultProfileConstraints, 0.0, 180_deg);
-
-	pros::Task::delay(1000);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	move(5_in, defaultProfileConstraints, 0.0, 180_deg);
-
-	turnTo(263_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
-
-	move(-1_in, defaultProfileConstraints, 0.0);
+	while(1) {
+		matchLoad(0_deg, 90_deg);
+	}
 
 	pros::Task::delay(500);
 }
 
 int testMotionProfiling() {
+	drivetrain.reset();
+	drivetrain.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	move(50_in, defaultProfileConstraints, 0.0, 0.0, 0_in/second, 20_in/second);
+	move(70_in, { 70_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 0_in/second, 20_in/second);
 
-	move(50_in, { 30_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
+	move(20_in, { 20_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
 
 	return 0;
 }
@@ -1030,7 +1038,7 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		closeFullAWP();
+		testMatchLoad();
 	#endif // !1
 	#if AUTON == 1
 		close9Disc();

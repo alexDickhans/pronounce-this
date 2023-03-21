@@ -29,6 +29,7 @@ namespace Pronounce {
 		pros::motor_brake_mode_e_t beforeBrakeMode;
 
 		QSpeed initialSpeed, endSpeed;
+		QLength startDistance;
 
 	public:
 		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
@@ -50,7 +51,8 @@ namespace Pronounce {
 		void initialize() {
 			startTime = currentTime();
 
-			drivetrain->reset();
+			// drivetrain->reset();
+			startDistance = drivetrain->getDistanceSinceReset();
 
 			aimingVisionSensor.set_led(COLOR_WHITE);
 
@@ -79,7 +81,7 @@ namespace Pronounce {
 			double turnPower = 0;
 
 			// calculate average wheel velocites
-			QLength currentDistance = drivetrain->getDistanceSinceReset();
+			QLength currentDistance = drivetrain->getDistanceSinceReset()-startDistance;
 
 			distancePid->setTarget(distance.getValue() * signnum_c(this->velocityProfile->getDistance().getValue()));
 
@@ -118,7 +120,6 @@ namespace Pronounce {
 			drivetrain->setBrakeMode(beforeBrakeMode);
 
 			drivetrain->skidSteerVelocity(0.0, 0.0);
-			drivetrain->tankSteerVoltage(0.0, 0.0);
 
 			aimingVisionSensor.clear_led();
 

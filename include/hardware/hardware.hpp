@@ -67,6 +67,8 @@ namespace Pronounce {
 	pros::Motor leftPtoMotor(17, pros::E_MOTOR_GEAR_600, true);
 	pros::Motor rightPtoMotor(7, pros::E_MOTOR_GEAR_600, false);
 
+	pros::ADIDigitalOut intakeStopper('e', false);
+
 	int32_t leftVoltage = 0;
 	int32_t rightVoltage = 0;
 
