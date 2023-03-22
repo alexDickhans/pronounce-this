@@ -210,13 +210,18 @@ int skills() {
 
 	intakeStopperOverride = false;
 
+	// Finish match loads
+	// Shoot close left stack
+
 	intakeSolenoid.set_value(true);
 
 	turnTo(-61_deg, 500);
 
-	move(36_in, { 70_in / second, 60_in / second / second, 0.0 }, 0.0, -61_deg);
+	move(33_in, { 70_in / second, 60_in / second / second, 0.0 }, 0.0, -61_deg);
 
 	intakeSolenoid.set_value(false);
+
+	turnTo(-61_deg, 500);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
@@ -227,6 +232,8 @@ int skills() {
 	turnTo(-8_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// Spin close rollers
 
 	turnTo(-90_deg, 500);
 
@@ -256,6 +263,8 @@ int skills() {
 
 	turnTo(-45_deg, 300);
 
+	// First Barrier
+
 	turnTo(-15_deg, 500);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
@@ -276,6 +285,8 @@ int skills() {
 
 	turnTo(-180_deg, 500);
 
+	// Second match loader
+
 	intakeStopperOverride = true;
 
 	move(-backDistanceSensor.get() * 1_mm + 30_mm, defaultProfileConstraints, 0.0, -180_deg);
@@ -291,6 +302,8 @@ int skills() {
 	turnTo(-93_deg, 300);
 
 	intakeStopperOverride = false;
+
+	// REPEAT
 
 	pros::Task::delay(500);
 
