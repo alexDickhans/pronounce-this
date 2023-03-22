@@ -25,7 +25,7 @@ namespace Pronounce {
 			
 			aimingVisionSensor.set_led(COLOR_BROWN);
 
-			intakeStopper.set_value(false);
+			intakeStopper.set_value(false || intakeStopperOverride);
 
 			ptoMutex.give();
 		}
@@ -35,6 +35,8 @@ namespace Pronounce {
 
 			leftPtoMotor.move_voltage(speed * 12000);
 			rightPtoMotor.move_voltage(speed * 12000);
+
+			intakeStopper.set_value(false || intakeStopperOverride);
 
 			std::cout << "CommandedIntakeVoltage: " << speed * 12000.0 << std::endl;
 

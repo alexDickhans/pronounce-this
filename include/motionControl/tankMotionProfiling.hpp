@@ -56,7 +56,7 @@ namespace Pronounce {
 
 			aimingVisionSensor.set_led(COLOR_WHITE);
 
-			drivetrain->tankSteerVelocity(0.0, 0.0);
+			// drivetrain->tankSteerVelocity(0.0, 0.0);
 
 			double curvatureAdjustment = std::min(((2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0), ((2.0 - curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0));
 
@@ -119,7 +119,7 @@ namespace Pronounce {
 			
 			drivetrain->setBrakeMode(beforeBrakeMode);
 
-			drivetrain->skidSteerVelocity(0.0, 0.0);
+			drivetrain->tankSteerVoltage(0.0, 0.0);
 
 			aimingVisionSensor.clear_led();
 

@@ -68,6 +68,7 @@ namespace Pronounce {
 	pros::Motor rightPtoMotor(7, pros::E_MOTOR_GEAR_600, false);
 
 	pros::ADIDigitalOut intakeStopper('e', false);
+	bool intakeStopperOverride = false;
 
 	int32_t leftVoltage = 0;
 	int32_t rightVoltage = 0;
@@ -112,6 +113,7 @@ namespace Pronounce {
 	pros::vision_signature_s_t BLUE_GOAL;
 
 	pros::Distance frontDistanceSensor(4);
+	pros::Distance backDistanceSensor(3);
 
 	void initHardware() {
 

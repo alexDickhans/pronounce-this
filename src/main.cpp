@@ -33,7 +33,7 @@ void turnTo(Angle angle, int waitTimeMS) {
 
 	drivetrainStateController.useDefaultBehavior();
 
-	pros::Task::delay(10);
+	pros::Task::delay(30);
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
@@ -102,24 +102,32 @@ int spinRoller(Angle angle) {
 	return 0;
 }
 
-int matchLoad(Angle angle, Angle goalAngle) {
-	pros::Task::delay(50);
+void matchLoad(Angle angle, Angle goalAngle) {
 
-	intakeStopper.set_value(true);
+	pros::Task::delay(20);
 
-	pros::Task::delay(500);
+	QLength distanceToMatch = frontDistanceSensor.get()*1_mm - 66_in;
 
-	// ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	move(10_in, defaultProfileConstraints, 0.0, angle);
-
-	turnTo(goalAngle, 800);
+	move(distanceToMatch, defaultProfileConstraints, 0.0, goalAngle, 0.0, 0.0);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+	intakeStopperOverride = true;
+
+	turnTo(goalAngle, 400);
 
 	turnTo(angle, 800);
 
-	move(-12_in, defaultProfileConstraints, 0.0, angle);
+	distanceToMatch = backDistanceSensor.get()*1_mm - 30_mm;
+
+	move(-distanceToMatch, defaultProfileConstraints, 0.0, angle);
+
+	pros::Task::delay(500);
+
+	move(5_in, defaultProfileConstraints, 0.0, angle);
+
+	turnTo(goalAngle, 800);
+
+	pros::Task::delay(50);
 }
 
 int tuneTurnPid() {
@@ -819,9 +827,12 @@ int testLongShot() {
 
 int testMatchLoad() {
 
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 90_deg));
+	pros::Task::delay(50);
 
-	while(1) {
+	while (1) {
+		pros::Task::delay(20);
+
 		matchLoad(0_deg, 90_deg);
 	}
 
@@ -834,9 +845,9 @@ int testMotionProfiling() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	move(70_in, { 70_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 0_in/second, 20_in/second);
+	move(50_in, { 60_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 0_in/second, 20_in/second);
 
-	move(20_in, { 20_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
+	move(10_in, { 20_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
 
 	return 0;
 }

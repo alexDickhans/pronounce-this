@@ -113,6 +113,8 @@ namespace Pronounce {
 			}
 
 			intakeSolenoid.set_value(controller2->get_digital(pros::E_CONTROLLER_DIGITAL_A));
+
+			intakeStopperOverride = controller2->get_digital(pros::E_CONTROLLER_DIGITAL_X);
 		}
 
 		void exit() {
