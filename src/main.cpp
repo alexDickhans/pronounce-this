@@ -80,7 +80,7 @@ void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTi
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-int spinRoller(Angle angle) {
+int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 90_mm;
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
@@ -89,15 +89,15 @@ int spinRoller(Angle angle) {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	drivetrain.tankSteerVoltage(2000, 2000);
+	drivetrain.tankSteerVoltage(4000, 4000);
 
-	pros::Task::delay(250);
+	pros::Task::delay(350);
 
 	drivetrain.tankSteerVoltage(0, 0);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(-5_in, defaultProfileConstraints, 0.0, 0_deg);
+	// move(-5_in, defaultProfileConstraints, 0.0, 0_deg);
 
 	return 0;
 }
@@ -212,81 +212,87 @@ int skills() {
 
 	intakeSolenoid.set_value(true);
 
-	turnTo(-35_deg, 500);
+	turnTo(-61_deg, 500);
 
-	move(16_in, stackIntakeProfileConstraints, 0.0, -35_deg, 0.0, 0.0);
-
-	intakeSolenoid.set_value(false);
-
-	turnTo(-35_deg, 100);
-
-	intakeSolenoid.set_value(true);
-
-	turnTo(-35_deg, 100);
+	move(36_in, { 70_in / second, 60_in / second / second, 0.0 }, 0.0, -61_deg);
 
 	intakeSolenoid.set_value(false);
-
-	turnTo(-35_deg, 100);
-
-	intakeSolenoid.set_value(true);
-
-	turnTo(-35_deg, 100);
-
-	intakeSolenoid.set_value(false);
-
-	turnTo(-35_deg, 400);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-25_deg, 800);
+	turnTo(-8_deg, 500);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	move(8_in, defaultProfileConstraints, 0.0, -25_deg);
-
-	pros::Task::delay(500);
+	turnTo(-8_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	move(17_in, { 30_in / second, 125_in / second / second, 0.0 }, 0.0, -45_deg);
+	turnTo(-90_deg, 500);
 
-	turnTo(45_deg, 500);
+	spinRoller(-90_deg);
 
-	move(14_in, intakeProfileConstraints, 0.0, 45_deg);
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(90_deg, 500);
+	turnTo(-180_deg, 500);
 
-	move(26_in, defaultProfileConstraints, 0.0, 90_deg);
+	spinRoller(-180_deg);
 
-	turnTo(135_deg, 800);
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
+	
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(0_deg, 700);
+
+	move(24_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	turnTo(45_deg, 600);
+
+	move(35_in, intakeProfileConstraints, 0.0, 45_deg);
+
+	turnTo(-45_deg, 600);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(135_deg, 300);
+	turnTo(-45_deg, 300);
 
-	turnTo(165_deg, 800);
+	turnTo(-15_deg, 500);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
-	
-	move(frontDistanceSensor.get()*1_mm - 1350_mm, defaultProfileConstraints, 0.0, 180_deg);
 
-	turnTo(135_deg, 500);
+	move(frontDistanceSensor.get() * 1_mm - 1350_mm, defaultProfileConstraints, 0.0, 0_deg);
+
+	turnTo(-45_deg, 600);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(135_deg, 300);
+	turnTo(-45_deg, 300);
 
-	turnTo(105_deg, 400);
+	turnTo(-75_deg, 500);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
-	
-	move(frontDistanceSensor.get()*1_mm - 1350_mm, defaultProfileConstraints, 0.0, 90_deg);
 
-	turnTo(135_deg, 300);
+	move(frontDistanceSensor.get() * 1_mm - 66_in, defaultProfileConstraints, 0.0, -90_deg);
+
+	turnTo(-180_deg, 500);
+
+	intakeStopperOverride = true;
+
+	move(-backDistanceSensor.get() * 1_mm + 30_mm, defaultProfileConstraints, 0.0, -180_deg);
+
+	move(5_in, defaultProfileConstraints, 0.0, -180_deg);
+
+	turnTo(-93_deg, 500);
+
+	matchLoad(-180_deg, -93_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(135_deg, 300);
+	turnTo(-93_deg, 300);
+
+	intakeStopperOverride = false;
+
+	pros::Task::delay(500);
 
 	return 0;
 }

@@ -48,14 +48,18 @@ namespace Pronounce {
 		}
 
 		void initialize() {
-			
+			if (maxDriveSpeed == 0.0_in / second) {
+				drivetrain.tankSteerVoltage(0.0, 0.0);
+				drivetrainMutex.give();
+				return;
+			}
 		}
 
 		void update() {
 			drivetrainMutex.take();
 
 			if (maxDriveSpeed == 0.0_in / second) {
-				drivetrain.tankSteerVoltage(0.0, 0.0);
+				// drivetrain.tankSteerVoltage(0.0, 0.0);
 				drivetrainMutex.give();
 				return;
 			}
