@@ -215,7 +215,7 @@ int skills() {
 
 	intakeSolenoid.set_value(true);
 
-	turnTo(-61_deg, 500);
+	turnTo(-61_deg, 800);
 
 	move(33_in, { 70_in / second, 60_in / second / second, 0.0 }, 0.0, -61_deg);
 
@@ -235,13 +235,13 @@ int skills() {
 
 	// Spin close rollers
 
-	turnTo(-90_deg, 500);
+	turnTo(-90_deg, 300);
 
 	spinRoller(-90_deg);
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(-180_deg, 500);
+	turnTo(-180_deg, 300);
 
 	spinRoller(-180_deg);
 
@@ -282,6 +282,12 @@ int skills() {
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
 	move(frontDistanceSensor.get() * 1_mm - 66_in, defaultProfileConstraints, 0.0, -90_deg);
+
+	turnTo(-45_deg, 600);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(-45_deg, 300);
 
 	turnTo(-180_deg, 500);
 
