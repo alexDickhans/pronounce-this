@@ -89,7 +89,7 @@ int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	drivetrain.tankSteerVoltage(4000, 4000);
+	drivetrain.tankSteerVoltage(2000, 2000);
 
 	pros::Task::delay(350);
 
@@ -187,6 +187,26 @@ int testRamseteAuton() {
 	return 0;
 }
 
+int skillsMatchLoad() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 0_deg));
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	intakeStopperOverride = true;
+
+	pros::Task::delay(900);
+
+	move(5_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	turnTo(88_deg, 500);
+
+	matchLoad(0_deg, 88_deg);
+
+	matchLoad(0_deg, 88_deg);
+
+	return 0;
+}
+
 int skills() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, 0_deg));
 
@@ -213,35 +233,35 @@ int skills() {
 	// Finish match loads
 	// Shoot close left stack
 
-	intakeSolenoid.set_value(true);
+	// intakeSolenoid.set_value(true);
 
-	turnTo(-61_deg, 800);
+	turnTo(-61_deg, 700);
 
-	move(33_in, { 70_in / second, 60_in / second / second, 0.0 }, 0.0, -61_deg);
+	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 0_in/second, 10_in/second);
 
-	intakeSolenoid.set_value(false);
+	move(19_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 10_in/second, 0_in/second);
 
-	turnTo(-61_deg, 500);
+	// intakeSolenoid.set_value(false);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-8_deg, 500);
+	turnTo(-6_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-8_deg, 300);
+	turnTo(-6_deg, 250);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	// Spin close rollers
 
-	turnTo(-90_deg, 300);
+	turnTo(-90_deg, 450);
 
 	spinRoller(-90_deg);
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(-180_deg, 300);
+	turnTo(-180_deg, 550);
 
 	spinRoller(-180_deg);
 
@@ -249,45 +269,47 @@ int skills() {
 	
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(0_deg, 700);
+	turnTo(0_deg, 600);
 
 	move(24_in, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(45_deg, 600);
+	turnTo(45_deg, 450);
 
-	move(35_in, intakeProfileConstraints, 0.0, 45_deg);
+	move(30_in, intakeProfileConstraints, 0.0, 45_deg);
 
-	turnTo(-45_deg, 600);
+	turnTo(-45_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-45_deg, 300);
+	turnTo(-45_deg, 250);
 
 	// First Barrier
 
-	turnTo(-15_deg, 500);
+	turnTo(-15_deg, 400);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
-	move(frontDistanceSensor.get() * 1_mm - 1350_mm, defaultProfileConstraints, 0.0, 0_deg);
+	move(frontDistanceSensor.get() * 1_mm - 1330_mm, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(-45_deg, 600);
+	turnTo(-45_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
 	turnTo(-45_deg, 300);
 
-	turnTo(-75_deg, 500);
+	turnTo(-75_deg, 400);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
-	move(frontDistanceSensor.get() * 1_mm - 66_in, defaultProfileConstraints, 0.0, -90_deg);
+	move(frontDistanceSensor.get() * 1_mm - 1350_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(-45_deg, 600);
+	turnTo(-45_deg, 500);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-45_deg, 300);
+	turnTo(-45_deg, 250);
+
+	move(-14_in, defaultProfileConstraints, 0.0, -45_deg);
 
 	turnTo(-180_deg, 500);
 
@@ -295,13 +317,13 @@ int skills() {
 
 	intakeStopperOverride = true;
 
-	move(-backDistanceSensor.get() * 1_mm + 30_mm, defaultProfileConstraints, 0.0, -180_deg);
+	move(-backDistanceSensor.get() * 1_mm + 30_mm, { 70_in / second, 80_in / second / second, 0.0 }, 0.0, -180_deg);
 
 	move(5_in, defaultProfileConstraints, 0.0, -180_deg);
 
-	turnTo(-93_deg, 500);
+	turnTo(-92_deg, 450);
 
-	matchLoad(-180_deg, -93_deg);
+	matchLoad(-180_deg, -92_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -311,9 +333,103 @@ int skills() {
 
 	// REPEAT
 
+	turnTo(-244_deg, 800);
+
+	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 0_in/second, 10_in/second);
+
+	move(19_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 10_in/second, 0_in/second);
+
+	// intakeSolenoid.set_value(false);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-186_deg, 450);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+
+	turnTo(-186_deg, 250);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// Spin far rollers
+
+	turnTo(-270_deg, 400);
+
+	spinRoller(-270_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -270_deg);
+
+	turnTo(-360_deg, 550);
+
+	spinRoller(-360_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -360_deg);
+	
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(-180_deg, 650);
+
+	move(24_in, defaultProfileConstraints, 0.0, -180_deg);
+
+	turnTo(-135_deg, 500);
+
+	move(30_in, intakeProfileConstraints, 0.0, -135_deg);
+
+	turnTo(-225_deg, 450);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(-225_deg, 300);
+
+	// Second Barrier
+
+	turnTo(-195_deg, 400);
+
+	move(35_in, intakeBarrierProfileConstraints, 0.0);
+
+	move(frontDistanceSensor.get() * 1_mm - 1320_mm, defaultProfileConstraints, 0.0, -180_deg);
+
+	turnTo(-225_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(-225_deg, 250);
+
+	turnTo(-255_deg, 450);
+
+	move(35_in, intakeBarrierProfileConstraints, 0.0);
+
+	turnTo(-275_deg, 550);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+
+	turnTo(-275_deg, 300);
+
+	move(-50_in, defaultProfileConstraints, 0.0, -270_deg);
+
+	turnTo(-225_deg, 500);
+
+	endgameStateController.setCurrentBehavior(&endgameEnabled);
+
 	pros::Task::delay(500);
 
 	return 0;
+}
+
+int testRollers() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -90_deg));
+
+	turnTo(-90_deg, 450);
+
+	spinRoller(-90_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
+
+	turnTo(-180_deg, 550);
+
+	spinRoller(-180_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
 }
 
 int close8Disc() {
@@ -1004,7 +1120,7 @@ void opcontrol() {
 	#if AUTON == 4
 		preAutonRun();
 
-		pros::Task skillsTask = pros::Task(skills);
+		pros::Task skillsTask = pros::Task(skillsMatchLoad);
 
 		while (true) {
 			if (master->get_digital(E_CONTROLLER_DIGITAL_X)) {
