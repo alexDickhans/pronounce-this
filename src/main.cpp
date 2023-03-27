@@ -267,7 +267,7 @@ int skills() {
 
 	// Spin close rollers
 
-	turnTo(-180_deg, 500);
+	turnTo(-180_deg, 650);
 
 	spinRoller(-180_deg);
 
@@ -361,7 +361,7 @@ int skills() {
 
 	// Spin far rollers
 
-	turnTo(-360_deg, 600);
+	turnTo(-360_deg, 650);
 
 	spinRoller(-360_deg);
 
