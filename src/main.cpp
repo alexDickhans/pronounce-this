@@ -81,7 +81,7 @@ void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTi
 }
 
 int spinRoller(Angle angle, QLength backupDistance = -5_in) {
-	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 90_mm;
+	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 95_mm;
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -239,7 +239,7 @@ int skills() {
 
 	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 0_in/second, 10_in/second);
 
-	move(19_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 10_in/second, 0_in/second);
+	move(22_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 10_in/second, 0_in/second);
 
 	// intakeSolenoid.set_value(false);
 
@@ -255,7 +255,7 @@ int skills() {
 
 	// Spin close rollers
 
-	turnTo(-180_deg, 450);
+	turnTo(-180_deg, 600);
 
 	spinRoller(-180_deg);
 
@@ -271,13 +271,13 @@ int skills() {
 
 	turnTo(45_deg, 600);
 
-	move(45_in, intakeProfileConstraints, 0.0, 45_deg);
+	move(62_in, intakeProfileConstraints, 0.0, 45_deg);
 
 	turnTo(-45_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-45_deg, 250);
+	turnTo(-45_deg, 500);
 
 	// First Barrier
 
@@ -291,7 +291,7 @@ int skills() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-45_deg, 300);
+	turnTo(-45_deg, 600);
 
 	turnTo(-75_deg, 400);
 
@@ -349,7 +349,7 @@ int skills() {
 
 	// Spin far rollers
 
-	turnTo(-360_deg, 450);
+	turnTo(-360_deg, 600);
 
 	spinRoller(-360_deg);
 
@@ -365,7 +365,7 @@ int skills() {
 
 	turnTo(-135_deg, 600);
 
-	move(45_in, intakeProfileConstraints, 0.0, -135_deg);
+	move(62_in, intakeProfileConstraints, 0.0, -135_deg);
 
 	turnTo(-225_deg, 450);
 
@@ -379,27 +379,15 @@ int skills() {
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
-	move(frontDistanceSensor.get() * 1_mm - 1320_mm, defaultProfileConstraints, 0.0, -180_deg);
-
-	turnTo(-225_deg, 500);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(-225_deg, 250);
-
-	turnTo(-255_deg, 450);
-
-	move(35_in, intakeBarrierProfileConstraints, 0.0);
-
 	turnTo(-275_deg, 550);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
 	turnTo(-275_deg, 300);
 
-	move(-50_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(-60_in, defaultProfileConstraints, 0.0, -270_deg);
 
-	turnTo(-225_deg, 500);
+	turnTo(-135_deg, 500);
 
 	endgameStateController.setCurrentBehavior(&endgameEnabled);
 
@@ -1094,7 +1082,7 @@ void autonomous() {
 		right8disc();
 	#endif // !1
 	#if AUTON == 4
-		testRollers();
+		skills();
 	#endif // !1
 
 	postAuton();
