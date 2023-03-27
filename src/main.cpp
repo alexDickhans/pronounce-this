@@ -102,6 +102,18 @@ int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 	return 0;
 }
 
+int spinMatchRoller(Angle angle, QLength backupDistance = -5_in) {
+	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 95_mm;
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+
+	move(backupDistance, defaultProfileConstraints, 0.0, angle);
+
+	return 0;
+}
+
 void matchLoad(Angle angle, Angle goalAngle) {
 
 	QLength distanceToMatch = frontDistanceSensor.get()*1_mm - 66_in;
@@ -467,28 +479,68 @@ int closeFullAWP() {
 }
 
 int close9Disc() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, 45_deg));
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
 
 	// intake auton line discs
 	// Disc rush
 
+	intakeSolenoid.set_value(true);
+
+	move(25_in, defaultProfileConstraints, 0.0, -45_deg);
+
+	intakeSolenoid.set_value(false);
+
 	// rezero
+
+	move(-(backDistanceSensor.get()*1_mm - 30_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	turnTo(-12_deg, 500);
 
 	// momentum shot
 
+	shootWhileMoving(8_in, 35_in/second, -12_deg, 100, true);
+
+	turnTo(-135_deg, 600);
+
 	// roller
+
+	spinMatchRoller(-135_deg, -10_in);
+
+	turnTo(45_deg, 600);
 
 	// intake close stack
 
+	move(20_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 0_in/second, 10_in/second);
+
+	move(10_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 10_in/second, 0_in/second);
+
 	// Momentum shot
+
+	turnTo(-30_deg, 500);
+
+	shootWhileMoving(5_in, 20_in/second, -12_deg, 100, true);
 
 	// move to back of barrier
 
+	turnTo(-20_deg, 500);
+
+	move(-35_in, defaultProfileConstraints, 0.0, -20_deg);
+
 	// intake barrier discs
+
+	turnTo(15_deg, 400);
+
+	move(20_in, intakeBarrierProfileConstraints, 0.0);
 
 	// back up
 
+	move(-25_in, defaultProfileConstraints, 0.0, 0_deg);
+
 	// Momentum shot
+
+	turnTo(-30_deg, 400);
+
+	shootWhileMoving(20_in, 20_in/second, -30_deg, 200, false);
 
 	return 0;
 }
@@ -496,24 +548,64 @@ int close9Disc() {
 int right9Disc() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
 
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
+
 	// intake auton line discs
 	// Disc rush
 
+	intakeSolenoid.set_value(true);
+
+	move(25_in, defaultProfileConstraints, 0.0, -45_deg);
+
+	intakeSolenoid.set_value(false);
+
 	// rezero
+
+	move(-(backDistanceSensor.get()*1_mm - 30_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	turnTo(-12_deg, 500);
 
 	// momentum shot
 
+	shootWhileMoving(8_in, 35_in/second, -12_deg, 100, true);
+
+	turnTo(-135_deg, 600);
+
 	// roller
+
+	spinMatchRoller(-135_deg, -10_in);
+
+	turnTo(45_deg, 600);
 
 	// intake line of discs
 
+	move(60_in, intakeProfileConstraints, 0.0, 45_deg);
+
+	move(-10_in, defaultProfileConstraints, 0.0, 45_deg);
+
 	// shoot
+
+	turnTo(-45_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 	
 	// intake barrier
+
+	turnTo(105_deg, 500);
+
+	move(30_in, intakeBarrierProfileConstraints, 0.0);
 	
 	// back up to auton line
 
+	move(-45_in, defaultProfileConstraints, 0.0, 105_deg);
+
 	// Shoot
+
+	turnTo(300_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(300_deg, 300);
 
 	return 0;
 }

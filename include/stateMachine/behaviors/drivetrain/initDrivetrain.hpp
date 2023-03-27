@@ -39,6 +39,7 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
+	ProfileConstraints momentumProfileConstraints = { 70_in / second, 110_in / second / second, 0.0 };
 	ProfileConstraints defaultProfileConstraints = { 70_in / second, 110_in / second / second, 0.0 };
 	ProfileConstraints intakeBarrierProfileConstraints = { 30_in / second, 125_in / second / second, 0.0 };
 	ProfileConstraints intakeProfileConstraints = { 50_in / second, 125_in / second / second, 0.0 };
