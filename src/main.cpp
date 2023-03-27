@@ -267,7 +267,7 @@ int skills() {
 
 	// Spin close rollers
 
-	turnTo(-180_deg, 600);
+	turnTo(-180_deg, 500);
 
 	spinRoller(-180_deg);
 
@@ -293,13 +293,13 @@ int skills() {
 
 	// First Barrier
 
-	turnTo(-15_deg, 400);
+	turnTo(-15_deg, 500);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
 	move(frontDistanceSensor.get() * 1_mm - 1330_mm, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(-45_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -341,7 +341,7 @@ int skills() {
 
 	// REPEAT
 
-	turnTo(-244_deg, 800);
+	turnTo(-244_deg, 600);
 
 	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 0_in/second, 10_in/second);
 
@@ -351,11 +351,11 @@ int skills() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-186_deg, 450);
+	turnTo(-186_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-186_deg, 250);
+	turnTo(-186_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -391,7 +391,7 @@ int skills() {
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
-	turnTo(-275_deg, 550);
+	turnTo(-275_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
@@ -399,11 +399,11 @@ int skills() {
 
 	move(-60_in, defaultProfileConstraints, 0.0, -270_deg);
 
-	turnTo(-135_deg, 500);
+	turnTo(-135_deg, 400);
 
 	endgameStateController.setCurrentBehavior(&endgameEnabled);
 
-	pros::Task::delay(500);
+	turnTo(-135_deg, 500);
 
 	return 0;
 }
