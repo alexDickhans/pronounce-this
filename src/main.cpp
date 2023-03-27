@@ -610,22 +610,6 @@ int right9Disc() {
 	return 0;
 }
 
-int testRollers() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, -180_deg));
-
-	turnTo(-180_deg, 450);
-
-	spinRoller(-180_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
-
-	turnTo(-90_deg, 550);
-
-	spinRoller(-90_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 10_in, defaultProfileConstraints, 0.0, -90_deg);
-}
-
 int testLongShot() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
@@ -872,19 +856,22 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		skills();
+		closeFullAWP();
 	#endif // !1
 	#if AUTON == 1
 		close9Disc();
 	#endif // !1
 	#if AUTON == 2
-		close8Disc();
+		right9disc();
 	#endif // !1
 	#if AUTON == 3
-		right8disc();
+		skills();
 	#endif // !1
 	#if AUTON == 4
-		skills();
+		testMatchLoad();
+	#endif // !1
+	#if AUTON == 5
+		testSpinRoller();
 	#endif // !1
 
 	postAuton();
@@ -899,7 +886,7 @@ void autonomous() {
  */
 void opcontrol() {
 
-	#if AUTON == 4
+	#if AUTON == 3
 		preAutonRun();
 
 		pros::Task skillsTask = pros::Task(skillsMatchLoad);
