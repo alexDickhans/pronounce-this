@@ -478,6 +478,77 @@ int closeFullAWP() {
 	return 0;
 }
 
+int closeFullAWPMax() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -35_deg));
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	pros::Task::delay(200);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	pros::Task::delay(400);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-45_deg, 300);
+
+	// intake auton line discs
+	// Disc rush
+
+	intakeSolenoid.set_value(true);
+
+	move(25_in, defaultProfileConstraints, 0.0, -45_deg);
+
+	intakeSolenoid.set_value(false);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*1_mm - 30_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	turnTo(-12_deg, 500);
+
+	// momentum shot
+
+	shootWhileMoving(8_in, 35_in/second, -12_deg, 100, true);
+
+	turnTo(-135_deg, 600);
+
+	// roller
+
+	spinMatchRoller(-135_deg, -10_in);
+
+	turnTo(45_deg, 600);
+
+	// intake close stack
+
+	move(20_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 0_in/second, 10_in/second);
+
+	move(10_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 10_in/second, 0_in/second);
+
+	// Momentum shot
+
+	turnTo(-12_deg, 500);
+
+	shootWhileMoving(5_in, 20_in/second, -12_deg, 100, true);
+
+	turnTo(45_deg, 600);
+
+	// Intake line and spin roller
+
+	move(55_in, defaultProfileConstraints, 0.0, 45_deg);
+
+	spinMatchRoller(45_deg, -15_in);
+
+	// Shoot line discs
+
+	turnTo(-95_deg, 500);
+
+	shootWhileMoving(10_in, 20_in/second, -95_deg, 100, true);
+
+	return 0;
+}
+
 int close9Disc() {
 	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
 
