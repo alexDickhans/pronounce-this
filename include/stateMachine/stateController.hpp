@@ -142,6 +142,7 @@ namespace Pronounce {
 				currentBehavior->exit();
 				currentBehavior = nullptr;
 				defaultBehavior->initialize();
+				defaultBehavior->update();
 			}
 			// If not no transition needed.
 		}

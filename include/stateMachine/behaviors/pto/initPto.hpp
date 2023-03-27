@@ -12,9 +12,9 @@
 
 namespace Pronounce {
 
-	PtoIntake ptoIntaking("PtoIntaking", leftPtoMotor, rightPtoMotor, 1.0);
-	PtoIntake ptoIntakeStopped("PtoIntakeStopped", leftPtoMotor, rightPtoMotor, 0.0);
-	PtoCatapult ptoCatapult("PtoCatapult", leftPtoMotor, rightPtoMotor, catapultLimitSwitch, -1);
+	PtoIntake ptoIntaking("PtoIntaking", leftPtoMotor, rightPtoMotor, intakeStopper, 1.0);
+	PtoIntake ptoIntakeStopped("PtoIntakeStopped", leftPtoMotor, rightPtoMotor, intakeStopper, 0.0);
+	PtoCatapult ptoCatapult("PtoCatapult", leftPtoMotor, rightPtoMotor, intakeStopper, catapultLimitSwitch, -1);
 
 	StateController ptoStateController("PtoStateController", &ptoIntaking);
 	StateController ptoStateExtensionController("PtoStateExtensionController", new Behavior());

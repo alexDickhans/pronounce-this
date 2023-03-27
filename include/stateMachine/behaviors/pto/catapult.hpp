@@ -9,9 +9,11 @@ namespace Pronounce {
 		pros::Rotation& catapultLimitSwitch;
 		pros::Motor& leftPtoMotor;
 		pros::Motor& rightPtoMotor;
+
+		pros::ADIDigitalOut& intakeStopper;
 		double speed;
 	public:
-		PtoCatapult(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::Rotation& catapultLimitSwitch, double speed);
+		PtoCatapult(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::ADIDigitalOut& intakeStopper, pros::Rotation& catapultLimitSwitch, double speed);
 
 		void initialize() {
 			leftLedController.setColors(orangeColors);
@@ -34,6 +36,7 @@ namespace Pronounce {
 			rightPtoMotor.move_voltage(speed * 12000.0 * multiplier);
 
 			std::cout << "CommandedIntakeVoltage: " << speed * 12000.0 * multiplier << std::endl;
+			intakeStopper.set_value(true || intakeStopperOverride);
 
 			ptoMutex.give();
 		}
@@ -50,7 +53,7 @@ namespace Pronounce {
 		~PtoCatapult();
 	};
 
-	PtoCatapult::PtoCatapult(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::Rotation& catapultLimitSwitch, double speed) : Behavior(name), leftPtoMotor(leftPtoMotor), rightPtoMotor(rightPtoMotor), catapultLimitSwitch(catapultLimitSwitch), speed(speed) {
+	PtoCatapult::PtoCatapult(std::string name, pros::Motor& leftPtoMotor, pros::Motor& rightPtoMotor, pros::ADIDigitalOut& intakeStopper, pros::Rotation& catapultLimitSwitch, double speed) : Behavior(name), leftPtoMotor(leftPtoMotor), rightPtoMotor(rightPtoMotor), intakeStopper(intakeStopper), catapultLimitSwitch(catapultLimitSwitch), speed(speed) {
 	}
 
 	PtoCatapult::~PtoCatapult()

@@ -48,14 +48,18 @@ namespace Pronounce {
 		}
 
 		void initialize() {
-			
+			if (maxDriveSpeed == 0.0_in / second) {
+				drivetrain.tankSteerVoltage(0.0, 0.0);
+				drivetrainMutex.give();
+				return;
+			}
 		}
 
 		void update() {
 			drivetrainMutex.take();
 
 			if (maxDriveSpeed == 0.0_in / second) {
-				drivetrain.skidSteerVelocity(0.0, 0.0);
+				// drivetrain.tankSteerVoltage(0.0, 0.0);
 				drivetrainMutex.give();
 				return;
 			}
@@ -101,7 +105,7 @@ namespace Pronounce {
 					}
 				}
 			} else {
-				aimingVisionSensor.clear_led();
+				// aimingVisionSensor.clear_led();
 			}
 
 			double left = power + turn;
@@ -119,7 +123,7 @@ namespace Pronounce {
 		}
 
 		void exit() {
-			drivetrain.skidSteerVelocity(0.0, 0.0);
+			// drivetrain.skidSteerVelocity(0.0, 0.0);
 		}
 
 		bool isDone() {
