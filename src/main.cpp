@@ -255,27 +255,23 @@ int skills() {
 
 	// Spin close rollers
 
-	turnTo(-90_deg, 450);
-
-	spinRoller(-90_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
-
-	turnTo(-180_deg, 550);
+	turnTo(-180_deg, 450);
 
 	spinRoller(-180_deg);
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
-	
+
+	turnTo(-90_deg, 550);
+
+	spinRoller(-90_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 10_in, defaultProfileConstraints, 0.0, -90_deg);
+
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(0_deg, 600);
+	turnTo(45_deg, 600);
 
-	move(24_in, defaultProfileConstraints, 0.0, 0_deg);
-
-	turnTo(45_deg, 450);
-
-	move(30_in, intakeProfileConstraints, 0.0, 45_deg);
+	move(45_in, intakeProfileConstraints, 0.0, 45_deg);
 
 	turnTo(-45_deg, 500);
 
@@ -353,27 +349,23 @@ int skills() {
 
 	// Spin far rollers
 
-	turnTo(-270_deg, 400);
-
-	spinRoller(-270_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -270_deg);
-
-	turnTo(-360_deg, 550);
+	turnTo(-360_deg, 450);
 
 	spinRoller(-360_deg);
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -360_deg);
-	
+
+	turnTo(-270_deg, 550);
+
+	spinRoller(-270_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 10_in, defaultProfileConstraints, 0.0, -270_deg);
+
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(-180_deg, 650);
+	turnTo(-135_deg, 600);
 
-	move(24_in, defaultProfileConstraints, 0.0, -180_deg);
-
-	turnTo(-135_deg, 500);
-
-	move(30_in, intakeProfileConstraints, 0.0, -135_deg);
+	move(45_in, intakeProfileConstraints, 0.0, -135_deg);
 
 	turnTo(-225_deg, 450);
 
@@ -417,19 +409,19 @@ int skills() {
 }
 
 int testRollers() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, -90_deg));
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -180_deg));
 
-	turnTo(-90_deg, 450);
-
-	spinRoller(-90_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -90_deg);
-
-	turnTo(-180_deg, 550);
+	turnTo(-180_deg, 450);
 
 	spinRoller(-180_deg);
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
+
+	turnTo(-90_deg, 550);
+
+	spinRoller(-90_deg);
+
+	move(frontDistanceSensor.get() * 1_mm - 10_in, defaultProfileConstraints, 0.0, -90_deg);
 }
 
 int close8Disc() {
@@ -1102,7 +1094,7 @@ void autonomous() {
 		right8disc();
 	#endif // !1
 	#if AUTON == 4
-		skills();
+		testRollers();
 	#endif // !1
 
 	postAuton();
