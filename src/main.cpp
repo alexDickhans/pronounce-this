@@ -125,17 +125,17 @@ void matchLoad(Angle angle, Angle goalAngle) {
 
 	turnTo(goalAngle, 300);
 
-	turnTo(angle, 500);
+	turnTo(angle, 450);
 
 	distanceToMatch = backDistanceSensor.get()*1_mm - 30_mm;
 
 	move(-distanceToMatch, defaultProfileConstraints, 0.0, angle);
 
-	pros::Task::delay(300);
+	pros::Task::delay(250);
 
 	move(5_in, defaultProfileConstraints, 0.0, angle);
 
-	turnTo(goalAngle, 600);
+	turnTo(goalAngle, 450);
 }
 
 int tuneTurnPid() {
@@ -226,7 +226,7 @@ int skills() {
 
 	intakeStopperOverride = true;
 
-	pros::Task::delay(900);
+	pros::Task::delay(800);
 
 	move(5_in, defaultProfileConstraints, 0.0, 0_deg);
 
@@ -238,7 +238,7 @@ int skills() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(88_deg, 300);
+	turnTo(88_deg, 250);
 
 	intakeStopperOverride = false;
 
@@ -247,11 +247,11 @@ int skills() {
 
 	// intakeSolenoid.set_value(true);
 
-	turnTo(-61_deg, 700);
+	turnTo(-61_deg, 650);
 
-	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 0_in/second, 10_in/second);
+	move(32_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 0_in/second, 13_in/second);
 
-	move(22_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 10_in/second, 0_in/second);
+	move(20_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 13_in/second, 0_in/second);
 
 	// intakeSolenoid.set_value(false);
 
@@ -285,7 +285,7 @@ int skills() {
 
 	move(62_in, intakeProfileConstraints, 0.0, 45_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(-45_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -293,13 +293,13 @@ int skills() {
 
 	// First Barrier
 
-	turnTo(-15_deg, 500);
+	turnTo(-15_deg, 700);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
 	move(frontDistanceSensor.get() * 1_mm - 1330_mm, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(-45_deg, 450);
+	turnTo(-45_deg, 400);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
@@ -311,7 +311,7 @@ int skills() {
 
 	move(frontDistanceSensor.get() * 1_mm - 1350_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(-45_deg, 400);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
@@ -343,9 +343,9 @@ int skills() {
 
 	turnTo(-244_deg, 600);
 
-	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 0_in/second, 10_in/second);
+	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 0_in/second, 13_in/second);
 
-	move(19_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 10_in/second, 0_in/second);
+	move(19_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 13_in/second, 0_in/second);
 
 	// intakeSolenoid.set_value(false);
 
