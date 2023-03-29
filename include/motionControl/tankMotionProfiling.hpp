@@ -7,7 +7,7 @@
 #include "time/robotTime.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 
-double velocityFeedforward = 400;
+double velocityFeedforward = 235;
 
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {

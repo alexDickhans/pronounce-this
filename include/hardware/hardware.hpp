@@ -151,13 +151,12 @@ namespace Pronounce {
 		}
 
 		odometryMutex.give();
-		
-		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 5981, 9505, 7744, -985, 1, -492, 2.100, 0);
-		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -1639, -445, -1042, 5813, 7221, 6517, 4.900, 0);
+		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 7063, 9257, 8160, -1417, -505, -962, 2.100, 0);
+		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -2423, -1815, -2118, 6161, 8085, 7124, 3.000, 0);
 
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(108);
+		aimingVisionSensor.set_exposure(118);
 
 		// catapultLimitSwitch.reverse();
 	}

@@ -24,11 +24,11 @@
 
 namespace Pronounce {
 
-	PID turningPid(4.5, 0.0, 34.0, 0.0, 0.0, false);
+	PID turningPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
 	PID movingTurnPid(25000.0, 0.0, 100000.0, 0.0, 0.0, false);
 	PID visionPid(0.0045, 0.0, 0.10);
 
-	PID distancePid(240000.0, 0.0, 300000.0);
+	PID distancePid(400000.0, 0.0, 300000.0);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, visionPid, 0.10, false, 2.4, 73_in / second);
