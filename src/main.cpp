@@ -106,8 +106,20 @@ int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 	return 0;
 }
 
-int spinMatchRoller(Angle angle, QLength backupDistance = -5_in) {
-	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 95_mm;
+int spinMatchRollerLeft(Angle angle, QLength backupDistance = -5_in) {
+	QLength distanceToRoller = frontDistanceSensor.get()*0.97_mm - 120_mm;
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+
+	move(backupDistance, defaultProfileConstraints, 0.0, angle);
+
+	return 0;
+}
+
+int spinMatchRollerRight(Angle angle, QLength backupDistance = -5_in) {
+	QLength distanceToRoller = frontDistanceSensor.get()*0.99_mm - 308_mm;
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
@@ -532,7 +544,7 @@ int closeFullAWPMax() {
 
 	// roller
 
-	spinMatchRoller(-135_deg, -10_in);
+	spinMatchRollerLeft(-135_deg, -10_in);
 
 	turnTo(45_deg, 600);
 
@@ -554,7 +566,7 @@ int closeFullAWPMax() {
 
 	move(55_in, defaultProfileConstraints, 0.0, 45_deg);
 
-	spinMatchRoller(45_deg, -15_in);
+	spinMatchRollerRight(45_deg, -15_in);
 
 	// Shoot line discs
 
@@ -591,7 +603,7 @@ int close9Disc() {
 
 	// roller
 
-	spinMatchRoller(-135_deg, -10_in);
+	spinMatchRollerRight(-135_deg, -10_in);
 
 	turnTo(45_deg, 600);
 
@@ -660,7 +672,7 @@ int right9Disc() {
 
 	// roller
 
-	spinMatchRoller(-135_deg, -10_in);
+	spinMatchRollerLeft(-135_deg, -10_in);
 
 	turnTo(45_deg, 600);
 
@@ -750,7 +762,7 @@ int testSpinRoller() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	spinRoller(0_deg);
+	spinMatchRollerRight(0_deg);
 
 	return 0;
 }

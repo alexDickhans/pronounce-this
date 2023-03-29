@@ -1,1 +1,1 @@
-#define AUTON 3
+#define AUTON 5
