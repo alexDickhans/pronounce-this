@@ -21,8 +21,11 @@ namespace Pronounce {
 
 	Wait ptoCatapultLaunch1(&ptoCatapult, 300_ms);
 
+	Wait ptoIntaking200(&ptoIntaking, 400_ms);
+
 	Sequence ptoCatapultLaunch("PtoCatapultLaunch");
 	Sequence ptoCatapultLaunchOff("PtoCatapultLaunch");
+	Sequence ptoCatapultLaunchOffIntake200("PtoCatapultLaunch");
 
 	void initPto() {
 		ptoCatapultLaunch.addState(&ptoStateController, &ptoCatapultLaunch1);
@@ -31,5 +34,10 @@ namespace Pronounce {
 		ptoCatapultLaunchOff.addState(&ptoStateController, &ptoCatapultLaunch1);
 		ptoCatapultLaunchOff.addState(&ptoStateController, &ptoCatapult);
 		ptoCatapultLaunchOff.addState(&ptoStateController, &ptoIntakeStopped);
+
+		ptoCatapultLaunchOffIntake200.addState(&ptoStateController, &ptoCatapultLaunch1);
+		ptoCatapultLaunchOffIntake200.addState(&ptoStateController, &ptoCatapult);
+		ptoCatapultLaunchOffIntake200.addState(&ptoStateController, &ptoIntaking200);
+		ptoCatapultLaunchOffIntake200.addState(&ptoStateController, &ptoIntakeStopped);
 	}
 }

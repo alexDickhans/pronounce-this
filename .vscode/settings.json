@@ -103,7 +103,9 @@
 		"future": "cpp",
 		"scoped_allocator": "cpp",
 		"shared_mutex": "cpp",
-		"ranges": "cpp"
+		"ranges": "cpp",
+		"coroutine": "cpp",
+		"span": "cpp"
 	},
 	"rpc.enabled": true,
 	"cSpell.words": [

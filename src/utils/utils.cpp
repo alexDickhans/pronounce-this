@@ -39,6 +39,26 @@ namespace Pronounce
         }
         return result;
     }
+	
+	double findMedian(double arr[], int size) {
+		std::sort(arr, arr+size);
+		if (size % 2 != 0)
+			return (double)arr[size/2];
+		return (double)(arr[(size-1)/2] + arr[size/2])/2.0;
+	}
+
+	double getDistanceSensorMedian(pros::Distance &distance, int samples) {
+		double array[samples];
+
+		array[0] = distance.get();
+
+		for (int i = 1; i < samples; i++) {
+			pros::Task::delay(10);
+			array[i] = distance.get();
+		}
+
+		return findMedian(array, samples);
+	}
 
     // Basically std::format, but only added in C++20
     // https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
