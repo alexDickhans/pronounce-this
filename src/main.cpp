@@ -130,6 +130,12 @@ int spinMatchRollerRight(Angle angle, QLength backupDistance = -5_in) {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(100);
+
+	drivetrain.tankSteerVoltage(0, 0);
+
 	move(backupDistance, defaultProfileConstraints, 0.0, angle);
 
 	return 0;
@@ -450,59 +456,63 @@ int closeFullAWP() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(175_deg, 80);
+	turnTo(175_deg, 200);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(-3_in, defaultProfileConstraints, 0.0, 180_deg);
+	move(-6_in, defaultProfileConstraints, 0.0, 180_deg);
 
-	turnTo(347_deg, 800);
+	turnTo(180_deg, 200);
+
+	turnTo(349_deg, 800);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(347_deg, 400);
+	turnTo(349_deg, 400);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	turnTo(405_deg, 600);
 
-	move(48_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 405_deg);
+	move(20_in, { 30_in / second, 120_in / second / second, 0.0 }, 0.0, 405_deg, 0_in/second, 13_in/second);
+
+	move(18_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, 405_deg, 13_in/second, 0_in/second);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(323_deg, 700);
+	turnTo(331_deg, 700);
 
-	shootWhileMoving(5_in, 10_in/second, 323_deg, 100);
+	shootWhileMoving(5_in, 10_in/second, 331_deg, 100);
 
-	move(-5_in, defaultProfileConstraints, 0.0, 323_deg);
-
-	turnTo(323_deg, 200);
+	move(-5_in, defaultProfileConstraints, 0.0, 331_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(328_deg, 200);
 
-	move(55_in, { 50_in / second, 75_in / second / second, 0.0 }, 0.0, 405_deg);
+	turnTo(410_deg, 600);
+
+	move(61_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, 410_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(290_deg, 600);
+	turnTo(293_deg, 600);
 	
-	shootWhileMoving(5_in, 50_in/second, 290_deg, 100, true);
+	shootWhileMoving(8_in, 50_in/second, 293_deg, 100, true);
 
 	pros::Task::delay(200);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(410_deg, 600);
 
-	move(40_in, defaultProfileConstraints, 45_deg/40_in, 405_deg);
+	move(40_in, defaultProfileConstraints, 45_deg/40_in, 410_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(new Behavior());
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(456_deg, 70);
+	turnTo(456_deg, 180);
 	
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -667,11 +677,11 @@ int right9Disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-75_deg, 350);
+	turnTo(-74.2_deg, 350);
 
 	// momentum shot
 
-	shootWhileMoving(10_in, 25_in/second, -75_deg, 150, true);
+	shootWhileMoving(10_in, 18_in/second, -74.2_deg, 150, true);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -681,7 +691,7 @@ int right9Disc() {
 
 	spinMatchRollerRight(45_deg, -10_in);
 
-	turnTo(-138_deg, 550);
+	turnTo(-138_deg, 650);
 
 	// intake line of discs
 
@@ -695,9 +705,8 @@ int right9Disc() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 	
-	move(2_in, defaultProfileConstraints, 0.0, -48_deg);
-
-	move(-2_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(0.7_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(-0.7_in, defaultProfileConstraints, 0.0, -48_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -705,21 +714,17 @@ int right9Disc() {
 
 	turnTo(95_deg, 500);
 
-	move(45_in, intakeBarrierProfileConstraints, 0.0);
+	move(42_in, intakeBarrierProfileConstraints, 0.0);
 	
 	// back up to auton line
 
-	move(-45_in, defaultProfileConstraints, 0.0, 120_deg);
+	turnTo(-58.1_deg, 600);
 
 	// Shoot
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-57_deg, 400);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(-57_deg, 300);
+	shootWhileMoving(42_in, 42_in/second, -58.1_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 

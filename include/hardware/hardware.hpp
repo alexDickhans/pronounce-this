@@ -121,6 +121,15 @@ namespace Pronounce {
 
 		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+
+		leftDrive1.set_current_limit(10000);
+		leftDrive2.set_current_limit(10000);
+		leftDrive3.set_current_limit(10000);
+
+		rightDrive1.set_current_limit(10000);
+		rightDrive2.set_current_limit(10000);
+		std::cout << "CurrentLimit: " << rightDrive3.set_current_limit(10000) << std::endl;
+
 		leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 		rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
