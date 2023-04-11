@@ -1142,12 +1142,18 @@ void autonomous() {
 		right9Disc();
 	#endif // !1
 	#if AUTON == 3
-		skills();
+		close8Disc();
 	#endif // !1
 	#if AUTON == 4
-		tuneTurnPid();
+		right8Disc();
 	#endif // !1
 	#if AUTON == 5
+		skills();
+	#endif // !1
+	#if AUTON == 6
+		testMatchLoad();
+	#endif // !1
+	#if AUTON == 7
 		testSpinRoller();
 	#endif // !1
 
@@ -1163,7 +1169,7 @@ void autonomous() {
  */
 void opcontrol() {
 
-	#if AUTON == 3
+	#if AUTON == 5
 		preAutonRun();
 
 		pros::Task skillsTask = pros::Task(skillsMatchLoad);
