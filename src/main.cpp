@@ -50,9 +50,8 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed);
 
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed));
 
 	pros::delay(50);
 
@@ -64,9 +63,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 
 void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTime = 100, bool off = false) {
 
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, { speed, 150_in / second / second, 0.0 }, distance, &odometry, &distancePid, drivetrainMutex, 0.0, angle, &movingTurnPid);
-
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, { speed, 150_in / second / second, 0.0 }, distance, &odometry, &distancePid, drivetrainMutex, 0.0, angle, &movingTurnPid));
 
 	pros::delay(50);
 
@@ -109,11 +106,17 @@ int spinRoller(Angle angle, bool intakeStopper = false, QLength backupDistance =
 }
 
 int spinMatchRollerLeft(Angle angle, QLength backupDistance = -5_in) {
-	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 5)*0.97_mm - 120_mm;
+	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 7)*0.99_mm - 150_mm;
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(50);
+
+	drivetrain.tankSteerVoltage(0, 0);
 
 	move(backupDistance, defaultProfileConstraints, 0.0, angle);
 
@@ -122,9 +125,7 @@ int spinMatchRollerLeft(Angle angle, QLength backupDistance = -5_in) {
 
 int spinMatchRollerRight(Angle angle, QLength backupDistance = -5_in) {
 	
-	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 5)*0.98_mm - 280_mm;
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 5)*0.97_mm - 280_mm;
 
 	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
 
@@ -135,7 +136,7 @@ int spinMatchRollerRight(Angle angle, QLength backupDistance = -5_in) {
 	pros::Task::delay(100);
 
 	drivetrain.tankSteerVoltage(0, 0);
-
+	
 	move(backupDistance, defaultProfileConstraints, 0.0, angle);
 
 	return 0;
@@ -472,17 +473,17 @@ int closeFullAWP() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(406_deg, 600);
 
-	move(20_in, { 30_in / second, 120_in / second / second, 0.0 }, 0.0, 405_deg, 0_in/second, 13_in/second);
+	move(20_in, { 30_in / second, 120_in / second / second, 0.0 }, 0.0, 406_deg, 0_in/second, 13_in/second);
 
-	move(18_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, 405_deg, 13_in/second, 0_in/second);
+	move(18_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, 406_deg, 13_in/second, 0_in/second);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
 	turnTo(331_deg, 700);
 
-	shootWhileMoving(5_in, 10_in/second, 331_deg, 100);
+	shootWhileMoving(5_in, 17_in/second, 331_deg, 100);
 
 	move(-5_in, defaultProfileConstraints, 0.0, 331_deg);
 
@@ -498,7 +499,7 @@ int closeFullAWP() {
 
 	turnTo(293_deg, 600);
 	
-	shootWhileMoving(8_in, 50_in/second, 293_deg, 100, true);
+	shootWhileMoving(8_in, 40_in/second, 293_deg, 100, true);
 
 	pros::Task::delay(200);
 
@@ -519,140 +520,163 @@ int closeFullAWP() {
 	return 0;
 }
 
-int closeFullAWPMax() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, -35_deg));
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	pros::Task::delay(200);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(400);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(-45_deg, 300);
+int close9Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -38_deg));
 
 	// intake auton line discs
 	// Disc rush
 
 	intakeSolenoid.set_value(true);
 
-	move(25_in, defaultProfileConstraints, 0.0, -45_deg);
+	move(19_in, defaultProfileConstraints, 0.0, -38_deg);
 
 	intakeSolenoid.set_value(false);
 
+	turnTo(-38_deg, 600);
+
 	// rezero
 
-	move(-(backDistanceSensor.get()*1_mm - 30_in), defaultProfileConstraints, 0.0, -45_deg);
+	move(-(backDistanceSensor.get()*1_mm - 17_in), defaultProfileConstraints, 0.0, -38_deg);
 
-	turnTo(-12_deg, 500);
+	turnTo(-13_deg, 300);
 
 	// momentum shot
 
-	shootWhileMoving(8_in, 35_in/second, -12_deg, 100, true);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-135_deg, 600);
+	shootWhileMoving(10_in, 35_in/second, -13_deg, 100, true);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-135_deg, 650);
 
 	// roller
 
 	spinMatchRollerLeft(-135_deg, -10_in);
 
-	turnTo(45_deg, 600);
+	turnTo(53_deg, 600);
 
 	// intake close stack
 
-	move(20_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 0_in/second, 10_in/second);
+	move(21_in, { 37_in / second, 125_in / second / second, 0.0 }, 0.0, 53_deg, 0_in/second, 12_in/second);
 
-	move(10_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 10_in/second, 0_in/second);
+	move(14_in, { 12_in / second, 100_in / second / second, 0.0 }, 0.0, 53_deg, 12_in/second, 0_in/second);
 
 	// Momentum shot
 
-	turnTo(-12_deg, 500);
+	turnTo(-30_deg, 500);
 
-	shootWhileMoving(5_in, 20_in/second, -12_deg, 100, true);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(45_deg, 600);
+	shootWhileMoving(5_in, 20_in/second, -30_deg, 100, false);
 
-	// Intake line and spin roller
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	move(55_in, defaultProfileConstraints, 0.0, 45_deg);
+	// move to back of barrier
 
-	spinMatchRollerRight(45_deg, -15_in);
+	turnTo(-40_deg, 200);
 
-	// Shoot line discs
+	move(-35_in, defaultProfileConstraints, 0.0, -40_deg);
 
-	turnTo(-95_deg, 500);
+	// intake barrier discs
 
-	shootWhileMoving(10_in, 20_in/second, -95_deg, 100, true);
+	turnTo(15_deg, 300);
+
+	move(30_in, intakeBarrierProfileConstraints, 0.0);
+
+	// back up
+
+	move(-30_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	// Momentum shot
+
+	turnTo(-30_deg, 200);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(42_in, 42_in/second, -30_deg, 300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	return 0;
 }
 
-int close9Disc() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
+int close9DiscFast() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -38_deg));
 
 	// intake auton line discs
 	// Disc rush
 
 	intakeSolenoid.set_value(true);
 
-	move(25_in, defaultProfileConstraints, 0.0, -45_deg);
+	move(18_in, defaultProfileConstraints, 0.0, -38_deg);
 
 	intakeSolenoid.set_value(false);
 
+	turnTo(-38_deg, 600);
+
 	// rezero
 
-	move(-(backDistanceSensor.get()*1_mm - 30_in), defaultProfileConstraints, 0.0, -45_deg);
+	move(-(backDistanceSensor.get()*1_mm - 17_in), defaultProfileConstraints, 0.0, -38_deg);
 
-	turnTo(-12_deg, 500);
+	turnTo(-13_deg, 300);
 
 	// momentum shot
 
-	shootWhileMoving(8_in, 35_in/second, -12_deg, 100, true);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-135_deg, 600);
+	shootWhileMoving(10_in, 35_in/second, -13_deg, 100, false);
 
-	// roller
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	spinMatchRollerRight(-135_deg, -10_in);
-
-	turnTo(45_deg, 600);
+	turnTo(58_deg, 400);
 
 	// intake close stack
 
-	move(20_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 0_in/second, 10_in/second);
-
-	move(10_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 45_deg, 10_in/second, 0_in/second);
+	move(20_in, { 12_in / second, 120_in / second / second, 0.0 }, 0.0, 58_deg, 5_in/second, 0_in/second);
 
 	// Momentum shot
 
-	turnTo(-30_deg, 500);
+	turnTo(-29_deg, 400);
 
-	shootWhileMoving(5_in, 20_in/second, -12_deg, 100, true);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(7_in, 25_in/second, -29_deg, 100, false);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	// move to back of barrier
 
-	turnTo(-20_deg, 500);
+	turnTo(-37_deg, 200);
 
-	move(-35_in, defaultProfileConstraints, 0.0, -20_deg);
+	move(-38_in, defaultProfileConstraints, 0.0, -37_deg);
 
 	// intake barrier discs
 
-	turnTo(15_deg, 400);
+	turnTo(15_deg, 300);
 
-	move(20_in, intakeBarrierProfileConstraints, 0.0);
+	move(32_in, { 25_in / second, 125_in / second / second, 0.0 }, 0.0);
 
 	// back up
 
-	move(-25_in, defaultProfileConstraints, 0.0, 0_deg);
+	move(-32_in, defaultProfileConstraints, 0.0, 0_deg);
 
 	// Momentum shot
 
-	turnTo(-30_deg, 400);
+	turnTo(-33_deg, 200);
 
-	shootWhileMoving(20_in, 20_in/second, -30_deg, 200, false);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(34_in, 42_in/second, -33_deg, 250);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-135_deg, 450);
+
+	// roller
+
+	move(30_in, { 55_in / second, 125_in / second / second, 0.0 }, 0.0, -135_deg, 0.0, 55_in/second);
+	move(15_in, defaultProfileConstraints, -45_deg/15_in, -135_deg, 55_in/second, 0.0);
 
 	return 0;
 }
@@ -980,7 +1004,7 @@ void autonomous() {
 		closeFullAWP();
 	#endif // !1
 	#if AUTON == 1
-		close9Disc();
+		close9DiscFast();
 	#endif // !1
 	#if AUTON == 2
 		right9Disc();
