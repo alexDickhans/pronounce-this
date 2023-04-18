@@ -5,6 +5,9 @@
 #include "hardware/hardware.hpp"
 
 namespace Pronounce {
+
+	double intakeSpeedModifier = 1.0;
+
 	class PtoIntake : public Behavior {
 	private:
 		pros::Motor& leftPtoMotor;
@@ -20,8 +23,8 @@ namespace Pronounce {
 
 			ptoMutex.take();
 
-			leftPtoMotor.move_voltage(speed * 12000);
-			rightPtoMotor.move_voltage(speed * 12000);
+			leftPtoMotor.move_voltage(speed * 12000 * intakeSpeedModifier);
+			rightPtoMotor.move_voltage(speed * 12000 * intakeSpeedModifier);
 			
 			aimingVisionSensor.set_led(COLOR_BROWN);
 
@@ -33,8 +36,8 @@ namespace Pronounce {
 		void update() {
 			ptoMutex.take();
 
-			leftPtoMotor.move_voltage(speed * 12000);
-			rightPtoMotor.move_voltage(speed * 12000);
+			leftPtoMotor.move_voltage(speed * 12000 * intakeSpeedModifier);
+			rightPtoMotor.move_voltage(speed * 12000 * intakeSpeedModifier);
 
 			intakeStopper.set_value(false || intakeStopperOverride);
 
