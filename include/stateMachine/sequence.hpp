@@ -35,7 +35,7 @@ namespace Pronounce {
 					stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 				}
 				else {
-					std::cout << this->getName() << "Ending" << std::endl;
+					// std::cout << this->getName() << "Ending" << std::endl;
 					stateControllers.at(currentIndex)->useDefaultBehavior();
 					currentIndex++;
 					// Done

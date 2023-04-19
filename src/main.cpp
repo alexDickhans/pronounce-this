@@ -9,6 +9,8 @@ TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pro
 
 pros::Mutex robotMutex;
 
+bool matchLoadsDone = false;
+
 // SECTION Auton
 
 /**
@@ -239,16 +241,51 @@ int skillsMatchLoad() {
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	intakeStopperOverride = true;
-
-	pros::Task::delay(900);
-
+	if (matchLoadsDone) {
+		return 1;
+	}
+	pros::Task::delay(800);
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
 	move(5_in, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(88_deg, 500);
+	if (matchLoadsDone) {
+		return 1;
+	}
 
-	matchLoad(0_deg, 88_deg);
+	turnTo(86_deg, 550);
 
-	matchLoad(0_deg, 88_deg);
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
+	matchLoad(0_deg, 86_deg);
+
+	if (matchLoadsDone) {
+		return 1;
+	}
+
+	matchLoad(0_deg, 86_deg);
+	
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	if (matchLoadsDone) {
+		return 1;
+	}
+
+	turnTo(83_deg, 250);
+	
+	if (matchLoadsDone) {
+		return 1;
+	}
+	matchLoadsDone = true;
+	pros::Task::delay(500);
 
 	return 0;
 }
@@ -461,19 +498,20 @@ int closeFullAWP() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(-6_in, defaultProfileConstraints, 0.0, 180_deg);
+	move(-16_in, defaultProfileConstraints, 0.0, 180_deg);
+	move(9_in, defaultProfileConstraints, 0.0, 180_deg);
 
-	turnTo(180_deg, 200);
+	turnTo(180_deg, 100);
 
-	turnTo(349_deg, 800);
+	turnTo(351_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(349_deg, 400);
+	turnTo(351_deg, 400);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(406_deg, 600);
+	turnTo(406_deg, 500);
 
 	move(20_in, { 30_in / second, 120_in / second / second, 0.0 }, 0.0, 406_deg, 0_in/second, 13_in/second);
 
@@ -481,7 +519,7 @@ int closeFullAWP() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(331_deg, 700);
+	turnTo(331_deg, 500);
 
 	shootWhileMoving(5_in, 17_in/second, 331_deg, 100);
 
@@ -491,17 +529,17 @@ int closeFullAWP() {
 
 	turnTo(328_deg, 200);
 
-	turnTo(410_deg, 600);
+	turnTo(409_deg, 500);
 
 	move(65_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, 410_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(293_deg, 600);
+	turnTo(292_deg, 600);
 	
-	shootWhileMoving(8_in, 40_in/second, 293_deg, 100, true);
+	shootWhileMoving(8_in, 40_in/second, 292_deg, 100, true);
 
-	pros::Task::delay(200);
+	pros::Task::delay(100);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -511,9 +549,15 @@ int closeFullAWP() {
 
 	ptoStateExtensionController.setCurrentBehavior(new Behavior());
 
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(100);
+
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(456_deg, 180);
+	pros::Task::delay(160);
+
+	drivetrain.tankSteerVoltage(0, 0);
 	
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
@@ -749,6 +793,90 @@ int right9Disc() {
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
 	shootWhileMoving(42_in, 42_in/second, -58.1_deg, 300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	return 0;
+}
+
+int right11Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -71_deg));
+
+	// intake auton line discs
+	// Disc rush
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	move(0.5_in, defaultProfileConstraints, 0.0, -71_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-40_deg, 200);
+
+	intakeSolenoid.set_value(true);
+
+	move(19_in, defaultProfileConstraints, 0.0, -40_deg);
+
+	intakeSolenoid.set_value(false);
+
+	turnTo(-45_deg, 700);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*0.99_mm - 15_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-74.2_deg, 350);
+
+	// momentum shot
+
+	shootWhileMoving(10_in, 23_in/second, -74.2_deg, 150, true);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(45_deg, 650);
+
+	// roller
+
+	spinMatchRollerRight(45_deg, -10_in);
+
+	turnTo(-138_deg, 650);
+
+	// intake line of discs
+
+	move(60_in, intakeProfileConstraints, 0.0, -138_deg);
+
+	// shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-48_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	
+	move(2_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(-2_in, defaultProfileConstraints, 0.0, -48_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// intake barrier
+
+	turnTo(95_deg, 500);
+
+	move(42_in, intakeBarrierProfileConstraints, 0.0);
+	
+	// back up to auton line
+
+	turnTo(-57.8_deg, 600);
+
+	// Shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(42_in, 42_in/second, -57.8_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -1004,7 +1132,7 @@ void updateDisplay() {
 
 	int count = checkPorts(portsTable.get());
 
-	std::cout << count << std::endl;
+	// std::cout << count << std::endl;
 
 	if (count > 0) {
 		lv_label_set_text(portsLabel.get(), "SOMETHING IS MISSING");
@@ -1069,7 +1197,7 @@ void initDisplay() {
  */
 void initialize() {
 
-	std::cout << "INIT" << std::endl;
+	// std::cout << "INIT" << std::endl;
 
 	robotMutex.take();
 
@@ -1151,10 +1279,10 @@ void autonomous() {
 		right8disc();
 	#endif // !1
 	#if AUTON == 5
-		skills();
+		right11Disc();
 	#endif // !1
 	#if AUTON == 6
-		testMatchLoad();
+		skills();
 	#endif // !1
 	#if AUTON == 7
 		testMove();
@@ -1172,23 +1300,26 @@ void autonomous() {
  */
 void opcontrol() {
 
-	#if AUTON == 5
+	postAuton();
+	#if AUTON == 6
 		preAutonRun();
 
 		pros::Task skillsTask = pros::Task(skillsMatchLoad);
 
-		while (true) {
-			if (master->get_digital(E_CONTROLLER_DIGITAL_X)) {
-				skillsTask.suspend();
-				postAuton();
-				robotMutex.take();
-				teleopController.setCurrentBehavior(&teleopModeLogic);
-				drivetrainStateController.setDefaultBehavior(&normalJoystick);
-				robotMutex.give();
-			}
-
+		while (!(master->get_digital(E_CONTROLLER_DIGITAL_Y) || matchLoadsDone)) {
 			pros::Task::delay(10);
 		}
+
+		matchLoadsDone = true;
+
+		// skillsTask.remove();
+		postAuton();
+		robotMutex.take();
+		intakeStopperOverride = false;
+		teleopController.setCurrentBehavior(&teleopModeLogic);
+		drivetrainStateController.setDefaultBehavior(&normalJoystick);
+		robotMutex.give();
+		return;
 	#else
 		robotMutex.take();
 		teleopController.setCurrentBehavior(&teleopModeLogic);
