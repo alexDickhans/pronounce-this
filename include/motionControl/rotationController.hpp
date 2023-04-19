@@ -40,9 +40,6 @@ namespace Pronounce
 		void update() {
 			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
 
-			std::cout << output << std::endl;
-			std::cout << rotationPID.getError() << std::endl;
-
 			drivetrain.tankSteerVoltage(output * 12000, -output * 12000);
 		}
 

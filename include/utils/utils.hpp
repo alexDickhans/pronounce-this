@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <cmath>
 #include <algorithm>
+#include <bits/stdc++.h>
+#include "api.h"
 
 // TODO: add docstrings
 // TODO: add comments
@@ -43,6 +45,10 @@ namespace Pronounce {
 	 * @return double Mapped value
 	 */
 	double map(double value, double start1, double stop1, double start2, double stop2);
+	
+	double findMedian(double arr[], int size);
+
+	double getDistanceSensorMedian(pros::Distance &distance, int samples);
 
 #ifdef SIM
 	double clamp(double value, double min, double max) {

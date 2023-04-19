@@ -9,6 +9,8 @@ TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pro
 
 pros::Mutex robotMutex;
 
+bool matchLoadsDone = false;
+
 // SECTION Auton
 
 /**
@@ -50,9 +52,8 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed);
 
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed));
 
 	pros::delay(50);
 
@@ -64,9 +65,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 
 void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTime = 100, bool off = false) {
 
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, { speed, 200_in / second / second, 0.0 }, distance, &odometry, &distancePid, drivetrainMutex, 0.0, angle, &movingTurnPid);
-
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, { speed, 150_in / second / second, 0.0 }, distance, &odometry, &distancePid, drivetrainMutex, 0.0, angle, &movingTurnPid));
 
 	pros::delay(50);
 
@@ -80,10 +79,12 @@ void shootWhileMoving(QLength distance, QSpeed speed, Angle angle, double waitTi
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-int spinRoller(Angle angle, QLength backupDistance = -5_in) {
-	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 95_mm;
+int spinRoller(Angle angle, bool intakeStopper = false, QLength backupDistance = -5_in) {
+	QLength distanceToRoller = frontDistanceSensor.get()*1_mm - 85_mm;
 
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+	if (intakeStopper) {
+		ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+	}
 
 	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
 
@@ -91,7 +92,11 @@ int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 
 	drivetrain.tankSteerVoltage(2000, 2000);
 
-	pros::Task::delay(350);
+	pros::Task::delay(100);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	pros::Task::delay(300);
 
 	drivetrain.tankSteerVoltage(0, 0);
 
@@ -102,9 +107,52 @@ int spinRoller(Angle angle, QLength backupDistance = -5_in) {
 	return 0;
 }
 
+int spinMatchRollerLeft(Angle angle, QLength backupDistance = -5_in) {
+	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 7)*0.99_mm - 150_mm;
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(50);
+
+	drivetrain.tankSteerVoltage(0, 0);
+
+	move(backupDistance, defaultProfileConstraints, 0.0, angle);
+
+	return 0;
+}
+
+int spinMatchRollerRight(Angle angle, QLength backupDistance = -5_in) {
+	
+	QLength distanceToRoller = getDistanceSensorMedian(frontDistanceSensor, 5)*0.97_mm - 280_mm;
+
+	move(distanceToRoller, defaultProfileConstraints, 0.0, angle, 0.0, 0.0);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(100);
+
+	drivetrain.tankSteerVoltage(0, 0);
+	
+	move(backupDistance, defaultProfileConstraints, 0.0, angle);
+
+	return 0;
+}
+
 void matchLoad(Angle angle, Angle goalAngle) {
 
 	QLength distanceToMatch = frontDistanceSensor.get()*1_mm - 66_in;
+
+	pros::Task::delay(10);
+
+	distanceToMatch += frontDistanceSensor.get()*1_mm - 66_in;
+
+	distanceToMatch = distanceToMatch / 2.0;
 
 	move(distanceToMatch, defaultProfileConstraints, 0.0, goalAngle, 0.0, 0.0);
 
@@ -113,17 +161,17 @@ void matchLoad(Angle angle, Angle goalAngle) {
 
 	turnTo(goalAngle, 300);
 
-	turnTo(angle, 500);
+	turnTo(angle, 450);
 
 	distanceToMatch = backDistanceSensor.get()*1_mm - 30_mm;
 
 	move(-distanceToMatch, defaultProfileConstraints, 0.0, angle);
 
-	pros::Task::delay(300);
+	pros::Task::delay(250);
 
 	move(5_in, defaultProfileConstraints, 0.0, angle);
 
-	turnTo(goalAngle, 600);
+	turnTo(goalAngle, 550);
 }
 
 int tuneTurnPid() {
@@ -193,16 +241,51 @@ int skillsMatchLoad() {
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
 	intakeStopperOverride = true;
-
-	pros::Task::delay(900);
-
+	if (matchLoadsDone) {
+		return 1;
+	}
+	pros::Task::delay(800);
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
 	move(5_in, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(88_deg, 500);
+	if (matchLoadsDone) {
+		return 1;
+	}
 
-	matchLoad(0_deg, 88_deg);
+	turnTo(86_deg, 550);
 
-	matchLoad(0_deg, 88_deg);
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
+	matchLoad(0_deg, 86_deg);
+
+	if (matchLoadsDone) {
+		return 1;
+	}
+
+	matchLoad(0_deg, 86_deg);
+	
+	if (matchLoadsDone) {
+		return 1;
+	}
+	
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	if (matchLoadsDone) {
+		return 1;
+	}
+
+	turnTo(83_deg, 250);
+	
+	if (matchLoadsDone) {
+		return 1;
+	}
+	matchLoadsDone = true;
+	pros::Task::delay(500);
 
 	return 0;
 }
@@ -214,19 +297,19 @@ int skills() {
 
 	intakeStopperOverride = true;
 
-	pros::Task::delay(900);
+	pros::Task::delay(800);
 
 	move(5_in, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(88_deg, 500);
+	turnTo(86_deg, 550);
 
-	matchLoad(0_deg, 88_deg);
+	matchLoad(0_deg, 86_deg);
 
-	matchLoad(0_deg, 88_deg);
+	matchLoad(0_deg, 86_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(88_deg, 300);
+	turnTo(83_deg, 250);
 
 	intakeStopperOverride = false;
 
@@ -235,27 +318,29 @@ int skills() {
 
 	// intakeSolenoid.set_value(true);
 
-	turnTo(-61_deg, 700);
+	turnTo(-56_deg, 650);
 
-	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 0_in/second, 10_in/second);
+	move(34_in, { 50_in / second, 120_in / second / second, 0.0 }, 0.0, -56_deg, 0_in/second, 13_in/second);
 
-	move(22_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -61_deg, 10_in/second, 0_in/second);
-
-	// intakeSolenoid.set_value(false);
+	move(18_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, -56_deg, 13_in/second, 0_in/second);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-6_deg, 450);
+	move(-10_in, defaultProfileConstraints, 0.0, -56_deg);
+
+	// intakeSolenoid.set_value(false);
+
+	turnTo(-12_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-6_deg, 250);
+	turnTo(-12_deg, 350);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	// Spin close rollers
 
-	turnTo(-180_deg, 600);
+	turnTo(-180_deg, 650);
 
 	spinRoller(-180_deg);
 
@@ -271,27 +356,27 @@ int skills() {
 
 	turnTo(45_deg, 600);
 
-	move(62_in, intakeProfileConstraints, 0.0, 45_deg);
+	move(64_in, intakeProfileConstraints, 0.0, 45_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(51_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-45_deg, 500);
+	turnTo(-51_deg, 500);
 
 	// First Barrier
 
-	turnTo(-15_deg, 400);
+	turnTo(-15_deg, 700);
 
 	move(35_in, intakeBarrierProfileConstraints, 0.0);
 
-	move(frontDistanceSensor.get() * 1_mm - 1330_mm, defaultProfileConstraints, 0.0, 0_deg);
+	move(frontDistanceSensor.get() * 1_mm - 1355_mm, defaultProfileConstraints, 0.0, 0_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(-44_deg, 400);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-45_deg, 600);
+	turnTo(-44_deg, 600);
 
 	turnTo(-75_deg, 400);
 
@@ -299,51 +384,51 @@ int skills() {
 
 	move(frontDistanceSensor.get() * 1_mm - 1350_mm, defaultProfileConstraints, 0.0, -90_deg);
 
-	turnTo(-45_deg, 500);
+	turnTo(-49_deg, 400);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-45_deg, 250);
+	turnTo(-49_deg, 250);
 
-	move(-14_in, defaultProfileConstraints, 0.0, -45_deg);
+	move(-12_in, defaultProfileConstraints, 0.0, -45_deg);
 
-	turnTo(-180_deg, 500);
+	turnTo(-180_deg, 600);
 
 	// Second match loader
 
 	intakeStopperOverride = true;
 
-	move(-backDistanceSensor.get() * 1_mm + 30_mm, { 70_in / second, 80_in / second / second, 0.0 }, 0.0, -180_deg);
+	move(-backDistanceSensor.get() * 1_mm + 30_mm, { 70_in / second, 100_in / second / second, 0.0 }, 0.0, -180_deg);
 
 	move(5_in, defaultProfileConstraints, 0.0, -180_deg);
 
-	turnTo(-92_deg, 450);
+	turnTo(-98_deg, 450);
 
-	matchLoad(-180_deg, -92_deg);
+	matchLoad(-180_deg, -98_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-93_deg, 300);
+	turnTo(-98_deg, 300);
 
 	intakeStopperOverride = false;
 
 	// REPEAT
 
-	turnTo(-244_deg, 800);
+	turnTo(-240_deg, 600);
 
-	move(30_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 0_in/second, 10_in/second);
+	move(33_in, { 50_in / second, 130_in / second / second, 0.0 }, 0.0, -240_deg, 0_in/second, 12_in/second);
 
-	move(19_in, { 10_in / second, 100_in / second / second, 0.0 }, 0.0, -244_deg, 10_in/second, 0_in/second);
-
-	// intakeSolenoid.set_value(false);
+	move(25_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, -240_deg, 12_in/second, 0_in/second);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-186_deg, 450);
+	// intakeSolenoid.set_value(false);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+	turnTo(-185_deg, 400);
 
-	turnTo(-186_deg, 250);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOffIntake200);
+
+	turnTo(-185_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -355,7 +440,7 @@ int skills() {
 
 	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -360_deg);
 
-	turnTo(-270_deg, 550);
+	turnTo(-270_deg, 500);
 
 	spinRoller(-270_deg);
 
@@ -363,121 +448,37 @@ int skills() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(-135_deg, 600);
+	turnTo(-138_deg, 500);
 
-	move(62_in, intakeProfileConstraints, 0.0, -135_deg);
+	move(64_in, intakeProfileConstraints, 0.0, -138_deg);
 
-	turnTo(-225_deg, 450);
+	turnTo(-227_deg, 350);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(-225_deg, 300);
+	turnTo(-227_deg, 400);
 
 	// Second Barrier
 
 	turnTo(-195_deg, 400);
 
-	move(35_in, intakeBarrierProfileConstraints, 0.0);
+	move(50_in, intakeBarrierProfileConstraints, 0.0);
 
-	turnTo(-275_deg, 550);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostOverfill);
+
+	turnTo(-285_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	turnTo(-275_deg, 300);
+	turnTo(-285_deg, 300);
 
-	move(-60_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(-62_in, defaultProfileConstraints, 0.0, -266_deg);
 
-	turnTo(-135_deg, 500);
+	turnTo(-135_deg, 600);
 
 	endgameStateController.setCurrentBehavior(&endgameEnabled);
 
-	pros::Task::delay(500);
-
-	return 0;
-}
-
-int testRollers() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, -180_deg));
-
-	turnTo(-180_deg, 450);
-
-	spinRoller(-180_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 800_mm, defaultProfileConstraints, 0.0, -180_deg);
-
-	turnTo(-90_deg, 550);
-
-	spinRoller(-90_deg);
-
-	move(frontDistanceSensor.get() * 1_mm - 10_in, defaultProfileConstraints, 0.0, -90_deg);
-}
-
-int close8Disc() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(3_in, defaultProfileConstraints, 0.0, 180_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	turnTo(175_deg, 80);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(-3_in, defaultProfileConstraints, 0.0, 180_deg);
-
-	turnTo(347_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(347_deg, 400);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(405_deg, 600);
-
-	move(40_in, { 25_in / second, 130_in / second / second, 0.0 }, 0.0, 405_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(332_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(500);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(330_deg, 200);
-
-	move(-35_in, defaultProfileConstraints, 0.0, 330_deg);
-	
-	turnTo(370_deg, 800);
-
-	move(25_in, {25_in/second, 75_in/second/second, 0.0}, 0.0);
-
-	move(-25_in, defaultProfileConstraints, 0.0, 360_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(328_deg, 500);
-
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, {40_in/second, 200_in/second/second, 0.0}, 25_in, &odometry, &distancePid, drivetrainMutex, 0.0, 328_deg, &movingTurnPid);
-
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
-
-	pros::Task::delay(500);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(500);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	drivetrainStateController.useDefaultBehavior();
+	turnTo(-135_deg, 500);
 
 	return 0;
 }
@@ -493,61 +494,455 @@ int closeFullAWP() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(175_deg, 80);
+	turnTo(175_deg, 200);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(-3_in, defaultProfileConstraints, 0.0, 180_deg);
+	move(-16_in, defaultProfileConstraints, 0.0, 180_deg);
+	move(9_in, defaultProfileConstraints, 0.0, 180_deg);
 
-	turnTo(347_deg, 800);
+	turnTo(180_deg, 100);
+
+	turnTo(351_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(347_deg, 400);
+	turnTo(351_deg, 400);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(406_deg, 500);
 
-	move(48_in, { 40_in / second, 100_in / second / second, 0.0 }, 0.0, 405_deg);
+	move(20_in, { 30_in / second, 120_in / second / second, 0.0 }, 0.0, 406_deg, 0_in/second, 13_in/second);
+
+	move(18_in, { 13_in / second, 100_in / second / second, 0.0 }, 0.0, 406_deg, 13_in/second, 0_in/second);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(323_deg, 700);
+	turnTo(331_deg, 500);
 
-	shootWhileMoving(5_in, 10_in/second, 323_deg, 100);
+	shootWhileMoving(5_in, 17_in/second, 331_deg, 100);
 
-	move(-5_in, defaultProfileConstraints, 0.0, 323_deg);
-
-	turnTo(323_deg, 200);
+	move(-5_in, defaultProfileConstraints, 0.0, 331_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(328_deg, 200);
 
-	move(55_in, { 50_in / second, 75_in / second / second, 0.0 }, 0.0, 405_deg);
+	turnTo(409_deg, 500);
+
+	move(65_in, { 50_in / second, 100_in / second / second, 0.0 }, 0.0, 410_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(290_deg, 600);
+	turnTo(292_deg, 600);
 	
-	shootWhileMoving(5_in, 50_in/second, 290_deg, 100, true);
+	shootWhileMoving(8_in, 40_in/second, 292_deg, 100, true);
 
-	pros::Task::delay(200);
+	pros::Task::delay(100);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	turnTo(405_deg, 600);
+	turnTo(410_deg, 600);
 
-	move(40_in, defaultProfileConstraints, 45_deg/40_in, 405_deg);
+	move(35_in, defaultProfileConstraints, 45_deg/35_in, 410_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(new Behavior());
 
+	drivetrain.tankSteerVoltage(2000, 2000);
+
+	pros::Task::delay(100);
+
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	turnTo(456_deg, 70);
+	pros::Task::delay(160);
+
+	drivetrain.tankSteerVoltage(0, 0);
 	
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	return 0;
+}
+
+int close9Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -38_deg));
+
+	// intake auton line discs
+	// Disc rush
+
+	intakeSolenoid.set_value(true);
+
+	move(19_in, defaultProfileConstraints, 0.0, -38_deg);
+
+	intakeSolenoid.set_value(false);
+
+	turnTo(-38_deg, 600);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*1_mm - 17_in), defaultProfileConstraints, 0.0, -38_deg);
+
+	turnTo(-13_deg, 300);
+
+	// momentum shot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(10_in, 35_in/second, -13_deg, 100, true);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-135_deg, 650);
+
+	// roller
+
+	spinMatchRollerLeft(-135_deg, -10_in);
+
+	turnTo(58_deg, 600);
+
+	// intake close stack
+
+	move(21_in, { 37_in / second, 125_in / second / second, 0.0 }, 0.0, 58_deg, 0_in/second, 12_in/second);
+
+	move(14_in, { 12_in / second, 100_in / second / second, 0.0 }, 0.0, 58_deg, 12_in/second, 0_in/second);
+
+	// Momentum shot
+
+	turnTo(-30_deg, 500);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(5_in, 20_in/second, -30_deg, 100, false);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// move to back of barrier
+
+	turnTo(-40_deg, 200);
+
+	move(-32_in, defaultProfileConstraints, 0.0, -40_deg);
+
+	// intake barrier discs
+
+	turnTo(15_deg, 300);
+
+	move(30_in, intakeBarrierProfileConstraints, 0.0);
+
+	// back up
+
+	move(-30_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	// Momentum shot
+
+	turnTo(-30_deg, 200);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(42_in, 42_in/second, -30_deg, 300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	return 0;
+}
+
+int close9DiscFast() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -38_deg));
+
+	// intake auton line discs
+	// Disc rush
+
+	intakeSolenoid.set_value(true);
+
+	move(18_in, defaultProfileConstraints, 0.0, -38_deg);
+
+	intakeSolenoid.set_value(false);
+
+	turnTo(-38_deg, 600);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*1_mm - 17_in), defaultProfileConstraints, 0.0, -38_deg);
+
+	turnTo(-15_deg, 300);
+
+	// momentum shot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(10_in, 30_in/second, -15_deg, 100, false);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(58_deg, 400);
+
+	// intake close stack
+
+	move(19_in, { 12_in / second, 120_in / second / second, 0.0 }, 0.0, 58_deg, 5_in/second, 0_in/second);
+
+	// Momentum shot
+
+	turnTo(-29_deg, 400);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(7_in, 25_in/second, -29_deg, 100, false);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// move to back of barrier
+
+	turnTo(-37_deg, 200);
+
+	move(-35_in, defaultProfileConstraints, 0.0, -37_deg);
+
+	// intake barrier discs
+
+	turnTo(15_deg, 300);
+
+	move(32_in, { 25_in / second, 125_in / second / second, 0.0 }, 0.0);
+
+	// back up
+
+	move(-30_in, defaultProfileConstraints, 0.0, 0_deg);
+
+	// Momentum shot
+
+	turnTo(-33_deg, 200);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(34_in, 42_in/second, -33_deg, 250);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-135_deg, 450);
+
+	// roller
+
+	move(30_in, { 55_in / second, 125_in / second / second, 0.0 }, 0.0, -135_deg, 0.0, 55_in/second);
+	move(15_in, defaultProfileConstraints, -45_deg/15_in, -135_deg, 55_in/second, 0.0);
+
+	return 0;
+}
+
+int right9Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -45_deg));
+
+	// intake auton line discs
+	// Disc rush
+
+	intakeSolenoid.set_value(true);
+
+	move(21_in, defaultProfileConstraints, 0.0, -45_deg);
+
+	intakeSolenoid.set_value(false);
+
+	turnTo(-45_deg, 700);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*0.99_mm - 15_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-74.2_deg, 350);
+
+	// momentum shot
+
+	shootWhileMoving(10_in, 18_in/second, -74.2_deg, 150, true);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(45_deg, 650);
+
+	// roller
+
+	spinMatchRollerRight(45_deg, -10_in);
+
+	turnTo(-138_deg, 650);
+
+	// intake line of discs
+
+	move(60_in, intakeProfileConstraints, 0.0, -138_deg);
+
+	// shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-48_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	
+	move(0.7_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(-0.7_in, defaultProfileConstraints, 0.0, -48_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// intake barrier
+
+	turnTo(95_deg, 500);
+
+	move(42_in, intakeBarrierProfileConstraints, 0.0);
+	
+	// back up to auton line
+
+	turnTo(-58.1_deg, 600);
+
+	// Shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(42_in, 42_in/second, -58.1_deg, 300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	return 0;
+}
+
+int right11Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, -71_deg));
+
+	// intake auton line discs
+	// Disc rush
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	move(0.5_in, defaultProfileConstraints, 0.0, -71_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(-40_deg, 200);
+
+	intakeSolenoid.set_value(true);
+
+	move(19_in, defaultProfileConstraints, 0.0, -40_deg);
+
+	intakeSolenoid.set_value(false);
+
+	turnTo(-45_deg, 700);
+
+	// rezero
+
+	move(-(backDistanceSensor.get()*0.99_mm - 15_in), defaultProfileConstraints, 0.0, -45_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-74.2_deg, 350);
+
+	// momentum shot
+
+	shootWhileMoving(10_in, 23_in/second, -74.2_deg, 150, true);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(45_deg, 650);
+
+	// roller
+
+	spinMatchRollerRight(45_deg, -10_in);
+
+	turnTo(-138_deg, 650);
+
+	// intake line of discs
+
+	move(60_in, intakeProfileConstraints, 0.0, -138_deg);
+
+	// shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(-48_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	
+	move(2_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(-2_in, defaultProfileConstraints, 0.0, -48_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	// intake barrier
+
+	turnTo(95_deg, 500);
+
+	move(42_in, intakeBarrierProfileConstraints, 0.0);
+	
+	// back up to auton line
+
+	turnTo(-57.8_deg, 600);
+
+	// Shoot
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	shootWhileMoving(42_in, 42_in/second, -57.8_deg, 300);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	return 0;
+}
+
+int close8Disc() {
+	threeWheelOdom.reset(Pose2D(34_in, 12_in, 180_deg));
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(3_in, defaultProfileConstraints, 0.0, 180_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	ptoStateController.setCurrentBehavior(&ptoIntaking);
+
+	turnTo(175_deg, 200);
+
+	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
+
+	move(-17_in, defaultProfileConstraints, 0.0, 180_deg);
+
+	move(10_in, defaultProfileConstraints, 0.0, 180_deg);
+
+	turnTo(348_deg, 600);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	turnTo(348_deg, 400);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(410_deg, 500);
+
+	move(17_in, { 37_in / second, 130_in / second / second, 0.0 }, 0.0, 410_deg, 0_in/second, 12_in/second);
+	move(18_in, { 12_in / second, 130_in / second / second, 0.0 }, 0.0, 410_deg, 12_in/second, 0_in/second);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(328_deg, 500);
+
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+
+	move(3_in, defaultProfileConstraints, 0.0, 328_deg);
+	move(-3_in, defaultProfileConstraints, 0.0, 328_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
+
+	turnTo(328_deg, 200);
+
+	move(-32_in, defaultProfileConstraints, 0.0, 327_deg);
+	
+	turnTo(380_deg, 400);
+
+	move(30_in, {25_in/second, 75_in/second/second, 0.0}, 0.0);
+
+	move(-30_in, defaultProfileConstraints, 0.0, 360_deg);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
+
+	turnTo(326.7_deg, 500);
+
+	shootWhileMoving(34_in, 42_in/second, 326.7_deg, 250);
+
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	return 0;
 }
@@ -559,17 +954,17 @@ int right8disc() {
 
 	pros::Task::delay(200);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
 
-	pros::Task::delay(500);
+	move(1_in, defaultProfileConstraints, 0.0, 294_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
-	move(40_in, defaultProfileConstraints, 156_deg/40_in, 294_deg);
+	move(40_in, { 50_in / second, 110_in / second / second, 0.0 }, 156_deg/40_in, 294_deg);
 
 	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
 
-	move(8_in, defaultProfileConstraints, 0.0, 450_deg);
+	move(12_in, defaultProfileConstraints, 0.0, 450_deg);
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
@@ -587,9 +982,9 @@ int right8disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(681_deg, 600);
+	turnTo(680_deg, 600);
 
-	shootWhileMoving(5_in, 10_in/second, 681_deg, 0, false);
+	shootWhileMoving(6_in, 10_in/second, 680_deg, 0, false);
 
 	move(-2_in, defaultProfileConstraints, 0.0, 681_deg);
 
@@ -599,227 +994,17 @@ int right8disc() {
 
 	move(40_in, {25_in/second, 100_in/second/second, 0.0}, 0.0);
 
-	move(-40_in, defaultProfileConstraints, 0.0, 845_deg);
+	move(-35_in, defaultProfileConstraints, 0.0, 845_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(677_deg, 800);
+	turnTo(674_deg, 800);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	turnTo(677_deg, 400);
+	move(1_in, defaultProfileConstraints, 0.0, 674_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	return 0;
-}
-
-int right9Disc() {
-	threeWheelOdom.reset(Pose2D(86_in, 130_in, 294_deg));
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	move(20_in, defaultProfileConstraints, 0.0, 294_deg);
-
-	pros::Task::delay(500);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::Task::delay(400);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-	
-	move(-20_in, defaultProfileConstraints, 0.0, 294_deg);
-
-	move(40_in, defaultProfileConstraints, 156_deg/40_in, 294_deg);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(8_in, defaultProfileConstraints, 0.0, 450_deg);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	turnTo(455_deg, 100);
-
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(-5_in, defaultProfileConstraints, 0.0, 450_deg);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	turnTo(590_deg, 800);
-
-	move(66_in, intakeProfileConstraints, 0.0, 590_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(681_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(681_deg, 400);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(835_deg, 800);
-
-	move(40_in, {25_in/second, 100_in/second/second, 0.0}, 0.0);
-
-	move(-37_in, defaultProfileConstraints, 0.0, 845_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(677_deg, 800);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(677_deg, 400);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	return 0;
-}
-
-int right12Disc() {
-	threeWheelOdom.reset(Pose2D(86_in, 130_in, 294_deg));
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	move(26_in, { 70_in / second, 100_in / second / second, 0.0 }, 0.0, 294_deg);
-
-	pros::delay(200);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	pros::delay(400);
-
-	move(-3_in, defaultProfileConstraints, 0.0, 294_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-	
-	turnTo(265_deg, 300);
-
-	move(-17_in, defaultProfileConstraints, 0.0, 265_deg);
-
-	turnTo(315_deg, 400);
-
-	intakeSolenoid.set_value(true);
-
-	move(12_in, defaultProfileConstraints, 0.0, 315_deg);
-
-	intakeSolenoid.set_value(false);
-
-	pros::Task::delay(300);
-
-	move(-22_in, defaultProfileConstraints, 0.0, 315_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(291_deg, 400);
-
-	shootWhileMoving(10_in, 65_in/second, 291_deg, 200, true);
-
-	pros::Task::delay(100);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(405_deg, 400);
-
-	move(25_in, defaultProfileConstraints, 45_deg/25_in, 405_deg);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	move(-8_in, defaultProfileConstraints, 0.0, 450_deg);
-
-	turnTo(590_deg, 600);
-
-	move(65_in, defaultProfileConstraints, 0.0, 590_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(675_deg, 400);
-
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
-
-	turnTo(675_deg, 300);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(810_deg, 800);
-
-	move(40_in, defaultProfileConstraints, 0.0);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(675_deg, 600);
-
-	shootWhileMoving(20_in, 60_in/second, 675_deg, 300, false);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	return 0;
-}
-
-int close9Disc() {
-	threeWheelOdom.reset(Pose2D(34_in, 12_in, 0_deg));
-
-	move(24_in, { 20_in / second, 200_in / second / second, 0.0 }, 0.0);
-
-	move(-24_in, defaultProfileConstraints, 0.0);
-
-	turnTo(-35_deg, 500);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	shootWhileMoving(30_in, 40_in/second, -35_deg, 500);
-
-	pros::Task::delay(200);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(-135_deg, 500);
-
-	move(40_in, { 25_in / second, 200_in / second / second, 0.0 }, 0.0, -135_deg);
-	
-	ptoStateController.setCurrentBehavior(&ptoIntakeStopped);
-
-	move(9_in, defaultProfileConstraints, -45_deg/10_in, -135_deg);
-
-	ptoStateController.setCurrentBehavior(&ptoIntaking);
-
-	move(-11_in, stackIntakeProfileConstraints, -50_deg/-8.8_in, -180_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	turnTo(-15_deg, 500);
-
-	intakeSolenoid.set_value(true);
-
-	move(-8_in, defaultProfileConstraints, 0.0, -15_deg);
-
-	shootWhileMoving(8_in, 50_in/second, -15_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	turnTo(-45_deg, 500);
-
-	move(6_in, defaultProfileConstraints, 0.0, -45_deg);
-
-	intakeSolenoid.set_value(false);
-
-	pros::Task::delay(600);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
-
-	move(-13_in, defaultProfileConstraints, 0.0, -45_deg);
-
-	turnTo(-16_deg, 500);
-
-	shootWhileMoving(8_in, 50_in/second, -16_deg);
-
-	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
-
-	pros::Task::delay(500);
 
 	return 0;
 }
@@ -866,9 +1051,9 @@ int testMotionProfiling() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	move(50_in, { 60_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 0_in/second, 20_in/second);
+	move(30_in, { 30_in / second, 80_in / second / second, 0.0 }, 0.0, 0.0, 0_in/second, 20_in/second);
 
-	move(10_in, { 20_in / second, 130_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
+	move(20_in, { 20_in / second, 80_in / second / second, 0.0 }, 0.0, 0.0, 20_in/second, 0_in/second);
 
 	return 0;
 }
@@ -877,7 +1062,16 @@ int testSpinRoller() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	spinRoller(0_deg);
+	spinMatchRollerRight(0_deg);
+
+	return 0;
+}
+
+int testMove() {
+
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
+
+	move(50_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
 
 	return 0;
 }
@@ -938,7 +1132,7 @@ void updateDisplay() {
 
 	int count = checkPorts(portsTable.get());
 
-	std::cout << count << std::endl;
+	// std::cout << count << std::endl;
 
 	if (count > 0) {
 		lv_label_set_text(portsLabel.get(), "SOMETHING IS MISSING");
@@ -1003,7 +1197,7 @@ void initDisplay() {
  */
 void initialize() {
 
-	std::cout << "INIT" << std::endl;
+	// std::cout << "INIT" << std::endl;
 
 	robotMutex.take();
 
@@ -1070,19 +1264,28 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		skills();
+		closeFullAWP();
 	#endif // !1
 	#if AUTON == 1
-		close9Disc();
+		close9DiscFast();
 	#endif // !1
 	#if AUTON == 2
-		close8Disc();
+		right9Disc();
 	#endif // !1
 	#if AUTON == 3
-		right8disc();
+		close8Disc();
 	#endif // !1
 	#if AUTON == 4
+		right8disc();
+	#endif // !1
+	#if AUTON == 5
+		right11Disc();
+	#endif // !1
+	#if AUTON == 6
 		skills();
+	#endif // !1
+	#if AUTON == 7
+		testMove();
 	#endif // !1
 
 	postAuton();
@@ -1097,23 +1300,26 @@ void autonomous() {
  */
 void opcontrol() {
 
-	#if AUTON == 4
+	postAuton();
+	#if AUTON == 6
 		preAutonRun();
 
 		pros::Task skillsTask = pros::Task(skillsMatchLoad);
 
-		while (true) {
-			if (master->get_digital(E_CONTROLLER_DIGITAL_X)) {
-				skillsTask.suspend();
-				postAuton();
-				robotMutex.take();
-				teleopController.setCurrentBehavior(&teleopModeLogic);
-				drivetrainStateController.setDefaultBehavior(&normalJoystick);
-				robotMutex.give();
-			}
-
+		while (!(master->get_digital(E_CONTROLLER_DIGITAL_Y) || matchLoadsDone)) {
 			pros::Task::delay(10);
 		}
+
+		matchLoadsDone = true;
+
+		// skillsTask.remove();
+		postAuton();
+		robotMutex.take();
+		intakeStopperOverride = false;
+		teleopController.setCurrentBehavior(&teleopModeLogic);
+		drivetrainStateController.setDefaultBehavior(&normalJoystick);
+		robotMutex.give();
+		return;
 	#else
 		robotMutex.take();
 		teleopController.setCurrentBehavior(&teleopModeLogic);

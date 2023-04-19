@@ -24,21 +24,23 @@
 
 namespace Pronounce {
 
-	PID turningPid(4.5, 0.0, 34.0, 0.0, 0.0, false);
+	PID turningPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
+	PID turningVisionPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
 	PID movingTurnPid(25000.0, 0.0, 100000.0, 0.0, 0.0, false);
 	PID visionPid(0.0045, 0.0, 0.10);
 
-	PID distancePid(240000.0, 0.0, 300000.0);
+	PID distancePid(400000.0, 0.0, 300000.0);
 
 	// Drivetrain states for driving around the field and shooting at the goal
-	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, visionPid, 0.10, false, 2.4, 73_in / second);
-	JoystickDrivetrain targetingJoystick("TargetingJoystick", odometry, master, drivetrain, visionPid, 0.10, true, 2.4, 73_in / second);
-	Wait targetingJoystickStop(&targetingJoystick, 500_ms);
+	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, turningVisionPid, 0.10, false, 2.4, 73_in / second);
+	JoystickDrivetrain targetingJoystick("TargetingJoystick", odometry, master, drivetrain, turningVisionPid, 0.10, true, 2.4, 73_in / second);
+	Wait targetingJoystickStop(&targetingJoystick, 400_ms);
 
 	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", odometry, master, drivetrain, visionPid, 0.10, true, 2.4, 0.0);
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
+	ProfileConstraints momentumProfileConstraints = { 70_in / second, 110_in / second / second, 0.0 };
 	ProfileConstraints defaultProfileConstraints = { 70_in / second, 110_in / second / second, 0.0 };
 	ProfileConstraints intakeBarrierProfileConstraints = { 30_in / second, 125_in / second / second, 0.0 };
 	ProfileConstraints intakeProfileConstraints = { 50_in / second, 125_in / second / second, 0.0 };

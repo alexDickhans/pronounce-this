@@ -38,6 +38,7 @@ namespace Pronounce {
 
 			controller2->clear();
 			controller1->clear();
+			intakeSpeedModifier = 1.0;
 		}
 
 		void update() {
@@ -51,7 +52,7 @@ namespace Pronounce {
 				ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 			}
 
-			
+			intakeSpeedModifier = controller2->get_digital(pros::E_CONTROLLER_DIGITAL_Y) ? 0.8 : 1.0;		
 
 			std::cout << "IntakeStatus: " << ptoStateController.isDone() << std::endl;
 
@@ -118,7 +119,7 @@ namespace Pronounce {
 		}
 
 		void exit() {
-
+			intakeSpeedModifier = 1.0;
 		}
 
 		bool isDone() {

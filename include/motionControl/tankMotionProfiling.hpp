@@ -7,6 +7,8 @@
 #include "time/robotTime.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 
+double velocityFeedforward = 235;
+
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {
 	private:
@@ -21,7 +23,7 @@ namespace Pronounce {
 
 		Angle targetAngle = 0.0;
 
-		PID* distancePid;
+		FeedbackController* distancePid;
 		PID* turnPid = nullptr;
 
 		QCurvature curvature = 0.0;
@@ -32,11 +34,11 @@ namespace Pronounce {
 		QLength startDistance;
 
 	public:
-		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
+		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, FeedbackController* distancePid, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
 
 		}
 
-		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) : Behavior(name), initialSpeed(initialSpeed), endSpeed(endSpeed), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
+		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, FeedbackController* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) : Behavior(name), initialSpeed(initialSpeed), endSpeed(endSpeed), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
 			velocityProfile->calculate(100);
 			this->curvature = curvature;
@@ -85,7 +87,7 @@ namespace Pronounce {
 
 			distancePid->setTarget(distance.getValue() * signnum_c(this->velocityProfile->getDistance().getValue()));
 
-			double wheelVoltage = distancePid->update(currentDistance.getValue());
+			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second);
 
 			// add curvature
 			double leftCurvatureAdjustment = (2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
