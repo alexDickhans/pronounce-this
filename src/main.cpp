@@ -749,7 +749,7 @@ int right9Disc() {
 
 	// momentum shot
 
-	shootWhileMoving(10_in, 18_in/second, -74.2_deg, 150, true);
+	shootWhileMoving(10_in, 23_in/second, -74.2_deg, 150, true);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -773,8 +773,8 @@ int right9Disc() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 	
-	move(0.7_in, defaultProfileConstraints, 0.0, -48_deg);
-	move(-0.7_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(2_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(-2_in, defaultProfileConstraints, 0.0, -48_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
