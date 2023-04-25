@@ -358,7 +358,7 @@ int skills() {
 
 	move(64_in, intakeProfileConstraints, 0.0, 45_deg);
 
-	turnTo(51_deg, 450);
+	turnTo(-51_deg, 450);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
