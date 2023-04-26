@@ -809,7 +809,7 @@ int right11Disc() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	move(1_in, defaultProfileConstraints, 0.0, -71_deg);
+	move(1.5_in, defaultProfileConstraints, 0.0, -71_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -825,7 +825,7 @@ int right11Disc() {
 
 	// rezero
 
-	move(-(backDistanceSensor.get()*0.99_mm - 15_in), defaultProfileConstraints, 0.0, -45_deg);
+	move(-(backDistanceSensor.get()*0.99_mm - 16_in), defaultProfileConstraints, 0.0, -45_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
@@ -847,7 +847,7 @@ int right11Disc() {
 
 	// intake line of discs
 
-	move(60_in, intakeProfileConstraints, 0.0, -138_deg);
+	move(59_in, intakeProfileConstraints, 0.0, -138_deg);
 
 	// shoot
 
