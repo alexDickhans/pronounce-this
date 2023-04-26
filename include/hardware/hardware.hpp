@@ -165,7 +165,7 @@ namespace Pronounce {
 
 		aimingVisionSensor.set_signature(1, &RED_GOAL);
 		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(118);
+		aimingVisionSensor.set_exposure(100);
 
 		// catapultLimitSwitch.reverse();
 	}

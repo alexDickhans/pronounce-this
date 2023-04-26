@@ -58,7 +58,8 @@ namespace Pronounce {
 				return;
 			}
 
-			this->visionSensorAngle = (aimingVisionSensor.get_by_size(0).x_middle_coord * 73_deg/314.0 + odometry.getAngle() + 5_deg).getValue();
+			this->visionSensorAngle = (aimingVisionSensor.get_by_size(0).x_middle_coord * 73_deg/314.0 + odometry.getAngle()).getValue();
+			this->visionSensorAngle = false ? 0.0 : visionSensorAngle + (5_deg).getValue();
 		}
 
 		void update() {
