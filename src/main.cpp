@@ -545,7 +545,7 @@ int closeFullAWP() {
 
 	turnTo(410_deg, 550);
 
-	move(40_in, defaultProfileConstraints, 45_deg/40_in, 410_deg);
+	move(38_in, defaultProfileConstraints, 45_deg/38_in, 410_deg);
 
 	ptoStateExtensionController.setCurrentBehavior(new Behavior());
 
@@ -555,7 +555,7 @@ int closeFullAWP() {
 
 	ptoStateController.setCurrentBehavior(&ptoIntaking);
 
-	pros::Task::delay(100);
+	pros::Task::delay(70);
 
 	drivetrain.tankSteerVoltage(0, 0);
 	
@@ -736,8 +736,14 @@ int right9Disc() {
 	move(21_in, defaultProfileConstraints, 0.0, -45_deg);
 
 	intakeSolenoid.set_value(false);
+	
+	intakeStopperOverride = true;
 
-	turnTo(-45_deg, 700);
+	turnTo(-45_deg, 350);
+
+	intakeStopperOverride = false;
+
+	turnTo(-45_deg, 350);
 
 	// rezero
 
@@ -749,7 +755,7 @@ int right9Disc() {
 
 	// momentum shot
 
-	shootWhileMoving(10_in, 23_in/second, -74.2_deg, 150, true);
+	shootWhileMoving(10_in, 27_in/second, -74.2_deg, 150, true);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -763,26 +769,26 @@ int right9Disc() {
 
 	// intake line of discs
 
-	move(61_in, intakeProfileConstraints, 0.0, -138_deg);
+	move(62_in, intakeProfileConstraints, 0.0, -138_deg);
 
 	// shoot
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	turnTo(-48_deg, 500);
+	turnTo(-45_deg, 500);
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 	
-	move(2_in, defaultProfileConstraints, 0.0, -48_deg);
-	move(-2_in, defaultProfileConstraints, 0.0, -48_deg);
+	move(2_in, defaultProfileConstraints, 0.0, -46_deg);
+	move(-2_in, defaultProfileConstraints, 0.0, -46_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	// intake barrier
 
-	turnTo(95_deg, 500);
+	turnTo(100_deg, 500);
 
-	move(42_in, intakeBarrierProfileConstraints, 0.0);
+	move(44_in, intakeBarrierProfileConstraints, 0.0);
 	
 	// back up to auton line
 
@@ -792,7 +798,7 @@ int right9Disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	shootWhileMoving(42_in, 42_in/second, -58.1_deg, 300);
+	shootWhileMoving(42_in, 45_in/second, -57.8_deg, 300);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -825,7 +831,7 @@ int right11Disc() {
 
 	// rezero
 
-	move(-(backDistanceSensor.get()*0.99_mm - 16_in), defaultProfileConstraints, 0.0, -45_deg);
+	move(-(backDistanceSensor.get()*0.99_mm - 15_in), defaultProfileConstraints, 0.0, -45_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
@@ -847,7 +853,7 @@ int right11Disc() {
 
 	// intake line of discs
 
-	move(59_in, intakeProfileConstraints, 0.0, -138_deg);
+	move(60_in, intakeProfileConstraints, 0.0, -138_deg);
 
 	// shoot
 
@@ -951,11 +957,11 @@ int right8disc() {
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
-	pros::Task::delay(200);
+	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunchOff);
+	move(1.3_in, defaultProfileConstraints, 0.0, 294_deg);
 
-	move(1_in, defaultProfileConstraints, 0.0, 294_deg);
+	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
@@ -977,7 +983,7 @@ int right8disc() {
 
 	turnTo(590_deg, 800);
 
-	move(66_in, { 50_in / second, 75_in / second / second, 0.0 }, 0.0, 590_deg);
+	move(67_in, { 50_in / second, 75_in / second / second, 0.0 }, 0.0, 590_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostBoosting);
 
@@ -991,7 +997,7 @@ int right8disc() {
 
 	turnTo(835_deg, 800);
 
-	move(40_in, {25_in/second, 100_in/second/second, 0.0}, 0.0);
+	move(43_in, {25_in/second, 100_in/second/second, 0.0}, 0.0);
 
 	move(-35_in, defaultProfileConstraints, 0.0, 845_deg);
 
@@ -1001,7 +1007,7 @@ int right8disc() {
 
 	ptoStateExtensionController.setCurrentBehavior(&ptoCatapultLaunch);
 
-	move(1_in, defaultProfileConstraints, 0.0, 674_deg);
+	move(3_in, defaultProfileConstraints, 0.0, 674_deg);
 
 	pistonBoostStateController.setCurrentBehavior(&pistonBoostNone);
 
