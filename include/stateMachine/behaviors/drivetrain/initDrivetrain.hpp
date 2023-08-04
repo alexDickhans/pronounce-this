@@ -20,8 +20,6 @@
 #include "chassis/tankDrive.hpp"
 #include "motionControl/ramsete.hpp"
 
-// TODO: Add comments
-
 namespace Pronounce {
 
 	PID turningPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
