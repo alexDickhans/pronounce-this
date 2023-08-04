@@ -14,8 +14,6 @@ namespace Pronounce {
 
 	LoggerService loggerService;
 
-	StateController stateExtensionController("GlobalStateExtensionsController", new Behavior());
-
 	BehaviorGroup stateControllers;
 
 	StateController teleopController("TeleopController", new Behavior());
@@ -24,7 +22,6 @@ namespace Pronounce {
 
 		robotBehaviorMutex.take();
 
-		stateControllers.addBehavior(&stateExtensionController);
 		stateControllers.addBehavior(&ptoStateController);
 		stateControllers.addBehavior(&ptoStateExtensionController);
 		stateControllers.addBehavior(&drivetrainStateController);
