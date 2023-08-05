@@ -22,9 +22,9 @@
 
 namespace Pronounce {
 
-	PID turningPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
+	PID turningPid(3.0, 0.0, 30.0, 0.0, 0.0, false);
 	PID turningVisionPid(5.0, 0.0, 42.0, 0.0, 0.0, false);
-	PID movingTurnPid(25000.0, 0.0, 100000.0, 0.0, 0.0, false);
+	PID movingTurnPid(15000.0, 0.0, 100000.0, 0.0, 0.0, false);
 	PID visionPid(0.0045, 0.0, 0.10);
 
 	PID distancePid(400000.0, 0.0, 250000.0);
@@ -38,8 +38,8 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	ProfileConstraints momentumProfileConstraints = { 61_in / second, 150_in / second / second, 0.0 };
-	ProfileConstraints defaultProfileConstraints = { 61_in / second, 150_in / second / second, 0.0 };
+	ProfileConstraints momentumProfileConstraints = { 40_in / second, 100_in / second / second, 0.0 };
+	ProfileConstraints defaultProfileConstraints = { 40_in / second, 100_in / second / second, 0.0 };
 	ProfileConstraints intakeBarrierProfileConstraints = { 30_in / second, 125_in / second / second, 0.0 };
 	ProfileConstraints intakeProfileConstraints = { 50_in / second, 125_in / second / second, 0.0 };
 	ProfileConstraints stackIntakeProfileConstraints = { 25_in / second, 130_in / second / second, 0.0 };

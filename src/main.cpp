@@ -114,7 +114,31 @@ int testMove() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	move(50_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+	intakeStateController.setCurrentBehavior(&intakeEject);
+
+	move(14_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+
+	move(-14_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+
+	turnTo(-45_deg, 800);
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	move(15_in, defaultProfileConstraints, 0.0, -45_deg, 0.0, 0.0);
+
+	move(-18_in, defaultProfileConstraints, 0.0, -55_deg, 0.0, 0.0);
+
+	turnTo(-0_deg, 800);
+
+	intakeStateController.setCurrentBehavior(&intakeEject);
+	
+	move(10_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+
+	intakeStateController.setCurrentBehavior(&intakeStopped);
+
+	move(10_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+	
+	pros::Task::delay(500);
 
 	return 0;
 }

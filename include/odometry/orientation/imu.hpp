@@ -32,8 +32,9 @@ namespace Pronounce {
 		 *
 		 */
 		void update() {
-			if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+			if (pros::c::registry_get_plugged_type(10) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 				Angle imuAngle = imu.get_rotation() * 1_deg;
+				// std::cout << imuAngle.getValue() << std::endl;
 
 				this->setAngle(imuAngle);
 			}
