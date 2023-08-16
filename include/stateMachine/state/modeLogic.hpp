@@ -22,11 +22,8 @@ namespace Pronounce {
 
 		robotBehaviorMutex.take();
 
-		stateControllers.addBehavior(&ptoStateController);
-		stateControllers.addBehavior(&ptoStateExtensionController);
 		stateControllers.addBehavior(&drivetrainStateController);
-		stateControllers.addBehavior(&pistonBoostStateController);
-		stateControllers.addBehavior(&endgameStateController);
+		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&loggerService);
 
@@ -53,14 +50,14 @@ namespace Pronounce {
 		void update() {
 			robotBehaviorMutex.take();
 
-			if ((ptoStateController.isDone() || ptoStateController.getCurrentBehavior() == &ptoIntakeStopped) && (catapultLimitSwitch.get_angle() < 35100 && catapultLimitSwitch.get_angle() > 1000) && !hardwareOverride) {
-				ptoStateController.setCurrentBehavior(&ptoCatapult);
-			}
-
 			robotStatus->update();
 			stateControllers.update();
 
 			robotBehaviorMutex.give();
+
+			if (gotTriball) {
+				intakeStateController.setCurrentBehavior(&intakeHold);
+			}
 		}
 
 		void exit() {

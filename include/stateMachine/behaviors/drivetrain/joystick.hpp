@@ -112,7 +112,6 @@ namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
 	private:
 		double deadband = 0.10;
-		bool targeting = false;
 		double exponentializeValue = 1.0;
 		QSpeed maxDriveSpeed;
 
@@ -126,28 +125,19 @@ namespace Pronounce {
 
 		AbstractTankDrivetrain& drivetrain;
 
-		PID visionPid;
-
-		RunningAverage<10> visionSensorX;
-
 		bool arcade;
 
 		double filterAxis(double axis) {
 			return axis < deadband ? 0.0 : axis;
 		}
 
-		double visionSensorAngle;
-
 	public:
 
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, PID visionPid, double deadband, bool targeting, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
-			this->targeting = targeting;
 			this->exponentializeValue = exponentializerValue;
 			this->maxDriveSpeed = maxSpeed;
-			this->visionPid = visionPid;
 			this->arcade = false;
-			this->visionSensorAngle = 0.0;
 		}
 
 		void initialize() {
@@ -156,17 +146,10 @@ namespace Pronounce {
 				drivetrainMutex.give();
 				return;
 			}
-
-			this->visionSensorAngle = (aimingVisionSensor.get_by_size(0).x_middle_coord * 73_deg / 314.0 + odometry.getAngle()).getValue();
-			this->visionSensorAngle = false ? 0.0 : visionSensorAngle + (5_deg).getValue();
 		}
 
 		void update() {
 			drivetrainMutex.take();
-
-			if (((aimingVisionSensor.get_by_size(0).angle) * 0.1_deg + odometry.getAngle() + 3_deg).getValue() != visionSensorAngle) {
-				this->visionSensorAngle = (aimingVisionSensor.get_by_size(0).x_middle_coord * 73_deg / 314.0 + odometry.getAngle() + 5_deg).getValue();
-			}
 
 			if (maxDriveSpeed == 0.0_in / second) {
 				// drivetrain.tankSteerVoltage(0.0, 0.0);
@@ -200,14 +183,6 @@ namespace Pronounce {
 			}
 
 
-			if (targeting) {
-				visionPid.setTarget(visionSensorAngle);
-				turn = visionPid.update(odometry.getAngle().getValue());
-			}
-			else {
-				// aimingVisionSensor.clear_led();
-			}
-
 			double left = power + turn;
 			double right = power - turn;
 
@@ -216,17 +191,11 @@ namespace Pronounce {
 
 			drivetrain.tankSteerVoltage(left * 12000.0, right * 12000.0);
 
-			leftVoltage = left * 12000;
-			rightVoltage = right * 12000;
-
 			drivetrainMutex.give();
 		}
 
 		void exit() {
-			// drivetrain.skidSteerVelocity(0.0, 0.0);
-			if (targeting) {
-				visionSensorAngle = 0.0;
-			}
+			drivetrain.skidSteerVelocity(0.0, 0.0);
 		}
 
 		bool isDone() {

@@ -42,42 +42,28 @@ namespace Pronounce {
 	AbstractJoystick* master = new SimJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
 #endif // !SIM
 
-	bool hardwareOverride = false;
-	bool autoVisionAim = true;
-
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(18, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor leftDrive2(19, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive3(20, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive1(8, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive2(9, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive3(10, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive1(5, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive2(9, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive1(2, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive2(10, pros::E_MOTOR_GEAR_600, false);
 
-	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
-	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
+	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2 });
+	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2 });
 
-	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 2_in);
-	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 2_in);
+	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
+	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(23_in, 73_in / second, &leftDriveMotors, &rightDriveMotors, 600);
+	TankDrivetrain drivetrain(23_in, 61.26105675_in / second, &leftDriveMotors, &rightDriveMotors, 600);
 
-	pros::Mutex ptoMutex;
+	pros::Motor leftIntakeMotor(4, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightIntakeMotor(8, pros::E_MOTOR_GEAR_600, true);
 
-	pros::Motor leftPtoMotor(17, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightPtoMotor(7, pros::E_MOTOR_GEAR_600, false);
-
-	pros::ADIDigitalOut intakeStopper('e', false);
-	bool intakeStopperOverride = false;
-
-	int32_t leftVoltage = 0;
-	int32_t rightVoltage = 0;
-
-	// Catapult 
-	pros::Rotation catapultLimitSwitch(21);
+	pros::Motor_Group intakeMotors({leftIntakeMotor, rightIntakeMotor});
 
 	// Inertial Measurement Unit
-	pros::Imu imu(16);
+	pros::Imu imu(11);
 	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
@@ -85,35 +71,6 @@ namespace Pronounce {
 	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
 
 	OdomFuser odometry(threeWheelOdom);
-
-	pros::Mutex endgameMutex;
-
-	pros::ADIDigitalOut pistonBoost('a', false);
-	pros::ADIDigitalOut pistonOverfill('b', false);
-	pros::ADIDigitalOut intakeSolenoid ('c', false);
-
-	// pros::ADIAnalogIn catapultLineSensor('e');
-	pros::ADIDigitalOut endgameDigitalOutputs('d', false);
-
-	pros::ADILed leftLeds({ 20, 'a' }, 20);
-	pros::ADILed rightLeds({ 20, 'b' }, 20);
-
-	PronounceLedLib::AnimationColors blueColors = { 0x0000008B, 0x00004B4B };
-	PronounceLedLib::AnimationColors redColors = { 0x008C2427, 0x008C142C };
-	PronounceLedLib::AnimationColors orangeColors = { 0x00804000, 0x00854300 };
-	PronounceLedLib::AnimationColors greenColors = { 0x00008000, 0x00308020 };
-	PronounceLedLib::AnimationColors whiteColors = { 0x00808080, 0x00707070 };
-
-	PronounceLedLib::LedStripController leftLedController(leftLeds, orangeColors, 0.7);
-	PronounceLedLib::LedStripController rightLedController(rightLeds, orangeColors, 0.7);
-
-	pros::Vision aimingVisionSensor(5, pros::E_VISION_ZERO_CENTER);
-
-	pros::vision_signature_s_t RED_GOAL;
-	pros::vision_signature_s_t BLUE_GOAL;
-
-	pros::Distance frontDistanceSensor(4);
-	pros::Distance backDistanceSensor(3);
 
 	void initHardware() {
 
@@ -124,24 +81,23 @@ namespace Pronounce {
 
 		leftDrive1.set_current_limit(10000);
 		leftDrive2.set_current_limit(10000);
-		leftDrive3.set_current_limit(10000);
+		// leftDrive3.set_current_limit(10000);
 
 		rightDrive1.set_current_limit(10000);
 		rightDrive2.set_current_limit(10000);
-		std::cout << "CurrentLimit: " << rightDrive3.set_current_limit(10000) << std::endl;
+		// std::cout << "CurrentLimit: " << rightDrive3.set_current_limit(10000) << std::endl;
 
-		leftPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-		rightPtoMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 
 		drivetrainMutex.give();
 
 		odometryMutex.take();
 
-		double turningFactor = 342.0 / 600.0;
+		double turningFactor = 360.0 / 600.0;
 		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(4_in / 2.0);
+		leftDrive1Odom.setRadius(3.25_in / 2.0);
 		leftDrive1Odom.setTuningFactor(turningFactor);
-		rightDrive1Odom.setRadius(4_in / 2.0);
+		rightDrive1Odom.setRadius(3.25_in / 2.0);
 		rightDrive1Odom.setTuningFactor(turningFactor);
 
 		threeWheelOdom.setLeftOffset(10_in / 1.5);
@@ -152,7 +108,7 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(10) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
 			while (imu.is_calibrating())
@@ -160,12 +116,6 @@ namespace Pronounce {
 		}
 
 		odometryMutex.give();
-		RED_GOAL = aimingVisionSensor.signature_from_utility(1, 7063, 9257, 8160, -1417, -505, -962, 2.100, 0);
-		BLUE_GOAL = aimingVisionSensor.signature_from_utility(2, -2423, -1815, -2118, 6161, 8085, 7124, 3.000, 0);
-
-		aimingVisionSensor.set_signature(1, &RED_GOAL);
-		aimingVisionSensor.set_signature(2, &BLUE_GOAL);
-		aimingVisionSensor.set_exposure(100);
 
 		// catapultLimitSwitch.reverse();
 	}
@@ -182,7 +132,6 @@ namespace Pronounce {
 		portsList.emplace(16, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 		portsList.emplace(15, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 		portsList.emplace(14, pros::c::v5_device_e_t::E_DEVICE_ROTATION);
-		portsList.emplace(17, pros::c::v5_device_e_t::E_DEVICE_VISION);
 		portsList.emplace(21, pros::c::v5_device_e_t::E_DEVICE_RADIO);
 		portsList.emplace(18, pros::c::v5_device_e_t::E_DEVICE_IMU);
 
