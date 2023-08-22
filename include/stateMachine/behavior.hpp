@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
+#include "callbackHelper.hpp"
 
 namespace Pronounce {
-
 	/**
 	 * @brief Parent class that provides a template class for all behaviors. Inherit this class to create a new behavior
 	 * 
@@ -51,14 +51,17 @@ namespace Pronounce {
 		 */
 		virtual void exit() {}
 
+		Behavior* until(BooleanCallback booleanCallback);
+        Behavior* continueBehavior();
+
 		std::string getName() {
 			return name;
 		}
 
-		void setName(std::string name) {
-			this->name = name;
+		void setName(std::string newName) {
+			this->name = std::move(newName);
 		}
 
-		~Behavior() {}
+		~Behavior() = default;
 	};	
 } // namespace Pronounce

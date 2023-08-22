@@ -30,8 +30,7 @@
 /**
  * Encapsulates all data relevant to a sampled joystick event.
  */
-class JoystickEvent
-{
+class JoystickEvent {
 public:
   /** Minimum value of axes range */
   static const short MIN_AXES_VALUE = -32768;
@@ -223,10 +222,9 @@ std::ostream& operator<<(std::ostream& os, const JoystickEvent& e)
   return os;
 }
 
-namespace Pronounce
-{
+namespace Pronounce {
 
-class SimJoystick {
+class SimJoystick : public AbstractJoystick {
 private:
 	Joystick joystick;
 	std::int32_t leftX;
@@ -385,7 +383,7 @@ public:
 		return false;
 	}
 
-	void update() {
+	void update() override {
 		JoystickEvent event;
 		if (joystick.sample(&event))
 		{

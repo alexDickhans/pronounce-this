@@ -5,7 +5,7 @@ std::shared_ptr<lv_obj_t> tabview;
 
 RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
-TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
+TeleopModeLogic teleopModeLogic(new RobotJoystick(E_CONTROLLER_MASTER), new RobotJoystick(E_CONTROLLER_PARTNER));
 
 pros::Mutex robotMutex;
 

@@ -20,6 +20,12 @@
 
 using namespace Pronounce;
 
+bool functionsDone = false;
+
+bool testFun() {
+	return functionsDone;
+}
+
 /**
  * @brief Tester class for the state machine
  * 
@@ -66,12 +72,12 @@ int main() {
 
 		// Start codeOrange behavior at index 10
 		if (i == 10) {
-			stateController.setCurrentBehavior(&codeOrange);
+			stateController.setCurrentBehavior(codeOrange.until(testFun));
 		}
 
 		// End the behavior at index 20 by telling the state it is done
 		if (i == 20) {
-			codeOrange.setDone(true);
+			functionsDone = true;
 		}
 
 		// Test if it will stop quickly

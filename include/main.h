@@ -16,17 +16,6 @@
 #define _PROS_MAIN_H_
 
 /**
- * If defined, some commonly used enums will have preprocessor macros which give
- * a shorter, more convenient naming pattern. If this isn't desired, simply
- * comment the following line out.
- *
- * For instance, E_CONTROLLER_MASTER has a shorter name: CONTROLLER_MASTER.
- * E_CONTROLLER_MASTER is pedantically correct within the PROS styleguide, but
- * not convienent for most student programmers.
- */
-#define PROS_USE_SIMPLE_NAMES
-
-/**
  * If defined, C++ literals will be available for use. All literals are in the
  * pros::literals namespace.
  *
@@ -91,11 +80,17 @@
 #include "stateMachine/sequence.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/wait.hpp"
+#include "stateMachine/callbackHelper.hpp"
+#include "stateMachine/continue.hpp"
+#include "stateMachine/until.hpp"
 #include "stateMachine/behaviors/robotBehaviors.hpp"
 #include "stateMachine/state/modeLogic.hpp"
 #include "stateMachine/state/teleopModeLogic.hpp"
 #include "stateMachine/state/modeLogic.hpp"
+
 #include "hardware/hardware.hpp"
+#include "hardwareAbstractions/joystick/joystick.hpp"
+#include "hardwareAbstractions/joystick/robotJoystick.hpp"
 
 // Units
 #include "units/units.hpp"
