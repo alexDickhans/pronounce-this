@@ -55,6 +55,8 @@
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
+#include "motionControl/tankMotionProfiling.hpp"
+#include "motionControl/tankPathPlotter.hpp"
 
 // Orientation
 #include "odometry/orientation/avgOrientation.hpp"
@@ -76,17 +78,7 @@
 #include "position/trackingWheel.hpp"
 
 // State Machine
-#include "stateMachine/behavior.hpp"
-#include "stateMachine/sequence.hpp"
-#include "stateMachine/stateController.hpp"
-#include "stateMachine/wait.hpp"
-#include "stateMachine/callbackHelper.hpp"
-#include "stateMachine/continue.hpp"
-#include "stateMachine/until.hpp"
-#include "stateMachine/behaviors/robotBehaviors.hpp"
-#include "stateMachine/state/modeLogic.hpp"
-#include "stateMachine/state/teleopModeLogic.hpp"
-#include "stateMachine/state/modeLogic.hpp"
+#include "stateMachine/stateMachine.hpp"
 
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
@@ -107,9 +99,12 @@
 #include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
+#include "utils/polynomialExpression.hpp"
 
-// Vision
-#include "pronounceLedStrip/ledStrip.hpp"
+
+
+// velocity profile
+#include "velocityProfile/splineVelocityProfile.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

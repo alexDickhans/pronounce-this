@@ -14,7 +14,7 @@
 namespace Pronounce {
 	class SinusoidalVelocityProfile : public VelocityProfile {
 	private:
-		double omega;
+		double omega{};
 		QTime Tt = 3.0_s;
 
 		bool isSingleSine = false;
@@ -27,12 +27,12 @@ namespace Pronounce {
 		QLength startDistance;
 		QLength endDistance;
 
-		double startSlope;
-		double endSlope;
-		double startOmega;
-		double endOmega;
-		double startB;
-		double endB;
+		double startSlope{};
+		double endSlope{};
+		double startOmega{};
+		double endOmega{};
+		double startB{};
+		double endB{};
 
 		QTime middleDuration;
 
@@ -56,11 +56,11 @@ namespace Pronounce {
 
 		}
 
-		QTime getDuration() {
+		QTime getDuration() override {
 			return Tt;
 		}
 
-		QLength getDistanceByTime(QTime t) {
+		QLength getDistanceByTime(QTime t) override {
 			if (t.getValue() < startTime.getValue()) {
 				return (reversed ? -1 : 1) * ((startB*startOmega*t.getValue() + startSlope*sin(startOmega*t.getValue()))/startOmega);
 			} else if (t.getValue() <= endStartTime.getValue() && !isSingleSine) {

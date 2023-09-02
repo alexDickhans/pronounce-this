@@ -3,6 +3,7 @@
 #include "splinePoint.hpp"
 #include "splinePath.hpp"
 #include "path.hpp"
+#include <utility>
 #include <vector>
 
 // TODO: add docstrings
@@ -12,11 +13,11 @@ namespace Pronounce {
 	class BezierPath : public Path {
 	private:
 		std::vector<SplinePoint> points;
-		std::string name = "";
+		std::string name;
 	public:
 		BezierPath();
-		BezierPath(std::vector<SplinePoint> points);
-		BezierPath(std::string name);
+		explicit BezierPath(std::vector<SplinePoint> points);
+		explicit BezierPath(std::string name);
 
 		Path getPath(double pointGranularity) {
 			if (points.size() < 2) {
@@ -50,25 +51,23 @@ namespace Pronounce {
 			return points;
 		}
 
-		void addPoint(SplinePoint point) {
+		void addPoint(const SplinePoint& point) {
 			points.emplace_back(point);
 		}
 
 		~BezierPath();
 	};
 	
-	BezierPath::BezierPath(/* args */) {
-	}
+	BezierPath::BezierPath(/* args */) = default;
 
 	BezierPath::BezierPath(std::string name) {
-		this->name = name;
+		this->name = std::move(name);
 	}
 
 	BezierPath::BezierPath(std::vector<SplinePoint> points) {
-		this->points = points;
+		this->points = std::move(points);
 	}
 	
-	BezierPath::~BezierPath() {
-	}
+	BezierPath::~BezierPath() = default;
 	
 } // namespace Pronounce

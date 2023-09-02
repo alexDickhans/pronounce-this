@@ -6,6 +6,7 @@
 #include "vector.hpp"
 #include "utils.hpp"
 #include <string>
+#include "linearInterpolator.hpp"
 
 namespace Pronounce {
 
@@ -21,12 +22,13 @@ namespace Pronounce {
 		 * 
 		 */
 		std::vector<Point> path;
+		LinearInterpolator distanceInterpolator;
 
 		/**
 		 * @brief To continue the line past the end of the path, useful for odom
 		 * 
 		 */
-		bool continuePath = true;
+		bool continuePath{true};
 
 		/**
 		 * @brief Name of the path, used for debugging
@@ -47,6 +49,18 @@ namespace Pronounce {
 		 */
 		Path(std::string name);
 
+		void calculate() {
+			if (path.size() < 2)
+				return;
+
+			distanceInterpolator.clear();
+			distanceInterpolator.add(0, 0);
+
+			for (double i = 1; i < path.size(); i ++) {
+				distanceInterpolator.add(this->distanceFromStart(i).getValue(), i);
+			}
+		}
+
 		/**
 		 * @brief Get the Path object
 		 * 
@@ -59,10 +73,10 @@ namespace Pronounce {
 		/**
 		 * @brief Set the Path object
 		 * 
-		 * @param path List of points in the new path
+		 * @param newPath List of points in the new newPath
 		 */
-		void setPath(std::vector<Point> path) {
-			this->path = path;
+		void setPath(std::vector<Point> newPath) {
+			this->path = newPath;
 		}
 
 		/**
@@ -80,7 +94,7 @@ namespace Pronounce {
 		 * 
 		 * @param point Point to add
 		 */
-		void addPoint(Point point) {
+		void addPoint(const Point& point) {
 			this->path.emplace_back(point);
 		}
 
@@ -91,7 +105,7 @@ namespace Pronounce {
 		 * @param y Y distance
 		 */
 		void addPoint(QLength x, QLength y) {
-			this->path.emplace_back(Point(x, y));
+			this->path.emplace_back(x, y);
 		}
 
 		/**
@@ -101,7 +115,7 @@ namespace Pronounce {
 		 * @param lookaheadDistance The lookahead distance
 		 * @return Point The point at that lookahead distance
 		 */
-		Point getLookAheadPoint(Point currentPosition, QLength lookaheadDistance);
+		Point getLookAheadPoint(const Point& currentPosition, QLength lookaheadDistance);
 
 		/**
 		 * @brief Get the closest point in the path to the robot
@@ -109,7 +123,7 @@ namespace Pronounce {
 		 * @param currentPosition
 		 * @return Point The closest point
 		 */
-		Point getClosestPoint(Point currentPosition);
+		Point getClosestPoint(const Point& currentPosition);
 
 		/**
 		 * @brief Get the t value of the closest point
@@ -117,7 +131,7 @@ namespace Pronounce {
 		 * @param currentPosition The current position of the robot
 		 * @return double The t value of the closest position
 		 */
-		double getTValue(Point currentPosition) {
+		double getTValue(const Point& currentPosition) {
 			Point closestPoint;
 			QLength closestDistance = (double) INT32_MAX;
 			double closestT = INT32_MAX;
@@ -217,6 +231,10 @@ namespace Pronounce {
 		 */
 		QLength distanceFromEnd(Point currentPosition) {
 			return this->distance() - this->distanceFromStart(currentPosition);
+		}
+
+		double getTValueByDistance(QLength distance) {
+			return distanceInterpolator.get(distance.getValue());
 		}
 
 		/**

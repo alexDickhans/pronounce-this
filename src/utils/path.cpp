@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace Pronounce {
-    Point Path::getLookAheadPoint(Point currentPosition, QLength lookaheadDistance) {
+    Point Path::getLookAheadPoint(const Point& currentPosition, QLength lookaheadDistance) {
         Point lookaheadPoint = Point();
         bool pointFound = false;
 		
@@ -82,7 +82,7 @@ namespace Pronounce {
 		this->name = name;
     }
 
-    Point Path::getClosestPoint(Point currentPosition) {
+    Point Path::getClosestPoint(const Point& currentPosition) {
         Point closestPoint;
         QLength closestDistance = (double) INT32_MAX;
 		double closestT = INT32_MAX;

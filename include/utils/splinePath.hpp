@@ -2,14 +2,55 @@
 
 #include "path.hpp"
 #include "pointUtil.hpp"
+#include "polynomialExpression.hpp"
+#include <utility>
 #include <vector>
 #include <string>
+#include <cmath>
 
 // TODO: add docstrings
 // TODO: add comments
 // TODO: Change name
 
 namespace Pronounce {
+
+	class Spline {
+	private:
+		PolynomialExpression polynomial;
+	public:
+		explicit Spline(const PolynomialExpression& polynomialExpression) {
+			polynomial = polynomialExpression;
+		}
+
+		Spline(const std::initializer_list<double> points) {
+			this->calculatePolynomial(points);
+		}
+
+		explicit Spline(const std::vector<double>& points) {
+			this->calculatePolynomial(points);
+		}
+
+		void calculatePolynomial(const std::vector<double>& points) {
+			std::vector<double> coefficients;
+
+			for (int i = 0; i < points.size()-1; i++) {
+				unsigned int scalar = factorial(i);
+
+				coefficients.emplace_back(0);
+			}
+
+			polynomial = PolynomialExpression(coefficients);
+		}
+
+		double calculateValue(double t) {
+			return polynomial.evaluate(t);
+		}
+
+		Spline getDerivative() {
+			return Spline(polynomial.getDerivative());
+		}
+	};
+
 	/**
 	 * @brief Smooths a list of points using splines
 	 * 
@@ -19,10 +60,10 @@ namespace Pronounce {
 		std::vector<Point> points;
 	public:
 		SplinePath();
-		SplinePath(Path path);
-		SplinePath(std::vector<Point> points);
+		explicit SplinePath(Path path);
+		explicit SplinePath(std::vector<Point> points);
 
-		Point getPoint(double t, std::vector<Point> points) {
+		static Point getPoint(double t, std::vector<Point> points) {
 			if (t < 0 || t > 1) {
 				throw "Invalid T value";
 			}
@@ -50,7 +91,6 @@ namespace Pronounce {
 			return getPoint(t, this->points);
 		}
 
-
 		Path getPath(double pointGranularity) {
 			Path path;
 			for (double i = 0; i <= 1; i += pointGranularity) {
@@ -59,12 +99,12 @@ namespace Pronounce {
 			return path;
 		}
 
-		void addPoint(Point point) {
+		void addPoint(const Point& point) {
 			points.emplace_back(point);
 		}
 
 		void addPoint(double x, double y) {
-			points.emplace_back(Point(x, y));
+			points.emplace_back(x, y);
 		}
 
 		Point getPoint(int i) {
@@ -72,7 +112,7 @@ namespace Pronounce {
 		}
 
 		std::string to_string() {
-			std::string str = "";
+			std::string str;
 			for (int i = 0; i < points.size(); i++) {
 				str += points.at(i).to_string();
 				if (i != points.size() - 1) {
@@ -82,19 +122,25 @@ namespace Pronounce {
 			return str;
 		}
 
+		Angle getOrientation(double t) {
+			return 0.0;
+		}
+
+		QCurvature getCurvatureAtT(double t) {
+
+		}
+
 		~SplinePath();
 	};
 
-	SplinePath::SplinePath(/* args */)
-	{
-	}
+	SplinePath::SplinePath(/* args */) = default;
 
 	SplinePath::SplinePath(Path path) {
 		this->points = path.getPath();
 	}
 
 	SplinePath::SplinePath(std::vector<Point> points) {
-		this->points = points;
+		this->points = std::move(points);
 	}
 
 	SplinePath::~SplinePath()
