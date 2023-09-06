@@ -13,7 +13,7 @@ namespace Pronounce {
 	Intake intakeEject("IntakeEject", intakeMotors, -1.0, false);
 
     StateController intakeStateController("IntakeStateController", &intakeStopped);
-	StateController intakeExtensionStateController("IntakeStateController", nullptr);
+	StateController intakeExtensionStateController("IntakeStateController", new Behavior());
 
     Sequence intakeSequence("IntakeSequence");
 

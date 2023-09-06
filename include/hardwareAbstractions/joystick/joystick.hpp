@@ -51,11 +51,7 @@ namespace Pronounce {
 		virtual std::int32_t get_digital_new_press(controller_digital_e_t channel) { return 0; }
 
         void onPressed(controller_digital_e_t button, const VoidCallback& callback) {
-//			if (callbacks.count(button) != 1) {
-//				callbacks[button] = std::vector<VoidCallback>();
-//			}
             callbacks[button].emplace_back(callback);
-			std::cout << "HII" << callbacks.size() << std::endl;
         }
 
 		void clearCallbacks() {

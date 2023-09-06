@@ -13,10 +13,10 @@
 // TODO: Add docstring
 
 namespace Pronounce {
-	bool blockerStatus = false;
 	class TeleopModeLogic : public Behavior {
 	private:
 		RobotStatus* robotStatus{};
+		bool blockerStatus{true};
 
         AbstractJoystick* controller1;
         AbstractJoystick* controller2;
@@ -34,18 +34,20 @@ namespace Pronounce {
 			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 			intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
+			controller1->clearCallbacks();
+			controller2->clearCallbacks();
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [&] () -> void {
 				blockerStatus = !blockerStatus;
 				if (blockerStateController.getCurrentBehavior() != nullptr) {
-					blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerIdle).until([=] () -> bool {
+					blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerMatchLoad).until([=] () -> bool {
 						return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L2);}));
 				}
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [=] () -> void {
-				blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerIdle).until([=] () -> bool {
-					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L2);
-				}));
+			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
+				blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerMatchLoad).until([=] () -> bool {
+					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L2);}));
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {

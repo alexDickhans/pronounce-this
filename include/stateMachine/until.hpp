@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {
@@ -9,7 +11,7 @@ namespace Pronounce {
         BooleanCallback interruptCallback;
         Behavior* behavior;
     public:
-        Until(std::string name, BooleanCallback interruptCallback);
+        Until(std::string name, Behavior* behavior, BooleanCallback  interruptCallback);
 
         void initialize() override {
             behavior->initialize();
@@ -27,17 +29,21 @@ namespace Pronounce {
             return interruptCallback();
         }
 
+		Behavior * rawBehavior() override {
+			return behavior;
+		}
+
         ~Until();
     };
     
-    Until::Until(std::string name, BooleanCallback interruptCallback) {
+    Until::Until(std::string name, Behavior* behavior, BooleanCallback  interruptCallback) : Behavior(std::move(name)), interruptCallback(std::move(interruptCallback)) {
+		this->behavior = behavior;
     }
     
-    Until::~Until() {
-    }
+    Until::~Until() = default;
 
-    Behavior* Behavior::until(BooleanCallback booleanCallback) {
-        return new Until(this->getName() + "until", booleanCallback);
+    Behavior* Behavior::until(const BooleanCallback& booleanCallback) {
+        return new Until(this->getName() + "until", this, booleanCallback);
     }
     
 } // namespace Pronounce

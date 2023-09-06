@@ -15,6 +15,18 @@ namespace Pronounce {
     public:
         Continue(std::string name, Behavior* behavior);
 
+		void initialize() override {
+			behavior->initialize();
+		}
+
+		void update() override {
+			behavior->update();
+		}
+
+		void exit() override {
+			behavior->exit();
+		}
+
         bool isDone() override {
             return false;
         }

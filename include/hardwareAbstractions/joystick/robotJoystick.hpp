@@ -16,7 +16,6 @@ namespace Pronounce {
         void update() override {
             for (int i = controller_digital_e_t::E_CONTROLLER_DIGITAL_L1; i != controller_digital_e_t::E_CONTROLLER_DIGITAL_A; i++) {
                 if (this->get_digital_new_press(static_cast<controller_digital_e_t>(i))) {
-					std::cout << "HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII" << i << this->callbacks[static_cast<controller_digital_e_t>(i)].size() << std::endl << std::endl << std::endl;
                     std::for_each(this->callbacks[static_cast<controller_digital_e_t>(i)].begin(), this->callbacks[static_cast<controller_digital_e_t>(i)].end(), [=](const VoidCallback& callback) -> void {callback();});
                 }
             }

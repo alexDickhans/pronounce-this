@@ -7,6 +7,7 @@
 
 // TODO: add docstrings
 
+#include <utility>
 #include <vector>
 #include <iostream>
 namespace Pronounce {
@@ -17,7 +18,7 @@ namespace Pronounce {
 
 		int currentIndex = 0;
 	public:
-		Sequence(std::string name) : Behavior(name) {}
+		explicit Sequence(std::string name) : Behavior(std::move(name)) {}
 
 		void initialize() {
 			currentIndex = 0;
@@ -51,7 +52,7 @@ namespace Pronounce {
 		}
 
 		bool isDone() {
-			return !(currentIndex < stateControllers.size());
+			return currentIndex >= stateControllers.size();
 		}
 
 		void addState(StateController* stateController, Behavior* behavior) {

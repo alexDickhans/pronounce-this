@@ -58,13 +58,13 @@ namespace Pronounce {
 
 	TankDrivetrain drivetrain(23_in, 61.26105675_in / second, &leftDriveMotors, &rightDriveMotors, 600);
 
-	pros::Motor intakeMotor(11, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor blockerMotor(20, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor intakeMotor(4, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor blockerMotor(21, pros::E_MOTOR_GEARSET_18, false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 
 	// Inertial Measurement Unit
-	pros::Imu imu(19);
+	pros::Imu imu(7);
 	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
@@ -101,7 +101,7 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		if (pros::c::registry_get_plugged_type(18) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(6) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
 			while (imu.is_calibrating())

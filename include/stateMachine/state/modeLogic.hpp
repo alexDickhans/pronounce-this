@@ -23,6 +23,7 @@ namespace Pronounce {
 		robotBehaviorMutex.take();
 
 		stateControllers.addBehavior(&drivetrainStateController);
+		stateControllers.addBehavior(&intakeExtensionStateController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&blockerStateController);
 		stateControllers.addBehavior(&teleopController);
