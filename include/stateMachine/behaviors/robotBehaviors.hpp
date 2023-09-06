@@ -10,4 +10,7 @@ pros::Mutex robotBehaviorMutex;
 #include "intake/intake.hpp"
 #include "intake/initIntake.hpp"
 
+#include "blocker/blocker.hpp"
+#include "blocker/initBlocker.hpp"
+
 // TODO: Find a better solution for this

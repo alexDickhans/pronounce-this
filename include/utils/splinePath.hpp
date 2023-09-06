@@ -59,9 +59,10 @@ namespace Pronounce {
 	private:
 		std::vector<Point> points;
 	public:
-		SplinePath();
-		explicit SplinePath(Path path);
-		explicit SplinePath(std::vector<Point> points);
+		SplinePath() = default;
+		SplinePath(std::vector<Point> points) {
+			this->points = std::move(points);
+		}
 
 		static Point getPoint(double t, std::vector<Point> points) {
 			if (t < 0 || t > 1) {
@@ -130,21 +131,6 @@ namespace Pronounce {
 
 		}
 
-		~SplinePath();
+		~SplinePath() = default;
 	};
-
-	SplinePath::SplinePath(/* args */) = default;
-
-	SplinePath::SplinePath(Path path) {
-		this->points = path.getPath();
-	}
-
-	SplinePath::SplinePath(std::vector<Point> points) {
-		this->points = std::move(points);
-	}
-
-	SplinePath::~SplinePath()
-	{
-	}
-
 } // namespace Pronounce

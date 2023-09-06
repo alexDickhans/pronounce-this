@@ -24,7 +24,7 @@ namespace Pronounce {
 		E_CONTROLLER_DIGITAL_B,
 		E_CONTROLLER_DIGITAL_Y,
 		E_CONTROLLER_DIGITAL_A
-	} controller_digital_e_t;
+	}  controller_digital_e_t;
 
 	typedef enum { E_CONTROLLER_MASTER = 0, E_CONTROLLER_PARTNER } controller_id_e_t;
 
@@ -50,9 +50,17 @@ namespace Pronounce {
 
 		virtual std::int32_t get_digital_new_press(controller_digital_e_t channel) { return 0; }
 
-        virtual void onPressed(controller_digital_e_t button, const VoidCallback& callback) {
+        void onPressed(controller_digital_e_t button, const VoidCallback& callback) {
+//			if (callbacks.count(button) != 1) {
+//				callbacks[button] = std::vector<VoidCallback>();
+//			}
             callbacks[button].emplace_back(callback);
+			std::cout << "HII" << callbacks.size() << std::endl;
         }
+
+		void clearCallbacks() {
+			callbacks.clear();
+		}
 
 		~AbstractJoystick() = default;
 	};

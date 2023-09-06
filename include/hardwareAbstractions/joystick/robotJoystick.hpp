@@ -8,17 +8,16 @@ namespace Pronounce {
 	class RobotJoystick : public AbstractJoystick {
 	private:
 		pros::Controller* controller;
-        pros::Task* task;
 	public:
 		explicit RobotJoystick(controller_id_e_t controllerId) : AbstractJoystick(controllerId) {
 			controller = new pros::Controller((pros::controller_id_e_t) controllerId);
-            task = new pros::Task([=]() -> void {update(); pros::Task::delay(10);});
 		}
 
         void update() override {
-            for (int i = 6; i <= 17; i++) {
-                if (controller->get_digital_new_press((pros::controller_digital_e_t) i)) {
-                    std::for_each(this->callbacks[(controller_digital_e_t) i].begin(), this->callbacks[(controller_digital_e_t) i].end(), [=](const VoidCallback& callback) -> void {callback();});
+            for (int i = controller_digital_e_t::E_CONTROLLER_DIGITAL_L1; i != controller_digital_e_t::E_CONTROLLER_DIGITAL_A; i++) {
+                if (this->get_digital_new_press(static_cast<controller_digital_e_t>(i))) {
+					std::cout << "HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII" << i << this->callbacks[static_cast<controller_digital_e_t>(i)].size() << std::endl << std::endl << std::endl;
+                    std::for_each(this->callbacks[static_cast<controller_digital_e_t>(i)].begin(), this->callbacks[static_cast<controller_digital_e_t>(i)].end(), [=](const VoidCallback& callback) -> void {callback();});
                 }
             }
         }

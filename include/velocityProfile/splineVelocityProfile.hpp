@@ -1,9 +1,7 @@
+#pragma once
 //
 // Created by alex on 8/28/23.
 //
-
-#ifndef PRONOUNCE_THIS_SPLINEVELOCITYPROFILE_HPP
-#define PRONOUNCE_THIS_SPLINEVELOCITYPROFILE_HPP
 
 #include "velocityProfile.hpp"
 #include "sinusoidalVelocityProfile.hpp"
@@ -15,14 +13,14 @@ namespace Pronounce {
 
 	class SplineVelocityProfile {
 	private:
-		VelocityProfile& velocityProfile;
+		SinusoidalVelocityProfile velocityProfile;
 		ProfileConstraints profileConstraints;
 		SplinePath& splinePath;
 		Path builtSplinePath;
 		int pathGranularity{20};
 	public:
 		SplineVelocityProfile() = delete;
-		SplineVelocityProfile(VelocityProfile& velocityProfile, SplinePath& splinePath);
+		SplineVelocityProfile(SinusoidalVelocityProfile velocityProfile, SplinePath& splinePath);
 		SplineVelocityProfile(ProfileConstraints profileConstraints, SplinePath& splinePath);
 
 		void build() {
@@ -46,4 +44,3 @@ namespace Pronounce {
 
 } // Pronounce
 
-#endif //PRONOUNCE_THIS_SPLINEVELOCITYPROFILE_HPP

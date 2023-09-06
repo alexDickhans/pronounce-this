@@ -56,7 +56,6 @@
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
-#include "motionControl/tankPathPlotter.hpp"
 
 // Orientation
 #include "odometry/orientation/avgOrientation.hpp"
@@ -70,7 +69,6 @@
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
 #include "odometry/interruptOdometry/interruptOdometry.hpp"
-#include "odometry/interruptOdometry/tapeOdometry.hpp"
 
 // Position
 #include "position/motorOdom.hpp"
@@ -100,6 +98,7 @@
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
 #include "utils/polynomialExpression.hpp"
+#include "utils/path/combinedPath.hpp"
 
 
 
@@ -128,7 +127,7 @@ extern "C" {
 #endif
 void autonomous(void);
 void initialize(void);
-void disabled(void);
+[[noreturn]] void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
 #ifdef __cplusplus
