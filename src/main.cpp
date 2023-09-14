@@ -110,6 +110,17 @@ int testMove() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
+	TankMotionProfiling* mp = getMPInstance(
+					CombinedPath({{-10_in, 90.0_deg/10_in}, {-10_in, 0.0}}),
+					defaultProfileConstraints,
+					0.0);
+
+	drivetrainStateController.setCurrentBehavior(mp);
+
+//	move(10_in, defaultProfileConstraints, 0.0);
+
+	drivetrainStateController.waitUntilDone()();
+
 	return 0;
 }
 
@@ -234,6 +245,8 @@ void initialize() {
 	initHardware();
 	initDrivetrain();
 	initIntake();
+	initBlocker();
+	initWings();
 	initBehaviors();
 	initDisplay();
 

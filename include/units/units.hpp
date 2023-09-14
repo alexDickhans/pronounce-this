@@ -75,6 +75,7 @@ QUANTITY_TYPE(0, 0, -1, 0, QFrequency);
 QUANTITY_TYPE(1, 1, -2, 0, QForce);
 QUANTITY_TYPE(1, -1, -2, 0, QPressure);
 QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
+QUANTITY_TYPE(0, 1, 0, -1, QRadius);
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);

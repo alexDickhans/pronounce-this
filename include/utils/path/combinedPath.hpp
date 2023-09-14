@@ -1,8 +1,9 @@
 #pragma once
-//
-// Created by alex on 9/5/23.
-//
 
+#include <utility>
+#include <vector>
+#include <algorithm>
+#include "units/units.hpp"
 
 namespace Pronounce {
 	typedef struct PathSegment_ {
@@ -13,13 +14,20 @@ namespace Pronounce {
 	class CombinedPath {
 	private:
 		std::vector<PathSegment> path;
+		bool inverted{false};
 
 		size_t getIndexAtT(double t) {
-			return std::floor(t * (double) path.size());
+			if (t < 0 || t > 1) {
+				throw std::exception();
+			}
+			return fmin((size_t) (t * (double) path.size()), path.size()-1);
 		}
 
 		double getRemainderAtT(double t) {
-			return t-getIndexAtT(t) * path.size();
+			if (t < 0 || t > 1) {
+				throw "get Bad t value";
+			}
+			return fmod(t, 1.0/(double) path.size()) * (double) path.size();
 		}
 	public:
 		CombinedPath() {
@@ -28,10 +36,24 @@ namespace Pronounce {
 
 		CombinedPath(std::initializer_list<PathSegment> path) {
 			this->path = path;
+			if (this->path[0].distance < 0.0_in) {
+				inverted = true;
+			}
+
+			for (auto &item: this->path) {
+				item.distance = fabs(item.distance.getValue());
+			}
 		}
 
 		explicit CombinedPath(const std::vector<PathSegment>& path) {
 			this->path = path;
+			if (this->path[0].distance < 0.0_in) {
+				inverted = true;
+			}
+
+			for (auto &item: this->path) {
+				item.distance = fabs(item.distance.getValue());
+			}
 		}
 
 		PathSegment getSegmentAtT(double t) {
@@ -43,30 +65,45 @@ namespace Pronounce {
 		}
 
 		double getTAtDistance(QLength distance) {
+
+			std::cout << "getDistance: " << distance.Convert(inch) << std::endl;
 			if (distance > this->getDistance() || distance < 0_m) {
 				return 0.0;
 			}
 
-			return 0.0;
-		}
+			size_t i = 0;
 
-		QLength getDistanceAtT(double t) {
-			if (t > 1 || t < 0) {
-				return 0.0;
+			while (distance > path.at(i).distance) {
+				i++;
+				distance -= path.at(i).distance;
 			}
 
-			QLength distance = 0.0;
+//			std::cout << " result: " << (double) i/(double) path.size() + (distance/path.at(i).distance).getValue()/(double) path.size() << std::endl;
 
+			return (double) i/(double) path.size() + (distance/path.at(i).distance).getValue()/(double) path.size();
+		}
+
+		Angle getAngleAtDistance(QLength distance) {
+			return getAngleAtT(getTAtDistance(distance));
+		}
+
+		Angle getAngleAtT(double t) {
 			size_t index = this->getIndexAtT(t);
 			double remainder = this->getRemainderAtT(t);
 
+			if (t == 1.0)
+				index = path.size();
+
+			Angle totalAngle = 0.0;
+
 			for (int i = 0; i < index; i++) {
-				distance += path[i].distance;
+				totalAngle += path.at(i).curvature * path.at(i).distance;
 			}
 
-			distance += remainder * path[index].distance;
-
-			return distance;
+			return totalAngle.getValue()  +
+				(index != path.size() ?
+					(path.at(index).distance.getValue() * path.at(index).curvature.getValue() * remainder)
+					: 0.0);
 		}
 
 		QLength getDistance() {
@@ -77,17 +114,6 @@ namespace Pronounce {
 			}
 
 			return distance;
-		}
-
-		QCurvature getCurvatureAtDistance(QLength distance) {
-			return getCurvatureAtT(getTAtDistance(distance));
-		}
-
-		QCurvature getCurvatureAtT(double t) {
-			if (t > 1 || t < 0) {
-				return 0.0;
-			}
-			return this->getSegmentAtT(t).curvature;
 		}
 
 		QCurvature getMaxCurvature() {
@@ -103,32 +129,18 @@ namespace Pronounce {
 		double getSpeedMultiplier(QLength trackWidth) {
 			QCurvature maxCurvature = this->getMaxCurvature();
 
+			if (maxCurvature.getValue() == 0.0)
+				return 1.0;
 
+			return 1.0 - abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue();
 		}
 
 		void addPathSegment(PathSegment pathSegment) {
 			path.emplace_back(pathSegment);
 		}
-	};
 
-	class PathBuilder {
-	private:
-		CombinedPath path;
-	public:
-		PathBuilder() {
-			path = CombinedPath();
-		};
-
-		PathBuilder addSegment(PathSegment pathSegment) {
-			path.addPathSegment(pathSegment);
-		}
-
-		PathBuilder addSegment(QLength distance, QCurvature curvature) {
-			path.addPathSegment({distance, curvature});
-		}
-
-		CombinedPath build() {
-			return path;
+		bool getInverted() {
+			return inverted;
 		}
 	};
 } // Pronounce

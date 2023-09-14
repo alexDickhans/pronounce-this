@@ -26,6 +26,7 @@ namespace Pronounce {
 		stateControllers.addBehavior(&intakeExtensionStateController);
 		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&blockerStateController);
+		stateControllers.addBehavior(&wingsStateController);
 		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&loggerService);
 

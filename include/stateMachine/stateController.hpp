@@ -82,6 +82,15 @@ namespace Pronounce {
 			return currentBehavior == nullptr;
 		}
 
+		std::function<void ()> waitUntilDone() {
+			return [this] () -> void {
+				while(!this->isDone()) {
+					pros::Task::delay(10);
+				}
+				return;
+			};
+		}
+
 		/**
 		 * @brief Exit the behavior depending on which one is running
 		 * 

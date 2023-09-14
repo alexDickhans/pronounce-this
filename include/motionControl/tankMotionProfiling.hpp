@@ -61,14 +61,15 @@ namespace Pronounce {
 				QCurvature curvature,
 				QSpeed initialSpeed = 0.0,
 				QSpeed endSpeed = 0.0) :
-					Behavior(name),
+					Behavior(std::move(name)),
 					drivetrain(drivetrain),
 					odometry(odometry),
 					drivetrainMutex(drivetrainMutex),
 					distancePid(distancePid) {
-			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
+			velocityProfile = new SinusoidalVelocityProfile(fabs(distance.getValue()), profileConstraints, initialSpeed, endSpeed);
 			velocityProfile->calculate(100);
-			this->path = PathBuilder().addSegment(distance, curvature).build();
+			this->path = CombinedPath();
+			path.addPathSegment({distance, curvature});
 		}
 
 		TankMotionProfiling(
@@ -84,7 +85,7 @@ namespace Pronounce {
 				PID* turnPid,
 				QSpeed initialSpeed = 0.0,
 				QSpeed endSpeed = 0.0) :
-					Behavior(name),
+					Behavior(std::move(name)),
 					drivetrain(drivetrain),
 					odometry(odometry),
 					drivetrainMutex(drivetrainMutex),
@@ -93,7 +94,8 @@ namespace Pronounce {
 					distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
 			velocityProfile->calculate(100);
-			this->path = PathBuilder().addSegment(distance, curvature).build();
+			this->path = CombinedPath();
+			path.addPathSegment({distance, curvature});
 		}
 
 		TankMotionProfiling(
@@ -104,19 +106,19 @@ namespace Pronounce {
 				ContinuousOdometry* odometry,
 				PID* distancePid,
 				pros::Mutex& drivetrainMutex,
-				QCurvature curvature,
 				Angle targetAngle,
 				PID* turnPid,
 				QSpeed initialSpeed = 0.0,
 				QSpeed endSpeed = 0.0) :
-					Behavior(name),
+					Behavior(std::move(name)),
 					drivetrain(drivetrain),
 					odometry(odometry),
 					drivetrainMutex(drivetrainMutex),
 					targetAngle(targetAngle),
 					turnPid(turnPid),
 					distancePid(distancePid),
-					path(path) {
+					path(std::move(path)) {
+			velocityProfile = new SinusoidalVelocityProfile(this->path.getDistance(), profileConstraints, initialSpeed, endSpeed);
 		}
 
 		void initialize() {
@@ -124,8 +126,9 @@ namespace Pronounce {
 
 			startDistance = drivetrain->getDistanceSinceReset();
 
-			QSpeed adjustedSpeed = path.getSpeedMultiplier(drivetrain->getTrackWidth());
+			QSpeed adjustedSpeed = path.getSpeedMultiplier(drivetrain->getTrackWidth()) * this->velocityProfile->getProfileConstraints().maxVelocity;
 
+			this->velocityProfile->setDistance(path.getDistance());
 			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
 
 			this->velocityProfile->calculate(100);
@@ -134,7 +137,7 @@ namespace Pronounce {
 			drivetrain->setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 		}
 
-		void update() {
+		void update() override {
 			QTime duration = currentTime() - startTime;
 
 			drivetrainMutex.take();
@@ -144,24 +147,23 @@ namespace Pronounce {
 
 			double turnPower = 0;
 
-			// Calculate average wheel velocities
-			QLength currentDistance = drivetrain->getDistanceSinceReset()-startDistance;
-			PathSegment pathSegment = path.getSegmentAtDistance(currentDistance);
+			QLength currentDistance = fabs((drivetrain->getDistanceSinceReset()-startDistance).getValue());
+			QCurvature curvature = path.getSegmentAtDistance(currentDistance).curvature;
 
-			distancePid->setTarget(distance.getValue() * signnum_c(this->velocityProfile->getDistance().getValue()));
+			distancePid->setTarget(distance.getValue());
 
-			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second);
+			double wheelVoltage = (distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second)) * (path.getInverted() ? -1 : 1);
 
 			// add curvature
-			double leftCurvatureAdjustment = (2.0 + pathSegment.curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
-			double rightCurvatureAdjustment = (2.0 - pathSegment.curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
+			double leftCurvatureAdjustment = (2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
+			double rightCurvatureAdjustment = (2.0 - curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
 
 			double leftVoltage = leftCurvatureAdjustment * wheelVoltage;
 			double rightVoltage = rightCurvatureAdjustment * wheelVoltage;
 
 			// integrate turnPid
 			if (turnPid != nullptr) {
-				Angle offset = pathSegment.curvature * distance;
+				Angle offset = -path.getAngleAtDistance(distance).getValue();// * (path.getInverted() ? -1 : 1);
 
 				Angle targetAngleWithOffset = targetAngle + offset;
 
@@ -179,7 +181,7 @@ namespace Pronounce {
 			drivetrainMutex.give();
 		}
 
-		void exit() {
+		void exit() override {
 			drivetrainMutex.take();
 			
 			drivetrain->setBrakeMode(beforeBrakeMode);

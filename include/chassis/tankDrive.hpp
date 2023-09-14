@@ -62,7 +62,7 @@ namespace Pronounce {
 		QLength getDistanceSinceReset() {
 			leftMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 			rightMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			return (((leftMotors->get_positions()[0] * 1_pi * 3.88_in) + (leftMotors->get_positions()[0] * 1_pi * 3.88_in)) / 2.0).getValue() * 343.0/600.0;
+			return (((leftMotors->get_positions()[0] * 1_pi * 3.25_in) + (rightMotors->get_positions()[0] * 1_pi * 3.25_in)) / 2.0).getValue() * 360.0/600.0;
 		}
 
 		void setBrakeMode(pros::motor_brake_mode_e_t brakeMode) {

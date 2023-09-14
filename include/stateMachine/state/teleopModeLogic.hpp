@@ -37,7 +37,7 @@ namespace Pronounce {
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [&] () -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_UP, [&] () -> void {
 				blockerStatus = !blockerStatus;
 				if (blockerStateController.getCurrentBehavior() != nullptr) {
 					blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerMatchLoad).until([=] () -> bool {
@@ -57,7 +57,14 @@ namespace Pronounce {
             controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [=] () -> void {
 				intakeExtensionStateController.useDefaultBehavior();
                 intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-                    return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));});
+                    return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [&] () -> void {
+				wingsStateController.setCurrentBehavior(wingsOut.until([&] () -> bool {
+					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L1);
+				}));
+			});
 		}
 
 		void update() override {
