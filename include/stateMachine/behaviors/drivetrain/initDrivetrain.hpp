@@ -21,10 +21,10 @@
 
 namespace Pronounce {
 
-	PID turningPid(3.0, 0.0, 30.0, 0.0, 0.0, false);
-	PID movingTurnPid(15000.0, 0.0, 100000.0, 0.0, 0.0, false);
+	PID turningPid(2.0, 0.0, 25.0, 0.0, 0.0, false);
+	PID movingTurnPid(22000.0, 0.0, 0.0, 60000.0, 0.0, false);
 
-	PID distancePid(400000.0, 0.0, 250000.0);
+	PID distancePid(700000.0, 0.0, 250000.0);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);
@@ -33,7 +33,7 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	ProfileConstraints defaultProfileConstraints = { 40_in / second, 100_in / second / second, 0.0 };
+	ProfileConstraints defaultProfileConstraints = { 62_in / second, 175_in / second / second, 0.0 };
 
 	TankMotionProfiling* getMPInstance(const CombinedPath& path, ProfileConstraints profileConstraints, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed finalSpeed = 0.0) {
 		return new TankMotionProfiling(
@@ -45,7 +45,7 @@ namespace Pronounce {
 				&distancePid,
 				drivetrainMutex,
 				startAngle,
-				&turningPid,
+				&movingTurnPid,
 				initialSpeed,
 				finalSpeed);
 	}

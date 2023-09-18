@@ -59,4 +59,8 @@ namespace Pronounce {
 			behavior->exit();
 		}
 	};
+
+	Behavior* Behavior::wait(QTime time) {
+		return new Wait(this, time);
+	}
 } // namespace Pronounce

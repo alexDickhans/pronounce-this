@@ -110,14 +110,70 @@ int testMove() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	TankMotionProfiling* mp = getMPInstance(
-					CombinedPath({{-10_in, 90.0_deg/10_in}, {-10_in, 0.0}}),
-					defaultProfileConstraints,
-					0.0);
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{30_in, 0.0}, {10_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0));
 
-	drivetrainStateController.setCurrentBehavior(mp);
+	drivetrainStateController.waitUntilDone()();
 
-//	move(10_in, defaultProfileConstraints, 0.0);
+	return 0;
+}
+
+int safeCloseAWP() {
+
+
+
+	return 0;
+}
+
+int farAWP() {
+
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{55_in, 0.0}}),
+			defaultProfileConstraints,
+			-90.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+//	drivetrainStateController.setCurrentBehavior(getMPInstance(
+//			CombinedPath({{-55_in, 0.0}}),
+//			defaultProfileConstraints,
+//			-90.0_deg));
+//
+//	drivetrainStateController.waitUntilDone()();
+
+	return 0;
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{-55_in, 0.0}}),
+			defaultProfileConstraints,
+			-90.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(0_deg, 1000);
+
+	blockerStateController.setCurrentBehavior(blockerReleasePreLoad.wait(500_ms));
+
+	blockerStateController.waitUntilDone()();
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{5_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{-15_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0_deg));
 
 	drivetrainStateController.waitUntilDone()();
 
@@ -301,7 +357,7 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		testMove();
+		farAWP();
 	#endif // !1
 
 	postAuton();

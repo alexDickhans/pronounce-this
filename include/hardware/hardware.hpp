@@ -56,7 +56,7 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(10.5_in, 61.26105675_in / second, &leftDriveMotors, &rightDriveMotors, 600);
+	TankDrivetrain drivetrain(10.5_in, 61.26105675_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
 	pros::Motor intakeMotor(4, pros::E_MOTOR_GEARSET_18, true);
 	pros::Motor blockerMotor(21, pros::E_MOTOR_GEARSET_18, false);

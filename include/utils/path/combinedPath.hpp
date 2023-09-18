@@ -20,7 +20,9 @@ namespace Pronounce {
 			if (t < 0 || t > 1) {
 				throw std::exception();
 			}
-			return fmin((size_t) (t * (double) path.size()), path.size()-1);
+			std::cout << "HII " << t;
+			size_t result = fmin((size_t) (t * (double) path.size()), path.size()-1);
+			return result;
 		}
 
 		double getRemainderAtT(double t) {
@@ -41,7 +43,7 @@ namespace Pronounce {
 			}
 
 			for (auto &item: this->path) {
-				item.distance = fabs(item.distance.getValue());
+				item = {fabs(item.distance.getValue()), item.curvature};
 			}
 		}
 
@@ -52,7 +54,7 @@ namespace Pronounce {
 			}
 
 			for (auto &item: this->path) {
-				item.distance = fabs(item.distance.getValue());
+				item = {fabs(item.distance.getValue()), item.curvature};
 			}
 		}
 
@@ -65,8 +67,6 @@ namespace Pronounce {
 		}
 
 		double getTAtDistance(QLength distance) {
-
-			std::cout << "getDistance: " << distance.Convert(inch) << std::endl;
 			if (distance > this->getDistance() || distance < 0_m) {
 				return 0.0;
 			}
@@ -74,8 +74,8 @@ namespace Pronounce {
 			size_t i = 0;
 
 			while (distance > path.at(i).distance) {
-				i++;
 				distance -= path.at(i).distance;
+				i++;
 			}
 
 //			std::cout << " result: " << (double) i/(double) path.size() + (distance/path.at(i).distance).getValue()/(double) path.size() << std::endl;
@@ -132,7 +132,7 @@ namespace Pronounce {
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;
 
-			return 1.0 - abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue();
+			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
 
 		void addPathSegment(PathSegment pathSegment) {
@@ -140,7 +140,7 @@ namespace Pronounce {
 		}
 
 		bool getInverted() {
-			return inverted;
+			return this->inverted;
 		}
 	};
 } // Pronounce

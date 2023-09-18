@@ -8,7 +8,7 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "utils/path/combinedPath.hpp"
 
-double velocityFeedforward = 235;
+double velocityFeedforward = 200.0;
 
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {
@@ -126,7 +126,7 @@ namespace Pronounce {
 
 			startDistance = drivetrain->getDistanceSinceReset();
 
-			QSpeed adjustedSpeed = path.getSpeedMultiplier(drivetrain->getTrackWidth()) * this->velocityProfile->getProfileConstraints().maxVelocity;
+			QSpeed adjustedSpeed = path.getSpeedMultiplier(drivetrain->getTrackWidth()) * this->velocityProfile->getProfileConstraints().maxVelocity.getValue();
 
 			this->velocityProfile->setDistance(path.getDistance());
 			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
@@ -142,17 +142,20 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
-			QSpeed speed = velocityProfile->getVelocityByTime(duration);
-			QLength distance = velocityProfile->getDistanceByTime(duration);
+			QSpeed speed = velocityProfile->getVelocityByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
+			QLength distance = velocityProfile->getDistanceByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
 
 			double turnPower = 0;
 
-			QLength currentDistance = fabs((drivetrain->getDistanceSinceReset()-startDistance).getValue());
-			QCurvature curvature = path.getSegmentAtDistance(currentDistance).curvature;
+			std::cout << "HIII getTAtDistance: " << path.getTAtDistance(distance);
+
+			QLength currentDistance = (drivetrain->getDistanceSinceReset()-startDistance);
+			QCurvature curvature = path.getSegmentAtDistance(fabs(distance.getValue())).curvature;
+			std::cout << " Current: " << currentDistance.Convert(inch) << " Target: " << distance.Convert(inch) << " Speed: " << speed.Convert(inch/second) << " Curvature: " << curvature.Convert(degree/inch) <<std::endl;
 
 			distancePid->setTarget(distance.getValue());
 
-			double wheelVoltage = (distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second)) * (path.getInverted() ? -1 : 1);
+			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second);
 
 			// add curvature
 			double leftCurvatureAdjustment = (2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;
@@ -163,7 +166,7 @@ namespace Pronounce {
 
 			// integrate turnPid
 			if (turnPid != nullptr) {
-				Angle offset = -path.getAngleAtDistance(distance).getValue();// * (path.getInverted() ? -1 : 1);
+				Angle offset = path.getAngleAtDistance(distance).getValue() * (path.getInverted() ? 1 : -1);
 
 				Angle targetAngleWithOffset = targetAngle + offset;
 

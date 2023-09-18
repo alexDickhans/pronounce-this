@@ -9,14 +9,14 @@ namespace Pronounce {
 	private:
 		pros::Motor_Group* leftMotors;
 		pros::Motor_Group* rightMotors;
-		double maxMotorSpeed = 0.0;
+		QAngularVelocity maxMotorSpeed = 0.0;
 	public:
-		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group* leftMotors, pros::Motor_Group* rightMotors, double maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
+		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group* leftMotors, pros::Motor_Group* rightMotors, QAngularVelocity maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
 			this->maxMotorSpeed = maxMotorSpeed;
 		}
 
 		QSpeed getSpeed() {
-			return ((leftMotors->get_actual_velocities().at(1) + rightMotors->get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed);
+			return ((leftMotors->get_actual_velocities().at(1) + rightMotors->get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed).getValue();
 		}
 
 		void skidSteerVelocity(QSpeed speed, double turn) {
@@ -62,7 +62,10 @@ namespace Pronounce {
 		QLength getDistanceSinceReset() {
 			leftMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 			rightMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			return (((leftMotors->get_positions()[0] * 1_pi * 3.25_in) + (rightMotors->get_positions()[0] * 1_pi * 3.25_in)) / 2.0).getValue() * 360.0/600.0;
+			return (
+					((leftMotors->get_positions()[0] * revolution) * (this->getMaxSpeed()/this->maxMotorSpeed))
+					+ ((rightMotors->get_positions()[0] * revolution) * (this->getMaxSpeed()/this->maxMotorSpeed))
+					)/2.0;
 		}
 
 		void setBrakeMode(pros::motor_brake_mode_e_t brakeMode) {
