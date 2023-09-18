@@ -20,8 +20,8 @@ namespace Pronounce {
 			return point;
 		}
 
-		void setPoint(Point point) {
-			this->point = point;
+		void setPoint(const Point& newPoint) {
+			this->point = newPoint;
 		}
 
 		Vector getControlArm() {
@@ -42,10 +42,9 @@ namespace Pronounce {
 			return result;
 		}
 
-		void setControlArm(Vector controlArm) {
-			this->controlArm = controlArm;
+		void setControlArm(const Vector& newControlArm) {
+			this->controlArm = newControlArm;
 		}
-
 
 		~SplinePoint();
 	};

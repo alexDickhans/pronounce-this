@@ -16,17 +16,6 @@
 #define _PROS_MAIN_H_
 
 /**
- * If defined, some commonly used enums will have preprocessor macros which give
- * a shorter, more convenient naming pattern. If this isn't desired, simply
- * comment the following line out.
- *
- * For instance, E_CONTROLLER_MASTER has a shorter name: CONTROLLER_MASTER.
- * E_CONTROLLER_MASTER is pedantically correct within the PROS styleguide, but
- * not convienent for most student programmers.
- */
-#define PROS_USE_SIMPLE_NAMES
-
-/**
  * If defined, C++ literals will be available for use. All literals are in the
  * pros::literals namespace.
  *
@@ -66,6 +55,7 @@
 #include "motionControl/purePursuit.hpp"
 #include "motionControl/omniPurePursuit.hpp"
 #include "motionControl/tankPurePursuit.hpp"
+#include "motionControl/tankMotionProfiling.hpp"
 
 // Orientation
 #include "odometry/orientation/avgOrientation.hpp"
@@ -79,7 +69,6 @@
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
 #include "odometry/interruptOdometry/interruptOdometry.hpp"
-#include "odometry/interruptOdometry/tapeOdometry.hpp"
 
 // Position
 #include "position/motorOdom.hpp"
@@ -87,15 +76,11 @@
 #include "position/trackingWheel.hpp"
 
 // State Machine
-#include "stateMachine/behavior.hpp"
-#include "stateMachine/sequence.hpp"
-#include "stateMachine/stateController.hpp"
-#include "stateMachine/wait.hpp"
-#include "stateMachine/behaviors/robotBehaviors.hpp"
-#include "stateMachine/state/modeLogic.hpp"
-#include "stateMachine/state/teleopModeLogic.hpp"
-#include "stateMachine/state/modeLogic.hpp"
+#include "stateMachine/stateMachine.hpp"
+
 #include "hardware/hardware.hpp"
+#include "hardwareAbstractions/joystick/joystick.hpp"
+#include "hardwareAbstractions/joystick/robotJoystick.hpp"
 
 // Units
 #include "units/units.hpp"
@@ -112,9 +97,13 @@
 #include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
+#include "utils/polynomialExpression.hpp"
+#include "utils/path/combinedPath.hpp"
 
-// Vision
-#include "pronounceLedStrip/ledStrip.hpp"
+
+
+// velocity profile
+#include "velocityProfile/splineVelocityProfile.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -138,7 +127,7 @@ extern "C" {
 #endif
 void autonomous(void);
 void initialize(void);
-void disabled(void);
+[[noreturn]] void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
 #ifdef __cplusplus

@@ -60,6 +60,19 @@ namespace Pronounce
 		return findMedian(array, samples);
 	}
 
+	unsigned int factorial(const unsigned int& x) {
+		if (x < 2)
+			return 1;
+
+		unsigned int result = 1;
+
+		for (unsigned int i = x; i >= 0; i--) {
+			result *= i;
+		}
+
+		return result;
+	}
+
     // Basically std::format, but only added in C++20
     // https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
 

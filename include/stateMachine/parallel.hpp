@@ -3,6 +3,7 @@
 #include "behavior.hpp"
 #include "stateController.hpp"
 #include <unordered_map>
+#include <utility>
 
 namespace Pronounce {
 	/**
@@ -17,13 +18,13 @@ namespace Pronounce {
 		 * @brief Construct a new Parallel object
 		 * 
 		 */
-		Parallel(std::string name) : Behavior(name) {}
+		explicit Parallel(std::string name) : Behavior(std::move(name)) {}
 
 		/**
 		 * @brief Start all the states
 		 * 
 		 */
-		void initialize() {
+		void initialize() override {
 			for (auto& behavior : behaviors) {
 				behavior.first->setCurrentBehavior(behavior.second);
 			}
@@ -33,7 +34,7 @@ namespace Pronounce {
 		 * @brief Update, doesn't do anything yet
 		 * 
 		 */
-		void update() {
+		void update() override {
 			// Don't do anything
 		}
 
@@ -41,7 +42,7 @@ namespace Pronounce {
 		 * @brief Exit all the behaviors
 		 * 
 		 */
-		void exit() {
+		void exit() override {
 			for (auto& behavior : behaviors) {
 				behavior.first->useDefaultBehavior();
 			}
@@ -89,7 +90,7 @@ namespace Pronounce {
 		 * @return true Everything is complete
 		 * @return false Not everything is complete
 		 */
-		bool isDone() {
+		bool isDone() override {
 			// If any behavior is not done return not done
 			bool done = true;
 			for (auto& behavior : behaviors) {
@@ -98,7 +99,7 @@ namespace Pronounce {
 			return done;
 		}
 
-		~Parallel() {}
+		~Parallel() = default;
 	};
 } // namespace Pronounce
 

@@ -6,8 +6,9 @@
 #include "stateMachine/behavior.hpp"
 #include "time/robotTime.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
+#include "utils/path/combinedPath.hpp"
 
-double velocityFeedforward = 235;
+double velocityFeedforward = 200.0;
 
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {
@@ -26,42 +27,108 @@ namespace Pronounce {
 		FeedbackController* distancePid;
 		PID* turnPid = nullptr;
 
-		QCurvature curvature = 0.0;
+		CombinedPath path;
 
 		pros::motor_brake_mode_e_t beforeBrakeMode;
 
-		QSpeed initialSpeed, endSpeed;
 		QLength startDistance;
 
 	public:
-		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, VelocityProfile* velocityProfile, ContinuousOdometry* odometry, FeedbackController* distancePid, pros::Mutex& drivetrainMutex) : Behavior(name), drivetrain(drivetrain), velocityProfile(velocityProfile), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
+		TankMotionProfiling(
+				std::string name,
+				TankDrivetrain* drivetrain,
+				VelocityProfile* velocityProfile,
+				ContinuousOdometry* odometry,
+				FeedbackController* distancePid,
+				pros::Mutex& drivetrainMutex) :
+					Behavior(name),
+					drivetrain(drivetrain),
+					velocityProfile(velocityProfile),
+					odometry(odometry),
+					drivetrainMutex(drivetrainMutex),
+					distancePid(distancePid) {
 
 		}
 
-		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, FeedbackController* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) : Behavior(name), initialSpeed(initialSpeed), endSpeed(endSpeed), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), distancePid(distancePid) {
-			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
+		TankMotionProfiling(
+				std::string name,
+				TankDrivetrain* drivetrain,
+				ProfileConstraints profileConstraints,
+				QLength distance,
+				ContinuousOdometry* odometry,
+				FeedbackController* distancePid,
+				pros::Mutex& drivetrainMutex,
+				QCurvature curvature,
+				QSpeed initialSpeed = 0.0,
+				QSpeed endSpeed = 0.0) :
+					Behavior(std::move(name)),
+					drivetrain(drivetrain),
+					odometry(odometry),
+					drivetrainMutex(drivetrainMutex),
+					distancePid(distancePid) {
+			velocityProfile = new SinusoidalVelocityProfile(fabs(distance.getValue()), profileConstraints, initialSpeed, endSpeed);
 			velocityProfile->calculate(100);
-			this->curvature = curvature;
+			this->path = CombinedPath();
+			path.addPathSegment({distance, curvature});
 		}
 
-		TankMotionProfiling(std::string name, TankDrivetrain* drivetrain, ProfileConstraints profileConstraints, QLength distance, ContinuousOdometry* odometry, PID* distancePid, pros::Mutex& drivetrainMutex, QCurvature curvature, Angle targetAngle, PID* turnPid, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) : Behavior(name), initialSpeed(initialSpeed), endSpeed(endSpeed), drivetrain(drivetrain), odometry(odometry), drivetrainMutex(drivetrainMutex), targetAngle(targetAngle), turnPid(turnPid), distancePid(distancePid) {
+		TankMotionProfiling(
+				std::string name,
+				TankDrivetrain* drivetrain,
+				ProfileConstraints profileConstraints,
+				QLength distance,
+				ContinuousOdometry* odometry,
+				PID* distancePid,
+				pros::Mutex& drivetrainMutex,
+				QCurvature curvature,
+				Angle targetAngle,
+				PID* turnPid,
+				QSpeed initialSpeed = 0.0,
+				QSpeed endSpeed = 0.0) :
+					Behavior(std::move(name)),
+					drivetrain(drivetrain),
+					odometry(odometry),
+					drivetrainMutex(drivetrainMutex),
+					targetAngle(targetAngle),
+					turnPid(turnPid),
+					distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
 			velocityProfile->calculate(100);
-			this->curvature = curvature;
+			this->path = CombinedPath();
+			path.addPathSegment({distance, curvature});
+		}
+
+		TankMotionProfiling(
+				std::string name,
+				TankDrivetrain* drivetrain,
+				ProfileConstraints profileConstraints,
+				CombinedPath path,
+				ContinuousOdometry* odometry,
+				PID* distancePid,
+				pros::Mutex& drivetrainMutex,
+				Angle targetAngle,
+				PID* turnPid,
+				QSpeed initialSpeed = 0.0,
+				QSpeed endSpeed = 0.0) :
+					Behavior(std::move(name)),
+					drivetrain(drivetrain),
+					odometry(odometry),
+					drivetrainMutex(drivetrainMutex),
+					targetAngle(targetAngle),
+					turnPid(turnPid),
+					distancePid(distancePid),
+					path(std::move(path)) {
+			velocityProfile = new SinusoidalVelocityProfile(this->path.getDistance(), profileConstraints, initialSpeed, endSpeed);
 		}
 
 		void initialize() {
 			startTime = currentTime();
 
-			// drivetrain->reset();
 			startDistance = drivetrain->getDistanceSinceReset();
 
-			// drivetrain->tankSteerVelocity(0.0, 0.0);
+			QSpeed adjustedSpeed = path.getSpeedMultiplier(drivetrain->getTrackWidth()) * this->velocityProfile->getProfileConstraints().maxVelocity.getValue();
 
-			double curvatureAdjustment = std::min(((2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0), ((2.0 - curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0));
-
-			QSpeed adjustedSpeed = (1.0 - ((1-curvatureAdjustment)/2)) * velocityProfile->getProfileConstraints().maxVelocity;
-
+			this->velocityProfile->setDistance(path.getDistance());
 			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
 
 			this->velocityProfile->calculate(100);
@@ -70,20 +137,23 @@ namespace Pronounce {
 			drivetrain->setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 		}
 
-		void update() {
+		void update() override {
 			QTime duration = currentTime() - startTime;
 
 			drivetrainMutex.take();
 
-			QSpeed speed = velocityProfile->getVelocityByTime(duration);
-			QLength distance = velocityProfile->getDistanceByTime(duration);
+			QSpeed speed = velocityProfile->getVelocityByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
+			QLength distance = velocityProfile->getDistanceByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
 
 			double turnPower = 0;
 
-			// calculate average wheel velocites
-			QLength currentDistance = drivetrain->getDistanceSinceReset()-startDistance;
+			std::cout << "HIII getTAtDistance: " << path.getTAtDistance(distance);
 
-			distancePid->setTarget(distance.getValue() * signnum_c(this->velocityProfile->getDistance().getValue()));
+			QLength currentDistance = (drivetrain->getDistanceSinceReset()-startDistance);
+			QCurvature curvature = path.getSegmentAtDistance(fabs(distance.getValue())).curvature;
+			std::cout << " Current: " << currentDistance.Convert(inch) << " Target: " << distance.Convert(inch) << " Speed: " << speed.Convert(inch/second) << " Curvature: " << curvature.Convert(degree/inch) <<std::endl;
+
+			distancePid->setTarget(distance.getValue());
 
 			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second);
 
@@ -96,7 +166,7 @@ namespace Pronounce {
 
 			// integrate turnPid
 			if (turnPid != nullptr) {
-				Angle offset = curvature * distance;
+				Angle offset = path.getAngleAtDistance(distance).getValue() * (path.getInverted() ? 1 : -1);
 
 				Angle targetAngleWithOffset = targetAngle + offset;
 
@@ -114,7 +184,7 @@ namespace Pronounce {
 			drivetrainMutex.give();
 		}
 
-		void exit() {
+		void exit() override {
 			drivetrainMutex.take();
 			
 			drivetrain->setBrakeMode(beforeBrakeMode);

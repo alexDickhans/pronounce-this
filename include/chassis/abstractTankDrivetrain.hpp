@@ -6,6 +6,10 @@
 #include <iostream>
 
 namespace Pronounce {
+	typedef struct TankChassisSpeeds_ {
+		QSpeed speed = 0.0;
+		QCurvature curvature = 0.0;
+	} TankChassisSpeeds;
 
 	/**
 	 * @brief Abstract tank drivetrain class for all tank drivetrains
@@ -90,6 +94,10 @@ namespace Pronounce {
 			}
 
 			this->tankSteerVelocity(leftSpeed, rightSpeed);
+		}
+
+		void driveCurvature(TankChassisSpeeds chassisSpeeds) {
+			this->driveCurvature(chassisSpeeds.speed, chassisSpeeds.curvature);
 		}
 
 		/**

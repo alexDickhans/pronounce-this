@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="2f3dcd7e-fdea-4657-9d8b-794bd30331e1" name="Rbot" defaultType="TOOL">
+      <configuration id="86764dcf-e02f-42c1-b6fd-8fa83d92c017" name="Rbot">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_pros" />
+        </build>
+        <clean type="TOOL">
+          <tool actionId="Tool_External Tools_Clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

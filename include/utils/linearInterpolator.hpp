@@ -63,6 +63,10 @@ namespace Pronounce {
 			return lerp(values.at(values.size()-2).second, values.at(values.size()-1).second, t);
 		}
 
+		void clear() {
+			values.clear();
+		}
+
 		~LinearInterpolator() {}
 	};
 } // namespace Pronounce

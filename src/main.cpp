@@ -5,11 +5,9 @@ std::shared_ptr<lv_obj_t> tabview;
 
 RobotStatus robotStatus;
 ModeLogic modeLogic(&robotStatus);
-TeleopModeLogic teleopModeLogic(new pros::Controller(CONTROLLER_MASTER), new pros::Controller(CONTROLLER_PARTNER));
+TeleopModeLogic teleopModeLogic(new RobotJoystick(E_CONTROLLER_MASTER), new RobotJoystick(E_CONTROLLER_PARTNER));
 
 pros::Mutex robotMutex;
-
-bool matchLoadsDone = false;
 
 // SECTION Auton
 
@@ -19,8 +17,8 @@ bool matchLoadsDone = false;
  */
 int preAutonRun() {
 	teleopController.useDefaultBehavior();
-	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 	drivetrainStateController.setDefaultBehavior(&drivetrainStopped);
+	drivetrainStateController.useDefaultBehavior();
 	leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 	rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 	return 0;
@@ -29,7 +27,7 @@ int preAutonRun() {
 void turnTo(Angle angle, int waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
 
-	drivetrainStateController.setCurrentBehavior(&angleRotation);
+	drivetrainStateController.setCurrentBehavior(new RotationController("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex));
 
 	pros::Task::delay(waitTimeMS);
 
@@ -39,13 +37,11 @@ void turnTo(Angle angle, int waitTimeMS) {
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
-	TankMotionProfiling motionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, initialSpeed, endSpeed);
-
-	drivetrainStateController.setCurrentBehavior(&motionProfiling);
+	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, initialSpeed, endSpeed));
 
 	pros::delay(50);
 
-	while(!drivetrainStateController.isDone()) 
+	while(!drivetrainStateController.isDone())
 		pros::Task::delay(10);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
@@ -57,7 +53,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 
 	pros::delay(50);
 
-	while(!drivetrainStateController.isDone()) 
+	while(!drivetrainStateController.isDone())
 		pros::Task::delay(10);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
@@ -114,31 +110,72 @@ int testMove() {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
-	intakeStateController.setCurrentBehavior(&intakeEject);
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{30_in, 0.0}, {10_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0));
 
-	move(14_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+	drivetrainStateController.waitUntilDone()();
 
-	move(-14_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+	return 0;
+}
 
-	turnTo(-45_deg, 800);
+int safeCloseAWP() {
+
+
+
+	return 0;
+}
+
+int farAWP() {
+
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{55_in, 0.0}}),
+			defaultProfileConstraints,
+			-90.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+//	drivetrainStateController.setCurrentBehavior(getMPInstance(
+//			CombinedPath({{-55_in, 0.0}}),
+//			defaultProfileConstraints,
+//			-90.0_deg));
+//
+//	drivetrainStateController.waitUntilDone()();
+
+	return 0;
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
 
 	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
-	move(15_in, defaultProfileConstraints, 0.0, -45_deg, 0.0, 0.0);
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{-55_in, 0.0}}),
+			defaultProfileConstraints,
+			-90.0_deg));
 
-	move(-18_in, defaultProfileConstraints, 0.0, -55_deg, 0.0, 0.0);
+	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-0_deg, 800);
+	turnTo(0_deg, 1000);
 
-	intakeStateController.setCurrentBehavior(&intakeEject);
-	
-	move(10_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
+	blockerStateController.setCurrentBehavior(blockerReleasePreLoad.wait(500_ms));
 
-	intakeStateController.setCurrentBehavior(&intakeStopped);
+	blockerStateController.waitUntilDone()();
 
-	move(10_in, defaultProfileConstraints, 0.0, 0.0, 0.0, 0.0);
-	
-	pros::Task::delay(500);
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{5_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({{-15_in, 0.0}}),
+			defaultProfileConstraints,
+			0.0_deg));
+
+	drivetrainStateController.waitUntilDone()();
 
 	return 0;
 }
@@ -155,7 +192,7 @@ int postAuton() {
 
 // SECTION INIT
 
-void update() {
+[[noreturn]] void update() {
 
 	pros::Task::delay(200);
 	
@@ -183,7 +220,7 @@ void update() {
 	}
 }
 
-void updateDisplay() {
+[[noreturn]] void updateDisplay() {
 
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
@@ -231,15 +268,14 @@ void updateDisplay() {
 		// Drivetrain
 		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		// lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(leftIntakeMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(intakeMotor.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 0, 1, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		// lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 1, (std::to_string(rightIntakeMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(leftIntakeMotor.get_actual_velocity())).c_str());
+		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(intakeMotor.get_actual_velocity())).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -265,6 +301,8 @@ void initialize() {
 	initHardware();
 	initDrivetrain();
 	initIntake();
+	initBlocker();
+	initWings();
 	initBehaviors();
 	initDisplay();
 
@@ -280,7 +318,7 @@ void initialize() {
  * Runs while the robot is disabled i.e. before and after match, between auton
  * and teleop period
  */
-void disabled() {
+[[noreturn]] void disabled() {
 	robotMutex.take();
 	teleopController.useDefaultBehavior();
 	robotMutex.give();
@@ -319,7 +357,7 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		testMove();
+		farAWP();
 	#endif // !1
 
 	postAuton();
@@ -336,7 +374,6 @@ void opcontrol() {
 	postAuton();
 	robotMutex.take();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
-	drivetrainStateController.setDefaultBehavior(&normalJoystick);
 	robotMutex.give();
 }
 

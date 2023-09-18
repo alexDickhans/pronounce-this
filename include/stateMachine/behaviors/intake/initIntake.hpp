@@ -8,13 +8,17 @@
 
 namespace Pronounce {
     Intake intakeStopped("IntakeStopped", intakeMotors, 0.0, false);
-    Intake intakeIntaking("IntakeIntaking", intakeMotors, 1.0, true);
-    Intake intakeHold("IntakeHold", intakeMotors, 0.2, false);
-    Intake intakeEject("IntakeEject", intakeMotors, -1.0, false);
+	Intake intakeIntaking("IntakeIntaking", intakeMotors, 1.0, true);
+	Intake intakeHold("IntakeHold", intakeMotors, 0.15, false);
+	Intake intakeEject("IntakeEject", intakeMotors, -1.0, false);
 
     StateController intakeStateController("IntakeStateController", &intakeStopped);
+	StateController intakeExtensionStateController("IntakeStateController", new Behavior());
+
+    Sequence intakeSequence("IntakeSequence");
 
     void initIntake() {
-
+		intakeSequence.addState(&intakeStateController, intakeIntaking.until([=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
+		intakeSequence.addState(&intakeStateController, &intakeHold);
     }
 } // namespace Pronounce

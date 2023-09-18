@@ -75,6 +75,8 @@ QUANTITY_TYPE(0, 0, -1, 0, QFrequency);
 QUANTITY_TYPE(1, 1, -2, 0, QForce);
 QUANTITY_TYPE(1, -1, -2, 0, QPressure);
 QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
+QUANTITY_TYPE(0, 1, 0, -1, QRadius);
+QUANTITY_TYPE(0, 0, -1, 1, QAngularVelocity);
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);
@@ -218,6 +220,7 @@ constexpr QTime millisecond = second / 1000;
 constexpr QTime minute = 60 * second;
 constexpr QTime hour = 60 * minute;
 constexpr QTime day = 24 * hour;
+constexpr QTime year = 365 * day;
 
 constexpr QFrequency Hz(1.0);
 
@@ -349,6 +352,7 @@ constexpr long double operator"" _pi(unsigned long long int x)
 
 // Predefined angle units:
 constexpr Angle radian(1.0);
+constexpr Angle revolution = static_cast<double>(2) * radian;
 constexpr Angle degree = static_cast<double>(2_pi / 360.0) * radian;
 
 // literals for angle units

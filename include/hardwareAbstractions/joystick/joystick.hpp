@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stateMachine/callbackHelper.hpp"
+
 namespace Pronounce {
 
 	typedef enum {
@@ -22,7 +24,7 @@ namespace Pronounce {
 		E_CONTROLLER_DIGITAL_B,
 		E_CONTROLLER_DIGITAL_Y,
 		E_CONTROLLER_DIGITAL_A
-	} controller_digital_e_t;
+	}  controller_digital_e_t;
 
 	typedef enum { E_CONTROLLER_MASTER = 0, E_CONTROLLER_PARTNER } controller_id_e_t;
 
@@ -31,8 +33,12 @@ namespace Pronounce {
 	class AbstractJoystick {
 	private:
 		/* data */
+    protected:
+        std::unordered_map<controller_digital_e_t, std::vector<VoidCallback>> callbacks;
 	public:
-		AbstractJoystick(controller_id_e_t controllerId) {}
+		explicit AbstractJoystick(controller_id_e_t controllerId) {}
+
+        virtual void update() {};
 
 		virtual std::int32_t is_connected() {
 			return false;
@@ -44,6 +50,14 @@ namespace Pronounce {
 
 		virtual std::int32_t get_digital_new_press(controller_digital_e_t channel) { return 0; }
 
-		~AbstractJoystick() {}
+        void onPressed(controller_digital_e_t button, const VoidCallback& callback) {
+            callbacks[button].emplace_back(callback);
+        }
+
+		void clearCallbacks() {
+			callbacks.clear();
+		}
+
+		~AbstractJoystick() = default;
 	};
 } // namespace Pronounce

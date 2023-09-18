@@ -23,7 +23,10 @@ namespace Pronounce {
 		robotBehaviorMutex.take();
 
 		stateControllers.addBehavior(&drivetrainStateController);
+		stateControllers.addBehavior(&intakeExtensionStateController);
 		stateControllers.addBehavior(&intakeStateController);
+		stateControllers.addBehavior(&blockerStateController);
+		stateControllers.addBehavior(&wingsStateController);
 		stateControllers.addBehavior(&teleopController);
 		stateControllers.addBehavior(&loggerService);
 
@@ -34,11 +37,11 @@ namespace Pronounce {
 	private:
 		RobotStatus* robotStatus;
 	public:
-		ModeLogic(RobotStatus* robotStatus) {
+		explicit ModeLogic(RobotStatus* robotStatus) {
 			this->robotStatus = robotStatus;
 		}
 
-		void initialize() {
+		void initialize() override {
 			robotBehaviorMutex.take();
 
 			robotStatus->initialize();
@@ -47,20 +50,16 @@ namespace Pronounce {
 			robotBehaviorMutex.give();
 		}
 
-		void update() {
+		void update() override {
 			robotBehaviorMutex.take();
 
 			robotStatus->update();
 			stateControllers.update();
 
 			robotBehaviorMutex.give();
-
-			if (gotTriball) {
-				intakeStateController.setCurrentBehavior(&intakeHold);
-			}
 		}
 
-		void exit() {
+		void exit() override {
 			robotBehaviorMutex.take();
 
 			robotStatus->exit();
@@ -69,10 +68,10 @@ namespace Pronounce {
 			robotBehaviorMutex.give();
 		}
 
-		bool isDone() {
+		bool isDone() override {
 			return false;
 		}
 
-		~ModeLogic() {}
+		~ModeLogic() = default;
 	};
 } // namespace Pronounce

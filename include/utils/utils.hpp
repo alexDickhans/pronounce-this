@@ -50,6 +50,8 @@ namespace Pronounce {
 
 	double getDistanceSensorMedian(pros::Distance &distance, int samples);
 
+	unsigned int factorial(const unsigned int& x);
+
 #ifdef SIM
 	double clamp(double value, double min, double max) {
 		return std::min(std::max(value, min), max);
