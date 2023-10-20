@@ -6,7 +6,7 @@
 #include <cmath>
 #include <algorithm>
 #include <bits/stdc++.h>
-#include "api.h"
+//#include "api.h"
 
 // TODO: add docstrings
 // TODO: add comments
@@ -48,7 +48,7 @@ namespace Pronounce {
 	
 	double findMedian(double arr[], int size);
 
-	double getDistanceSensorMedian(pros::Distance &distance, int samples);
+//	double getDistanceSensorMedian(pros::Distance &distance, int samples);
 
 	unsigned int factorial(const unsigned int& x);
 

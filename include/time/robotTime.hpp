@@ -8,4 +8,8 @@ namespace Pronounce {
 	QTime currentTime() {
 		return pros::millis() * 1_ms;
 	}
+
+	void delay(QTime time) {
+		pros::Task::delay(time.Convert(millisecond));
+	}
 } // namespace Pronounce

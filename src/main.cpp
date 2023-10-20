@@ -24,16 +24,12 @@ int preAutonRun() {
 	return 0;
 }
 
-void turnTo(Angle angle, int waitTimeMS) {
+void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex));
+	drivetrainStateController.setCurrentBehavior(RotationController("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex).wait(waitTimeMS));
 
-	pros::Task::delay(waitTimeMS);
-
-	drivetrainStateController.useDefaultBehavior();
-
-	pros::Task::delay(30);
+	drivetrainStateController.waitUntilDone()();
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
@@ -69,13 +65,13 @@ int tuneTurnPid() {
 
 	// pros::Task::delay(20);
 
-	turnTo(-90_deg, 1500);
+	turnTo(-90_deg, 1500_ms);
 
-	turnTo(90_deg, 1500);
+	turnTo(90_deg, 1500_ms);
 
-	turnTo(270_deg, 1500);
+	turnTo(270_deg, 1500_ms);
 
-	turnTo(-90_deg, 1500);
+	turnTo(-90_deg, 1500_ms);
 
 	// pros::Task::delay(200);
 
@@ -132,7 +128,31 @@ int farAWP() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
 
 	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({{55_in, 0.0}}),
+			CombinedPath({
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in},
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in},
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in},
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in},
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in},
+						{63_in, 0.0},
+						{24_in, 135_deg/24_in},
+						{92_in, -90_deg/92_in},
+						{24_in, 135_deg/24_in}}),
 			defaultProfileConstraints,
 			-90.0_deg));
 
@@ -146,34 +166,63 @@ int farAWP() {
 //	drivetrainStateController.waitUntilDone()();
 
 	return 0;
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+}
+
+int testBezier() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					defaultProfileConstraints,
+					drivetrain,
+					[=]() -> Angle {return odometry.getAngle();},
+					movingTurnPid,
+					distancePid,
+					12000.0/64.0,
+					64_in/second,
+					{{PathPlanner::BezierSegment(
+							PathPlanner::Point(12_in, 84_in),
+							PathPlanner::Point(12_in, 100_in),
+							PathPlanner::Point(0_in, 135_in),
+							PathPlanner::Point(40_in, 135_in),
+							true
+							),
+					  nullptr}}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	return 0;
+}
+
+int far6Ball() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
 	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
 	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({{-55_in, 0.0}}),
+			CombinedPath({
+								 {3_in, 0.0}}),
 			defaultProfileConstraints,
-			-90.0_deg));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(0_deg, 1000);
-
-	blockerStateController.setCurrentBehavior(blockerReleasePreLoad.wait(500_ms));
-
-	blockerStateController.waitUntilDone()();
-
-	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({{5_in, 0.0}}),
-			defaultProfileConstraints,
-			0.0_deg));
+			180_deg));
 
 	drivetrainStateController.waitUntilDone()();
 
 	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({{-15_in, 0.0}}),
+			CombinedPath({
+								 {-20_in, 0.0},
+								 {-30_in, 90_deg/-30_in}}),
 			defaultProfileConstraints,
-			0.0_deg));
+			180_deg));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(270_deg, 0.6_s);
+
+	drivetrainStateController.setCurrentBehavior(getMPInstance(
+			CombinedPath({
+								 {-24_in, 0.0}}),
+			defaultProfileConstraints,
+			270_deg));
 
 	drivetrainStateController.waitUntilDone()();
 
@@ -301,7 +350,7 @@ void initialize() {
 	initHardware();
 	initDrivetrain();
 	initIntake();
-	initBlocker();
+	initCatapult();
 	initWings();
 	initBehaviors();
 	initDisplay();
@@ -357,7 +406,7 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-		farAWP();
+	testBezier();
 	#endif // !1
 
 	postAuton();

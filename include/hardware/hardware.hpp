@@ -4,7 +4,6 @@
 #include "odometry/orientation/imu.hpp"
 #include "odometry/orientation/avgOrientation.hpp"
 #include "position/motorOdom.hpp"
-#include "position/trackingWheel.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
 #include "odometry/odomFuser.hpp"
@@ -43,12 +42,12 @@ namespace Pronounce {
 
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(8, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive2(9, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor leftDrive3(10, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive1(1, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive2(2, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive3(3, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive1(18, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive2(19, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive3(20, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive1(11, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive2(12, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive3(13, pros::E_MOTOR_GEAR_600, false);
 
 	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
 	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
@@ -56,17 +55,17 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(10.5_in, 61.26105675_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(17_in, 64.79534848_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
-	pros::Motor intakeMotor(4, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor blockerMotor(21, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor_Group catapultMotors({-17, 14});
 
 	pros::ADIDigitalOut wingsSolenoid('A', false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 
 	// Inertial Measurement Unit
-	pros::Imu imu(7);
+	pros::Imu imu(16);
 	IMU imuOrientation(imu);
 
 	pros::Mutex odometryMutex;
@@ -88,11 +87,11 @@ namespace Pronounce {
 
 		odometryMutex.take();
 
-		double turningFactor = 360.0 / 600.0;
+		double turningFactor = 450.0 / 600.0;
 		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(3.25_in / 2.0);
+		leftDrive1Odom.setRadius(2.75_in / 2.0);
 		leftDrive1Odom.setTuningFactor(turningFactor);
-		rightDrive1Odom.setRadius(3.25_in / 2.0);
+		rightDrive1Odom.setRadius(2.75_in / 2.0);
 		rightDrive1Odom.setTuningFactor(turningFactor);
 
 		threeWheelOdom.setLeftOffset(10_in / 1.5);
@@ -103,7 +102,7 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		if (pros::c::registry_get_plugged_type(6) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
 			while (imu.is_calibrating())
@@ -119,24 +118,24 @@ namespace Pronounce {
 		portsList.emplace(0, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 		portsList.emplace(1, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 		portsList.emplace(2, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(3, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(4, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(3, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(4, pros::c::v5_device_e_t::E_DEVICE_RADIO);
 		portsList.emplace(5, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(6, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(7, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(8, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(6, pros::c::v5_device_e_t::E_DEVICE_IMU);
+		portsList.emplace(7, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
+		portsList.emplace(8, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 		portsList.emplace(9, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(10, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(11, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(12, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(13, pros::c::v5_device_e_t::E_DEVICE_RADIO);
+		portsList.emplace(10, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(11, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(12, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(13, pros::c::v5_device_e_t::E_DEVICE_NONE);
 		portsList.emplace(14, pros::c::v5_device_e_t::E_DEVICE_NONE);
 		portsList.emplace(15, pros::c::v5_device_e_t::E_DEVICE_NONE);
 		portsList.emplace(16, pros::c::v5_device_e_t::E_DEVICE_NONE);
 		portsList.emplace(17, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(18, pros::c::v5_device_e_t::E_DEVICE_IMU);
-		portsList.emplace(19, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(20, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(18, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(19, pros::c::v5_device_e_t::E_DEVICE_NONE);
+		portsList.emplace(20, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
 
 		lv_table_set_col_cnt(table, 3);
 		lv_table_set_row_cnt(table, portsList.size());

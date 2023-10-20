@@ -16,7 +16,6 @@ namespace Pronounce {
 	class TeleopModeLogic : public Behavior {
 	private:
 		RobotStatus* robotStatus{};
-		bool blockerStatus{true};
 
         AbstractJoystick* controller1;
         AbstractJoystick* controller2;
@@ -37,17 +36,10 @@ namespace Pronounce {
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_UP, [&] () -> void {
-				blockerStatus = !blockerStatus;
-				if (blockerStateController.getCurrentBehavior() != nullptr) {
-					blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerMatchLoad).until([=] () -> bool {
-						return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L2);}));
-				}
-			});
-
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
-				blockerStateController.setCurrentBehavior((blockerStatus ? blockerHigh : blockerMatchLoad).until([=] () -> bool {
-					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L2);}));
+				catapultStateController.setCurrentBehavior(catapultFire.until([=] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+				}));
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
@@ -70,6 +62,14 @@ namespace Pronounce {
 		void update() override {
 			controller1->update();
 			controller2->update();
+
+			if (controller1->get_digital(E_CONTROLLER_DIGITAL_R1) && controller1->get_digital(E_CONTROLLER_DIGITAL_R2)) {
+				if (catapultStateController.getCurrentBehavior() != &catapultHang) {
+					catapultStateController.setCurrentBehavior(&catapultHang);
+				}
+			} else if (catapultStateController.getCurrentBehavior() == &catapultHang) {
+				catapultStateController.useDefaultBehavior();
+			}
 		}
 
 		void exit() override {

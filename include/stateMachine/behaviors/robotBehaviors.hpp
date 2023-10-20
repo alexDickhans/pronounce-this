@@ -10,8 +10,9 @@ pros::Mutex robotBehaviorMutex;
 #include "intake/intake.hpp"
 #include "intake/initIntake.hpp"
 
-#include "blocker/blocker.hpp"
-#include "blocker/initBlocker.hpp"
+#include "catapult/catapult.hpp"
+#include "catapult/catapultHold.hpp"
+#include "catapult/initCatapult.hpp"
 
 #include "wings/wings.hpp"
 #include "wings/initWings.hpp"
