@@ -63,13 +63,7 @@ namespace PathPlanner {
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
-				std::cout << "BYEEEE, start: " << profile->getInitialSpeed().Convert(inch/second) << std::endl;
-				std::cout << "BYEEEE, end: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
-
 				profile->calculate(20);
-
-				std::cout << "HI distance: " << profile->getDistance().Convert(inch) << std::endl;
-				std::cout << "HI time: " << profile->getDuration().Convert(second) << std::endl;
 
 				this->pathSegments.at(i).second = profile;
 			}

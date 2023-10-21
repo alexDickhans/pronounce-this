@@ -13,10 +13,14 @@
 #include "include/pathPlanner/utils/vector.hpp"
 #include "velocityProfile/velocityProfile.hpp"
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
-#include "utils/utils.hpp"
 
 using namespace PathPlanner;
 
+int fps = 60;
+double playbackMultiplier = 1;
+
+#define xOffset 30.0
+#define yOffset 30.0
 #define multiplier 3.0
 
 #define lookahead 8
@@ -202,17 +206,7 @@ int main() {
 		printPath(paths.at(i));
 	}
 
-	std::vector<Pronounce::SinusoidalVelocityProfile> profiles;
-	Pronounce::ProfileConstraints defaultProfileConstraints = {60_in/second, 200_in/second/second};
-
-	QTime totalTime = 0.0;
-
-	for (int i = 0; i < paths.size(); i++) {
-		profiles.emplace_back(paths.at(i).getDistance(), defaultProfileConstraints);
-		totalTime += profiles.at(i).getDuration();
-	}
-
-	for (QTime currentTime = 0.0; currentTime < totalTime; currentTime += 20_ms) {
+	for (double i = 0.0; i <= paths.size(); i += 0.02) {
 		delay(20);
 		cleardevice();
 		printField();
@@ -220,24 +214,12 @@ int main() {
 			printPath(paths.at(i));
 		}
 
-		double index = 0;
-		QLength totalDistance = 0.0;
-		QTime time = currentTime;
+		Point curvature = paths.at(i).evaluate(fmod(i, 1)) + Vector(paths.at(i).getCurvature(fmod(i, 1)).getValue() * 0.1, paths.at(i).getAngle(fmod(i, 1)) - 90_deg).getCartesian();
 
-		while (time >= profiles.at(index).getDuration()) {
-			time -= profiles.at(index).getDuration();
-			totalDistance += paths.at(index).getDistance();
-			index += 1;
-		}
-
-		index += paths.at(index).getTByLength(profiles.at(index).getDistanceByTime(currentTime));
-
-		Point curvature = paths.at(index).evaluate(fmod(index, 1)) + Vector(paths.at(index).getCurvature(fmod(index, 1)).getValue() * 0.1, paths.at(index).getAngle(fmod(index, 1)) - 90_deg).getCartesian();
-
-		std::cout << "Curvature: " << paths.at(index).getCurvature(fmod(index, 1)).Convert(degree/inch) << std::endl;
+		std::cout << "Curvature: " << paths.at(i).getCurvature(fmod(i, 1)).Convert(degree/inch) << std::endl;
 
 		circle(curvature.getY().Convert(inch) * multiplier, curvature.getX().Convert(inch) * multiplier, 2);
-		printRobot(paths.at(index).evaluate(fmod(index, 1)), paths.at(index).getAngle(fmod(index, 1)));
+		printRobot(paths.at(i).evaluate(fmod(i, 1)), paths.at(i).getAngle(fmod(i, 1)));
 	}
 
 	delay(50000000);
