@@ -47,12 +47,12 @@ namespace PathPlanner {
 		 * @return double The value at that key
 		 */
 		double get(double key) {
-			if (key < values.at(0).first) {
+			if (key <= values.at(0).first) {
 				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
 			}
 
 			for (int i = 0; i < values.size(); i++) {
-				if (key < values.at(i).first) {
+				if (key <= values.at(i).first) {
 					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
 				}
 			}
