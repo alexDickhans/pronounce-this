@@ -37,7 +37,7 @@ namespace PathPlanner {
 		 * @param value The new value to add
 		 */
 		void add(double key, double value) {
-			values.emplace_back(std::pair<double, double>(key, value));
+			values.emplace_back(key, value);
 		}
 
 		/**
@@ -48,19 +48,16 @@ namespace PathPlanner {
 		 */
 		double get(double key) {
 			if (key < values.at(0).first) {
-				double t = Pronounce::map(key, values.at(0).first, values.at(1).first, 0, 1);
-				return Pronounce::lerp(values.at(0).second, values.at(1).second, t);
+				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
 			}
 
-			for (int i = 0; i < values.size() - 1; i++) {
-				if (key > values.at(i).first) {
-					double t = Pronounce::map(key, values.at(i).first, values.at(i+1).first, 0, 1);
-					return Pronounce::lerp(values.at(i).second, values.at(i+1).second, t);
+			for (int i = 0; i < values.size(); i++) {
+				if (key < values.at(i).first) {
+					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
 				}
 			}
 
-			double t = Pronounce::map(key, values.at(values.size()-2).first, values.at(values.size()-1).first, 0, 1);
-			return Pronounce::lerp(values.at(values.size()-2).second, values.at(values.size()-1).second, t);
+			return values.at(values.size()-2).second + ((values.at(values.size()-1).second - values.at(values.size()-2).second)/(values.at(values.size()-1).first - values.at(values.size()-2).first)) * (key - values.at(values.size()-1).first);
 		}
 
 		void clear() {

@@ -24,7 +24,7 @@ namespace PathPlanner {
 		QTime startTime;
 		std::function<Angle()> angleFunction;
 	public:
-		PathFollower(Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments) : drivetrain(drivetrain) {
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = pathSegments;
 			this->turnPID = turnPID;
 			this->turnPID.setTurnPid(true);
@@ -44,22 +44,28 @@ namespace PathPlanner {
 
 				profile->setDistance(this->pathSegments.at(i).first.getDistance());
 
-				if (abs(profile->getProfileConstraints().maxVelocity.getValue()) > adjustedSpeed.getValue()) {
-					profile->setProfileConstraints({adjustedSpeed, profile->getProfileConstraints().maxAcceleration, profile->getProfileConstraints().maxJerk});
-				}
+				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity.getValue(), adjustedSpeed.getValue()), profile->getProfileConstraints().maxAcceleration, 0.0});
 
 				profile->setInitialSpeed(0.0);
 				profile->setEndSpeed(0.0);
 
-				if (i < this->pathSegments.size()-1 && this->pathSegments.at(i+1).second->getDistance().getValue() == this->pathSegments.at(i).second->getDistance().getValue()) {
-					profile->setEndSpeed(profile->getProfileConstraints().maxVelocity);
+				if (i < this->pathSegments.size()-1) {
+					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
-				if (i > 0 && this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed()) {
-					profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity);
+				if (i > 0) {
+					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
+
+				std::cout << "BYEEEE, start: " << profile->getInitialSpeed().Convert(inch/second) << std::endl;
+				std::cout << "BYEEEE, end: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
 
 				profile->calculate(20);
+
+				std::cout << "HI distance: " << profile->getDistance().Convert(inch) << std::endl;
+				std::cout << "HI time: " << profile->getDuration().Convert(second) << std::endl;
 
 				this->pathSegments.at(i).second = profile;
 			}
@@ -93,11 +99,11 @@ namespace PathPlanner {
 			drivetrain.tankSteerVoltage(driveVoltages.first, driveVoltages.second);
 		}
 
-		void exit() {
+		void exit() override {
 			drivetrain.tankSteerVoltage(0.0, 0.0);
 		}
 
-		bool isDone() {
+		bool isDone() override {
 			return pros::millis() * 1_ms - startTime > totalTime();
 		}
 
@@ -118,11 +124,13 @@ namespace PathPlanner {
 			while (time >= pathSegments.at(index).second->getDuration()) {
 				time -= pathSegments.at(index).second->getDuration();
 				totalDistance += pathSegments.at(index).first.getDistance();
+				index ++;
 			}
 
-			QCurvature curvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(pathSegments.at(index).second->getDistanceByTime(time)));
-			QLength distance = pathSegments.at(index).second->getDistanceByTime(time) + totalDistance;
+			QCurvature curvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue())));
 			QSpeed speed = pathSegments.at(index).second->getVelocityByTime(time);
+
+			std::cout << "HII" << speed.Convert(inch/second) << std::endl;
 
 			return {speed.getValue() * (2.0 + curvature.getValue() * trackWidth.getValue()) / 2.0, speed.getValue() * (2.0 - curvature.getValue() * trackWidth.getValue()) / 2.0};
 		}
@@ -134,11 +142,10 @@ namespace PathPlanner {
 			while (time >= pathSegments.at(index).second->getDuration()) {
 				time -= pathSegments.at(index).second->getDuration();
 				totalDistance += pathSegments.at(index).first.getDistance();
+				index ++;
 			}
 
-			QCurvature curvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(pathSegments.at(index).second->getDistanceByTime(time)));
 			QLength distance = pathSegments.at(index).second->getDistanceByTime(time) + totalDistance;
-			QSpeed speed = pathSegments.at(index).second->getVelocityByTime(time);
 
 			return distance;
 		}
@@ -148,9 +155,10 @@ namespace PathPlanner {
 
 			while (time > pathSegments.at(index).second->getDuration()) {
 				time -= pathSegments.at(index).second->getDuration();
+				index ++;
 			}
 
-			return pathSegments.at(index).first.getAngle(pathSegments.at(index).first.getTByLength(pathSegments.at(index).second->getDistanceByTime(time)));
+			return pathSegments.at(index).first.getAngle(abs(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()))));
 		}
 	};
 }

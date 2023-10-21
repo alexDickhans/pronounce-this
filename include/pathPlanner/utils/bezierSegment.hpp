@@ -25,7 +25,7 @@ namespace PathPlanner {
 		bool reversed;
 
 	public:
-		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, int granularity = 20) {
+		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, int granularity = 100) {
 			this->a = a;
 			this->b = b;
 			this->c = c;
@@ -54,15 +54,9 @@ namespace PathPlanner {
 
 			length = 0.0;
 
-			Point lastPoint = evaluate(0.0);
-			distanceToT.add(0.0, 0.0);
-
-			for (double t = 1.0/(double) granularity; t < 1.0; t += 1.0/(double) granularity) {
-				Point nextPoint = evaluate(t);
-				Vector difference = Vector(lastPoint, nextPoint);
-				length += difference.getMagnitude();
-				distanceToT.add(length.getValue(), t);
-				lastPoint = nextPoint;
+			for (int t = 0.0; t <= granularity; t += 1) {
+				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
+				distanceToT.add(length.getValue(), (double)t/(double) granularity);
 			}
 		}
 
@@ -70,8 +64,9 @@ namespace PathPlanner {
 			return length.getValue() * (reversed ? -1.0 : 1.0);
 		}
 
-		double getTByLength(QLength t) {
-			return distanceToT.get(t.getValue());
+		double getTByLength(QLength distance) {
+			std::cout << "HIII d, t: " << distance.Convert(inch) << " " << distanceToT.get(distance.getValue()) << std::endl;
+			return distanceToT.get(distance.getValue());
 		}
 
 		QCurvature getCurvature(double t) {
@@ -83,9 +78,7 @@ namespace PathPlanner {
 
 			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
 				QCurvature curvature = this->getCurvature(t).getValue();
-				if (abs(curvature.getValue()) > maxCurvature.getValue()) {
-					maxCurvature = curvature;
-				}
+				maxCurvature = std::max(abs(curvature.getValue()), maxCurvature.getValue());
 			}
 
 			return maxCurvature;
@@ -99,11 +92,13 @@ namespace PathPlanner {
 			return {x.evaluate(t), y.evaluate(t)};
 		}
 
-		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 20) {
-			QCurvature maxCurvature = this->getMaxCurvature();
+		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) {
+			QCurvature maxCurvature = this->getMaxCurvature(granularity);
 
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;
+
+			std::cout << "Curvy: " << 1.0/(1.0 + abs(maxCurvature.getValue()*0.5) * trackWidth.getValue()) << std::endl;
 
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
@@ -124,7 +119,7 @@ namespace PathPlanner {
 			return d;
 		}
 
-		bool getReversed() {
+		bool getReversed() const {
 			return reversed;
 		}
 	};

@@ -66,7 +66,7 @@ namespace Pronounce {
 
 	// Inertial Measurement Unit
 	pros::Imu imu(16);
-	IMU imuOrientation(imu);
+	IMU imuOrientation(16);
 
 	pros::Mutex odometryMutex;
 

@@ -12,14 +12,14 @@ namespace Pronounce {
     protected:
 
     public:
-		HardwareDrivetrain();
+		HardwareDrivetrain() = default;
 
 		/**
          * Get average temperature of all the motors.
          */
         virtual double getTemp() { return 0; }
 
-		~HardwareDrivetrain() {}
+		~HardwareDrivetrain() = default;
     };
 } // namespace Pronounce
 

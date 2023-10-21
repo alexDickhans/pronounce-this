@@ -14,11 +14,9 @@
 namespace Pronounce {
 	class SinusoidalVelocityProfile : public VelocityProfile {
 	private:
-		double omega{};
 		QTime Tt = 3.0_s;
 
 		bool isSingleSine = false;
-		bool speedDifferenceTooLow = false;
 
 		QTime startTime;
 		QTime endTime;
@@ -53,7 +51,6 @@ namespace Pronounce {
 			this->setProfileConstraints(profileConstraints);
 
 			reversed = signnum_c(distance.getValue()) == -1;
-
 		}
 
 		QTime getDuration() override {
@@ -72,7 +69,7 @@ namespace Pronounce {
 			}
 		}
 
-		QSpeed getVelocityByTime(QTime t) {
+		QSpeed getVelocityByTime(QTime t) override {
 
 			if (t.getValue() < startTime.getValue()) {
 				return (reversed ? -1 : 1) * (cos(startOmega * t.getValue()) * startSlope + startB);
@@ -107,7 +104,7 @@ namespace Pronounce {
 		// 	// }
 		// }
 
-		void calculate(int granularity) {
+		void calculate(int granularity) override {
 			
 			startSlope = (this->getInitialSpeed() - this->getProfileConstraints().maxVelocity).getValue()/2.0;
 			startB = (this->getInitialSpeed() + this->getProfileConstraints().maxVelocity).getValue()/2.0;
@@ -136,6 +133,8 @@ namespace Pronounce {
 					startOmega = 1_pi/startTime.getValue();
 
 					Tt = startTime;
+
+					std::cout << "HI time1" << Tt.getValue() << std::endl;
 				} else {
 					double a = sqrt(this->getDistance().getValue()/(2*1_pi*this->getProfileConstraints().maxAcceleration.getValue()));
 					startSlope = - a * this->getProfileConstraints().maxAcceleration.getValue();
@@ -144,6 +143,8 @@ namespace Pronounce {
 					startOmega = 1.0/a;
 
 					Tt = startTime;
+
+					std::cout << "HI time2" << Tt.getValue() << std::endl;
 				}
 
 				return;
@@ -153,7 +154,12 @@ namespace Pronounce {
 
 			Tt = endStartTime + endTime;
 
-			// std::cout << Tt.getValue() << std::endl;
+			std::cout << "HI time3" << Tt.getValue() << std::endl;
+		}
+
+		void setDistance(QLength distance) {
+			VelocityProfile::setDistance(abs(distance.getValue()));
+			this->reversed = signnum_c(distance.getValue()) == -1;
 		}
 
 		~SinusoidalVelocityProfile() {}

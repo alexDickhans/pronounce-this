@@ -173,21 +173,27 @@ int testBezier() {
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
+					"TestPath",
 					defaultProfileConstraints,
 					drivetrain,
-					[=]() -> Angle {return odometry.getAngle();},
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
 					distancePid,
-					12000.0/64.0,
-					64_in/second,
-					{{PathPlanner::BezierSegment(
-							PathPlanner::Point(12_in, 84_in),
-							PathPlanner::Point(12_in, 100_in),
-							PathPlanner::Point(0_in, 135_in),
-							PathPlanner::Point(40_in, 135_in),
-							true
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(
+									PathPlanner::Point(12_in, 12_in),
+									PathPlanner::Point(12_in, 36_in),
+									PathPlanner::Point(36_in, 12_in),
+									PathPlanner::Point(36_in, 36_in),
+									true
 							),
-					  nullptr}}));
+							 nullptr}
+							 ,
+							 {PathPlanner::BezierSegment(PathPlanner::Point(36_in, 36_in), PathPlanner::Point(36_in, 60_in), PathPlanner::Point(12_in, 36_in), PathPlanner::Point(12_in, 60_in), true),
+							  nullptr}
+					}));
 
 	drivetrainStateController.waitUntilDone()();
 

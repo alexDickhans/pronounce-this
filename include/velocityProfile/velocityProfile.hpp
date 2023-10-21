@@ -70,7 +70,7 @@ namespace Pronounce {
 			return distance;
 		}
 
-		void setDistance(QLength distance) {
+		virtual void setDistance(QLength distance) {
 			this->distance = distance;
 		}
 

@@ -12,28 +12,27 @@ namespace Pronounce {
 	 *
 	 * @authors Alex Dickhans (alexDickhans)
 	 */
-	class IMU : public Orientation {
+class IMU : public Orientation, public pros::Imu {
 	private:
 		/**
 		 * @brief Reference to the imu
 		 *
 		 */
-		pros::Imu& imu;
 	public:
 		/**
 		 * @brief Construct a new IMU object with a reference to the imu
 		 *
 		 * @param imu
 		 */
-		IMU(pros::Imu& imu) : imu(imu), Orientation(0.0) {}
+		IMU(const std::uint8_t port) : pros::Imu(port), Orientation(0.0) {}
 
 		/**
 		 * @brief Update the imu
 		 *
 		 */
 		void update() {
-			if (pros::c::registry_get_plugged_type(6) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
-				Angle imuAngle = imu.get_rotation() * 1_deg;
+			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+				Angle imuAngle = this->get_rotation() * 1_deg;
 				// std::cout << imuAngle.getValue() << std::endl;
 
 				this->setAngle(imuAngle);
@@ -45,8 +44,9 @@ namespace Pronounce {
 		 *
 		 */
 		void reset() {
-			if (pros::c::registry_get_plugged_type(6) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
-				this->imu.reset();
+			// if this is broken change the imu api to make _port public
+			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+				this->reset();
 				this->setAngle(0.0);
 			}
 		}

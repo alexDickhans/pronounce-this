@@ -6,7 +6,6 @@
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
-#include "chassis/xdrive.hpp"
 #include "utils/runningAverage.hpp"
 #include "odometry/odomFuser.hpp"
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
@@ -20,7 +19,7 @@ namespace Pronounce {
 	PID turningPid(2.0, 0.0, 25.0, 0.0, 0.0, false);
 	PID movingTurnPid(5000.0, 0.0, 0.0, 60000.0, 0.0, false);
 
-	PID distancePid(350000.0, 0.0, 120000.0);
+	PID distancePid(1.5e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);

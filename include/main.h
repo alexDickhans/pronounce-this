@@ -42,9 +42,7 @@
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
 #include "chassis/hardwareDrivetrain.hpp"
-#include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
-#include "chassis/xdrive.hpp"
 
 // FeedbackControllers
 #include "feedbackControllers/bangBang.hpp"
