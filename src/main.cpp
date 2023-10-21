@@ -193,6 +193,14 @@ int testBezier() {
 							 ,
 							 {PathPlanner::BezierSegment(PathPlanner::Point(36_in, 36_in), PathPlanner::Point(36_in, 60_in), PathPlanner::Point(12_in, 36_in), PathPlanner::Point(12_in, 60_in), true),
 							  nullptr}
+					},
+					{
+							{0.5, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{1.5, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();

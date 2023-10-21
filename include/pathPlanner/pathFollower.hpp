@@ -23,9 +23,13 @@ namespace PathPlanner {
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
+
+		std::vector<std::pair<double, std::function<void()>>> commands;
+		int commandsIndex = 0;
 	public:
-		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = pathSegments;
+			this->commands = functions;
 			this->turnPID = turnPID;
 			this->turnPID.setTurnPid(true);
 			this->distancePID = distancePID;
@@ -76,10 +80,19 @@ namespace PathPlanner {
 			startDistance = drivetrain.getDistanceSinceReset();
 			distancePID.reset();
 			turnPID.reset();
+			commandsIndex = 0;
 		}
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
+			double index = getIndex(time);
+
+			if (commands.size() > commandsIndex) {
+				if (commands.at(commandsIndex).first < index) {
+					commands.at(commandsIndex).second();
+					commandsIndex ++;
+				}
+			}
 
 			std::pair<QSpeed, QSpeed> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
 
@@ -107,6 +120,17 @@ namespace PathPlanner {
 			return pros::millis() * 1_ms - startTime > totalTime();
 		}
 
+		double getIndex(QTime time) {
+			int index = 0;
+
+			while (time >= pathSegments.at(index).second->getDuration()) {
+				time -= pathSegments.at(index).second->getDuration();
+				index ++;
+			}
+
+			return index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
+		}
+
 		QTime totalTime() {
 			QTime totalTime = 0.0;
 
@@ -129,8 +153,6 @@ namespace PathPlanner {
 
 			QCurvature curvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue())));
 			QSpeed speed = pathSegments.at(index).second->getVelocityByTime(time);
-
-			std::cout << "HII" << speed.Convert(inch/second) << std::endl;
 
 			return {speed.getValue() * (2.0 + curvature.getValue() * trackWidth.getValue()) / 2.0, speed.getValue() * (2.0 - curvature.getValue() * trackWidth.getValue()) / 2.0};
 		}

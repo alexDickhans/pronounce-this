@@ -65,7 +65,6 @@ namespace PathPlanner {
 		}
 
 		double getTByLength(QLength distance) {
-			std::cout << "HIII d, t: " << distance.Convert(inch) << " " << distanceToT.get(distance.getValue()) << std::endl;
 			return distanceToT.get(distance.getValue());
 		}
 
