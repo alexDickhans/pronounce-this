@@ -4,4 +4,6 @@
 
 namespace Pronounce {
 	QTime currentTime();
+
+	void delay(QTime time);
 } // namespace Pronounce

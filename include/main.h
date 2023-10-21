@@ -33,6 +33,7 @@
 
 // 2654lib includes
 
+#include "pathPlanner/pathPlanner.hpp"
 
 #include "defines.h"
 #include "auton.h"
@@ -41,9 +42,7 @@
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
 #include "chassis/hardwareDrivetrain.hpp"
-#include "chassis/abstractHolonomicDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
-#include "chassis/xdrive.hpp"
 
 // FeedbackControllers
 #include "feedbackControllers/bangBang.hpp"
@@ -52,9 +51,7 @@
 #include "feedbackControllers/flywheelPID.hpp"
 
 // Motion control
-#include "motionControl/purePursuit.hpp"
-#include "motionControl/omniPurePursuit.hpp"
-#include "motionControl/tankPurePursuit.hpp"
+#include "motionControl/rotationController.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 
 // Orientation
@@ -70,10 +67,11 @@
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
 #include "odometry/interruptOdometry/interruptOdometry.hpp"
 
+#include "pathPlanner/pathPlanner.hpp"
+
 // Position
 #include "position/motorOdom.hpp"
 #include "position/odomWheel.hpp"
-#include "position/trackingWheel.hpp"
 
 // State Machine
 #include "stateMachine/stateMachine.hpp"
@@ -88,12 +86,9 @@
 // Utils
 #include "utils/ADIDigitalOutGroup.hpp"
 #include "utils/exponentialMovingAverage.hpp"
-#include "utils/path.hpp"
-#include "utils/pointUtil.hpp"
+#include "utils/point.hpp"
 #include "utils/pose2d.hpp"
-#include "utils/quadraticSplinePath.hpp"
 #include "utils/runningAverage.hpp"
-#include "utils/splinePath.hpp"
 #include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
@@ -101,9 +96,6 @@
 #include "utils/path/combinedPath.hpp"
 
 
-
-// velocity profile
-#include "velocityProfile/splineVelocityProfile.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

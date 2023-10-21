@@ -1,4 +1,4 @@
-#include "pointUtil.hpp"
+#include "utils/point.hpp"
 
 namespace Pronounce {
     Point::Point() {

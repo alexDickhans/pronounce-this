@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pointUtil.hpp"
+#include "point.hpp"
 #include <string>
 #include "units/units.hpp"
 #include <iostream>

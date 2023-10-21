@@ -8,51 +8,15 @@
 
 #define SIM 0
 
-#include "include/utils/vector.hpp"
-#include "src/utils/vector.cpp"
-#include "include/utils/pointUtil.hpp"
-#include "src/utils/pointUtil.cpp"
-#include "include/utils/path.hpp"
-#include "src/utils/path.cpp"
-#include "include/utils/splinePath.hpp"
-#include "include/utils/quadraticSplinePath.hpp"
-// #include "include/utils/runningAverage.hpp"
-// #include "src/utils/runningAverage.cpp"
-#include "include/utils/utils.hpp"
-#include "src/utils/utils.cpp"
-#include "include/units/units.hpp"
-// #include "include/utils/position.hpp"
-// #include "src/utils/position.cpp"
-// #include "include/utils/purePursuitProfile.hpp"
-// #include "src/utils/purePursuitProfile.cpp"
-// #include "include/utils/purePursuitProfileManager.hpp"
-// #include "src/utils/purePursuitProfileManager.cpp"
-// #include "include/feedbackControllers/pid.hpp"
-// #include "src/feedbackControllers/pid.cpp"
-// #include "include/chassis/abstractDrivetrain.hpp"
-// #include "src/chassis/abstractDrivetrain.cpp"
-// #include "include/chassis/abstractTankDrivetrain.hpp"
-// #include "src/chassis/abstractTankDrivetrain.cpp"
-// #include "include/chassis/simDrivetrain.hpp"
-// #include "src/chassis/simDrivetrain.cpp"
-// #include "include/chassis/simTankDrivetrain.hpp"
-// #include "src/chassis/simTankDrivetrain.cpp"
-// #include "include/odometry/odometry.hpp"
-// #include "src/odometry/odometry.cpp"
-// #include "include/odometry/simOdometry.hpp"
-// #include "src/odometry/simOdometry.cpp"
-// #include "include/motionControl/purePursuit.hpp"
-// #include "src/motionControl/purePursuit.cpp"
-// #include "include/motionControl/tankPurePursuit.hpp"
-// #include "src/motionControl/tankPurePursuit.cpp"
+#include "pathPlanner/utils/bezierSegment.hpp"
+#include "include/pathPlanner/utils/point.hpp"
+#include "include/pathPlanner/utils/vector.hpp"
+#include "velocityProfile/velocityProfile.hpp"
+#include "velocityProfile/sinusoidalVelocityProfile.hpp"
+#include "utils/utils.hpp"
 
-using namespace Pronounce;
+using namespace PathPlanner;
 
-int fps = 60;
-double playbackMultiplier = 1;
-
-#define xOffset 30.0
-#define yOffset 30.0
 #define multiplier 3.0
 
 #define lookahead 8
@@ -66,8 +30,10 @@ double playbackMultiplier = 1;
 
 #define FIELD_WIDTH 140.6
 
-void printRobot(Point point) {
-	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 1);
+void printRobot(Point point, Angle orientation) {
+//	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 15);
+	std::cout << orientation.Convert(degree) << std::endl;
+	line(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, point.getY().Convert(inch) * multiplier + cos(orientation) * 40, point.getX().Convert(inch) * multiplier + sin(orientation) * 40);
 }
 
 void printRobotWithLookahead(Point point) {
@@ -75,18 +41,18 @@ void printRobotWithLookahead(Point point) {
 	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, lookahead * multiplier);
 }
 
-void printPath(Path path) {
+void printPath(BezierSegment path) {
+	line(path.getA().getY().Convert(inch) * multiplier, path.getA().getX().Convert(inch) * multiplier,
+		 path.getB().getY().Convert(inch) * multiplier, path.getB().getX().Convert(inch) * multiplier);
+	line(path.getD().getY().Convert(inch) * multiplier, path.getD().getX().Convert(inch) * multiplier,
+		 path.getC().getY().Convert(inch) * multiplier, path.getC().getX().Convert(inch) * multiplier);
 
-	if (path.getPath().size() < 2) {
-		return;
-	}
-
-	for (int i = 1; i < path.getPath().size(); i++) {
-		Point lastPoint = path.getPath().at(i - 1);
-		Point currentPoint = path.getPath().at(i);
+	for (double i = 1.0/10.0; i < 1.0; i += 1.0/20.0) {
+		Point lastPoint = path.evaluate(i-(1.0/20.0));
+		Point currentPoint = path.evaluate(i);
 
 		line(lastPoint.getY().Convert(inch) * multiplier, lastPoint.getX().Convert(inch) * multiplier, currentPoint.getY().Convert(inch) * multiplier, currentPoint.getX().Convert(inch) * multiplier);
-
+//		circle(lastPoint.getY().Convert(inch) * multiplier, lastPoint.getX().Convert(inch) * multiplier, 2);
 		// printRobot(lastPoint);
 	}
 }
@@ -118,7 +84,7 @@ Point mirror(Point point) {
 	QLength beforeY = point.getY();
 	double resultX = FIELD_WIDTH - beforeX.Convert(inch);
 	double resultY = FIELD_WIDTH - beforeY.Convert(inch);
-	return Point(resultX, resultY);
+	return {resultX * 1_in, resultY * 1_in};
 }
 
 void printFieldGrid() {
@@ -159,26 +125,12 @@ void printMirroredPlatform(double x1, double y1, double x2, double y2) {
 	printPlatform(mirror(x1), mirror(y1), mirror(x2), mirror(y2));
 }
 
-void printGoal(Point point) {
-	setlinestyle(SOLID_LINE, 5, 10);
-	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 6.5 * multiplier);
-}
-
-void printMirroredGoal(Point point) {
-	setcolor(RED);
-	printGoal(point);
-	setcolor(BLUE);
-	printGoal(mirror(point));
-}
-
 void printRing(Point point) {
-	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 2);
-	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 4);
+	circle(point.getY().Convert(inch) * multiplier, point.getX().Convert(inch) * multiplier, 8);
 }
 
 void printRing(double x, double y) {
-	circle(y * multiplier, x * multiplier, 2);
-	circle(y * multiplier, x * multiplier, 4);
+	circle(y * multiplier, x * multiplier, 8);
 }
 
 void printMirroredRing(Point point) {
@@ -186,26 +138,16 @@ void printMirroredRing(Point point) {
 	printRing(mirror(point));
 }
 
-void printRingGroup(Point point) {
-	double x = point.getX().Convert(inch);
-	double y = point.getY().Convert(inch);
-	printRing(point);
-	printRing(x + 4, y);
-	printRing(x - 4, y);
-	printRing(x, y + 4);
-	printRing(x, y - 4);
-}
-
-void printMirroredRingGroup(Point point) {
-	printRingGroup(point);
-	printRingGroup(mirror(point));
-}
-
 void printField() {
 
 	printFieldGrid();
 
-	printMirroredTape(1, 1, FIELD_WIDTH-1, FIELD_WIDTH-1);
+	printMirroredTape(1, FIELD_WIDTH/2, FIELD_WIDTH-1, FIELD_WIDTH/2);
+	printMirroredTape(FIELD_WIDTH/2, 1, FIELD_WIDTH/2, FIELD_WIDTH-1);
+	printMirroredTape(1, FIELD_WIDTH/6, FIELD_WIDTH/6, 1);
+	printMirroredTape(FIELD_WIDTH * 5/6, 1, FIELD_WIDTH-1, FIELD_WIDTH/6);
+
+	printMirroredPlatform(FIELD_WIDTH / 3, 1, FIELD_WIDTH * 2.0/ 3.0, FIELD_WIDTH/6.0);
 
 	setcolor(YELLOW);
 
@@ -246,25 +188,56 @@ int main() {
 
 	// printRobotWithLookahead(robot);
 	
-	setlinestyle(DASHED_LINE, 5, 2);
+	setlinestyle(SOLID_LINE, 5, 2);
 
-	std::vector<Path> paths;
+	std::vector<BezierSegment> paths;
 
-	Path smoothPath;
-		BezierPath rightNeutralGoalToNearRIghtPlatform("enterFarLeftHomeZoneToNearRightPlatform");
-
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(115_in, 70_in), Vector(25_in, M_PI-M_PI_4)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(80_in, 60_in), Vector(20_in, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35_in, 60_in), Vector(20_in, M_PI_2)));
-		rightNeutralGoalToNearRIghtPlatform.addPoint(SplinePoint(Point(35_in, 45_in), Vector(20_in, -M_PI_2*0.9)));
-
-	smoothPath = rightNeutralGoalToNearRIghtPlatform.getPath(0.1);
-
-	paths.emplace_back(smoothPath);
+	BezierSegment bezierSegment1 = BezierSegment(Point(12_in, 12_in), Point(12_in, 36_in), Point(36_in, 12_in), Point(36_in, 36_in));
+	paths.emplace_back(bezierSegment1);
+	BezierSegment bezierSegment2 = BezierSegment(Point(36_in, 36_in), Point(36_in, 60_in), Point(12_in, 36_in), Point(12_in, 60_in));
+	paths.emplace_back(bezierSegment2);
 
 	// Print all paths in the vector paths
 	for (int i = 0; i < paths.size(); i++) {
 		printPath(paths.at(i));
+	}
+
+	std::vector<Pronounce::SinusoidalVelocityProfile> profiles;
+	Pronounce::ProfileConstraints defaultProfileConstraints = {60_in/second, 200_in/second/second};
+
+	QTime totalTime = 0.0;
+
+	for (int i = 0; i < paths.size(); i++) {
+		profiles.emplace_back(paths.at(i).getDistance(), defaultProfileConstraints);
+		totalTime += profiles.at(i).getDuration();
+	}
+
+	for (QTime currentTime = 0.0; currentTime < totalTime; currentTime += 20_ms) {
+		delay(20);
+		cleardevice();
+		printField();
+		for (int i = 0; i < paths.size(); i++) {
+			printPath(paths.at(i));
+		}
+
+		double index = 0;
+		QLength totalDistance = 0.0;
+		QTime time = currentTime;
+
+		while (time >= profiles.at(index).getDuration()) {
+			time -= profiles.at(index).getDuration();
+			totalDistance += paths.at(index).getDistance();
+			index += 1;
+		}
+
+		index += paths.at(index).getTByLength(profiles.at(index).getDistanceByTime(currentTime));
+
+		Point curvature = paths.at(index).evaluate(fmod(index, 1)) + Vector(paths.at(index).getCurvature(fmod(index, 1)).getValue() * 0.1, paths.at(index).getAngle(fmod(index, 1)) - 90_deg).getCartesian();
+
+		std::cout << "Curvature: " << paths.at(index).getCurvature(fmod(index, 1)).Convert(degree/inch) << std::endl;
+
+		circle(curvature.getY().Convert(inch) * multiplier, curvature.getX().Convert(inch) * multiplier, 2);
+		printRobot(paths.at(index).evaluate(fmod(index, 1)), paths.at(index).getAngle(fmod(index, 1)));
 	}
 
 	delay(50000000);

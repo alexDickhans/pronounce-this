@@ -23,9 +23,9 @@
 
 namespace pros {
 class Imu {
-	const std::uint8_t _port;
 
 	public:
+	const std::uint8_t _port;
 	Imu(const std::uint8_t port) : _port(port){};
 
 	/**

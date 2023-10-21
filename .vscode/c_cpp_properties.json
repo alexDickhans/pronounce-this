@@ -1,15 +1,15 @@
 {
   "configurations": [
     {
-      "name": "Linux",
+      "name": "linux-gcc-x64",
       "includePath": [
         "${workspaceFolder}/**",
         "/home/alex/Documents/pronounce-this/include"
       ],
       "defines": [],
       "compilerPath": "/home/alex/.config/Code/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/arm-none-eabi-g++",
-      "cStandard": "c17",
-      "cppStandard": "c++14",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
       "intelliSenseMode": "gcc-arm",
       "compileCommands": "/home/alex/Documents/pronounce-this/compile_commands.json",
       "browse": {

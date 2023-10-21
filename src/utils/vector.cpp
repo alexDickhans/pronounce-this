@@ -1,4 +1,4 @@
-#include "vector.hpp"
+#include "utils/vector.hpp"
 
 namespace Pronounce {
     Vector::Vector() {

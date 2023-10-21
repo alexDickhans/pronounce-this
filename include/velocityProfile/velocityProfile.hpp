@@ -32,6 +32,14 @@ namespace Pronounce {
 
 		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed) : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {}
 
+		void setInitialSpeed(QSpeed speed) {
+			this->initialSpeed = speed;
+		}
+
+		void setEndSpeed(QSpeed speed) {
+			this->endSpeed = speed;
+		}
+
 		QSpeed getInitialSpeed() {
 			return initialSpeed;
 		}
@@ -62,7 +70,7 @@ namespace Pronounce {
 			return distance;
 		}
 
-		void setDistance(QLength distance) {
+		virtual void setDistance(QLength distance) {
 			this->distance = distance;
 		}
 

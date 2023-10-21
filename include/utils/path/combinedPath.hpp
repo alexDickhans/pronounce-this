@@ -20,7 +20,7 @@ namespace Pronounce {
 			if (t < 0 || t > 1) {
 				throw std::exception();
 			}
-			std::cout << "HII " << t;
+
 			size_t result = fmin((size_t) (t * (double) path.size()), path.size()-1);
 			return result;
 		}
@@ -43,7 +43,7 @@ namespace Pronounce {
 			}
 
 			for (auto &item: this->path) {
-				item = {fabs(item.distance.getValue()), item.curvature};
+				item = {fabs(item.distance.getValue()), item.curvature.getValue()};
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Pronounce {
 			QCurvature maxCurvature = 0.0;
 
 			std::for_each(path.begin(), path.end(), [&](const auto &item) {
-				maxCurvature = std::max(maxCurvature.getValue(), item.curvature.getValue());
+				maxCurvature = std::max(maxCurvature.getValue(), abs(item.curvature.getValue()));
 			});
 
 			return maxCurvature;
@@ -128,6 +128,8 @@ namespace Pronounce {
 
 		double getSpeedMultiplier(QLength trackWidth) {
 			QCurvature maxCurvature = this->getMaxCurvature();
+
+			std::cout << "HII: " << 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue()) << std::endl;
 
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;

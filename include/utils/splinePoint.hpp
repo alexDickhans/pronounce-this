@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pointUtil.hpp"
+#include "point.hpp"
 #include "vector.hpp"
 
 // TODO: add docstrings
@@ -15,6 +15,7 @@ namespace Pronounce {
 	public:
 		SplinePoint();
 		SplinePoint(Point point, Vector controlArm);
+		SplinePoint(Point point, Point controlArm);
 
 		Point getPoint() {
 			return point;

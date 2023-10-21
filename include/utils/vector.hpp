@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pointUtil.hpp"
+#include "point.hpp"
 #include "units/units.hpp"
 #include <string>
 
@@ -42,7 +42,7 @@ namespace Pronounce {
          * 
          */
         void normalize() {
-            this->magnitude = 1_m;
+            this->magnitude = 1.0;
         }
 
         /**

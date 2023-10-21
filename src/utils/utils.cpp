@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "utils/utils.hpp"
 
 namespace Pronounce
 {
@@ -19,7 +19,7 @@ namespace Pronounce
         if (x < 0.0) return -1.0;
         return x;
     }
-	
+
 	double signnum_c(double x) {
         if (x > 0.0) return 1.0;
         if (x < 0.0) return -1.0;
@@ -47,18 +47,18 @@ namespace Pronounce
 		return (double)(arr[(size-1)/2] + arr[size/2])/2.0;
 	}
 
-	double getDistanceSensorMedian(pros::Distance &distance, int samples) {
-		double array[samples];
-
-		array[0] = distance.get();
-
-		for (int i = 1; i < samples; i++) {
-			pros::Task::delay(10);
-			array[i] = distance.get();
-		}
-
-		return findMedian(array, samples);
-	}
+//	double getDistanceSensorMedian(pros::Distance &distance, int samples) {
+//		double array[samples];
+//
+//		array[0] = distance.get();
+//
+//		for (int i = 1; i < samples; i++) {
+//			pros::Task::delay(10);
+//			array[i] = distance.get();
+//		}
+//
+//		return findMedian(array, samples);
+//	}
 
 	unsigned int factorial(const unsigned int& x) {
 		if (x < 2)

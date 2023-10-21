@@ -147,11 +147,8 @@ namespace Pronounce {
 
 			double turnPower = 0;
 
-			std::cout << "HIII getTAtDistance: " << path.getTAtDistance(distance);
-
 			QLength currentDistance = (drivetrain->getDistanceSinceReset()-startDistance);
 			QCurvature curvature = path.getSegmentAtDistance(fabs(distance.getValue())).curvature;
-			std::cout << " Current: " << currentDistance.Convert(inch) << " Target: " << distance.Convert(inch) << " Speed: " << speed.Convert(inch/second) << " Curvature: " << curvature.Convert(degree/inch) <<std::endl;
 
 			distancePid->setTarget(distance.getValue());
 
@@ -166,7 +163,7 @@ namespace Pronounce {
 
 			// integrate turnPid
 			if (turnPid != nullptr) {
-				Angle offset = path.getAngleAtDistance(distance).getValue() * (path.getInverted() ? 1 : -1);
+				Angle offset = path.getAngleAtDistance(distance).getValue() * (path.getInverted() ? -1 : 1);
 
 				Angle targetAngleWithOffset = targetAngle + offset;
 
