@@ -95,7 +95,7 @@
 #include "utils/polynomialExpression.hpp"
 #include "utils/path/combinedPath.hpp"
 
-
+#include "telemetryRadio/telemetryManager.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

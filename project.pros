@@ -164,6 +164,30 @@
                     "include/main.h"
                 ],
                 "version": "3.8.0"
+            },
+            "libTelemetryRadio": {
+                "location": "/home/alex/.config/pros/templates/libTelemetryRadio@0.0.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "libTelemetryRadio",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^3.8.0",
+                "system_files": [
+                    "include/telemetryRadio/transmitter.hpp",
+                    "include/telemetryRadio/measurementTypes/functionMeasurement.hpp",
+                    "include/telemetryRadio/measurementTypes/variableMeasurement.hpp",
+                    "include/telemetryRadio/encoding.hpp",
+                    "include/telemetryRadio/logger.hpp",
+                    "include/telemetryRadio/telemetryRadio.hpp",
+                    "include/telemetryRadio/usb.hpp",
+                    "include/telemetryRadio/measurementTypes/measurement.hpp",
+                    "firmware/libTelemetryRadio.a",
+                    "include/telemetryRadio/telemetryManager.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.1"
             }
         },
         "upload_options": {
