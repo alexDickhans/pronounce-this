@@ -97,7 +97,7 @@ namespace PathPlanner {
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;
 
-			std::cout << "Curvy: " << 1.0/(1.0 + abs(maxCurvature.getValue()*0.5) * trackWidth.getValue()) << std::endl;
+			std::cout << "Curvy: " << 1.0/(1.0 + abs(maxCurvature.getValue()*0.25) * trackWidth.getValue()) << std::endl;
 
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
