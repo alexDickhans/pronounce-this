@@ -162,22 +162,6 @@ void printField() {
 
 int main() {
 
-	int loopcount = 0;
-
-	/*
-	// Sim code
-	SimTankDrivetrain drivetrain(15.0, 15.0/fps, 60.0/fps);
-	SimOdometry odometry(&drivetrain);
-
-	// Shared code
-	TankPurePursuit purePursuit(&drivetrain, &odometry, lookahead);
-
-	double trackWidth = drivetrain.getTrackWidth();
-
-	purePursuit.setSpeed(1.0);
-	purePursuit.setTurnPid(new PID(1, 0, 0));
-	*/
-
 	int gd = DETECT, gm;
 	initgraph(&gd, &gm, NULL);
 
@@ -189,21 +173,49 @@ int main() {
 	cleardevice();
 
 	printField();
-
-	// printRobotWithLookahead(robot);
 	
 	setlinestyle(SOLID_LINE, 5, 2);
 
-	std::vector<BezierSegment> paths;
-
-	BezierSegment bezierSegment1 = BezierSegment(Point(12_in, 12_in), Point(12_in, 36_in), Point(36_in, 12_in), Point(36_in, 36_in));
-	paths.emplace_back(bezierSegment1);
-	BezierSegment bezierSegment2 = BezierSegment(Point(36_in, 36_in), Point(36_in, 60_in), Point(12_in, 36_in), Point(12_in, 60_in));
-	paths.emplace_back(bezierSegment2);
+//	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
+//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 66_in), PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 66_in), PathPlanner::Point(132_in, 74_in), true),
+//			 nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 0_in), PathPlanner::Point(110_in, 12_in), PathPlanner::Point(90_in, 12_in), false),
+//			 nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 12_in), PathPlanner::Point(110_in, 12_in), PathPlanner::Point(110_in, 30_in), PathPlanner::Point(120_in, 20_in), true),
+//			 nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(120_in, 20_in), PathPlanner::Point(110_in, 30_in), PathPlanner::Point(92_in, 30_in), PathPlanner::Point(92_in, 70_in), false),
+//			 nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(92_in, 70_in), PathPlanner::Point(97_in, 55_in), PathPlanner::Point(105_in, 70_in), PathPlanner::Point(130_in, 70_in), false),
+//			 nullptr}
+//	};
+//	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
+//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), false),
+//					nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 140_in), PathPlanner::Point(110_in, 128_in), PathPlanner::Point(90_in, 128_in), true),
+//					nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 12_in), PathPlanner::Point(110_in, 12_in), PathPlanner::Point(110_in, 30_in), PathPlanner::Point(120_in, 20_in), false),
+//					nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(120_in, 20_in), PathPlanner::Point(110_in, 30_in), PathPlanner::Point(92_in, 30_in), PathPlanner::Point(92_in, 70_in), false),
+//					nullptr},
+//			{PathPlanner::BezierSegment(PathPlanner::Point(92_in, 70_in), PathPlanner::Point(97_in, 55_in), PathPlanner::Point(105_in, 70_in), PathPlanner::Point(130_in, 70_in), false),
+//					nullptr}
+//	};
+	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
+			{PathPlanner::BezierSegment(PathPlanner::Point(12_in, 36_in), PathPlanner::Point(20_in, 28_in), PathPlanner::Point(36_in, 36_in), PathPlanner::Point(26_in, 8_in), false),
+					nullptr},
+			{PathPlanner::BezierSegment(PathPlanner::Point(24_in, 12_in), PathPlanner::Point(24_in, 35_in), PathPlanner::Point(12_in, 30_in), PathPlanner::Point(12_in, 75_in), true),
+					nullptr},
+			{PathPlanner::BezierSegment(PathPlanner::Point(18_in, 75_in), PathPlanner::Point(18_in, 110_in), PathPlanner::Point(15_in, 120_in), PathPlanner::Point(45_in, 120_in), true),
+					nullptr},
+			{PathPlanner::BezierSegment(PathPlanner::Point(120_in, 20_in), PathPlanner::Point(110_in, 30_in), PathPlanner::Point(92_in, 30_in), PathPlanner::Point(92_in, 70_in), false),
+					nullptr},
+			{PathPlanner::BezierSegment(PathPlanner::Point(92_in, 70_in), PathPlanner::Point(97_in, 55_in), PathPlanner::Point(105_in, 70_in), PathPlanner::Point(130_in, 70_in), false),
+					nullptr}
+	};
 
 	// Print all paths in the vector paths
 	for (int i = 0; i < paths.size(); i++) {
-		printPath(paths.at(i));
+		printPath(paths.at(i).first);
 	}
 
 	for (double i = 0.0; i <= paths.size(); i += 0.02) {
@@ -211,15 +223,15 @@ int main() {
 		cleardevice();
 		printField();
 		for (int i = 0; i < paths.size(); i++) {
-			printPath(paths.at(i));
+			printPath(paths.at(i).first);
 		}
 
-		Point curvature = paths.at(i).evaluate(fmod(i, 1)) + Vector(paths.at(i).getCurvature(fmod(i, 1)).getValue() * 0.1, paths.at(i).getAngle(fmod(i, 1)) - 90_deg).getCartesian();
+		Point curvature = paths.at(i).first.evaluate(fmod(i, 1)) + Vector(paths.at(i).first.getCurvature(fmod(i, 1)).getValue() * 0.1, paths.at(i).first.getAngle(fmod(i, 1)) - 90_deg).getCartesian();
 
-		std::cout << "Curvature: " << paths.at(i).getCurvature(fmod(i, 1)).Convert(degree/inch) << std::endl;
+		std::cout << "Curvature: " << paths.at(i).first.getCurvature(fmod(i, 1)).Convert(degree/inch) << std::endl;
 
 		circle(curvature.getY().Convert(inch) * multiplier, curvature.getX().Convert(inch) * multiplier, 2);
-		printRobot(paths.at(i).evaluate(fmod(i, 1)), paths.at(i).getAngle(fmod(i, 1)));
+		printRobot(paths.at(i).first.evaluate(fmod(i, 1)), paths.at(i).first.getAngle(fmod(i, 1)));
 	}
 
 	delay(50000000);

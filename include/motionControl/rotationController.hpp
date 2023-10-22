@@ -19,9 +19,12 @@ namespace Pronounce
 
 		pros::motor_brake_mode_e_t beforeBrakeMode;
 
+		double idleSpeed = 0.0;
+
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTarget(target.Convert(radian));
+			this->idleSpeed = idleSpeed;
 			this->target = target;
 		}
 
@@ -40,7 +43,7 @@ namespace Pronounce
 		void update() {
 			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
 
-			drivetrain.tankSteerVoltage(output * 12000, -output * 12000);
+			drivetrain.tankSteerVoltage(output * 12000 + idleSpeed, -output * 12000 + idleSpeed);
 		}
 
 		void exit() {
