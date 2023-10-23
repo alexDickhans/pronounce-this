@@ -238,7 +238,7 @@ int closeAWP() {
 							{PathPlanner::BezierSegment(PathPlanner::Point(115_in, 38_in), PathPlanner::Point(120_in, 22_in), PathPlanner::Point(127_in, 20_in), PathPlanner::Point(130_in, 45_in), true),
 									nullptr},
 							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 45_in), PathPlanner::Point(131_in, 50_in), PathPlanner::Point(122_in, 50_in), PathPlanner::Point(122_in, 78_in), true),
-									new SinusoidalVelocityProfile(0.0, {40_in/second, 80_in/second/second})}
+									new SinusoidalVelocityProfile(0.0, {40_in/second, 40_in/second/second})}
 					},
 					{
 							{0.01, [] () -> void {
