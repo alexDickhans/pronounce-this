@@ -3,7 +3,7 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 #include "utils/utils.hpp"
-#include "math.h"
+#include <cmath>
 #include "utils/runningAverage.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "hardware/hardware.hpp"

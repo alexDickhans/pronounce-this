@@ -227,18 +227,18 @@ int closeAWP() {
 					{
 							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 22_in), PathPlanner::Point(123_in, 32_in), PathPlanner::Point(108_in, 50_in), PathPlanner::Point(108_in, 28_in), true),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 30_in), PathPlanner::Point(108_in, 40_in), PathPlanner::Point(100_in, 32_in), PathPlanner::Point(82_in, 32_in), false),
+							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 30_in), PathPlanner::Point(108_in, 36_in), PathPlanner::Point(100_in, 38_in), PathPlanner::Point(82_in, 38_in), false),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 44_in), PathPlanner::Point(95_in, 44_in), PathPlanner::Point(95_in, 39_in), PathPlanner::Point(95_in, 34_in), true),
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 44_in), PathPlanner::Point(98_in, 44_in), PathPlanner::Point(108_in, 39_in), PathPlanner::Point(108_in, 34_in), true),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 36_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 56_in), false),
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 36_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 59_in), false),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 70_in), PathPlanner::Point(95_in, 50_in), PathPlanner::Point(110_in, 49_in), PathPlanner::Point(120_in, 42_in), true),
-									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(115_in, 38_in), PathPlanner::Point(120_in, 22_in), PathPlanner::Point(127_in, 20_in), PathPlanner::Point(130_in, 45_in), true),
-									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 45_in), PathPlanner::Point(131_in, 50_in), PathPlanner::Point(122_in, 50_in), PathPlanner::Point(122_in, 78_in), true),
-									new SinusoidalVelocityProfile(0.0, {40_in/second, 40_in/second/second})}
+							{PathPlanner::BezierSegment(PathPlanner::Point(102_in, 70_in), PathPlanner::Point(104_in, 60_in), PathPlanner::Point(115_in, 54_in), PathPlanner::Point(115_in, 38_in), true),
+							 nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(110_in, 38_in), PathPlanner::Point(115_in, 22_in), PathPlanner::Point(127_in, 20_in), PathPlanner::Point(130_in, 45_in), true),
+							 nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 45_in), PathPlanner::Point(132_in, 60_in), PathPlanner::Point(121_in, 72_in), PathPlanner::Point(121_in, 83_in), true),
+							 nullptr}
 					},
 					{
 							{0.01, [] () -> void {
@@ -261,12 +261,18 @@ int closeAWP() {
 							{6.1, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
-							{6.7, [] () -> void {
+							{6.9, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsOut);
 							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();
+
+	drivetrain.tankSteerVoltage(-2000, -2000);
+
+	pros::Task::delay(500);
+
+	wingsStateController.setCurrentBehavior(&wingsOut);
 
 	return 0;
 }
