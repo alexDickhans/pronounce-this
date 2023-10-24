@@ -253,7 +253,7 @@ int main() {
 			{PathPlanner::BezierSegment(PathPlanner::Point(42_in, 70_in), PathPlanner::Point(50_in, 85_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 120_in), true),
 					nullptr},
 			{PathPlanner::BezierSegment(PathPlanner::Point(55_in, 120_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 80_in), false),
-					nullptr},
+					nullptr}
 	};
 
 	// Print all paths in the vector paths
