@@ -7,12 +7,7 @@
 namespace PathPlanner {
 	class BezierSegment {
 	private:
-		PolynomialExpression x;
-		PolynomialExpression y;
-		PolynomialExpression dx;
-		PolynomialExpression dy;
-		PolynomialExpression ddx;
-		PolynomialExpression ddy;
+		PolynomialExpression x, y, dx, dy, ddx, ddy;
 
 		Point a;
 		Point b;

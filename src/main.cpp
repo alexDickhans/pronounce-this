@@ -277,6 +277,167 @@ int closeAWP() {
 	return 0;
 }
 
+int far6BallFullAWP() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 140_in), PathPlanner::Point(110_in, 128_in), PathPlanner::Point(90_in, 128_in), true),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(100_in, 128_in), false),
+									nullptr}
+					},
+					{
+							{0.1, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{1.1, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}},
+							{1.6, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{1.9, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(270_deg, 600_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(100_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(90_in, 128_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(108_in, 128_in), false),
+									nullptr}
+					},
+					{
+							{0.3, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(200_deg, 500_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(93_in, 100_in), PathPlanner::Point(93_in, 70_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 75_in), PathPlanner::Point(93_in, 85_in), PathPlanner::Point(93_in, 90_in), true),
+									nullptr}
+					},
+					{
+							{0.6, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{1.6, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(370_deg, 500_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 90_in), PathPlanner::Point(93_in, 100_in), PathPlanner::Point(85_in, 100_in), PathPlanner::Point(85_in, 115_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(85_in, 115_in), PathPlanner::Point(85_in, 105_in), PathPlanner::Point(90_in, 105_in), PathPlanner::Point(95_in, 105_in), true),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(95_in, 105_in), PathPlanner::Point(85_in, 105_in), PathPlanner::Point(70_in, 100_in), PathPlanner::Point(70_in, 80_in), false),
+									nullptr}
+					},
+					{
+							{0.5, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.2, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(360_deg, 700_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(70_in, 115_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 70_in), PathPlanner::Point(115_in, 70_in), true),
+									nullptr}
+					},
+					{
+							{0.5, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.8, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrain.tankSteerVoltage(-3000, 3000);
+
+	pros::Task::delay(2000);
+
+	return 0;
+}
+
 int closeAWPBad() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
 
