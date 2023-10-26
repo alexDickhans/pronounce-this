@@ -29,7 +29,7 @@ namespace Pronounce {
 		}
 
 		bool isDone() override {
-			return false;
+			return catapultMotors.at(0).get_target_position() - catapultMotors.at(0).get_position() < 0.1;
 		}
 	};
 }

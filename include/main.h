@@ -97,6 +97,12 @@
 
 #include "telemetryRadio/telemetryManager.hpp"
 
+#include "AutoPaths/6ball1.hpp"
+#include "AutoPaths/6ball3.hpp"
+#include "AutoPaths/Skills1.hpp"
+#include "AutoPaths/Skills2.hpp"
+#include "AutoPaths/Skills3.hpp"
+
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
  * Motor, you can use the namespace with the following commented out line.
