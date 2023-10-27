@@ -19,7 +19,7 @@ namespace Pronounce {
 			double newSetpoint = position + setpoint;
 
 			while (newSetpoint < catapultMotors.get_positions().at(0)) {
-				newSetpoint += 3;
+				newSetpoint += 3.0;
 			}
 			catapultMotors.move_absolute(newSetpoint, 200);
 		}
@@ -29,7 +29,7 @@ namespace Pronounce {
 		}
 
 		bool isDone() override {
-			return catapultMotors.at(0).get_target_position() - catapultMotors.at(0).get_position() < 0.1;
+			return false;
 		}
 	};
 }

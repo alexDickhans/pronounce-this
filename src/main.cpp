@@ -170,8 +170,6 @@ int closeAWP() {
 
 	threeWheelOdom.reset(Pose2D(130_in, 22_in, 150_deg));
 
-	catapultMotors.set_zero_position(1.25 * 20.0/15.0);
-
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
@@ -241,7 +239,7 @@ int far6BallFullAWP() {
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					{64_in/second, 200_in/second/second, 0.0},
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -266,19 +264,19 @@ int far6BallFullAWP() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(285_deg, 700_ms);
+	turnTo(300_deg, 500_ms);
 
 	intakeStateController.setCurrentBehavior(&intakeEject);
 
-	move(20_in, defaultProfileConstraints, 0.0, 285_deg);
-	move(-17_in, defaultProfileConstraints, 0.0, 285_deg);
+	move(20_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 300_deg);
+	move(-17_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 300_deg);
 
-	turnTo(200_deg, 500_ms);
+	turnTo(200_deg, 400_ms);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					{64_in/second, 170_in/second/second, 0.0},
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -286,9 +284,9 @@ int far6BallFullAWP() {
 					8000.0/64.0,
 					65_in/second,
 					{
-							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(96_in, 100_in), PathPlanner::Point(96_in, 75_in), false),
+							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(98_in, 100_in), PathPlanner::Point(98_in, 75_in), false),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 80_in), PathPlanner::Point(87_in, 80_in), PathPlanner::Point(87_in, 90_in), true),
+							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 80_in), PathPlanner::Point(90_in, 80_in), PathPlanner::Point(90_in, 90_in), true),
 									nullptr}
 					},
 					{
@@ -307,7 +305,7 @@ int far6BallFullAWP() {
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					{64_in/second, 200_in/second/second, 0.0},
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -329,12 +327,12 @@ int far6BallFullAWP() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(375_deg, 700_ms);
+	turnTo(375_deg, 300_ms);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					{65_in/second, 200_in/second/second, 0.0},
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -344,11 +342,11 @@ int far6BallFullAWP() {
 					{
 							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(74_in, 95_in), PathPlanner::Point(74_in, 115_in), false),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 70_in), PathPlanner::Point(115_in, 70_in), true),
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 75_in), PathPlanner::Point(120_in, 75_in), true),
 									nullptr}
 					},
 					{
-							{0.5, [] () -> void {
+							{0.1, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeEject);
 							}},
 							{1.8, [] () -> void {
@@ -359,7 +357,7 @@ int far6BallFullAWP() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrain.tankSteerVoltage(-3000, 3000);
+	drivetrain.tankSteerVoltage(-3000, -3000);
 
 	pros::Task::delay(2000);
 
@@ -368,9 +366,6 @@ int far6BallFullAWP() {
 
 int skills() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
-
-	catapultMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-	catapultMotors.set_zero_position(1.25 * 20.0/15.0);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -389,12 +384,12 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 191_deg, drivetrainMutex, 1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 193_deg, drivetrainMutex, 1200));
 
 	catapultStateController.setCurrentBehavior(catapultFire.wait(37.0_s));
 
 	catapultStateController.waitUntilDone()();
-	catapultStateController.setCurrentBehavior(&catapultHold);
+	catapultStateController.setCurrentBehavior(catapultFire.wait(1.5_s));
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -632,6 +627,10 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
+	far6BallFullAWP();
+	#elif AUTON == 1
+	closeAWP();
+	#elif AUTON == 2
 	skills();
 	#endif // !1
 

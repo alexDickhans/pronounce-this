@@ -1,7 +1,6 @@
 import os
-import time
 
-autons = ["FULL AWP", "CLOSE 9 DISC", "RIGHT 9 DISC", "CLOSE 8 DISC", "RIGHT 8 DISC"]
+autons = ["FAR 6 BALL", "CLOSE AWP", "SKILLS"]
 
 offset = 1
 
