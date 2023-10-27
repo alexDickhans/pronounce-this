@@ -19,7 +19,7 @@ namespace Pronounce {
 			double newSetpoint = position + setpoint;
 
 			while (newSetpoint < catapultMotors.get_positions().at(0)) {
-				newSetpoint += 3;
+				newSetpoint += 3.0;
 			}
 			catapultMotors.move_absolute(newSetpoint, 200);
 		}

@@ -27,9 +27,12 @@ int preAutonRun() {
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
 
-	drivetrainStateController.setCurrentBehavior(RotationController("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex).wait(waitTimeMS));
+	drivetrainStateController.setCurrentBehavior(&angleRotation);
 
-	drivetrainStateController.waitUntilDone()();
+	pros::Task::delay(waitTimeMS.Convert(millisecond));
+
+	drivetrainStateController.useDefaultBehavior();
+	pros::Task::delay(10);
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
@@ -123,51 +126,6 @@ int safeCloseAWP() {
 	return 0;
 }
 
-int farAWP() {
-
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
-
-	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in},
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in},
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in},
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in},
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in},
-						{63_in, 0.0},
-						{24_in, 135_deg/24_in},
-						{92_in, -90_deg/92_in},
-						{24_in, 135_deg/24_in}}),
-			defaultProfileConstraints,
-			-90.0_deg));
-
-	drivetrainStateController.waitUntilDone()();
-
-//	drivetrainStateController.setCurrentBehavior(getMPInstance(
-//			CombinedPath({{-55_in, 0.0}}),
-//			defaultProfileConstraints,
-//			-90.0_deg));
-//
-//	drivetrainStateController.waitUntilDone()();
-
-	return 0;
-}
-
 int testBezier() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
@@ -208,35 +166,284 @@ int testBezier() {
 	return 0;
 }
 
-int far6Ball() {
+int closeAWP() {
+
+	threeWheelOdom.reset(Pose2D(130_in, 22_in, 150_deg));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 22_in), PathPlanner::Point(123_in, 32_in), PathPlanner::Point(108_in, 50_in), PathPlanner::Point(108_in, 28_in), true),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 30_in), PathPlanner::Point(108_in, 36_in), PathPlanner::Point(100_in, 38_in), PathPlanner::Point(82_in, 38_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 44_in), PathPlanner::Point(98_in, 44_in), PathPlanner::Point(108_in, 39_in), PathPlanner::Point(108_in, 34_in), true),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 36_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(90_in, 59_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(102_in, 70_in), PathPlanner::Point(104_in, 60_in), PathPlanner::Point(115_in, 54_in), PathPlanner::Point(115_in, 38_in), true),
+							 nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(110_in, 38_in), PathPlanner::Point(115_in, 22_in), PathPlanner::Point(127_in, 20_in), PathPlanner::Point(130_in, 45_in), true),
+							 nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 45_in), PathPlanner::Point(132_in, 60_in), PathPlanner::Point(121_in, 72_in), PathPlanner::Point(121_in, 83_in), true),
+							 nullptr}
+					},
+					{
+							{0.01, [] () -> void {
+								catapultStateController.setCurrentBehavior(catapultFire.wait(400_ms));
+							}},
+							{1.2, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{2.5, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}},
+							{3.5, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{5.6, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+								wingsStateController.setCurrentBehavior(&wingsOut);
+								catapultStateController.setCurrentBehavior(&catapultHang);
+							}},
+							{6.1, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsIn);
+							}},
+							{6.9, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrain.tankSteerVoltage(-2000, -2000);
+
+	pros::Task::delay(500);
+
+	wingsStateController.setCurrentBehavior(&wingsOut);
+
+	return 0;
+}
+
+int far6BallFullAWP() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
-	intakeStateController.setCurrentBehavior(&intakeIntaking);
-
-	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({
-								 {3_in, 0.0}}),
-			defaultProfileConstraints,
-			180_deg));
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					Auto6BallPath1,
+					{
+							{0.1, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{1.0, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}},
+							{1.2, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{1.5, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}}
+					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({
-								 {-20_in, 0.0},
-								 {-30_in, 90_deg/-30_in}}),
-			defaultProfileConstraints,
-			180_deg));
+	turnTo(300_deg, 500_ms);
+
+	intakeStateController.setCurrentBehavior(&intakeEject);
+
+	move(20_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 300_deg);
+	move(-17_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 300_deg);
+
+	turnTo(200_deg, 400_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 170_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(98_in, 100_in), PathPlanner::Point(98_in, 75_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 80_in), PathPlanner::Point(90_in, 80_in), PathPlanner::Point(90_in, 90_in), true),
+									nullptr}
+					},
+					{
+							{0.6, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{1.3, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}}
+					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(270_deg, 0.6_s);
+	turnTo(340_deg, 500_ms);
 
-	drivetrainStateController.setCurrentBehavior(getMPInstance(
-			CombinedPath({
-								 {-24_in, 0.0}}),
-			defaultProfileConstraints,
-			270_deg));
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					Auto6BallPath3,
+					{
+							{0.3, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.2, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}},
+							{2.2, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(375_deg, 300_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{65_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(74_in, 95_in), PathPlanner::Point(74_in, 115_in), false),
+									nullptr},
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 75_in), PathPlanner::Point(120_in, 75_in), true),
+									nullptr}
+					},
+					{
+							{0.1, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.8, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrain.tankSteerVoltage(-3000, -3000);
+
+	pros::Task::delay(2000);
+
+	return 0;
+}
+
+int skills() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					ProgSkills1,
+					{
+
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 193_deg, drivetrainMutex, 1200));
+
+	catapultStateController.setCurrentBehavior(catapultFire.wait(37.0_s));
+
+	catapultStateController.waitUntilDone()();
+	catapultStateController.setCurrentBehavior(catapultFire.wait(1.5_s));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					{
+							ProgSkills2
+					},
+					{
+							{0.3, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(180_deg, 800_ms);
+
+	wingsStateController.setCurrentBehavior(&wingsOut);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					ProgSkills3,
+					{
+							{1.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{2.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{3.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{4.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{5.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+					}));
 
 	drivetrainStateController.waitUntilDone()();
 
@@ -420,7 +627,11 @@ void autonomous() {
 	preAutonRun();
 
 	#if AUTON == 0
-	testBezier();
+	far6BallFullAWP();
+	#elif AUTON == 1
+	closeAWP();
+	#elif AUTON == 2
+	skills();
 	#endif // !1
 
 	postAuton();

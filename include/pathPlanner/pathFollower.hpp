@@ -69,6 +69,48 @@ namespace PathPlanner {
 			}
 		}
 
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+			this->pathSegments = pathSegments;
+			this->commands = functions;
+			this->turnPID = turnPID;
+			this->turnPID.setTurnPid(true);
+			this->distancePID = distancePID;
+			this->feedforwardMultiplier = feedforwardMultiplier;
+			this->angleFunction = std::move(angleFunction);
+
+			for (int i = 0; i < this->pathSegments.size(); ++i) {
+
+				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * maxSpeed;
+
+				Pronounce::SinusoidalVelocityProfile* profile = this->pathSegments.at(i).second;
+
+				if (profile == nullptr) {
+					profile = new Pronounce::SinusoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
+				}
+
+				profile->setDistance(this->pathSegments.at(i).first.getDistance());
+
+				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity.getValue(), adjustedSpeed.getValue()), profile->getProfileConstraints().maxAcceleration, 0.0});
+
+				profile->setInitialSpeed(0.0);
+				profile->setEndSpeed(0.0);
+
+				if (i < this->pathSegments.size()-1) {
+					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
+				}
+
+				if (i > 0) {
+					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
+				}
+
+				profile->calculate(20);
+
+				this->pathSegments.at(i).second = profile;
+			}
+		}
+
 		void initialize() override {
 			startTime = pros::millis() * 1_ms;
 			startDistance = drivetrain.getDistanceSinceReset();
