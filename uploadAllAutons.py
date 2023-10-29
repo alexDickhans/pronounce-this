@@ -1,6 +1,6 @@
 import os
 
-autons = ["FAR 6 BALL", "CLOSE AWP", "SKILLS"]
+autons = ["FAR 6 BALL", "CLOSE AWP", "SKILLS", "FAR 3 BALL AWP"]
 
 offset = 1
 
