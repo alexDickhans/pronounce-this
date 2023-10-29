@@ -3,14 +3,14 @@
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> ProgSkills2 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(31.8362_in, 4.9435_in),
 PathPlanner::Point(34.4068_in, 15.6215_in),
-PathPlanner::Point(9.88701_in, 17.0056_in),
-PathPlanner::Point(9.49153_in, 52.5989_in)
+PathPlanner::Point(12.2599_in, 14.6327_in),
+PathPlanner::Point(11.8644_in, 50.226_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(9.49153_in, 52.5989_in),
-PathPlanner::Point(10.0847_in, 84.6328_in),
-PathPlanner::Point(19.9717_in, 112.316_in),
+PathPlanner::Point(11.8644_in, 50.226_in),
+PathPlanner::Point(12.4576_in, 82.2599_in),
+PathPlanner::Point(21.9491_in, 112.316_in),
 PathPlanner::Point(68.6158_in, 113.107_in)
 ,true),
 nullptr},

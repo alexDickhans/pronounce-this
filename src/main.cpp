@@ -314,7 +314,7 @@ int far6BallFullAWP() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(375_deg, 600_ms);
+	turnTo(370_deg, 600_ms);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -327,7 +327,7 @@ int far6BallFullAWP() {
 					8000.0/64.0,
 					65_in/second,
 					{
-							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 90_in), PathPlanner::Point(74_in, 100_in), PathPlanner::Point(74_in, 112_in), false),
+							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 90_in), PathPlanner::Point(76_in, 100_in), PathPlanner::Point(76_in, 112_in), false),
 									nullptr},
 							{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 88_in), PathPlanner::Point(125_in, 83_in), true),
 									nullptr}
@@ -338,7 +338,7 @@ int far6BallFullAWP() {
 							}},
 							{1.8, [] () -> void {
 								intakeStateController.useDefaultBehavior();
-								wingsStateController.setCurrentBehavior(&wingsOut);
+//								wingsStateController.setCurrentBehavior(&wingsOut);
 							}}
 					}));
 
