@@ -694,23 +694,35 @@ void autonomous() {
  */
 void opcontrol() {
 
+	// Causes the programming skills code to only run during skills
 #if AUTON == 2
+
 	{
+		// start skills task
 		pros::Task auton(skills);
 
+		// Wait for the driver to press the button on their controller
 		while (true) {
+			// Move on without stopping if skills is done
 			if (skillsDone) {
+				// Move on to driver control
 				postAuton();
 				break;
 			}
+
+			// If the button is pressed stop skills, then move on to driver
 			if (master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
+				// Kills the skills
 				auton.suspend();
 				auton.remove();
+
+				// Move on to driver control
 				postAuton();
 				break;
 			}
 		}
 	}
+
 #endif
 
 	robotMutex.take();
