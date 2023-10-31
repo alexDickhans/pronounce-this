@@ -5,8 +5,10 @@
 #include "hardware/hardware.hpp"
 
 namespace Pronounce {
-	Wings wingsIn("WingsIn", wingsSolenoid, false);
-	Wings wingsOut("WingsIn", wingsSolenoid, true);
+	Wings wingsIn("WingsIn", leftSolenoid, rightSolenoid, false, false);
+	Wings wingsOut("WingsOut", leftSolenoid, rightSolenoid, true, true);
+	Wings wingsLeft("WingsLeft", leftSolenoid, rightSolenoid, true, false);
+	Wings wingsRight("WingsRight", leftSolenoid, rightSolenoid, false, true);
 
 	StateController wingsStateController("WingsStateController", &wingsIn);
 

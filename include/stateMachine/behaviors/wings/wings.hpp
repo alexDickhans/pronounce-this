@@ -10,15 +10,18 @@
 namespace Pronounce {
 	class Wings : public Behavior {
 	private:
-		pros::ADIDigitalOut& wingsSolenoid;
-		bool state{false};
+		pros::ADIDigitalOut& leftSolenoid;
+		pros::ADIDigitalOut& rightSolenoid;
+		bool leftState{false};
+		bool rightState{false};
 	public:
-		Wings(std::string name, pros::ADIDigitalOut& wingsSolenoid, bool state) : Behavior(std::move(name)), wingsSolenoid(wingsSolenoid), state(state) {
+		Wings(std::string name, pros::ADIDigitalOut& leftSolenoid, pros::ADIDigitalOut& rightSolenoid, bool leftState, bool rightState) : Behavior(std::move(name)), leftSolenoid(leftSolenoid), rightSolenoid(rightSolenoid), leftState(leftState), rightState(rightState) {
 
 		}
 
 		void initialize() override {
-			wingsSolenoid.set_value(state);
+			leftSolenoid.set_value(leftState);
+			rightSolenoid.set_value(rightState);
 		}
 
 		void update() override {
