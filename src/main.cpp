@@ -425,7 +425,11 @@ int skills() {
 
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200));
 
+#ifndef TEST
 	catapultStateController.setCurrentBehavior(catapultFire.wait(37.0_s));
+#else
+	catapultStateController.setCurrentBehavior(catapultFire.wait(3.0_s));
+#endif
 
 	catapultStateController.waitUntilDone()();
 	catapultStateController.setCurrentBehavior(catapultFire.wait(1.5_s));
@@ -444,14 +448,14 @@ int skills() {
 							ProgSkills2
 					},
 					{
-							{0.3, [] () -> void {
+							{0.01, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeEject);
 							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(180_deg, 800_ms);
+	turnTo(180_deg, 600_ms);
 
 	wingsStateController.setCurrentBehavior(&wingsOut);
 
@@ -482,10 +486,16 @@ int skills() {
 							{5.0, [] () -> void {
 								wingsStateController.useDefaultBehavior();
 							}},
-							{8.2, [] () -> void {
+							{6.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsLeft);
+							}},
+							{7.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{8.0, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsOut);
 							}},
-							{9.6, [] () -> void {
+							{9.0, [] () -> void {
 								wingsStateController.useDefaultBehavior();
 							}},
 					}));

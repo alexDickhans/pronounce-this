@@ -9,14 +9,14 @@ PathPlanner::Point(69.6045_in, 115.283_in)
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(69.6045_in, 115.283_in),
-PathPlanner::Point(69.6047_in, 98.7709_in),
-PathPlanner::Point(78.0085_in, 100.699_in),
-PathPlanner::Point(87.4011_in, 76.9209_in)
+PathPlanner::Point(72.7685_in, 101.539_in),
+PathPlanner::Point(99.3644_in, 104.456_in),
+PathPlanner::Point(106.384_in, 86.2147_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(87.4011_in, 76.9209_in),
-PathPlanner::Point(79.9858_in, 95.8547_in),
+PathPlanner::Point(80.7768_in, 96.0524_in),
 PathPlanner::Point(81.9138_in, 101.91_in),
 PathPlanner::Point(82.0621_in, 116.271_in)
 ,true),
@@ -24,57 +24,50 @@ nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(82.0621_in, 116.271_in),
 PathPlanner::Point(79.0466_in, 103.146_in),
-PathPlanner::Point(58.1109_in, 92.9007_in),
-PathPlanner::Point(48.2486_in, 74.548_in)
+PathPlanner::Point(50.9922_in, 93.8894_in),
+PathPlanner::Point(37.1751_in, 84.0395_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(48.2486_in, 74.548_in),
-PathPlanner::Point(52.8213_in, 93.1727_in),
+PathPlanner::Point(46.0735_in, 74.9435_in),
+PathPlanner::Point(53.81_in, 92.5795_in),
 PathPlanner::Point(57.0604_in, 97.109_in),
 PathPlanner::Point(57.7401_in, 114.096_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(57.7401_in, 114.096_in),
-PathPlanner::Point(54.8605_in, 99.8402_in),
-PathPlanner::Point(28.6167_in, 104.496_in),
-PathPlanner::Point(9.49153_in, 106.78_in)
+PathPlanner::Point(53.8718_in, 97.4673_in),
+PathPlanner::Point(23.4754_in, 130.203_in),
+PathPlanner::Point(7.71187_in, 106.979_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(9.49153_in, 106.78_in),
-PathPlanner::Point(23.9822_in, 111.634_in),
-PathPlanner::Point(24.7453_in, 129.376_in),
-PathPlanner::Point(43.1073_in, 131.695_in)
+PathPlanner::Point(13.3042_in, 123.696_in),
+PathPlanner::Point(22.1747_in, 133.726_in),
+PathPlanner::Point(43.1073_in, 135.452_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(43.1073_in, 131.695_in),
 PathPlanner::Point(20.5372_in, 124.127_in),
-PathPlanner::Point(19.9578_in, 112.289_in),
-PathPlanner::Point(6.52542_in, 111.525_in)
+PathPlanner::Point(15.4098_in, 111.497_in),
+PathPlanner::Point(1.9774_in, 110.733_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(6.52542_in, 111.525_in),
-PathPlanner::Point(29.0817_in, 108.982_in),
-PathPlanner::Point(68.8205_in, 80.4937_in),
-PathPlanner::Point(103.814_in, 96.6949_in)
+PathPlanner::Point(26.9066_in, 97.5131_in),
+PathPlanner::Point(70.0069_in, 80.8892_in),
+PathPlanner::Point(69.2092_in, 114.69_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(103.814_in, 96.6949_in),
-PathPlanner::Point(138.807_in, 112.896_in),
-PathPlanner::Point(120.915_in, 127.14_in),
-PathPlanner::Point(96.6949_in, 129.915_in)
-,true),
-nullptr},
-{PathPlanner::BezierSegment(
-PathPlanner::Point(96.6949_in, 129.915_in),
-PathPlanner::Point(115.978_in, 126.363_in),
-PathPlanner::Point(117.41_in, 120.427_in),
-PathPlanner::Point(129.52_in, 116.469_in)
+PathPlanner::Point(69.209_in, 118.644_in),
+PathPlanner::Point(69.7068_in, 108.566_in),
+PathPlanner::Point(69.3592_in, 97.6869_in),
+PathPlanner::Point(69.6048_in, 87.4012_in)
 ,false),
 nullptr},
 };
