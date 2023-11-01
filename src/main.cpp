@@ -451,7 +451,7 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-180_deg, 800_ms);
+	turnTo(180_deg, 800_ms);
 
 	wingsStateController.setCurrentBehavior(&wingsOut);
 
@@ -480,6 +480,12 @@ int skills() {
 								wingsStateController.setCurrentBehavior(&wingsOut);
 							}},
 							{5.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{8.2, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{9.6, [] () -> void {
 								wingsStateController.useDefaultBehavior();
 							}},
 					}));
