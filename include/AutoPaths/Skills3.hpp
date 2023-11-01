@@ -36,10 +36,10 @@ PathPlanner::Point(57.7401_in, 114.096_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(57.7401_in, 114.096_in),
-PathPlanner::Point(53.8718_in, 97.4673_in),
-PathPlanner::Point(23.4754_in, 130.203_in),
-PathPlanner::Point(7.71187_in, 106.979_in)
+PathPlanner::Point(69.0113_in, 114.294_in),
+PathPlanner::Point(63.1656_in, 87.9758_in),
+PathPlanner::Point(24.4641_in, 132.378_in),
+PathPlanner::Point(8.70057_in, 109.154_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
