@@ -61,7 +61,7 @@ namespace Pronounce {
         }
 
         bool isDone() {
-            return exitWithTriball && stalled;
+            return false; //xitWithTriball && stalled;
         }
 
         ~Intake() {}

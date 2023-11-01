@@ -170,7 +170,9 @@ int testBezier() {
 
 int closeAWP() {
 
-	threeWheelOdom.reset(Pose2D(130_in, 22_in, 150_deg));
+	threeWheelOdom.reset(Pose2D(130_in, 22_in, -30_deg));
+	catapultStateController.setCurrentBehavior(catapultFire.wait(800_ms));
+	catapultStateController.waitUntilDone()();
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -184,27 +186,29 @@ int closeAWP() {
 					65_in/second,
 					CloseAWP1,
 					{
-							{0.01, [] () -> void {
-								catapultStateController.setCurrentBehavior(catapultFire.wait(400_ms));
-							}},
-							{1.2, [] () -> void {
+							{0.2, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeIntaking);
 							}},
+//							{1.8, [] () -> void {
+//								intakeStateController.setCurrentBehavior(&intakeHold);
+//							}},
 							{2.5, [] () -> void {
-								intakeStateController.useDefaultBehavior();
-							}},
-							{3.5, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeEject);
 							}},
-							{5.6, [] () -> void {
-								intakeStateController.useDefaultBehavior();
-								wingsStateController.setCurrentBehavior(&wingsOut);
-								catapultStateController.setCurrentBehavior(&catapultHang);
+							{4.2, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
 							}},
-							{6.1, [] () -> void {
+							{6.2, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{8.4, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+								wingsStateController.setCurrentBehavior(&wingsLeft);
+							}},
+							{8.9, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
-							{6.95, [] () -> void {
+							{9.95, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsOut);
 							}}
 					}));
