@@ -1,2 +1,2 @@
-#define AUTON 1
+#define AUTON 0
 //#define TEST 1

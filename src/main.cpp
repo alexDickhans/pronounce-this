@@ -245,9 +245,6 @@ int far6BallFullAWP() {
 							{1.2, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsOut);
 							}},
-							{1.3, [] () -> void {
-								intakeStateController.useDefaultBehavior();
-							}},
 							{1.5, [] () -> void {
 								wingsStateController.useDefaultBehavior();
 							}}
@@ -277,16 +274,13 @@ int far6BallFullAWP() {
 					{
 							{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(102_in, 100_in), PathPlanner::Point(102_in, 75_in), false),
 									nullptr},
-							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 80_in), PathPlanner::Point(90_in, 80_in), PathPlanner::Point(90_in, 90_in), true),
+							{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 80_in), PathPlanner::Point(90_in, 80_in), PathPlanner::Point(90_in, 87_in), true),
 									nullptr}
 					},
 					{
 							{0.6, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeIntaking);
 							}},
-							{1.3, [] () -> void {
-								intakeStateController.useDefaultBehavior();
-							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();
@@ -318,7 +312,7 @@ int far6BallFullAWP() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(370_deg, 600_ms);
+	turnTo(370_deg, 500_ms);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -340,9 +334,9 @@ int far6BallFullAWP() {
 							{0.1, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeEject);
 							}},
-							{1.8, [] () -> void {
+							{1.6, [] () -> void {
 								intakeStateController.useDefaultBehavior();
-//								wingsStateController.setCurrentBehavior(&wingsOut);
+								wingsStateController.setCurrentBehavior(&wingsOut);
 							}}
 					}));
 
@@ -361,7 +355,7 @@ int far3BallFullAWP() {
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					{64_in/second, 200_in/second/second, 0.0},
+					{64_in/second, 300_in/second/second, 0.0},
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -375,9 +369,6 @@ int far3BallFullAWP() {
 							}},
 							{1.2, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsOut);
-							}},
-							{1.3, [] () -> void {
-								intakeStateController.useDefaultBehavior();
 							}},
 							{1.5, [] () -> void {
 								wingsStateController.useDefaultBehavior();
