@@ -209,15 +209,15 @@ int closeAWP() {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
 							{9.95, [] () -> void {
-								wingsStateController.setCurrentBehavior(&wingsOut);
+								wingsStateController.setCurrentBehavior(&wingsRight);
 							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	wingsStateController.setCurrentBehavior(&wingsOut);
+	wingsStateController.setCurrentBehavior(&wingsRight);
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -170_deg, drivetrainMutex, -2000));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -170_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(7000);
 
@@ -500,6 +500,10 @@ int skills() {
 	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
 	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
 
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+
 	skillsDone = true;
 
 	pros::Task::delay(1000);
@@ -738,6 +742,8 @@ void opcontrol() {
 	}
 
 #endif
+
+	postAuton();
 
 	robotMutex.take();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
