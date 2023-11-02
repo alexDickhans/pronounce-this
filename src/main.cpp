@@ -497,6 +497,9 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
+
 	skillsDone = true;
 
 	pros::Task::delay(1000);
