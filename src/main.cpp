@@ -205,7 +205,7 @@ int closeAWP() {
 								intakeStateController.useDefaultBehavior();
 								wingsStateController.setCurrentBehavior(&wingsLeft);
 							}},
-							{8.9, [] () -> void {
+							{8.7, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
 							{9.95, [] () -> void {
