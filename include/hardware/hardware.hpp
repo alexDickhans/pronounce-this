@@ -69,6 +69,8 @@ namespace Pronounce {
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 
+	pros::Distance catapultDistance(2);
+
 	// Inertial Measurement Unit
 	pros::Imu imu(16);
 	IMU imuOrientation(16);
@@ -122,11 +124,15 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
+		std::cout << "Before" << std::endl;
+
 		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
+			std::cout << "during" << std::endl;
 			while (imu.is_calibrating())
 				pros::Task::delay(50);
+			std::cout << "after" << std::endl;
 		}
 
 		odometryMutex.give();

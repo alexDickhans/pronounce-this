@@ -137,7 +137,7 @@ namespace Pronounce {
 			this->deadband = deadband;
 			this->exponentializeValue = exponentializerValue;
 			this->maxDriveSpeed = maxSpeed;
-			this->arcade = false;
+			this->arcade = true;
 		}
 
 		void initialize() {

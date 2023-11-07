@@ -5,7 +5,7 @@
 
 namespace Pronounce {
 	Catapult catapultFire("CatapultFire", catapultMotors, 1.0);
-	CatapultHold catapultHold("CatapultHold", catapultMotors, 2.0);
+	CatapultHold catapultHold("CatapultHold", catapultMotors, 1.33);
 	CatapultHold catapultHang("CatapultHang", catapultMotors,0.1);
 
 	StateController catapultStateController("CatapultStateController", &catapultHold);

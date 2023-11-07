@@ -36,6 +36,8 @@ namespace Pronounce {
 	class ModeLogic : public Behavior {
 	private:
 		RobotStatus* robotStatus;
+		uint32_t shotTriballs{0};
+		QLength lastDistance{0.0};
 	public:
 		explicit ModeLogic(RobotStatus* robotStatus) {
 			this->robotStatus = robotStatus;
@@ -54,6 +56,13 @@ namespace Pronounce {
 			robotBehaviorMutex.take();
 
 			robotStatus->update();
+
+			if (catapultDistance.get() * 1_mm < 1_in && lastDistance > 1_in) {
+				shotTriballs += 1;
+				catapultStateController.setCurrentBehavior(catapultFire.until([=]() -> bool {return catapultDistance.get() * 1_mm > 1_in;}));
+			}
+			lastDistance = catapultDistance.get() * 1_mm;
+
 			stateControllers.update();
 
 			robotBehaviorMutex.give();
@@ -70,6 +79,14 @@ namespace Pronounce {
 
 		bool isDone() override {
 			return false;
+		}
+
+		void resetTriballs() {
+			shotTriballs = 0;
+		}
+
+		uint32_t getTriballCount() {
+			return shotTriballs;
 		}
 
 		~ModeLogic() = default;

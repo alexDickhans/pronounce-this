@@ -39,9 +39,6 @@ namespace Pronounce {
 			controller2->clearCallbacks();
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
-				catapultStateController.setCurrentBehavior(catapultFire.until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
-				}));
 				wingsStateController.setCurrentBehavior((isLeft ? wingsLeft : wingsRight).until([=] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
 				}));

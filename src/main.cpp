@@ -205,7 +205,7 @@ int closeAWP() {
 								intakeStateController.useDefaultBehavior();
 								wingsStateController.setCurrentBehavior(&wingsLeft);
 							}},
-							{8.7, [] () -> void {
+							{8.8, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
 							{9.95, [] () -> void {
@@ -418,16 +418,11 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200).wait(31.0_s));
 
-#ifndef TEST
-	catapultStateController.setCurrentBehavior(catapultFire.wait(37.0_s));
-#else
-	catapultStateController.setCurrentBehavior(catapultFire.wait(3.0_s));
-#endif
-
-	catapultStateController.waitUntilDone()();
-	catapultStateController.setCurrentBehavior(catapultFire.wait(1.5_s));
+	while (modeLogic.getTriballCount() < 45 && !drivetrainStateController.isDone()) {
+		pros::Task::delay(10);
+	}
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -609,7 +604,7 @@ int postAuton() {
 		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel.get(), ("Speed: " + std::to_string(intakeMotor.get_actual_velocity())).c_str());
+		lv_label_set_text(flywheelLabel.get(), ("Triball count: " + std::to_string(modeLogic.getTriballCount())).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -712,6 +707,8 @@ void autonomous() {
  */
 void opcontrol() {
 
+	robotMutex.take();
+
 	// Causes the programming skills code to only run during skills
 #if AUTON == 2
 
@@ -744,8 +741,6 @@ void opcontrol() {
 #endif
 
 	postAuton();
-
-	robotMutex.take();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 	robotMutex.give();
 }
