@@ -38,6 +38,8 @@ namespace Pronounce {
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();
 
+			catapultStateController.initialize();
+
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
 				wingsStateController.setCurrentBehavior((isLeft ? wingsLeft : wingsRight).until([=] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
@@ -84,14 +86,6 @@ namespace Pronounce {
 		void update() override {
 			controller1->update();
 			controller2->update();
-
-			if (controller1->get_digital(E_CONTROLLER_DIGITAL_R1) && controller1->get_digital(E_CONTROLLER_DIGITAL_R2)) {
-				if (catapultStateController.getCurrentBehavior() != &catapultHang) {
-					catapultStateController.setCurrentBehavior(&catapultHang);
-				}
-			} else if (catapultStateController.getCurrentBehavior() == &catapultHang) {
-				catapultStateController.useDefaultBehavior();
-			}
 		}
 
 		void exit() override {

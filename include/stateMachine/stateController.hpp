@@ -1,6 +1,8 @@
 #pragma once
 
 #include "behavior.hpp"
+#include "time/time.hpp"
+#include "time/robotTime.hpp"
 #include <string>
 #include <unordered_map>
 #include <iostream>
@@ -24,6 +26,8 @@ namespace Pronounce {
 		 * 
 		 */
 		Behavior* currentBehavior = nullptr;
+
+		QTime startTime = 0.0;
 	public:
 		/**
 		 * @brief Construct a new State Controller object
@@ -39,6 +43,7 @@ namespace Pronounce {
 		 * 
 		 */
 		void initialize() {
+			startTime = currentTime();
 			if (currentBehavior != nullptr) {
 				currentBehavior->initialize();
 			}
@@ -61,6 +66,7 @@ namespace Pronounce {
 					currentBehavior = nullptr;
 					defaultBehavior->initialize();
 					defaultBehavior->update();
+					startTime = currentTime();
 				}
 				else {
 					currentBehavior->update();
@@ -95,7 +101,7 @@ namespace Pronounce {
 		 * @brief Exit the behavior depending on which one is running
 		 * 
 		 */
-		void exit() {
+		void exit() override {
 			// Exit the right behavior depending on which one is running
 			if (currentBehavior != nullptr) {
 				currentBehavior->exit();
@@ -131,6 +137,7 @@ namespace Pronounce {
 				currentBehavior = behavior;
 				currentBehavior->initialize();
 				currentBehavior->update();
+				startTime = currentTime();
 			}
 			// Transition from default behavior if it doesn't
 			else {
@@ -138,6 +145,7 @@ namespace Pronounce {
 				currentBehavior = behavior;
 				currentBehavior->initialize();
 				currentBehavior->update();
+				startTime = currentTime();
 			}
 		}
 		
@@ -152,6 +160,7 @@ namespace Pronounce {
 				currentBehavior = nullptr;
 				defaultBehavior->initialize();
 				defaultBehavior->update();
+				startTime = currentTime();
 			}
 			// If not no transition needed.
 		}
@@ -164,6 +173,10 @@ namespace Pronounce {
 			return this->getName() + ": " + (this->isDone() ? defaultBehavior->getName() : currentBehavior->getName());
 		}
 
-		~StateController() {}
+		QTime getDuration() {
+			return currentTime() - startTime;
+		}
+
+		~StateController() = default;
 	};
 } // namespace Pronounce

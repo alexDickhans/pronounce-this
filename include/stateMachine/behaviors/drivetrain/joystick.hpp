@@ -137,7 +137,7 @@ namespace Pronounce {
 			this->deadband = deadband;
 			this->exponentializeValue = exponentializerValue;
 			this->maxDriveSpeed = maxSpeed;
-			this->arcade = true;
+			this->arcade = false;
 		}
 
 		void initialize() {
@@ -168,12 +168,12 @@ namespace Pronounce {
 				power = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
 				turn = controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
 
-				std::pair<double, double> outputs = cheesyDrive(power, turn);
+				std::pair<double, double> outputs = {};// cheesyDrive(power, turn);
 
 				double left = outputs.first;
 				double right = outputs.second;
-				power = (left + right) / 2.0;
-				turn = (left - right) / 2.0;
+//				power = (left + right) / 2.0;
+//				turn = (left - right) / 2.0;
 			}
 			else {
 				double left = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;

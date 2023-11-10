@@ -205,7 +205,7 @@ int closeAWP() {
 								intakeStateController.useDefaultBehavior();
 								wingsStateController.setCurrentBehavior(&wingsLeft);
 							}},
-							{8.8, [] () -> void {
+							{9.0, [] () -> void {
 								wingsStateController.setCurrentBehavior(&wingsIn);
 							}},
 							{9.95, [] () -> void {
@@ -397,30 +397,35 @@ int far3BallFullAWP() {
 }
 
 int skills() {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -45_deg));
 
 	skillsDone = false;
+	modeLogic.resetTriballs();
 
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					65_in/second,
-					ProgSkills1,
-					{
+//	drivetrainStateController.setCurrentBehavior(
+//			new PathPlanner::PathFollower(
+//					"TestPath",
+//					defaultProfileConstraints,
+//					drivetrain,
+//					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+//					movingTurnPid,
+//					distancePid,
+//					8000.0/64.0,
+//					65_in/second,
+//					ProgSkills1,
+//					{
+//
+//					}));
+//
+//	drivetrainStateController.waitUntilDone()();
 
-					}));
+	move(-8_in, defaultProfileConstraints, 0.0, -45_deg);
 
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200));
 
-	drivetrainStateController.setCurrentBehavior(RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200).wait(31.0_s));
-
-	while (modeLogic.getTriballCount() < 45 && !drivetrainStateController.isDone()) {
+	// Wait until the catapult triballs shot has increased to 46 triballs
+	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
+		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
 		pros::Task::delay(10);
 	}
 
@@ -610,10 +615,6 @@ int postAuton() {
 	}
 }
 
-void initDisplay() {
-	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
-}
-
 /**
  * Runs when the robot starts up
  */
@@ -628,15 +629,14 @@ void initialize() {
 
 	// Initialize functions
 	initHardware();
-	initDrivetrain();
 	initIntake();
 	initCatapult();
 	initWings();
 	initBehaviors();
-	initDisplay();
 
 	robotMutex.give();
 
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
 	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
 }
 
@@ -707,39 +707,28 @@ void autonomous() {
  */
 void opcontrol() {
 
-	robotMutex.take();
+//	pros::delay(5000);
 
 	// Causes the programming skills code to only run during skills
 #if AUTON == 2
-
 	{
-		// start skills task
+		preAutonRun();
 		pros::Task auton(skills);
 
-		// Wait for the driver to press the button on their controller
-		while (true) {
-			// Move on without stopping if skills is done
+		while (!skillsDone) {
 			if (skillsDone) {
-				// Move on to driver control
-				postAuton();
 				break;
 			}
-
-			// If the button is pressed stop skills, then move on to driver
 			if (master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
-				// Kills the skills
 				auton.suspend();
 				auton.remove();
-
-				// Move on to driver control
-				postAuton();
 				break;
 			}
 		}
 	}
-
 #endif
 
+	robotMutex.take();
 	postAuton();
 	teleopController.setCurrentBehavior(&teleopModeLogic);
 	robotMutex.give();
