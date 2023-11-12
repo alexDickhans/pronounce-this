@@ -511,6 +511,102 @@ int skills() {
 	return 0;
 }
 
+int opskills() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -45_deg));
+
+	skillsDone = false;
+	modeLogic.resetTriballs();
+
+	move(-8_in, defaultProfileConstraints, 0.0, -45_deg);
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200));
+
+	// Wait until the catapult triballs shot has increased to 46 triballs
+	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
+		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
+		pros::Task::delay(10);
+	}
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{60_in/second, 80_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					OPSkills1,
+					{
+							{0.01, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(180_deg, 600_ms);
+	return 0;
+	wingsStateController.setCurrentBehavior(&wingsOut);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					65_in/second,
+					ProgSkills3,
+					{
+							{1.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{2.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{3.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{4.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{5.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{6.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsLeft);
+							}},
+							{7.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+							{8.0, [] () -> void {
+								wingsStateController.setCurrentBehavior(&wingsOut);
+							}},
+							{9.0, [] () -> void {
+								wingsStateController.useDefaultBehavior();
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
+
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
+	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+
+	skillsDone = true;
+
+	pros::Task::delay(1000);
+
+	return 0;
+}
+
 int postAuton() {
 	pros::Task::delay(10);
 
@@ -690,7 +786,7 @@ void autonomous() {
 	#elif AUTON == 1
 	closeAWP();
 	#elif AUTON == 2
-	skills();
+	opskills();
 	#elif AUTON == 3
 	far3BallFullAWP();
 	#endif // !1

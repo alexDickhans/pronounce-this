@@ -7,13 +7,13 @@ namespace Pronounce {
 	private:
 		pros::Motor_Group& catapultMotors;
 		double setpoint;
+		PID* pid;
 	public:
-		CatapultHold(std::string name, pros::Motor_Group& motors, double setpoint) : Behavior(name), catapultMotors(motors) {
+		CatapultHold(std::string name, pros::Motor_Group& motors, double setpoint, PID* pid) : Behavior(name), catapultMotors(motors), pid(pid) {
 			this->setpoint = setpoint;
 		}
 
 		void initialize() override {
-			catapultMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 			catapultMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 			double position = catapultMotors.get_positions().at(0) - fmod(catapultMotors.get_positions().at(0), 2);
 			double newSetpoint = position + setpoint;
@@ -21,11 +21,15 @@ namespace Pronounce {
 			while (newSetpoint < catapultMotors.get_positions().at(0)) {
 				newSetpoint += 2.0;
 			}
-			catapultMotors.move_absolute(newSetpoint, 200);
+
+			pid->setTarget(newSetpoint);
+		}
+
+		void update() override {
+			catapultMotors.move_voltage(pid->update(catapultMotors.get_positions().at(0)) * 1.2e4);
 		}
 
 		void exit() override {
-			catapultMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		}
 
 		bool isDone() override {
