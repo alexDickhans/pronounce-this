@@ -1,73 +1,75 @@
 #pragma once
 #include <vector>
+#include "velocityProfile/sinusoidalVelocityProfile.hpp"
+using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> CloseAWP1 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(119.83_in, 35_in),
-PathPlanner::Point(108.361_in, 45.678_in),
-PathPlanner::Point(82.0622_in, 46.4689_in),
-PathPlanner::Point(64.4632_in, 46.6666_in)
+PathPlanner::Point(120.028_in, 22.7401_in),
+PathPlanner::Point(107.175_in, 43.3051_in),
+PathPlanner::Point(84.2373_in, 41.9209_in),
+PathPlanner::Point(69.209_in, 41.9209_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(74.548_in, 46.0734_in),
-PathPlanner::Point(91.3559_in, 42.3164_in),
-PathPlanner::Point(92.1469_in, 38.1638_in),
-PathPlanner::Point(92.7401_in, 33.2203_in)
+PathPlanner::Point(69.209_in, 41.9209_in),
+PathPlanner::Point(79.4915_in, 41.9209_in),
+PathPlanner::Point(91.2571_in, 40.4379_in),
+PathPlanner::Point(91.9492_in, 31.8362_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(92.7401_in, 33.2203_in),
-PathPlanner::Point(92.5424_in, 42.5141_in),
-PathPlanner::Point(92.839_in, 49.5339_in),
-PathPlanner::Point(92.7401_in, 61.6949_in)
+PathPlanner::Point(91.9492_in, 31.8362_in),
+PathPlanner::Point(92.4435_in, 44.3927_in),
+PathPlanner::Point(92.2952_in, 53.1427_in),
+PathPlanner::Point(92.3446_in, 64.0678_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(92.7401_in, 66.4407_in),
-PathPlanner::Point(92.6412_in, 57.839_in),
-PathPlanner::Point(92.8884_in, 54.3291_in),
-PathPlanner::Point(92.9378_in, 46.469_in)
+PathPlanner::Point(92.3446_in, 64.0678_in),
+PathPlanner::Point(92.1963_in, 56.6031_in),
+PathPlanner::Point(92.0727_in, 51.8326_in),
+PathPlanner::Point(92.3446_in, 44.4915_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(93.1356_in, 48.8418_in),
-PathPlanner::Point(92.5918_in, 54.8234_in),
-PathPlanner::Point(77.8355_in, 59.3468_in),
-PathPlanner::Point(65.4519_in, 59.5197_in)
+PathPlanner::Point(92.3446_in, 44.4915_in),
+PathPlanner::Point(92.6165_in, 53.7606_in),
+PathPlanner::Point(88.328_in, 65.5385_in),
+PathPlanner::Point(74.1525_in, 65.452_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(73.9548_in, 61.4971_in),
-PathPlanner::Point(85.6956_in, 61.6702_in),
-PathPlanner::Point(93.9636_in, 61.7814_in),
-PathPlanner::Point(93.7288_in, 46.8644_in)
+PathPlanner::Point(74.1525_in, 65.452_in),
+PathPlanner::Point(85.2878_in, 64.97_in),
+PathPlanner::Point(91.6834_in, 59.5754_in),
+PathPlanner::Point(92.1469_in, 45.8757_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(93.7288_in, 46.8644_in),
-PathPlanner::Point(93.6917_in, 51.9191_in),
-PathPlanner::Point(93.6114_in, 55.6206_in),
-PathPlanner::Point(93.5311_in, 60.9039_in)
+PathPlanner::Point(92.1469_in, 45.8757_in),
+PathPlanner::Point(92.2149_in, 54.9161_in),
+PathPlanner::Point(92.1809_in, 61.9637_in),
+PathPlanner::Point(92.1469_in, 70.3955_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(99.2655_in, 68.6158_in),
-PathPlanner::Point(99.3829_in, 54.5207_in),
-PathPlanner::Point(100.313_in, 46.4412_in),
-PathPlanner::Point(102.825_in, 32.6271_in)
+PathPlanner::Point(101.836_in, 66.4407_in),
+PathPlanner::Point(101.802_in, 52.1323_in),
+PathPlanner::Point(103.303_in, 43.9616_in),
+PathPlanner::Point(105.593_in, 32.8249_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(103.22_in, 30.8475_in),
-PathPlanner::Point(108.303_in, 13.8696_in),
-PathPlanner::Point(127.315_in, 20.8754_in),
-PathPlanner::Point(123.785_in, 36.9774_in)
+PathPlanner::Point(105.593_in, 32.8249_in),
+PathPlanner::Point(111.444_in, 14.7672_in),
+PathPlanner::Point(130.764_in, 15.6887_in),
+PathPlanner::Point(132.288_in, 33.0226_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(132.881_in, 36.9774_in),
-PathPlanner::Point(129.945_in, 51.8929_in),
-PathPlanner::Point(123.207_in, 53.3335_in),
-PathPlanner::Point(121.808_in, 67.2317_in)
+PathPlanner::Point(132.288_in, 33.0226_in),
+PathPlanner::Point(133.812_in, 50.3565_in),
+PathPlanner::Point(121.186_in, 53.2574_in),
+PathPlanner::Point(120.424_in, 67.2316_in)
 ,true),
 nullptr},
 };
