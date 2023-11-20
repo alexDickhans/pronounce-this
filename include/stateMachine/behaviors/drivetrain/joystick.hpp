@@ -15,7 +15,7 @@ namespace Pronounce {
 #define DRIVE_SLEW 0.02f
 #define CD_TURN_NONLINEARITY                                                   \
   0.65 // This factor determines how fast the wheel
-       // traverses the "non linear" sine curve
+	// traverses the "non linear" sine curve
 #define CD_NEG_INERTIA_SCALAR 4.0
 #define CD_SENSITIVITY 1.0
 
@@ -24,7 +24,7 @@ namespace Pronounce {
 	static double _turnRemapping(double iturn) {
 		double denominator = sin(M_PI / 2 * CD_TURN_NONLINEARITY);
 		double firstRemapIteration =
-			sin(M_PI / 2 * CD_TURN_NONLINEARITY * iturn) / denominator;
+				sin(M_PI / 2 * CD_TURN_NONLINEARITY * iturn) / denominator;
 		return sin(M_PI / 2 * CD_TURN_NONLINEARITY * firstRemapIteration) / denominator;
 	}
 
@@ -90,11 +90,11 @@ namespace Pronounce {
 			negInertiaAccumlator += negInertiaPower;
 
 			double angularCmd =
-				abs(linearCmd) *  // the more linear vel, the faster we turn
-				(remappedTurn + negInertiaAccumlator) *
-				CD_SENSITIVITY -  // we can scale down the turning amount by a
-				// constant
-				quickStopAccumlator;
+					abs(linearCmd) *  // the more linear vel, the faster we turn
+					(remappedTurn + negInertiaAccumlator) *
+					CD_SENSITIVITY -  // we can scale down the turning amount by a
+					// constant
+					quickStopAccumlator;
 
 			right = left = linearCmd;
 			left += angularCmd;
