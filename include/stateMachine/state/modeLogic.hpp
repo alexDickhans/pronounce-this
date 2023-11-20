@@ -57,10 +57,19 @@ namespace Pronounce {
 
 			robotStatus->update();
 
-			if (catapultDistance.get() * 1_mm < 1_in && lastDistance > 1_in) {
+			// See if the distance sensor detects a new object within 1 inch of the sensor
+			if (catapultDistance.get() * 1_mm < 1_in // see if an object is detected by the distance sensor on the catapult
+			&& lastDistance > 1_in) { // If the last distance sensor reading was greater than an inch indicates that the
+				                      // triball is moving closer to the sensor, meaning that there is a new triball
+
+				// increase the count of shot triballs
 				shotTriballs += 1;
+
+				// Set the catapult to try to shoot the triball until it has left the catapult
 				catapultStateController.setCurrentBehavior(catapultFire.until([=]() -> bool {return catapultDistance.get() * 1_mm > 1_in;}));
 			}
+
+			// Store the last distance for the next loop itteration
 			lastDistance = catapultDistance.get() * 1_mm;
 
 			stateControllers.update();

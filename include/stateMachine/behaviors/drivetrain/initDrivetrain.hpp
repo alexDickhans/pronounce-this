@@ -17,7 +17,7 @@
 namespace Pronounce {
 
 	PID turningPid(2.0, 0.0, 25.0, 0.0, 0.0, false);
-	PID movingTurnPid(5000.0, 0.0, 0.0, 60000.0, 0.0, false);
+	PID movingTurnPid(2.0e4, 0.0, 4e4, 60000.0, 0.0, false);
 
 	PID distancePid(1.5e5, 0.0, 0e5);
 

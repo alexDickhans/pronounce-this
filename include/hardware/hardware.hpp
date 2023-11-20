@@ -88,14 +88,16 @@ namespace Pronounce {
 
 		telemetryManager = PT::TelemetryManager::getInstance();
 		telemetryManager->addTransmitter(std::make_shared<PT::TelemetryRadio>(1, new PT::PassThroughEncoding()));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<uint32_t>>("System", "Millis", pros::millis));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("Catapult", "Wattage", []() -> double {return catapultMotors.get_current_draws().at(0);}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("LeftDrive", "Speed", []() -> double {return leftDrive1.get_actual_velocity();}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("RightDrive", "Speed", []() -> double {return rightDrive1.get_actual_velocity();}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("X", "Position", []() -> double {return odometry.getX().Convert(inch);}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("Y", "Position", []() -> double {return odometry.getY().Convert(inch);}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("T", "Angle", []() -> double {return odometry.getAngle().Convert(degree);}));
-		telemetryManager->setUpdateTime(100);
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<uint32_t>>("System", "Millis", pros::millis));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("Catapult", "Wattage", []() -> double {return catapultMotors.get_current_draws().at(0);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("CatapultSpeed", "Speed", []() -> double {return catapultMotors.get_actual_velocities().at(0);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("LeftDrive", "Speed", []() -> double {return leftDrive1.get_actual_velocity();}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("RightDrive", "Speed", []() -> double {return rightDrive1.get_actual_velocity();}));
+		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualSpeed", "Speed", []() -> double {return drivetrain.getSpeed().Convert(inch/second);}));
+		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetSpeed", "Speed", []() -> double {return drivetrain.getTargetSpeed().Convert(inch/second);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualPosition", "Position", []() -> double {return drivetrain.getTargetDistance().Convert(inch);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetPosition", "Position", []() -> double {return drivetrain.getDistanceSinceReset().Convert(inch);}));
+		telemetryManager->setUpdateTime(10);
 		telemetryManager->enableUpdateScheduler();
 
 		drivetrainMutex.take();

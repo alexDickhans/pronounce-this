@@ -1,17 +1,19 @@
 #pragma once
 #include <vector>
+#include "velocityProfile/sinusoidalVelocityProfile.hpp"
+using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Auto6BallPath3 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(93_in, 90_in),
-PathPlanner::Point(93_in, 100_in),
-PathPlanner::Point(78.8983_in, 99.0678_in),
+PathPlanner::Point(89.2429_in, 98.4181_in),
+PathPlanner::Point(83.6441_in, 100.254_in),
 PathPlanner::Point(81.2712_in, 114.096_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(81.6667_in, 115.48_in),
 PathPlanner::Point(84.435_in, 106.384_in),
-PathPlanner::Point(101.639_in, 95.5082_in),
-PathPlanner::Point(111.327_in, 93.531_in)
+PathPlanner::Point(90.7633_in, 95.3105_in),
+PathPlanner::Point(100.451_in, 93.3333_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(

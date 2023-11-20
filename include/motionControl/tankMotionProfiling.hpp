@@ -8,7 +8,8 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "utils/path/combinedPath.hpp"
 
-double velocityFeedforward = 200.0;
+double velocityFeedforward = 180.0;
+double accelerationFeedforward = 20;
 
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {
@@ -142,8 +143,12 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
+			QAcceleration acceleration = velocityProfile->getAccelerationByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
 			QSpeed speed = velocityProfile->getVelocityByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
 			QLength distance = velocityProfile->getDistanceByTime(duration).getValue() * (path.getInverted() ? -1 : 1);
+
+			drivetrain->targetSpeed = speed;
+			drivetrain->targetDistance = distance + startDistance;
 
 			double turnPower = 0;
 
@@ -152,7 +157,7 @@ namespace Pronounce {
 
 			distancePid->setTarget(distance.getValue());
 
-			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second);
+			double wheelVoltage = distancePid->update(currentDistance.getValue()) + velocityFeedforward * speed.Convert(inch/second) + accelerationFeedforward * acceleration.Convert(inch/second/second);
 
 			// add curvature
 			double leftCurvatureAdjustment = (2.0 + curvature.getValue() * drivetrain->getTrackWidth().getValue()) / 2.0;

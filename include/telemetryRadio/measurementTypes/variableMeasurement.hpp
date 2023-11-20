@@ -17,7 +17,7 @@ namespace PT {
 
         void update() {
             std::string updatedData = std::to_string(variable);
-            if (lastDataPoint.compare(updatedData) != 0) {
+            if (lastDataPoint != updatedData) {
                 lastDataPoint = updatedData;
                 this->valueUpdated();
             }
