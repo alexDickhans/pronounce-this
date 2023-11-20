@@ -227,33 +227,48 @@ int main() {
 //	};
 
 // skills
-	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
-			{PathPlanner::BezierSegment(PathPlanner::Point(12_in, 36_in), PathPlanner::Point(20_in, 34_in), PathPlanner::Point(36_in, 36_in), PathPlanner::Point(26_in, 8_in), false),
-					nullptr},
-					// Turn to 90
-			{PathPlanner::BezierSegment(PathPlanner::Point(24_in, 8_in), PathPlanner::Point(28_in, 8_in), PathPlanner::Point(36_in, 8_in), PathPlanner::Point(44_in, 8_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(44_in, 8_in), PathPlanner::Point(28_in, 8_in), PathPlanner::Point(18_in, 20_in), PathPlanner::Point(18_in, 30_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(18_in, 30_in), PathPlanner::Point(18_in, 35_in), PathPlanner::Point(12_in, 30_in), PathPlanner::Point(12_in, 75_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(18_in, 75_in), PathPlanner::Point(18_in, 110_in), PathPlanner::Point(15_in, 120_in), PathPlanner::Point(45_in, 120_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(45_in, 120_in), PathPlanner::Point(15_in, 120_in), PathPlanner::Point(45_in, 70_in), PathPlanner::Point(70_in, 70_in), false),
-					nullptr},
-					// Turn to 0
-			{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 70_in), PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 100_in), PathPlanner::Point(70_in, 120_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 120_in), PathPlanner::Point(70_in, 100_in), PathPlanner::Point(90_in, 85_in), PathPlanner::Point(98_in, 70_in), false),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(98_in, 70_in), PathPlanner::Point(90_in, 85_in), PathPlanner::Point(85_in, 100_in), PathPlanner::Point(85_in, 120_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(85_in, 120_in), PathPlanner::Point(85_in, 100_in), PathPlanner::Point(50_in, 85_in), PathPlanner::Point(42_in, 70_in), false),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(42_in, 70_in), PathPlanner::Point(50_in, 85_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 120_in), true),
-					nullptr},
-			{PathPlanner::BezierSegment(PathPlanner::Point(55_in, 120_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 100_in), PathPlanner::Point(55_in, 80_in), false),
-					nullptr}
+	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {{PathPlanner::BezierSegment(
+			PathPlanner::Point(69.4068_in, 74.1525_in),
+			PathPlanner::Point(69.6045_in, 93.7288_in),
+			PathPlanner::Point(69.4067_in, 102.231_in),
+			PathPlanner::Point(69.6045_in, 113.7_in)
+			,true),
+																								  nullptr},
+																						  {PathPlanner::BezierSegment(
+																								  PathPlanner::Point(69.6045_in, 113.898_in),
+																								  PathPlanner::Point(69.209_in, 102.429_in),
+																								  PathPlanner::Point(86.2147_in, 88.7853_in),
+																								  PathPlanner::Point(129.718_in, 76.1299_in)
+																								  ,false),
+																								  nullptr},
+																						  {PathPlanner::BezierSegment(
+																								  PathPlanner::Point(98.2768_in, 83.8418_in),
+																								  PathPlanner::Point(90.565_in, 96.2994_in),
+																								  PathPlanner::Point(85.4238_in, 101.836_in),
+																								  PathPlanner::Point(84.435_in, 146.525_in)
+																								  ,true),
+																								  nullptr},
+																						  {PathPlanner::BezierSegment(
+																								  PathPlanner::Point(88.3898_in, 122.599_in),
+																								  PathPlanner::Point(88.5876_in, 115.48_in),
+																								  PathPlanner::Point(82.8531_in, 108.955_in),
+																								  PathPlanner::Point(75.5367_in, 108.757_in)
+																								  ,false),
+																								  nullptr},
+																						  {PathPlanner::BezierSegment(
+																								  PathPlanner::Point(72.9661_in, 102.627_in),
+																								  PathPlanner::Point(109.746_in, 94.322_in),
+																								  PathPlanner::Point(143.362_in, 122.796_in),
+																								  PathPlanner::Point(99.8591_in, 128.532_in)
+																								  ,true),
+																								  nullptr},
+																						  {PathPlanner::BezierSegment(
+																								  PathPlanner::Point(93.9266_in, 129.52_in),
+																								  PathPlanner::Point(109.746_in, 127.147_in),
+																								  PathPlanner::Point(119.237_in, 119.633_in),
+																								  PathPlanner::Point(129.52_in, 115.282_in)
+																								  ,false),
+																								  nullptr},
 	};
 
 	// Print all paths in the vector paths

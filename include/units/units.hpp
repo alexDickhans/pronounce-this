@@ -11,9 +11,9 @@ template<typename MassDim, typename LengthDim, typename TimeDim, typename AngleD
 class RQuantity
 {
 private:
-	double value;
 
 public:
+	double value;
 	constexpr RQuantity() : value(0.0) {}
 	constexpr RQuantity(double val) : value(val) {}
 	constexpr RQuantity(long double val) : value(static_cast<double>(val)) {}

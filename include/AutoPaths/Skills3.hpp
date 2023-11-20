@@ -1,46 +1,53 @@
 #pragma once
 #include <vector>
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> ProgSkills3 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(69.4068_in, 74.1525_in),
-PathPlanner::Point(69.6045_in, 93.7288_in),
-PathPlanner::Point(69.4067_in, 102.231_in),
-PathPlanner::Point(69.6045_in, 113.7_in)
+PathPlanner::Point(69.6045_in, 76.3277_in),
+PathPlanner::Point(69.6042_in, 86.8085_in),
+PathPlanner::Point(69.6043_in, 102.726_in),
+PathPlanner::Point(69.6045_in, 115.283_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(69.6045_in, 113.898_in),
-PathPlanner::Point(69.209_in, 102.429_in),
-PathPlanner::Point(86.2147_in, 88.7853_in),
-PathPlanner::Point(129.718_in, 76.1299_in)
+PathPlanner::Point(69.6045_in, 115.283_in),
+PathPlanner::Point(72.7685_in, 101.539_in),
+PathPlanner::Point(106.088_in, 94.569_in),
+PathPlanner::Point(122.203_in, 86.2147_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(98.2768_in, 83.8418_in),
-PathPlanner::Point(90.565_in, 96.2994_in),
-PathPlanner::Point(85.4238_in, 101.836_in),
-PathPlanner::Point(84.435_in, 146.525_in)
+PathPlanner::Point(95.9039_in, 78.1073_in),
+PathPlanner::Point(87.6977_in, 93.0863_in),
+PathPlanner::Point(81.7161_in, 111.995_in),
+PathPlanner::Point(81.8644_in, 126.356_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(88.3898_in, 122.599_in),
-PathPlanner::Point(88.5876_in, 115.48_in),
-PathPlanner::Point(82.8531_in, 108.955_in),
-PathPlanner::Point(75.5367_in, 108.757_in)
+PathPlanner::Point(82.0621_in, 116.271_in),
+PathPlanner::Point(79.0466_in, 103.146_in),
+PathPlanner::Point(46.642_in, 95.4713_in),
+PathPlanner::Point(34.209_in, 84.4349_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(72.9661_in, 102.627_in),
-PathPlanner::Point(109.746_in, 94.322_in),
-PathPlanner::Point(143.362_in, 122.796_in),
-PathPlanner::Point(99.8591_in, 128.532_in)
+PathPlanner::Point(46.0735_in, 74.9435_in),
+PathPlanner::Point(53.81_in, 92.5795_in),
+PathPlanner::Point(57.0604_in, 97.109_in),
+PathPlanner::Point(57.7401_in, 114.096_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(93.9266_in, 129.52_in),
-PathPlanner::Point(109.746_in, 127.147_in),
-PathPlanner::Point(119.237_in, 119.633_in),
-PathPlanner::Point(129.52_in, 115.282_in)
+PathPlanner::Point(69.0113_in, 114.294_in),
+PathPlanner::Point(63.1656_in, 87.9758_in),
+PathPlanner::Point(30.594_in, 155.712_in),
+PathPlanner::Point(19.1808_in, 107.968_in)
 ,false),
+nullptr},
+{PathPlanner::BezierSegment(
+PathPlanner::Point(9.49153_in, 106.78_in),
+PathPlanner::Point(13.3042_in, 123.696_in),
+PathPlanner::Point(22.9657_in, 138.867_in),
+PathPlanner::Point(43.8983_in, 140.593_in)
+,true),
 nullptr},
 };
 // PathPlanner made path

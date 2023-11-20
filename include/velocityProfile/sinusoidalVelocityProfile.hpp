@@ -92,17 +92,17 @@ namespace Pronounce {
 			// }
 		}
 
-		// QAcceleration getAccelerationByTime(QTime t) {
-		// 	// if (t <= 0.0_s) {
-		// 	// 	return 0.0;
-		// 	// } else if (t <= Ta) {
-		// 	// 	return (this->getProfileConstraints().maxAcceleration/2).getValue() * (1-cos(omega * t.getValue()));
-		// 	// } else if (t <= Ts) {
-		// 	// 	return 0.0;
-		// 	// } else {
-		// 	// 	return -getAccelerationByTime(Tt - t);
-		// 	// }
-		// }
+		 QAcceleration getAccelerationByTime(QTime t) override {
+			 if (t.getValue() < startTime.getValue()) {
+				 return (reversed ? -1 : 1) * (sin(startOmega * t.getValue()) * startSlope * endOmega);
+			 } else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {
+				 return 0.0;
+			 } else if (t.getValue() < Tt.getValue() && !isSingleSine) {
+				 return (reversed ? -1 : 1) * (-sin(endOmega * (t - endStartTime).getValue()) * endSlope * endOmega);
+			 } else {
+				 return 0.0;
+			 }
+		 }
 
 		void calculate(int granularity) override {
 			

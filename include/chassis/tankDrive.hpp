@@ -11,12 +11,25 @@ namespace Pronounce {
 		pros::Motor_Group* rightMotors;
 		QAngularVelocity maxMotorSpeed = 0.0;
 	public:
+		QSpeed targetSpeed;
+		QLength targetDistance;
+
 		TankDrivetrain(QLength trackWidth, QSpeed maxSpeed, pros::Motor_Group* leftMotors, pros::Motor_Group* rightMotors, QAngularVelocity maxMotorSpeed) : leftMotors(leftMotors), rightMotors(rightMotors), AbstractTankDrivetrain(trackWidth, maxSpeed) {
 			this->maxMotorSpeed = maxMotorSpeed;
+			leftMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+			rightMotors->set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 		}
 
 		QSpeed getSpeed() {
-			return ((leftMotors->get_actual_velocities().at(1) + rightMotors->get_actual_velocities().at(1)) / 2.0) * (this->getMaxSpeed()/maxMotorSpeed).getValue();
+			return ((leftMotors->get_actual_velocities().at(1) + rightMotors->get_actual_velocities().at(1)) / 2.0) / 600.0 * this->getMaxSpeed();
+		}
+
+		QSpeed getTargetSpeed() {
+			return targetSpeed;
+		}
+
+		QLength getTargetDistance() {
+			return targetDistance;
 		}
 
 		void skidSteerVelocity(QSpeed speed, double turn) {
