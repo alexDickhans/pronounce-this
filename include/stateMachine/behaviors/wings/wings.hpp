@@ -8,20 +8,17 @@
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {
-	class Wings : public Behavior {
+	class Wing : public Behavior {
 	private:
-		pros::ADIDigitalOut& leftSolenoid;
-		pros::ADIDigitalOut& rightSolenoid;
-		bool leftState{false};
-		bool rightState{false};
+		pros::ADIDigitalOut& solenoid;
+		bool state{false};
 	public:
-		Wings(std::string name, pros::ADIDigitalOut& leftSolenoid, pros::ADIDigitalOut& rightSolenoid, bool leftState, bool rightState) : Behavior(std::move(name)), leftSolenoid(leftSolenoid), rightSolenoid(rightSolenoid), leftState(leftState), rightState(rightState) {
+		Wing(std::string name, pros::ADIDigitalOut& solenoid, bool state) : Behavior(std::move(name)), solenoid(solenoid), state(state) {
 
 		}
 
 		void initialize() override {
-			leftSolenoid.set_value(leftState);
-			rightSolenoid.set_value(rightState);
+			solenoid.set_value(state);
 		}
 
 		void update() override {

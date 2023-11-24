@@ -122,7 +122,7 @@ namespace PathPlanner {
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
-			QTime relativeTime = 0.0;
+			QTime relativeTime = getTimeRemainder(time);
 			double index = getIndex(time);
 
 			if (commands.size() > commandsIndex) {
@@ -168,6 +168,17 @@ namespace PathPlanner {
 			}
 
 			return index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
+		}
+
+		QTime getTimeRemainder(QTime time) {
+			int index = 0;
+
+			while (time >= pathSegments.at(index).second->getDuration()) {
+				time -= pathSegments.at(index).second->getDuration();
+				index ++;
+			}
+
+			return time;
 		}
 
 		QTime totalTime() {
