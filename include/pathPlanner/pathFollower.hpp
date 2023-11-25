@@ -20,7 +20,7 @@ namespace PathPlanner {
 		Pronounce::AbstractTankDrivetrain& drivetrain;
 		Pronounce::PID turnPID, distancePID;
 		double feedforwardMultiplier;
-		double accelerationFeedforward = 20.0;
+		double accelerationFeedforward = 13.0;
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;

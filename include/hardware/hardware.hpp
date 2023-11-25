@@ -24,18 +24,6 @@ namespace Pronounce {
 	PT::TelemetryManager* telemetryManager;
 	PT::Logger* logger;
 
-	enum GameMode {
-		Skills = 0,
-		Red = 1,
-		Blue = 2,
-	};
-	
-	#if AUTON == 4
-		GameMode gameMode = GameMode::Skills;
-	#else
-		GameMode gameMode = GameMode::Red;
-	#endif // AUTON == 4
-
 	pros::Mutex controllerMutex;
 
 #ifndef SIM

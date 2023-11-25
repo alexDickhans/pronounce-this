@@ -66,6 +66,12 @@ namespace Pronounce {
 				blockerStateController.setCurrentBehavior(blockerOut.until([=] () -> bool {
 					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_B);}));
 			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [&] () -> void {
+				catapultStateController.setCurrentBehavior(catapultDejam.until([&] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
+				}));
+			});
 		}
 
 		void update() override {
