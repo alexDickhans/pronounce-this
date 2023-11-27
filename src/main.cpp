@@ -421,7 +421,7 @@ int opskills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20.8_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
 	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
@@ -441,7 +441,7 @@ int opskills() {
 					movingTurnPid,
 					distancePid,
 					8000.0/64.0,
-					65_in/second,
+					61_in/second,
 					OPSkills1,
 					{
 							{0.01, [] () -> void {
@@ -451,16 +451,17 @@ int opskills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-135_deg, 600_ms);
+	turnTo(-180_deg, 400_ms);
 
 	// First push
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
+	rightWingStateController.setCurrentBehavior(&rightWingOut);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					{ 20_in / second, 100_in / second / second, 0.0 },
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -469,61 +470,19 @@ int opskills() {
 					61_in/second,
 					OPSkills2,
 					{
-							{3.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{3.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}},
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	move(5_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
-	move(-10_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -180_deg);
-
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
-
-	// Second Push
-
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					61_in/second,
-					OPSkills3,
-					{
-							{1.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}},
-							{2.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-							}},
-					}));
-
-	drivetrainStateController.waitUntilDone()();
-
-	move(5_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
-	move(-10_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -180_deg);
-
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
+	move(10_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
+	move(-15_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -180_deg);
 
 	// Third Push
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					pushingProfileConstraints,
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -532,6 +491,10 @@ int opskills() {
 					61_in/second,
 					OPSkills4,
 					{
+							{0.05, [] () -> void {
+								leftWingStateController.useDefaultBehavior();
+								rightWingStateController.useDefaultBehavior();
+							}},
 							{1.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
@@ -543,15 +506,12 @@ int opskills() {
 	move(5_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
 	move(-10_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -180_deg);
 
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
-
 	// Left push
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
-					defaultProfileConstraints,
+					pushingProfileConstraints,
 					drivetrain,
 					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
 					movingTurnPid,
@@ -560,13 +520,17 @@ int opskills() {
 					61_in/second,
 					OPSkills5,
 					{
+							{0.2, [] () -> void {
+								leftWingStateController.useDefaultBehavior();
+								rightWingStateController.useDefaultBehavior();
+							}},
 							{1.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{1.5, [] () -> void {
+							{1.15, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 							}},
-							{1.75, [] () -> void {
+							{1.35, [] () -> void {
 								rightWingStateController.useDefaultBehavior();
 							}},
 					}));
@@ -595,9 +559,11 @@ int opskills() {
 					{
 							{1.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
+							}},
+							{1.8, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 							}},
-							{1.6, [] () -> void {
+							{2.5, [] () -> void {
 								leftWingStateController.useDefaultBehavior();
 							}},
 					}));
@@ -606,6 +572,35 @@ int opskills() {
 
 	move(5_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -270_deg);
 	move(-10_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -270_deg);
+
+	leftWingStateController.useDefaultBehavior();
+	rightWingStateController.useDefaultBehavior();
+
+	// Final Push
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					61_in/second,
+					OPSkills7,
+					{
+							{2.0, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	move(5_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
+	move(-10_in, {60_in/second, 230_in/second/second, 0.0}, 0.0, -180_deg);
+	move(10_in, {60_in/second, 200_in/second/second, 0.0}, 0.0, -180_deg);
 
 	leftWingStateController.useDefaultBehavior();
 	rightWingStateController.useDefaultBehavior();

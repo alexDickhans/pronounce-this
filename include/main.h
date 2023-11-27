@@ -108,10 +108,10 @@
 #include "AutoPaths/OPSkills0.hpp"
 #include "AutoPaths/OPSkills1.hpp"
 #include "AutoPaths/OPSkills2.hpp"
-#include "AutoPaths/OPSkills3.hpp"
 #include "AutoPaths/OPSkills4.hpp"
 #include "AutoPaths/OPSkills5.hpp"
 #include "AutoPaths/OPSkills6.hpp"
+#include "AutoPaths/OPSkills7.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

@@ -29,7 +29,7 @@ namespace Pronounce {
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
 	ProfileConstraints defaultProfileConstraints = { 61_in / second, 140_in / second / second, 0.0 };
-	ProfileConstraints pushingProfileConstraints = { 35_in / second, 175_in / second / second, 0.0 };
+	ProfileConstraints pushingProfileConstraints = { 25_in / second, 100_in / second / second, 0.0 };
 
 	TankMotionProfiling* getMPInstance(const CombinedPath& path, ProfileConstraints profileConstraints, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed finalSpeed = 0.0) {
 		return new TankMotionProfiling(
