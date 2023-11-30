@@ -5,8 +5,8 @@ using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> OPSkills6 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(40.9322_in, 132.486_in),
 PathPlanner::Point(26.6949_in, 131.893_in),
-PathPlanner::Point(25.7062_in, 119.632_in),
-PathPlanner::Point(10.4802_in, 116.271_in)
+PathPlanner::Point(25.9039_in, 122.4_in),
+PathPlanner::Point(10.6779_in, 119.039_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(

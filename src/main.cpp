@@ -270,130 +270,6 @@ int far6BallFullAWP() {
 	return 0;
 }
 
-int skills() {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -45_deg));
-
-	skillsDone = false;
-	modeLogic.resetTriballs();
-
-//	drivetrainStateController.setCurrentBehavior(
-//			new PathPlanner::PathFollower(
-//					"TestPath",
-//					defaultProfileConstraints,
-//					drivetrain,
-//					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-//					movingTurnPid,
-//					distancePid,
-//					8000.0/64.0,
-//					65_in/second,
-//					ProgSkills1,
-//					{
-//
-//					}));
-//
-//	drivetrainStateController.waitUntilDone()();
-
-	move(-8_in, defaultProfileConstraints, 0.0, -45_deg);
-
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 19.8_deg, drivetrainMutex, -1200));
-
-	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
-		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-		pros::Task::delay(10);
-	}
-
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					65_in/second,
-					{
-							ProgSkills2
-					},
-					{
-							{0.01, [] () -> void {
-								intakeStateController.setCurrentBehavior(&intakeEject);
-							}}
-					}));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(180_deg, 600_ms);
-
-	leftWingStateController.setCurrentBehavior(&leftWingOut);
-	rightWingStateController.setCurrentBehavior(&rightWingOut);
-
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					65_in/second,
-					ProgSkills3,
-					{
-							{1.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{2.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}},
-							{3.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{4.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}},
-							{5.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{6.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-							}},
-							{7.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{8.0, [] () -> void {
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}},
-							{9.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-					}));
-
-	drivetrainStateController.waitUntilDone()();
-
-	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
-	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
-
-	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
-	move(-20_in, {65_in/second, 230_in/second/second, 0.0}, 0.0, 270_deg);
-	move(15_in, {65_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
-
-	skillsDone = true;
-
-	pros::Task::delay(1000);
-
-	return 0;
-}
-
 int opskills() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
 
@@ -421,7 +297,7 @@ int opskills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20.8_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20.0_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
 	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
@@ -527,10 +403,10 @@ int opskills() {
 							{1.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{1.15, [] () -> void {
+							{1.35, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 							}},
-							{1.35, [] () -> void {
+							{1.55, [] () -> void {
 								rightWingStateController.useDefaultBehavior();
 							}},
 					}));

@@ -12,8 +12,8 @@ new SinusoidalVelocityProfile(0.0, 61_in/second, 150_in/second/second, 0.0)},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(30.0565_in, 76.5254_in),
 PathPlanner::Point(47.4576_in, 85.226_in),
-PathPlanner::Point(46.9632_in, 91.1582_in),
-PathPlanner::Point(47.0621_in, 112.316_in)
+PathPlanner::Point(56.257_in, 90.1695_in),
+PathPlanner::Point(56.3559_in, 111.327_in)
 ,true),
 nullptr},
 };
