@@ -106,6 +106,12 @@
 #include "AutoPaths/Skills2.hpp"
 #include "AutoPaths/Skills3.hpp"
 #include "AutoPaths/Skills4.hpp"
+#include "AutoPaths/6BallElim1.hpp"
+#include "AutoPaths/6BallElim2.hpp"
+#include "AutoPaths/6BallElim3.hpp"
+#include "AutoPaths/6BallElim4.hpp"
+#include "AutoPaths/6BallElim5.hpp"
+#include "AutoPaths/SafeCloseAWP1.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

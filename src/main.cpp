@@ -401,6 +401,41 @@ int skills() {
 	return 0;
 }
 
+int safeCloseAWP() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
+
+	move(10_in, defaultProfileConstraints, 0.0);
+
+	leftWingStateController.setCurrentBehavior(&leftWingOut);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					pushingProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					180.0,
+					61_in/second,
+					SafeCloseAWP1,
+					{
+							{0.2, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingIn);
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	rightWingStateController.setCurrentBehavior(&rightWingOut);
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
+
+	pros::Task::delay(20000);
+
+	return 0;
+}
+
 int postAuton() {
 	pros::Task::delay(10);
 
@@ -583,7 +618,7 @@ void autonomous() {
 	#elif AUTON == 2
 	skills();
 	#elif AUTON == 3
-	far3BallFullAWP();
+	safeCloseAWP();
 	#elif AUTON == 4
 	testBezier();
 	#endif // !1

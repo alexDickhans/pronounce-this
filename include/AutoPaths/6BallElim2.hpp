@@ -2,7 +2,7 @@
 #include <vector>
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
-std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> 6BallElim2 = {{PathPlanner::BezierSegment(
+std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Auto6BallElim2 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(69.209_in, 65.452_in),
 PathPlanner::Point(69.0113_in, 46.2712_in),
 PathPlanner::Point(69.0113_in, 36.7797_in),
