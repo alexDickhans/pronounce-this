@@ -344,7 +344,7 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(180_deg, 600_ms);
+	turnTo(188_deg, 600_ms);
 
 
 
