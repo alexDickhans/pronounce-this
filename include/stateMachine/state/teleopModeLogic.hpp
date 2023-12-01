@@ -41,28 +41,14 @@ namespace Pronounce {
 			catapultStateController.initialize();
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
-				wingsStateController.setCurrentBehavior((isLeft ? wingsLeft : wingsRight).until([=] () -> bool {
+				leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
 				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_LEFT, [&] () -> void {
-				isLeft = true;
-				if (!controller1->get_digital(E_CONTROLLER_DIGITAL_L2))
-					return;
-
-				wingsStateController.setCurrentBehavior((isLeft ? wingsLeft : wingsRight).until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
-				}));
-			});
-
-			controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&] () -> void {
-				isLeft = false;
-				if (!controller1->get_digital(E_CONTROLLER_DIGITAL_L2))
-					return;
-
-				wingsStateController.setCurrentBehavior((isLeft ? wingsLeft : wingsRight).until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
+				rightWingStateController.setCurrentBehavior(rightWingOut.until([&] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);
 				}));
 			});
 
@@ -70,15 +56,20 @@ namespace Pronounce {
 				intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
 			});
 
-            controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [=] () -> void {
+            controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
 				intakeExtensionStateController.useDefaultBehavior();
                 intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-                    return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+                    return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [&] () -> void {
-				wingsStateController.setCurrentBehavior(wingsOut.until([&] () -> bool {
-					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_L1);
+			controller1->onPressed(E_CONTROLLER_DIGITAL_B, [=] () -> void {
+				blockerStateController.setCurrentBehavior(blockerOut.until([=] () -> bool {
+					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_B);}));
+			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [&] () -> void {
+				catapultStateController.setCurrentBehavior(catapultDejam.until([&] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
 				}));
 			});
 		}

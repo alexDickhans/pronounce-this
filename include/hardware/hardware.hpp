@@ -24,18 +24,6 @@ namespace Pronounce {
 	PT::TelemetryManager* telemetryManager;
 	PT::Logger* logger;
 
-	enum GameMode {
-		Skills = 0,
-		Red = 1,
-		Blue = 2,
-	};
-	
-	#if AUTON == 4
-		GameMode gameMode = GameMode::Skills;
-	#else
-		GameMode gameMode = GameMode::Red;
-	#endif // AUTON == 4
-
 	pros::Mutex controllerMutex;
 
 #ifndef SIM
@@ -59,13 +47,14 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(17_in, 64.79534848_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(17_in, 61.261056745_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
-	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, false);
+	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
 	pros::Motor_Group catapultMotors({-17, 14});
 
-	pros::ADIDigitalOut leftSolenoid('B', false);
-	pros::ADIDigitalOut rightSolenoid('A', false);
+	pros::ADIDigitalOut leftSolenoid({3, 'A'}, false);
+	pros::ADIDigitalOut rightSolenoid({3, 'B'}, false);
+	pros::ADIDigitalOut blockerSolenoid({3, 'C'}, false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 
@@ -113,9 +102,9 @@ namespace Pronounce {
 
 		double turningFactor = 450.0 / 600.0;
 		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(2.75_in / 2.0);
+		leftDrive1Odom.setRadius(3.25_in / 2.0);
 		leftDrive1Odom.setTuningFactor(turningFactor);
-		rightDrive1Odom.setRadius(2.75_in / 2.0);
+		rightDrive1Odom.setRadius(3.25_in / 2.0);
 		rightDrive1Odom.setTuningFactor(turningFactor);
 
 		threeWheelOdom.setLeftOffset(10_in / 1.5);

@@ -20,7 +20,7 @@ namespace PathPlanner {
 		Pronounce::AbstractTankDrivetrain& drivetrain;
 		Pronounce::PID turnPID, distancePID;
 		double feedforwardMultiplier;
-		double accelerationFeedforward = 20.0;
+		double accelerationFeedforward = 14.0;
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
@@ -64,6 +64,8 @@ namespace PathPlanner {
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
+				std::cout << "HII2 Initial Speed: " << profile->getInitialSpeed().Convert(inch/second) << " End Speed: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
+
 				profile->calculate(20);
 
 				this->pathSegments.at(i).second = profile;
@@ -106,6 +108,8 @@ namespace PathPlanner {
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
+				std::cout << "HII2 Initial Speed: " << profile->getInitialSpeed().Convert(inch/second) << " End Speed: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
+
 				profile->calculate(20);
 
 				this->pathSegments.at(i).second = profile;
@@ -122,8 +126,9 @@ namespace PathPlanner {
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
-			QTime relativeTime = 0.0;
 			double index = getIndex(time);
+
+			std::cout << "HII: " << index << std::endl;
 
 			if (commands.size() > commandsIndex) {
 				if (commands.at(commandsIndex).first < index) {
@@ -133,7 +138,7 @@ namespace PathPlanner {
 			}
 
 			std::pair<QSpeed, QSpeed> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-			double accelerationFF = pathSegments.at(std::floor(index)).second->getAccelerationByTime(relativeTime).Convert(inch/second/second)*accelerationFeedforward;
+//			double accelerationFF = pathSegments.at(std::floor(index)).second->getAccelerationByTime(relativeTime).Convert(inch/second/second)*accelerationFeedforward;
 
 			std::pair<double, double> driveVoltages = {driveSpeeds.first.Convert(inch/second) * feedforwardMultiplier, driveSpeeds.second.Convert(inch/second) * feedforwardMultiplier};
 			if ((driveSpeeds.first + driveSpeeds.second).getValue() < 0.0) {
@@ -142,7 +147,7 @@ namespace PathPlanner {
 			distancePID.setTarget(this->getDistance(time).getValue());
 
 			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
-			driveVoltages = {driveVoltages.first + distanceOutput + accelerationFF, driveVoltages.second + distanceOutput + accelerationFF};
+			driveVoltages = {driveVoltages.first + distanceOutput, driveVoltages.second + distanceOutput};
 
 			turnPID.setTarget((this->getAngle(time) + ((driveSpeeds.first + driveSpeeds.second).getValue() > 0.0 ? 0.0 : 180_deg)).Convert(radian));
 			double turnOutput = turnPID.update(this->angleFunction().Convert(radian));
@@ -168,6 +173,17 @@ namespace PathPlanner {
 			}
 
 			return index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
+		}
+
+		QTime getTimeRemainder(QTime time) {
+			int index = 0;
+
+			while (time >= pathSegments.at(index).second->getDuration()) {
+				time -= pathSegments.at(index).second->getDuration();
+				index ++;
+			}
+
+			return time;
 		}
 
 		QTime totalTime() {
