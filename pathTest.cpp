@@ -162,134 +162,60 @@ void printField() {
 
 int main() {
 
-	int gd = DETECT, gm;
-	initgraph(&gd, &gm, NULL);
-
-	setbkcolor(BLACK);
-	setcolor(DARKGRAY);
-
-	delay(1000);
-
-	cleardevice();
-
-	printField();
-	
-	setlinestyle(SOLID_LINE, 5, 2);
-
-//	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
-//			{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 22_in), PathPlanner::Point(123_in, 32_in), PathPlanner::Point(108_in, 50_in), PathPlanner::Point(108_in, 30_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 30_in), PathPlanner::Point(108_in, 50_in), PathPlanner::Point(100_in, 44_in), PathPlanner::Point(90_in, 44_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 44_in), PathPlanner::Point(100_in, 44_in), PathPlanner::Point(108_in, 44_in), PathPlanner::Point(108_in, 24_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 36_in), PathPlanner::Point(90_in, 45_in), PathPlanner::Point(96_in, 45_in), PathPlanner::Point(96_in, 55_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(107_in, 70_in), PathPlanner::Point(109_in, 60_in), PathPlanner::Point(115_in, 54_in), PathPlanner::Point(115_in, 38_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(110_in, 38_in), PathPlanner::Point(115_in, 22_in), PathPlanner::Point(127_in, 20_in), PathPlanner::Point(130_in, 45_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(130_in, 45_in), PathPlanner::Point(131_in, 50_in), PathPlanner::Point(122_in, 50_in), PathPlanner::Point(122_in, 78_in), true),
-//					nullptr}// new Pronounce::SinusoidalVelocityProfile(0.0, {40_in/second, 40_in/second/second})}
-//	};
-
-	// SKILLS
-
-//	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {
-//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 74_in), PathPlanner::Point(132_in, 80_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(132_in, 80_in), PathPlanner::Point(132_in, 140_in), PathPlanner::Point(110_in, 128_in), PathPlanner::Point(90_in, 128_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(100_in, 128_in), false),
-//					nullptr},
-//					// Turn 180
-//			{PathPlanner::BezierSegment(PathPlanner::Point(100_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(90_in, 128_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(90_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(95_in, 128_in), PathPlanner::Point(108_in, 128_in), false),
-//					nullptr},
-//					// turn to 200
-//			{PathPlanner::BezierSegment(PathPlanner::Point(108_in, 128_in), PathPlanner::Point(100_in, 100_in), PathPlanner::Point(93_in, 100_in), PathPlanner::Point(93_in, 70_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 70_in), PathPlanner::Point(93_in, 75_in), PathPlanner::Point(93_in, 85_in), PathPlanner::Point(93_in, 90_in), true),
-//					nullptr},
-//			// turn to 370
-//			{PathPlanner::BezierSegment(PathPlanner::Point(93_in, 90_in), PathPlanner::Point(93_in, 100_in), PathPlanner::Point(85_in, 100_in), PathPlanner::Point(85_in, 115_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(85_in, 115_in), PathPlanner::Point(85_in, 105_in), PathPlanner::Point(90_in, 105_in), PathPlanner::Point(95_in, 105_in), true),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(95_in, 105_in), PathPlanner::Point(85_in, 105_in), PathPlanner::Point(70_in, 100_in), PathPlanner::Point(70_in, 80_in), false),
-//					nullptr},
-//			// Turn to 360
-//			{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 80_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(70_in, 95_in), PathPlanner::Point(70_in, 115_in), false),
-//					nullptr},
-//			{PathPlanner::BezierSegment(PathPlanner::Point(70_in, 115_in), PathPlanner::Point(70_in, 85_in), PathPlanner::Point(80_in, 70_in), PathPlanner::Point(115_in, 70_in), true),
-//						nullptr}
-//	};
-
-// skills
-	std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {{PathPlanner::BezierSegment(
-			PathPlanner::Point(69.4068_in, 74.1525_in),
-			PathPlanner::Point(69.6045_in, 93.7288_in),
-			PathPlanner::Point(69.4067_in, 102.231_in),
-			PathPlanner::Point(69.6045_in, 113.7_in)
+	std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> paths = {{PathPlanner::BezierSegment(
+			PathPlanner::Point(36.1864_in, 11.2712_in),
+			PathPlanner::Point(23.1356_in, 12.2599_in),
+			PathPlanner::Point(12.2599_in, 21.5537_in),
+			PathPlanner::Point(8.10734_in, 29.661_in)
 			,true),
-																								  nullptr},
-																						  {PathPlanner::BezierSegment(
-																								  PathPlanner::Point(69.6045_in, 113.898_in),
-																								  PathPlanner::Point(69.209_in, 102.429_in),
-																								  PathPlanner::Point(86.2147_in, 88.7853_in),
-																								  PathPlanner::Point(129.718_in, 76.1299_in)
-																								  ,false),
-																								  nullptr},
-																						  {PathPlanner::BezierSegment(
-																								  PathPlanner::Point(98.2768_in, 83.8418_in),
-																								  PathPlanner::Point(90.565_in, 96.2994_in),
-																								  PathPlanner::Point(85.4238_in, 101.836_in),
-																								  PathPlanner::Point(84.435_in, 146.525_in)
-																								  ,true),
-																								  nullptr},
-																						  {PathPlanner::BezierSegment(
-																								  PathPlanner::Point(88.3898_in, 122.599_in),
-																								  PathPlanner::Point(88.5876_in, 115.48_in),
-																								  PathPlanner::Point(82.8531_in, 108.955_in),
-																								  PathPlanner::Point(75.5367_in, 108.757_in)
-																								  ,false),
-																								  nullptr},
-																						  {PathPlanner::BezierSegment(
-																								  PathPlanner::Point(72.9661_in, 102.627_in),
-																								  PathPlanner::Point(109.746_in, 94.322_in),
-																								  PathPlanner::Point(143.362_in, 122.796_in),
-																								  PathPlanner::Point(99.8591_in, 128.532_in)
-																								  ,true),
-																								  nullptr},
-																						  {PathPlanner::BezierSegment(
-																								  PathPlanner::Point(93.9266_in, 129.52_in),
-																								  PathPlanner::Point(109.746_in, 127.147_in),
-																								  PathPlanner::Point(119.237_in, 119.633_in),
-																								  PathPlanner::Point(129.52_in, 115.282_in)
-																								  ,false),
-																								  nullptr},
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(8.10734_in, 29.661_in),
+																												 PathPlanner::Point(3.9548_in, 37.7684_in),
+																												 PathPlanner::Point(1.58192_in, 53.7853_in),
+																												 PathPlanner::Point(1.38418_in, 69.6045_in)
+																												 ,true),
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(1.38418_in, 69.6045_in),
+																												 PathPlanner::Point(1.18644_in, 85.4237_in),
+																												 PathPlanner::Point(3.26271_in, 96.2994_in),
+																												 PathPlanner::Point(5.33898_in, 107.175_in)
+																												 ,true),
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(5.33898_in, 107.175_in),
+																												 PathPlanner::Point(10.1836_in, 125.367_in),
+																												 PathPlanner::Point(32.2811_in, 135.847_in),
+																												 PathPlanner::Point(51.2147_in, 135.847_in)
+																												 ,true),
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(51.2147_in, 135.847_in),
+																												 PathPlanner::Point(48.0014_in, 135.65_in),
+																												 PathPlanner::Point(44.1702_in, 135.847_in),
+																												 PathPlanner::Point(40.1412_in, 135.847_in)
+																												 ,false),
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(40.1412_in, 135.847_in),
+																												 PathPlanner::Point(45.0106_in, 135.847_in),
+																												 PathPlanner::Point(53.0561_in, 135.946_in),
+																												 PathPlanner::Point(59.7175_in, 135.847_in)
+																												 ,true),
+																												 nullptr},
+																										 {PathPlanner::BezierSegment(
+																												 PathPlanner::Point(43.8983_in, 133.87_in),
+																												 PathPlanner::Point(16.5484_in, 133.771_in),
+																												 PathPlanner::Point(29.6301_in, 82.2104_in),
+																												 PathPlanner::Point(51.8079_in, 77.7119_in)
+																												 ,false),
+																												 nullptr},
 	};
+//
 
-	// Print all paths in the vector paths
-	for (int i = 0; i < paths.size(); i++) {
-		printPath(paths.at(i).first);
-	}
-
-	for (double i = 0.0; i <= paths.size(); i += 0.02) {
-		delay(20);
-		cleardevice();
-		printField();
-		for (int i = 0; i < paths.size(); i++) {
-			printPath(paths.at(i).first);
-		}
-
-		Point curvature = paths.at(i).first.evaluate(fmod(i, 1)) + Vector(paths.at(i).first.getCurvature(fmod(i, 1)).getValue() * 0.1, paths.at(i).first.getAngle(fmod(i, 1)) - 90_deg).getCartesian();
-
-		std::cout << "Curvature: " << paths.at(i).first.getCurvature(fmod(i, 1)).Convert(degree/inch) << std::endl;
-
-		circle(curvature.getY().Convert(inch) * multiplier, curvature.getX().Convert(inch) * multiplier, 2);
-		printRobot(paths.at(i).first.evaluate(fmod(i, 1)), paths.at(i).first.getAngle(fmod(i, 1)));
+	for (double i = 0.0; i <= paths.size(); i ++) {
+		std::cout << "Curvature: " << paths.at(i).first.getDistance().Convert(inch) << std::endl;
 	}
 
 	delay(50000000);
