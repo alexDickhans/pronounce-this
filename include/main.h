@@ -99,7 +99,9 @@
 
 #include "AutoPaths/3Ball2.hpp"
 #include "AutoPaths/6ball1.hpp"
+#include "AutoPaths/6ball2.hpp"
 #include "AutoPaths/6ball3.hpp"
+#include "AutoPaths/6ball4.hpp"
 #include "AutoPaths/CloseAWP1.hpp"
 #include "AutoPaths/CloseAWP2.hpp"
 #include "AutoPaths/Skills1.hpp"

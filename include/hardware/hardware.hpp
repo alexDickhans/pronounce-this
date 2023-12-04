@@ -50,7 +50,7 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(17_in, 61.261056745_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
 	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor_Group catapultMotors({-17, 14});
+	pros::Motor_Group catapultMotors({17, -14});
 
 	pros::ADIDigitalOut leftSolenoid({3, 'A'}, false);
 	pros::ADIDigitalOut rightSolenoid({3, 'B'}, false);

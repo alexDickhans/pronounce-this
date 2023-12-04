@@ -15,11 +15,11 @@ namespace Pronounce {
 
 		void initialize() override {
 			catapultMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			double position = catapultMotors.get_positions().at(0) - fmod(catapultMotors.get_positions().at(0), 2);
+			double position = catapultMotors.get_positions().at(0) - fmod(catapultMotors.get_positions().at(0), 1.5);
 			double newSetpoint = position + setpoint;
 
 			while (newSetpoint < catapultMotors.get_positions().at(0)) {
-				newSetpoint += 2.0;
+				newSetpoint += 1.5;
 			}
 
 			pid->setTarget(newSetpoint);

@@ -154,6 +154,124 @@ int far6BallFullAWP() {
 					movingTurnPid,
 					distancePid,
 					8000.0/64.0,
+					61_in/second,
+					Auto6BallPath1,
+					{
+							{0.1, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+							{1.2, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+							}},
+							{1.5, [] () -> void {
+								leftWingStateController.useDefaultBehavior();
+								rightWingStateController.useDefaultBehavior();
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(270_deg, 500_ms);
+
+	intakeStateController.setCurrentBehavior(&intakeEject);
+
+	move(20_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+	move(-14.5_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
+
+	turnTo(210_deg, 400_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 170_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					61_in/second,
+					Auto6BallPath2,
+					{
+							{0.6, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(340_deg, 500_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					61_in/second,
+					Auto6BallPath3,
+					{
+							{0.3, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.2, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+							}},
+							{2.2, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeIntaking);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(360_deg, 500_ms);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{65_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
+					61_in/second,
+					Auto6BallPath4,
+					{
+							{0.1, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
+							}},
+							{1.6, [] () -> void {
+								intakeStateController.useDefaultBehavior();
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+							}}
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	drivetrain.tankSteerVoltage(-4000, 0);
+
+	pros::Task::delay(2000);
+
+	return 0;
+}
+
+int far6BallRush() {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					{64_in/second, 200_in/second/second, 0.0},
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					8000.0/64.0,
 					65_in/second,
 					Auto6BallPath1,
 					{
@@ -293,13 +411,15 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20.0_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (modeLogic.getTriballCount() < 46 && catapultStateController.getDuration() < 3_s) {
+	while (modeLogic.getTriballCount() < 44 && catapultStateController.getDuration() < 3_s) {
 		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
 		pros::Task::delay(10);
 	}
+
+	pros::Task::delay(100);
 
 	leftWingStateController.useDefaultBehavior();
 	rightWingStateController.useDefaultBehavior();
