@@ -4,8 +4,8 @@
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Skills5 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(75.3391_in, 113.7_in),
-PathPlanner::Point(82.0622_in, 84.8305_in),
-PathPlanner::Point(127.542_in, 133.079_in),
+PathPlanner::Point(80.678_in, 89.3785_in),
+PathPlanner::Point(132.486_in, 142.768_in),
 PathPlanner::Point(137.232_in, 101.242_in)
 ,false),
 nullptr},
