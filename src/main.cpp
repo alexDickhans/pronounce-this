@@ -457,14 +457,14 @@ int skills() {
 							{3.48, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingIn);
 							}},
-							{5.0, [] () -> void {
+							{6.2, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(188_deg, 600_ms);
+	turnTo(197_deg, 400_ms);
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 	rightWingStateController.setCurrentBehavior(&rightWingOut);
@@ -489,7 +489,7 @@ int skills() {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(175_deg, 600_ms);
+	turnTo(175_deg, 450_ms);
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 	rightWingStateController.setCurrentBehavior(&rightWingOut);
@@ -517,6 +517,36 @@ int skills() {
 					}));
 
 	drivetrainStateController.waitUntilDone()();
+
+	leftWingStateController.setCurrentBehavior(&leftWingIn);
+	rightWingStateController.setCurrentBehavior(&rightWingIn);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					180.0,
+					61_in/second,
+					Skills5,
+					{
+							{1.0, [] () -> void {
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+							}},
+							{1.1, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+							}},
+							{1.4, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingIn);
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	move(10_in, defaultProfileConstraints, 0.0);
 
 	return 0;
 }
