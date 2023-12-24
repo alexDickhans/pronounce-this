@@ -214,7 +214,7 @@ int far6BallFullAWP() {
 					61_in/second,
 					Auto6BallPath3,
 					{
-							{0.3, [] () -> void {
+							{0.1, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeEject);
 							}},
 							{1.2, [] () -> void {
@@ -395,6 +395,9 @@ int skills() {
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
+	modeLogic.resetTriballs();
+	catapultStateController.initialize();
+
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
@@ -494,6 +497,8 @@ int skills() {
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 	rightWingStateController.setCurrentBehavior(&rightWingOut);
 
+	turnTo(175_deg, 450_ms);
+
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
 					"TestPath",
@@ -547,6 +552,35 @@ int skills() {
 	drivetrainStateController.waitUntilDone()();
 
 	move(10_in, defaultProfileConstraints, 0.0);
+	move(-17_in, defaultProfileConstraints, 0.0);
+
+	rightWingStateController.setCurrentBehavior(&rightWingIn);
+	leftWingStateController.setCurrentBehavior(&leftWingIn);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					180.0,
+					61_in/second,
+					Skills6,
+					{
+							{2.0, [] () -> void {
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+							}},
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	rightWingStateController.setCurrentBehavior(&rightWingIn);
+	leftWingStateController.setCurrentBehavior(&leftWingIn);
+
+	move(10_in, defaultProfileConstraints, 0.0);
 
 	return 0;
 }
@@ -555,6 +589,8 @@ int safeCloseAWP() {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
 
 	move(10_in, defaultProfileConstraints, 0.0);
+
+	intakeStateController.setCurrentBehavior(&intakeEject);
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 

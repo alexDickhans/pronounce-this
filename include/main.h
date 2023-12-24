@@ -109,6 +109,7 @@
 #include "AutoPaths/Skills3.hpp"
 #include "AutoPaths/Skills4.hpp"
 #include "AutoPaths/Skills5.hpp"
+#include "AutoPaths/Skills6.hpp"
 #include "AutoPaths/6BallElim1.hpp"
 #include "AutoPaths/6BallElim2.hpp"
 #include "AutoPaths/6BallElim3.hpp"

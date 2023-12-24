@@ -3,7 +3,6 @@
 #include <cmath>
 #include <vector>
 #include "../../units/units.hpp"
-#include "../../utils/utils.hpp"
 
 // TODO: test code
 // TODO: Check implemntation
