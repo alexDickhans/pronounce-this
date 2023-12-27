@@ -6,11 +6,6 @@
 #include <cmath>
 #include <iostream>
 
-// TODO: add docstrings
-// TODO: add comments
-// TODO: Make sure implemntation is correct
-// TODO: Test
-
 namespace Pronounce {
 	class SinusoidalVelocityProfile : public VelocityProfile {
 	private:

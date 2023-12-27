@@ -2,8 +2,6 @@
 
 #include "pros/rtos.hpp"
 
-pros::Mutex robotBehaviorMutex;
-
 #include "drivetrain/joystick.hpp"
 #include "drivetrain/initDrivetrain.hpp"
 

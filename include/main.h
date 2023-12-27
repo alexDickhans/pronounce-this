@@ -97,15 +97,27 @@
 
 #include "telemetryRadio/telemetryManager.hpp"
 
+#include "stateMachine/state/competition/auton.hpp"
+
 #include "AutoPaths/3Ball2.hpp"
 #include "AutoPaths/6ball1.hpp"
+#include "AutoPaths/6ball2.hpp"
 #include "AutoPaths/6ball3.hpp"
+#include "AutoPaths/6ball4.hpp"
 #include "AutoPaths/CloseAWP1.hpp"
 #include "AutoPaths/CloseAWP2.hpp"
 #include "AutoPaths/Skills1.hpp"
 #include "AutoPaths/Skills2.hpp"
 #include "AutoPaths/Skills3.hpp"
 #include "AutoPaths/Skills4.hpp"
+#include "AutoPaths/Skills5.hpp"
+#include "AutoPaths/Skills6.hpp"
+#include "AutoPaths/6BallElim1.hpp"
+#include "AutoPaths/6BallElim2.hpp"
+#include "AutoPaths/6BallElim3.hpp"
+#include "AutoPaths/6BallElim4.hpp"
+#include "AutoPaths/6BallElim5.hpp"
+#include "AutoPaths/SafeCloseAWP1.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

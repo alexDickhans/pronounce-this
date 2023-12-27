@@ -4,10 +4,10 @@
 #include "catapult.hpp"
 
 namespace Pronounce {
-	PID cataPID(7.0, 0.0, 8.0, 0.0);
+	PID cataPID(9.0, 0.0, 12.0, 0.0);
 	Catapult catapultFire("CatapultFire", catapultMotors, 1.0);
 	Catapult catapultDejam("CatapultDejam", catapultMotors, -0.4);
-	CatapultHold catapultHold("CatapultHold", catapultMotors, 1.33, &cataPID);
+	CatapultHold catapultHold("CatapultHold", catapultMotors, 0.9, &cataPID);
 
 	StateController catapultStateController("CatapultStateController", &catapultHold);
 

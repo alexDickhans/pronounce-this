@@ -1,12 +1,6 @@
 #pragma once
 
-#ifndef SIM
 #include "units/units.hpp"
-#endif // !SIM
-
-// TODO: add docstrings
-// TODO: add comments
-// TODO: Make sure implemntation is correct
 
 namespace Pronounce {
 	struct ProfileConstraints {

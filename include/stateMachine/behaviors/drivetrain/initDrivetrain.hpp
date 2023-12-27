@@ -31,20 +31,7 @@ namespace Pronounce {
 	ProfileConstraints defaultProfileConstraints = { 61_in / second, 140_in / second / second, 0.0 };
 	ProfileConstraints pushingProfileConstraints = { 25_in / second, 100_in / second / second, 0.0 };
 
-	TankMotionProfiling* getMPInstance(const CombinedPath& path, ProfileConstraints profileConstraints, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed finalSpeed = 0.0) {
-		return new TankMotionProfiling(
-				"MPInstance",
-				&drivetrain,
-				profileConstraints,
-				path,
-				&odometry,
-				&distancePid,
-				drivetrainMutex,
-				startAngle,
-				&movingTurnPid,
-				initialSpeed,
-				finalSpeed);
-	}
+	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, 8000.0/64.0, 61_in/second, {});
 
 	void initDrivetrain() {
 
