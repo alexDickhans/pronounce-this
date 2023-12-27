@@ -3,26 +3,19 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviors/robotBehaviors.hpp"
 #include "api.h"
-#include "robotStatus.hpp"
 #include "driver.h"
-#include "modeLogic.hpp"
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
-
-// TODO: Clean up
-// TODO: Add docstring
+#include "enabled.hpp"
 
 namespace Pronounce {
-	class TeleopModeLogic : public Behavior {
+
+	class Teleop : public Enabled {
 	private:
-		RobotStatus* robotStatus{};
-
-        AbstractJoystick* controller1;
-        AbstractJoystick* controller2;
-
-		bool isLeft = false;
+		AbstractJoystick* controller1;
+		AbstractJoystick* controller2;
 	public:
-		TeleopModeLogic(AbstractJoystick* controller1, AbstractJoystick* controller2) {
+		Teleop(AbstractJoystick* controller1, AbstractJoystick* controller2) : Enabled("Teleop") {
 			this->controller1 = controller1;
 			this->controller2 = controller2;
 		}
@@ -56,27 +49,31 @@ namespace Pronounce {
 				intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
 			});
 
-            controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
 				intakeExtensionStateController.useDefaultBehavior();
-                intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-                    return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);}));
+				intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_B, [=] () -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [=] () -> void {
 				blockerStateController.setCurrentBehavior(blockerOut.until([=] () -> bool {
-					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_B);}));
+					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_Y);}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [&] () -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&] () -> void {
 				catapultStateController.setCurrentBehavior(catapultDejam.until([&] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_RIGHT);
 				}));
 			});
+
+			Enabled::initialize();
 		}
 
 		void update() override {
 			controller1->update();
 			controller2->update();
+
+			Enabled::update();
 		}
 
 		void exit() override {
@@ -84,12 +81,13 @@ namespace Pronounce {
 			drivetrainStateController.useDefaultBehavior();
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();
+			Enabled::exit();
 		}
 
 		bool isDone() override {
 			return false;
 		}
 
-		~TeleopModeLogic() = default;
+		~Teleop() = default;
 	};
 } // namespace Pronounce

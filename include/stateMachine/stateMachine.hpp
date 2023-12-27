@@ -15,4 +15,7 @@
 #include "wait.hpp"
 #include "behaviors/robotBehaviors.hpp"
 #include "state/modeLogic.hpp"
-#include "state/teleopModeLogic.hpp"
+#include "state/competition/enabled.hpp"
+#include "state/competition/teleop.hpp"
+#include "state/competition/auton.hpp"
+#include "state/competition/disabled.hpp"

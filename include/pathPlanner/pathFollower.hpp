@@ -18,15 +18,17 @@ namespace PathPlanner {
 	private:
 		std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments;
 		Pronounce::AbstractTankDrivetrain& drivetrain;
+		Pronounce::ProfileConstraints defaultProfileConstraints;
 		Pronounce::PID turnPID, distancePID;
 		double feedforwardMultiplier;
-		double accelerationFeedforward = 14.0;
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
 
 		std::vector<std::pair<double, std::function<void()>>> commands;
 		int commandsIndex = 0;
+
+		pros::Mutex movingMutex;
 	public:
 		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = pathSegments;
@@ -36,54 +38,40 @@ namespace PathPlanner {
 			this->distancePID = distancePID;
 			this->feedforwardMultiplier = feedforwardMultiplier;
 			this->angleFunction = std::move(angleFunction);
+			this->defaultProfileConstraints = defaultProfileConstraints;
 
-			for (int i = 0; i < this->pathSegments.size(); ++i) {
-
-				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * maxSpeed;
-
-				Pronounce::SinusoidalVelocityProfile* profile = this->pathSegments.at(i).second;
-
-				if (profile == nullptr) {
-					profile = new Pronounce::SinusoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
-				}
-
-				profile->setDistance(this->pathSegments.at(i).first.getDistance());
-
-				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity.getValue(), adjustedSpeed.getValue()), profile->getProfileConstraints().maxAcceleration, 0.0});
-
-				profile->setInitialSpeed(0.0);
-				profile->setEndSpeed(0.0);
-
-				if (i < this->pathSegments.size()-1) {
-					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
-						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
-				}
-
-				if (i > 0) {
-					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
-						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
-				}
-
-				std::cout << "HII2 Initial Speed: " << profile->getInitialSpeed().Convert(inch/second) << " End Speed: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
-
-				profile->calculate(20);
-
-				this->pathSegments.at(i).second = profile;
-			}
+			calculate();
 		}
 
 		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
-			this->pathSegments = pathSegments;
+			this->pathSegments = std::move(pathSegments);
 			this->commands = functions;
 			this->turnPID = turnPID;
 			this->turnPID.setTurnPid(true);
 			this->distancePID = distancePID;
 			this->feedforwardMultiplier = feedforwardMultiplier;
 			this->angleFunction = std::move(angleFunction);
+			this->defaultProfileConstraints = defaultProfileConstraints;
+
+			calculate();
+		}
+
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+			movingMutex.take();
+			this->defaultProfileConstraints = defaultProfileConstraints;
+			pathSegments = std::move(path);
+			this->commands = functions;
+			movingMutex.give();
+
+			return calculate();
+		}
+
+		PathFollower* calculate() {
+			movingMutex.take();
 
 			for (int i = 0; i < this->pathSegments.size(); ++i) {
 
-				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * maxSpeed;
+				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * drivetrain.getMaxSpeed();
 
 				Pronounce::SinusoidalVelocityProfile* profile = this->pathSegments.at(i).second;
 
@@ -108,12 +96,14 @@ namespace PathPlanner {
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
-				std::cout << "HII2 Initial Speed: " << profile->getInitialSpeed().Convert(inch/second) << " End Speed: " << profile->getEndSpeed().Convert(inch/second) << std::endl;
-
 				profile->calculate(20);
 
 				this->pathSegments.at(i).second = profile;
 			}
+
+			movingMutex.give();
+
+			return this;
 		}
 
 		void initialize() override {

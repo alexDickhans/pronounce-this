@@ -3,28 +3,9 @@
 // LVGL
 std::shared_ptr<lv_obj_t> tabview;
 
-RobotStatus robotStatus;
-ModeLogic modeLogic(&robotStatus);
-TeleopModeLogic teleopModeLogic(new RobotJoystick(E_CONTROLLER_MASTER), new RobotJoystick(E_CONTROLLER_PARTNER));
-
-pros::Mutex robotMutex;
-
 bool skillsDone = false;
 
 // SECTION Auton
-
-/**
- * @brief Runs during auton period before auton
- *
- */
-int preAutonRun() {
-	teleopController.useDefaultBehavior();
-	drivetrainStateController.setDefaultBehavior(&drivetrainStopped);
-	drivetrainStateController.useDefaultBehavior();
-	leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
-	rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
-	return 0;
-}
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
@@ -60,63 +41,42 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-int closeAWP() {
+void closeAWP(void* args) {
 
 	threeWheelOdom.reset(Pose2D(130_in, 22_in, -30_deg));
 
 	catapultStateController.setCurrentBehavior(catapultFire.wait(800_ms));
 	catapultStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					65_in/second,
-					CloseAWP1,
-					{
-							{0.2, [] () -> void {
-								intakeStateController.setCurrentBehavior(&intakeIntaking);
-							}},
-							{2.2, [] () -> void {
-								intakeStateController.setCurrentBehavior(&intakeEject);
-							}},
-							{4.2, [] () -> void {
-								intakeStateController.setCurrentBehavior(&intakeIntaking);
-							}},
-							{6.2, [] () -> void {
-								intakeStateController.setCurrentBehavior(&intakeEject);
-							}},
-							{8.4, [] () -> void {
-								intakeStateController.useDefaultBehavior();
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-							}},
-							{9.0, [] () -> void {
-								leftWingStateController.useDefaultBehavior();
-								rightWingStateController.useDefaultBehavior();
-							}},
-							{9.95, [] () -> void {
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-							}}
-					}));
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, CloseAWP1,{
+			{0.2, [] () -> void {
+				intakeStateController.setCurrentBehavior(&intakeIntaking);
+			}},
+			{2.2, [] () -> void {
+				intakeStateController.setCurrentBehavior(&intakeEject);
+			}},
+			{4.2, [] () -> void {
+				intakeStateController.setCurrentBehavior(&intakeIntaking);
+			}},
+			{6.2, [] () -> void {
+				intakeStateController.setCurrentBehavior(&intakeEject);
+			}},
+			{8.4, [] () -> void {
+				intakeStateController.useDefaultBehavior();
+				leftWingStateController.setCurrentBehavior(&leftWingOut);
+			}},
+			{9.0, [] () -> void {
+				leftWingStateController.useDefaultBehavior();
+				rightWingStateController.useDefaultBehavior();
+			}},
+			{9.95, [] () -> void {
+				rightWingStateController.setCurrentBehavior(&rightWingOut);
+			}}
+	}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(
-			new PathPlanner::PathFollower(
-					"TestPath",
-					defaultProfileConstraints,
-					drivetrain,
-					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
-					movingTurnPid,
-					distancePid,
-					8000.0/64.0,
-					65_in/second,
-					CloseAWP2,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, CloseAWP2,
 					{
 							{0.4, [] () -> void {
 								intakeStateController.useDefaultBehavior();
@@ -138,11 +98,9 @@ int closeAWP() {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -170_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(7000);
-
-	return 0;
 }
 
-int far6BallFullAWP() {
+void far6BallFullAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
 	drivetrainStateController.setCurrentBehavior(
@@ -256,11 +214,9 @@ int far6BallFullAWP() {
 	drivetrain.tankSteerVoltage(-4000, 0);
 
 	pros::Task::delay(2000);
-
-	return 0;
 }
 
-int far6BallRush() {
+void far6BallRush(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
 	drivetrainStateController.setCurrentBehavior(
@@ -384,18 +340,16 @@ int far6BallRush() {
 	drivetrain.tankSteerVoltage(-4000, -4000);
 
 	pros::Task::delay(2000);
-
-	return 0;
 }
 
-int skills() {
+void skills(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
 
 	intakeStateController.setCurrentBehavior(&intakeHold);
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
-	modeLogic.resetTriballs();
+	auton.resetTriballs();
 	catapultStateController.initialize();
 
 	drivetrainStateController.setCurrentBehavior(
@@ -417,7 +371,7 @@ int skills() {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (modeLogic.getTriballCount() < 44 && catapultStateController.getDuration() < 3_s) {
+	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 3_s) {
 		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
 		pros::Task::delay(10);
 	}
@@ -581,11 +535,9 @@ int skills() {
 	leftWingStateController.setCurrentBehavior(&leftWingIn);
 
 	move(10_in, defaultProfileConstraints, 0.0);
-
-	return 0;
 }
 
-int safeCloseAWP() {
+void safeCloseAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
 
 	move(10_in, defaultProfileConstraints, 0.0);
@@ -618,20 +570,6 @@ int safeCloseAWP() {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(20000);
-
-	return 0;
-}
-
-int postAuton() {
-	pros::Task::delay(10);
-
-	drivetrainStateController.useDefaultBehavior();
-	intakeStateController.useDefaultBehavior();
-	catapultStateController.useDefaultBehavior();
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
-
-	return 0;
 }
 
 // !SECTION
@@ -641,10 +579,8 @@ int postAuton() {
 [[noreturn]] void update() {
 
 	pros::Task::delay(200);
-	
-	robotMutex.take();
-	modeLogic.initialize();
-	robotMutex.give();
+
+	competitionController.initialize();
 
 	uint32_t startTime = pros::millis();
 	uint32_t startTimeMicros = pros::micros();
@@ -654,10 +590,8 @@ int postAuton() {
 		startTime = pros::millis();
 		startTimeMicros = pros::micros();
 
-		robotMutex.take();
 		odometry.update();
-		modeLogic.update();
-		robotMutex.give();
+		competitionController.update();
 
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
@@ -721,7 +655,7 @@ int postAuton() {
 		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
 
 		// Flywheel
-		lv_label_set_text(flywheelLabel.get(), ("Triball count: " + std::to_string(modeLogic.getTriballCount())).c_str());
+		lv_label_set_text(flywheelLabel.get(), ("Triball count: " + std::to_string(teleop.getTriballCount())).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -734,8 +668,6 @@ void initialize() {
 
 	// std::cout << "INIT" << std::endl;
 
-	robotMutex.take();
-
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
 
@@ -745,8 +677,6 @@ void initialize() {
 	initCatapult();
 	initWings();
 	initBehaviors();
-
-	robotMutex.give();
 
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
 	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
@@ -759,22 +689,13 @@ void initialize() {
  * Runs while the robot is disabled i.e. before and after match, between auton
  * and teleop period
  */
-[[noreturn]] void disabled() {
-	robotMutex.take();
-	teleopController.useDefaultBehavior();
-	robotMutex.give();
+void disabled() {
+	competitionController.useDefaultBehavior();
 
 	// Create a label
 	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
 	lv_label_set_text(disabledLabel, "Robot Disabled.");
-
-	while (true) {
-		// Nothing right now, other than a little display to show that the robot
-		// is disabled.
-
-		pros::delay(200);
-	}
 }
 
 // !SECTION
@@ -795,21 +716,18 @@ void competition_initialize() {
  * Runs during the autonomous. NO user control
  */
 void autonomous() {
-	preAutonRun();
 
 	#if AUTON == 0
-	far6BallFullAWP();
+	auton.setAuton(far6BallFullAWP);
 	#elif AUTON == 1
-	closeAWP();
+	auton.setAuton(closeAWP);
 	#elif AUTON == 2
-	skills();
+	auton.setAuton(skills);
 	#elif AUTON == 3
-	safeCloseAWP();
-	#elif AUTON == 4
-	testBezier();
+	auton.setAuton(safeCloseAWP)
 	#endif // !1
 
-	postAuton();
+	competitionController.setCurrentBehavior(&auton);
 }
 
 // !SECTION
@@ -821,31 +739,18 @@ void autonomous() {
  */
 void opcontrol() {
 
-//	pros::delay(5000);
-
 	// Causes the programming skills code to only run during skills
 #if AUTON == 2
-	{
-		preAutonRun();
-		pros::Task auton(skills);
-
-		while (!skillsDone) {
-			if (skillsDone) {
-				break;
-			}
-			if (master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
-				auton.suspend();
-				auton.remove();
-				break;
-			}
+	auton.setAuton(skills);
+	competitionController.setCurrentBehavior(&auton);
+	while (!skillsDone) {
+		if (skillsDone || master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
+			break;
 		}
 	}
 #endif
 
-	robotMutex.take();
-	postAuton();
-	teleopController.setCurrentBehavior(&teleopModeLogic);
-	robotMutex.give();
+	competitionController.setCurrentBehavior(&teleop);
 }
 
 // !SECTION
