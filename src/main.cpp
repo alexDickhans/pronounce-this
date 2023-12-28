@@ -371,7 +371,7 @@ void skills(void* args) {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 3_s) {
+	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.0_s) {
 		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
 		pros::Task::delay(10);
 	}
@@ -490,26 +490,54 @@ void skills(void* args) {
 					distancePid,
 					180.0,
 					61_in/second,
-					Skills5,
+					DriverSkills5,
 					{
-							{1.0, [] () -> void {
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
+							{0.0, [] () -> void {
+								intakeStateController.setCurrentBehavior(&intakeEject);
 							}},
-							{1.1, [] () -> void {
+					}));
+
+	drivetrainStateController.waitUntilDone()();
+
+	move(-10_in, defaultProfileConstraints, 0.0);
+
+	turnTo(90_deg, 500_ms);
+
+	rightWingStateController.setCurrentBehavior(&rightWingOut);
+
+	drivetrainStateController.setCurrentBehavior(
+			new PathPlanner::PathFollower(
+					"TestPath",
+					defaultProfileConstraints,
+					drivetrain,
+					[ObjectPtr = &odometry] { return ObjectPtr->getAngle(); },
+					movingTurnPid,
+					distancePid,
+					180.0,
+					61_in/second,
+					DriverSkills6,
+					{
+							{4.5, [] () -> void {
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{1.4, [] () -> void {
+							{4.8, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingIn);
+							}},
+							{7.0, [] () -> void {
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+							}},
+							{7.3, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	move(10_in, defaultProfileConstraints, 0.0);
-	move(-17_in, defaultProfileConstraints, 0.0);
-
-	rightWingStateController.setCurrentBehavior(&rightWingIn);
-	leftWingStateController.setCurrentBehavior(&leftWingIn);
+	move(5_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(-10_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(5_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(-10_in, defaultProfileConstraints, 0.0, -270_deg);
 
 	drivetrainStateController.setCurrentBehavior(
 			new PathPlanner::PathFollower(
@@ -523,6 +551,10 @@ void skills(void* args) {
 					61_in/second,
 					Skills6,
 					{
+							{1.0, [] () -> void {
+								rightWingStateController.setCurrentBehavior(&rightWingOut);
+								leftWingStateController.setCurrentBehavior(&leftWingOut);
+							}},
 							{2.0, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
@@ -530,11 +562,6 @@ void skills(void* args) {
 					}));
 
 	drivetrainStateController.waitUntilDone()();
-
-	rightWingStateController.setCurrentBehavior(&rightWingIn);
-	leftWingStateController.setCurrentBehavior(&leftWingIn);
-
-	move(10_in, defaultProfileConstraints, 0.0);
 }
 
 void safeCloseAWP(void* args) {
@@ -741,12 +768,9 @@ void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
 #if AUTON == 2
-	auton.setAuton(skills);
-	competitionController.setCurrentBehavior(&auton);
-	while (!skillsDone) {
-		if (skillsDone || master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
-			break;
-		}
+	competitionController.setCurrentBehavior(auton.setAuton(skills));
+	while (!master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
+		pros::Task::delay(10);
 	}
 #endif
 

@@ -118,6 +118,8 @@
 #include "AutoPaths/6BallElim4.hpp"
 #include "AutoPaths/6BallElim5.hpp"
 #include "AutoPaths/SafeCloseAWP1.hpp"
+#include "AutoPaths/DriverSkills5.hpp"
+#include "AutoPaths/DriverSkills6.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

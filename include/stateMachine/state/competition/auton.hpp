@@ -15,8 +15,9 @@ namespace Pronounce {
 			this->auton = auton;
 		}
 
-		void setAuton(pros::task_fn_t auton) {
+		Auton* setAuton(pros::task_fn_t auton) {
 			this->auton = auton;
+			return this;
 		}
 
 		void initialize() override {
