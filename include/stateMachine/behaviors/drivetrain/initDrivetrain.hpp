@@ -28,10 +28,11 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	ProfileConstraints defaultProfileConstraints = { 61_in / second, 140_in / second / second, 0.0 };
-	ProfileConstraints pushingProfileConstraints = { 25_in / second, 100_in / second / second, 0.0 };
+	Eigen::Vector3d defaultProfileConstraints = { (61_in / second).getValue(), (140_in / second / second).getValue(), 0.0 };
+	ProfileConstraints oldDefaultProfileConstraints = { 61_in / second, 140_in / second / second, 0.0 };
+	Eigen::Vector3d pushingProfileConstraints = { (25_in / second).getValue(), (100_in / second / second).getValue(), 0.0 };
 
-	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, 8000.0/64.0, 61_in/second, {});
+	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, [](QSpeed speed, QAcceleration acceleration) -> double {return 8000.0/64.0 * speed.Convert(inch/second);}, {});
 
 	void initDrivetrain() {
 

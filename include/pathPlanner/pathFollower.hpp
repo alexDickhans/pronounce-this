@@ -47,52 +47,63 @@ namespace PathPlanner {
 		}
 
 		PathFollower* changePath(Eigen::Vector3d defaultProfileConstraints, std::vector<std::pair<BezierSegment, Eigen::Vector3d>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
-			movingMutex.take();
 			this->defaultProfileConstraints = std::move(defaultProfileConstraints);
 			pathSegments = std::move(path);
 			this->commands = functions;
-			movingMutex.give();
+
+			std::cout << "HII1: " << pathSegments.size() << std::endl;
 
 			return calculate();
 		}
 
 		PathFollower* calculate() {
-			movingMutex.take();
+//			movingMutex.take();
 
-			auto limitedVelocities = std::vector<Eigen::Vector2d>({{0.0, 0.0}});
+			if (pathSegments.empty())
+				return this;
+
+			std::cout << "HII2: " << pathSegments.size() << std::endl;
+
+			std::vector<Eigen::Vector2d> limitedVelocities;
 
 			QLength distance = 0.0;
 			QLength totalDistance = 0.0;
 			QTime lastTime = 0.0;
-			bool lastInverted = pathSegments.begin()->first.getReversed();
+			bool lastInverted = pathSegments[0].first.getReversed();
 			profiles.clear();
 
-			for (int i = 0; i < this->pathSegments.size(); ++i) {
-				int granularity = std::floor(std::max(5.0, pathSegments.at(i).first.getDistance().Convert(inch)));
+			for (int i = 0; i < this->pathSegments.size(); i++) {
+				std::cout << "HII3: " << pathSegments.at(i).first.getDistance().Convert(inch) << std::endl;
+				int granularity = std::floor(std::max(5.0, abs(pathSegments.at(i).first.getDistance().Convert(inch))));
+				QLength distanceInterval = abs(pathSegments.at(i).first.getDistance().getValue()) / static_cast<double>(granularity);
 
-				distance = 0.0;
 
 				if (lastInverted != pathSegments[i].first.getReversed()) {
 					profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime);
 					lastInverted = pathSegments[i].first.getReversed();
 					limitedVelocities.clear();
 					lastTime = profiles[profiles.size() - 1].getEndTime();
+					distance = 0.0;
 				}
 
 				for (int j = 0; j <= granularity; j++) {
-					distance += pathSegments.at(i).first.getDistance() / static_cast<double>(granularity);
-					totalDistance += pathSegments.at(i).first.getDistance() / static_cast<double>(granularity);
+					distance += distanceInterval;
+					totalDistance += distanceInterval;
 					distanceToT.add(totalDistance.getValue(), (double) i + this->pathSegments[i].first.getTByLength(distance));
 
 					if (pathSegments[i].second.isZero()) {
 						pathSegments[i].second = defaultProfileConstraints;
 					}
 
-					limitedVelocities.emplace_back(distance.getValue(), std::min(drivetrain.getMaxSpeed().getValue() * this->pathSegments[i].first.getSpeedMultiplier(this->pathSegments[i].first.getTByLength(distance), drivetrain.getTrackWidth()), pathSegments[i].second(0, 0)));
+					limitedVelocities.emplace_back(distance.getValue(), drivetrain.getMaxSpeed().getValue() * this->pathSegments[i].first.getSpeedMultiplier(this->pathSegments[i].first.getTByLength(distance), drivetrain.getTrackWidth()));
 				}
 			}
 
-			movingMutex.give();
+			profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime);
+
+			std::cout << "HII: " << this->totalTime().Convert(second) << std::endl;
+
+//			movingMutex.give();
 
 			return this;
 		}
@@ -142,7 +153,7 @@ namespace PathPlanner {
 		}
 
 		double getPathIndex(QTime time) {
-			int index = 0;
+			int index;
 
 			for (index = 0; time > profiles[index].getEndTime() && index < profiles.size(); index ++);
 
