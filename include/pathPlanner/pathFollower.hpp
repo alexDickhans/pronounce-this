@@ -9,18 +9,21 @@
 #include "feedbackControllers/pid.hpp"
 #include "feedbackControllers/feedbackController.hpp"
 #include "api.h"
-#include <math.h>
+#include <cmath>
+#include "utils/distanceLimitedVelocityProfile.hpp"
 #include "utils/utils.hpp"
 
 namespace PathPlanner {
 
 	class PathFollower : public Pronounce::Behavior {
 	private:
-		std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments;
+		std::vector<std::pair<BezierSegment, Eigen::Vector3d>> pathSegments;
+		std::vector<DistanceLimitedTrapezoidalProfile> profiles;
+		LinearInterpolator distanceToT;
 		Pronounce::AbstractTankDrivetrain& drivetrain;
-		Pronounce::ProfileConstraints defaultProfileConstraints;
+		Eigen::Vector3d defaultProfileConstraints;
 		Pronounce::PID turnPID, distancePID;
-		double feedforwardMultiplier;
+		std::function<double(QSpeed, QAcceleration)> feedforwardFunction;
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
@@ -30,35 +33,22 @@ namespace PathPlanner {
 
 		pros::Mutex movingMutex;
 	public:
-		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+		PathFollower(std::string name, Eigen::Vector3d defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, std::function<double(QSpeed, QAcceleration)> feedforwardFunction, std::initializer_list<std::pair<BezierSegment, Eigen::Vector3d>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = pathSegments;
 			this->commands = functions;
 			this->turnPID = turnPID;
 			this->turnPID.setTurnPid(true);
 			this->distancePID = distancePID;
-			this->feedforwardMultiplier = feedforwardMultiplier;
+			this->feedforwardFunction = std::move(feedforwardFunction);
 			this->angleFunction = std::move(angleFunction);
-			this->defaultProfileConstraints = defaultProfileConstraints;
+			this->defaultProfileConstraints = std::move(defaultProfileConstraints);
 
 			calculate();
 		}
 
-		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
-			this->pathSegments = std::move(pathSegments);
-			this->commands = functions;
-			this->turnPID = turnPID;
-			this->turnPID.setTurnPid(true);
-			this->distancePID = distancePID;
-			this->feedforwardMultiplier = feedforwardMultiplier;
-			this->angleFunction = std::move(angleFunction);
-			this->defaultProfileConstraints = defaultProfileConstraints;
-
-			calculate();
-		}
-
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+		PathFollower* changePath(Eigen::Vector3d defaultProfileConstraints, std::vector<std::pair<BezierSegment, Eigen::Vector3d>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
 			movingMutex.take();
-			this->defaultProfileConstraints = defaultProfileConstraints;
+			this->defaultProfileConstraints = std::move(defaultProfileConstraints);
 			pathSegments = std::move(path);
 			this->commands = functions;
 			movingMutex.give();
@@ -69,36 +59,37 @@ namespace PathPlanner {
 		PathFollower* calculate() {
 			movingMutex.take();
 
+			auto limitedVelocities = std::vector<Eigen::Vector2d>({{0.0, 0.0}});
+
+			QLength distance = 0.0;
+			QLength totalDistance = 0.0;
+			QTime lastTime = 0.0;
+			bool lastInverted = pathSegments.begin()->first.getReversed();
+			profiles.clear();
+
 			for (int i = 0; i < this->pathSegments.size(); ++i) {
+				int granularity = std::floor(std::max(5.0, pathSegments.at(i).first.getDistance().Convert(inch)));
 
-				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * drivetrain.getMaxSpeed();
+				distance = 0.0;
 
-				Pronounce::SinusoidalVelocityProfile* profile = this->pathSegments.at(i).second;
-
-				if (profile == nullptr) {
-					profile = new Pronounce::SinusoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
+				if (lastInverted != pathSegments[i].first.getReversed()) {
+					profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime);
+					lastInverted = pathSegments[i].first.getReversed();
+					limitedVelocities.clear();
+					lastTime = profiles[profiles.size() - 1].getEndTime();
 				}
 
-				profile->setDistance(this->pathSegments.at(i).first.getDistance());
+				for (int j = 0; j <= granularity; j++) {
+					distance += pathSegments.at(i).first.getDistance() / static_cast<double>(granularity);
+					totalDistance += pathSegments.at(i).first.getDistance() / static_cast<double>(granularity);
+					distanceToT.add(totalDistance.getValue(), (double) i + this->pathSegments[i].first.getTByLength(distance));
 
-				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity.getValue(), adjustedSpeed.getValue()), profile->getProfileConstraints().maxAcceleration, 0.0});
+					if (pathSegments[i].second.isZero()) {
+						pathSegments[i].second = defaultProfileConstraints;
+					}
 
-				profile->setInitialSpeed(0.0);
-				profile->setEndSpeed(0.0);
-
-				if (i < this->pathSegments.size()-1) {
-					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
-						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
+					limitedVelocities.emplace_back(distance.getValue(), std::min(drivetrain.getMaxSpeed().getValue() * this->pathSegments[i].first.getSpeedMultiplier(this->pathSegments[i].first.getTByLength(distance), drivetrain.getTrackWidth()), pathSegments[i].second(0, 0)));
 				}
-
-				if (i > 0) {
-					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
-						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
-				}
-
-				profile->calculate(20);
-
-				this->pathSegments.at(i).second = profile;
 			}
 
 			movingMutex.give();
@@ -116,9 +107,7 @@ namespace PathPlanner {
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
-			double index = getIndex(time);
-
-			std::cout << "HII: " << index << std::endl;
+			double index = getPathIndex(time);
 
 			if (commands.size() > commandsIndex) {
 				if (commands.at(commandsIndex).first < index) {
@@ -128,9 +117,7 @@ namespace PathPlanner {
 			}
 
 			std::pair<QSpeed, QSpeed> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-//			double accelerationFF = pathSegments.at(std::floor(index)).second->getAccelerationByTime(relativeTime).Convert(inch/second/second)*accelerationFeedforward;
-
-			std::pair<double, double> driveVoltages = {driveSpeeds.first.Convert(inch/second) * feedforwardMultiplier, driveSpeeds.second.Convert(inch/second) * feedforwardMultiplier};
+			std::pair<double, double> driveVoltages = {feedforwardFunction(driveSpeeds.first, 0.0), feedforwardFunction(driveSpeeds.second, 0.0)};
 			if ((driveSpeeds.first + driveSpeeds.second).getValue() < 0.0) {
 				driveVoltages = {driveVoltages.second, driveVoltages.first};
 			}
@@ -154,78 +141,53 @@ namespace PathPlanner {
 			return pros::millis() * 1_ms - startTime > totalTime();
 		}
 
-		double getIndex(QTime time) {
+		double getPathIndex(QTime time) {
 			int index = 0;
 
-			while (time >= pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				index ++;
+			for (index = 0; time > profiles[index].getEndTime() && index < profiles.size(); index ++);
+
+			QLength distance = 0.0;
+
+			for (int i = 0; i < index; i ++) {
+				distance += profiles[i].getLength();
 			}
 
-			return index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
-		}
+			distance += profiles[index].getRawDistance(time);
 
-		QTime getTimeRemainder(QTime time) {
-			int index = 0;
-
-			while (time >= pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				index ++;
-			}
-
-			return time;
+			return distanceToT.get(distance.getValue());
 		}
 
 		QTime totalTime() {
-			QTime totalTime = 0.0;
-
-			std::for_each(pathSegments.begin(), pathSegments.end(), [&](const auto &item) {
-				totalTime += item.second->getDuration();
-			});
-
-			return totalTime;
+			return profiles[profiles.size()-1].getEndTime();
 		}
 
 		std::pair<QSpeed, QSpeed> getChassisSpeeds(QTime time, QLength trackWidth) {
-			int index = 0;
-			QLength totalDistance = 0.0;
+			int profileIndex;
 
-			while (time >= pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				totalDistance += pathSegments.at(index).first.getDistance();
-				index ++;
-			}
+			for (profileIndex = 0; time > profiles[profileIndex].getEndTime() && profileIndex < profiles.size(); profileIndex ++);
 
-			QCurvature curvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue())));
-			QSpeed speed = pathSegments.at(index).second->getVelocityByTime(time);
+			double pathIndex = getPathIndex(time);
+
+			QCurvature curvature = pathSegments.at((int) pathIndex).first.getCurvature(pathIndex - std::floor(pathIndex));
+			QSpeed speed = profiles[profileIndex].getSpeed(time);
 
 			return {speed.getValue() * (2.0 + curvature.getValue() * trackWidth.getValue()) / 2.0, speed.getValue() * (2.0 - curvature.getValue() * trackWidth.getValue()) / 2.0};
 		}
 
 		QLength getDistance(QTime time) {
-			int index = 0;
-			QLength totalDistance = 0.0;
+			int profileIndex;
 
-			while (time >= pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				totalDistance += pathSegments.at(index).first.getDistance();
-				index ++;
-			}
+			for (profileIndex = 0; time > profiles[profileIndex].getEndTime() && profileIndex < profiles.size(); profileIndex ++);
 
-			QLength distance = pathSegments.at(index).second->getDistanceByTime(time) + totalDistance;
+			QLength distance = profiles[profileIndex].getDistance(time);
 
 			return distance;
 		}
 
 		Angle getAngle(QTime time) {
-			int index = 0;
+			double pathIndex = getPathIndex(time);
 
-			while (time > pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				index ++;
-			}
-
-			return pathSegments.at(index).first.getAngle(abs(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()))));
+			return pathSegments.at((int) pathIndex).first.getAngle(pathIndex - std::floor(pathIndex));
 		}
 	};
 }

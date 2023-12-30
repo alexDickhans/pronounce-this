@@ -99,7 +99,6 @@
 
 #include "stateMachine/state/competition/auton.hpp"
 
-#include "AutoPaths/3Ball2.hpp"
 #include "AutoPaths/6ball1.hpp"
 #include "AutoPaths/6ball2.hpp"
 #include "AutoPaths/6ball3.hpp"

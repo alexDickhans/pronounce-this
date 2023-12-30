@@ -67,17 +67,6 @@ namespace PathPlanner {
 			return -(dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
 		}
 
-		QCurvature getMaxCurvature(int granularity = 20) {
-			QCurvature maxCurvature = 0.0;
-
-			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
-				QCurvature curvature = this->getCurvature(t).getValue();
-				maxCurvature = std::max(abs(curvature.getValue()), maxCurvature.getValue());
-			}
-
-			return maxCurvature;
-		}
-
 		Angle getAngle(double t) {
 			return -atan2(dy.evaluate(t), dx.evaluate(t)) * radian + 90_deg;
 		}
@@ -86,13 +75,11 @@ namespace PathPlanner {
 			return {x.evaluate(t), y.evaluate(t)};
 		}
 
-		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) {
-			QCurvature maxCurvature = this->getMaxCurvature(granularity);
+		double getSpeedMultiplier(double t, QLength trackWidth) {
+			QCurvature maxCurvature = this->getCurvature(t);
 
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;
-
-			std::cout << "Curvy: " << 1.0/(1.0 + abs(maxCurvature.getValue()*0.5) * trackWidth.getValue()) << std::endl;
 
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
