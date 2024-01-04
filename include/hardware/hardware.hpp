@@ -24,7 +24,7 @@ namespace Pronounce {
 	PT::TelemetryManager* telemetryManager;
 	PT::Logger* logger;
 
-	pros::Mutex controllerMutex;
+	pros::Mutex robotMutex;
 
 #ifndef SIM
 	AbstractJoystick* master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
@@ -47,7 +47,7 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(25_in, 61_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(18_in, 61_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
 	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
 	pros::Motor_Group catapultMotors({17, -14});
@@ -89,16 +89,10 @@ namespace Pronounce {
 		telemetryManager->setUpdateTime(10);
 //		telemetryManager->enableUpdateScheduler();
 
-		drivetrainMutex.take();
-
 		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 
 		intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
-		drivetrainMutex.give();
-
-		odometryMutex.take();
 
 		double turningFactor = 450.0 / 600.0;
 		double tuningFactor = 1.0;
@@ -121,8 +115,6 @@ namespace Pronounce {
 			while (imu.is_calibrating())
 				pros::Task::delay(50);
 		}
-
-		odometryMutex.give();
 	}
 
 	int checkPorts(lv_obj_t* table) {

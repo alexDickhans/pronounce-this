@@ -177,7 +177,7 @@ void far6BallFullAWP(void* args) {
 void far6BallRush(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({(64_in/second).getValue(), (200_in/second/second).getValue(), 0.0}, Auto6BallElim1,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, TestPath,
 					{
 							{0.1, [] () -> void {
 								intakeStateController.setCurrentBehavior(&intakeIntaking);
@@ -193,12 +193,13 @@ void far6BallRush(void* args) {
 
 void skills(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+	std::cout << "SKILLS START" << std::endl;
 
 	intakeStateController.setCurrentBehavior(&intakeHold);
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
-//	auton.resetTriballs();
+	auton.resetTriballs();
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills1));
 
@@ -207,12 +208,12 @@ void skills(void* args) {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 3.0_s) {
+	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
 		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
 		pros::Task::delay(10);
 	}
 
-	pros::Task::delay(100);
+	pros::Task::delay(200);
 
 	leftWingStateController.useDefaultBehavior();
 	rightWingStateController.useDefaultBehavior();
@@ -375,20 +376,24 @@ void safeCloseAWP(void* args) {
 
 [[noreturn]] void update() {
 
-	pros::Task::delay(200);
+	std::cout << "Init: update" << std::endl;
 
 	competitionController.initialize();
 
-	uint32_t startTime = pros::millis();
-	uint32_t startTimeMicros = pros::micros();
+	robotMutex.give();
+
+	uint32_t startTime;
+	uint32_t startTimeMicros;
 
 	while (true) {
 		// Create stuff for exact delay
 		startTime = pros::millis();
 		startTimeMicros = pros::micros();
 
+		robotMutex.take(TIMEOUT_MAX);
 		odometry.update();
 		competitionController.update();
+		robotMutex.give();
 
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
@@ -463,7 +468,8 @@ void safeCloseAWP(void* args) {
  */
 void initialize() {
 
-	// std::cout << "INIT" << std::endl;
+//	robotMutex.take(TIMEOUT_MAX);
+	std::cout << "Init: initialize" << std::endl;
 
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
@@ -475,8 +481,10 @@ void initialize() {
 	initWings();
 	initBehaviors();
 
+	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
-	pros::Task modeLogicTask = pros::Task(update, TASK_PRIORITY_MAX);
+
+	pros::Task::delay(10);
 }
 
 // !SECTION
@@ -487,6 +495,7 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
+	std::cout << "Init: disabled" << std::endl;
 	competitionController.useDefaultBehavior();
 
 	// Create a label
@@ -514,6 +523,8 @@ void competition_initialize() {
  */
 void autonomous() {
 
+	std::cout << "Init: Auton" << std::endl;
+
 	#if AUTON == 0
 	auton.setAuton(far6BallFullAWP);
 	#elif AUTON == 1
@@ -523,6 +534,8 @@ void autonomous() {
 	#elif AUTON == 3
 	auton.setAuton(safeCloseAWP)
 	#endif // !1
+
+	std::cout << "HIIPROS auton starting" << std::endl;
 
 	competitionController.setCurrentBehavior(&auton);
 }
@@ -536,15 +549,23 @@ void autonomous() {
  */
 void opcontrol() {
 
+	std::cout << "Init: OP control" << std::endl;
+
 	// Causes the programming skills code to only run during skills
 #if AUTON == 2
+	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
-	while (!master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)) {
+	robotMutex.give();
+	while (!master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)){// || !competitionController.isDone()) {
 		pros::Task::delay(10);
 	}
 #endif
 
+	std::cout << "HII2: a pressed" << std::endl;
+
+	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(&teleop);
+	robotMutex.give();
 }
 
 // !SECTION

@@ -9,9 +9,9 @@ namespace Pronounce {
 	class Auton : public Enabled {
 	private:
 		pros::task_fn_t auton;
-		pros::task_t task;
+		pros::Task task;
 	public:
-		Auton(pros::task_fn_t auton) : Enabled("Auton") {
+		Auton(pros::task_fn_t auton) : task([=]() -> void { return;}), Enabled("Auton") {
 			this->auton = auton;
 		}
 
@@ -28,11 +28,19 @@ namespace Pronounce {
 			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 
-			task = pros::c::task_create(auton, (void*) NULL, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT, "User auton");
+			if (task.get_state() == 2)
+				task.remove();
+
+			task = pros::Task(auton, nullptr, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT, "User auton");
+		}
+
+		void update() override {
+			Enabled::update();
 		}
 
 		void exit() override {
-			pros::c::task_delete(task);
+			if (task.get_state() == 2)
+				task.remove();
 
 			drivetrainStateController.useDefaultBehavior();
 			intakeStateController.useDefaultBehavior();
@@ -43,8 +51,8 @@ namespace Pronounce {
 			Enabled::exit();
 		}
 
-		bool isDone() {
-			return pros::c::task_get_state(task) == pros::E_TASK_STATE_RUNNING;
+		bool isDone() override {
+			return task.get_state() == 4;
 		}
 	};
 

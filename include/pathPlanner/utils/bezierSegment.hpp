@@ -49,7 +49,7 @@ namespace PathPlanner {
 
 			length = 0.0;
 
-			for (int t = 0.0; t <= granularity; t += 1) {
+			for (int t = 0; t <= granularity; t ++) {
 				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
 				distanceToT.add(length.getValue(), (double)t/(double) granularity);
 			}

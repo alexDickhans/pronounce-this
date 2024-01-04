@@ -19,7 +19,7 @@ namespace Pronounce {
 	PID turningPid(2.0, 0.0, 25.0, 0.0, 0.0, false);
 	PID movingTurnPid(2.0e4, 0.0, 4e4, 60000.0, 0.0, false);
 
-	PID distancePid(1.5e5, 0.0, 0e5);
+	PID distancePid;//(1.5e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);
@@ -28,13 +28,16 @@ namespace Pronounce {
 
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
-	Eigen::Vector3d defaultProfileConstraints = { (61_in / second).getValue(), (140_in / second / second).getValue(), 0.0 };
+	Eigen::Vector3d defaultProfileConstraints = { (55_in / second).getValue(), (60_in / second / second).getValue(), (20_in / second / second).getValue() };
 	ProfileConstraints oldDefaultProfileConstraints = { 61_in / second, 140_in / second / second, 0.0 };
 	Eigen::Vector3d pushingProfileConstraints = { (25_in / second).getValue(), (100_in / second / second).getValue(), 0.0 };
 
-	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, [](QSpeed speed, QAcceleration acceleration) -> double {return 8000.0/64.0 * speed.Convert(inch/second);}, {});
+	// Ks = 960 mv
+	// kV = (4020-960)/19.9 in /sec
+	// kA = (8000-1500)/187ins2
 
-	void initDrivetrain() {
-
-	}
+	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, [](QSpeed speed, QAcceleration acceleration) -> double {
+		std::cout << "Acceleration: " << acceleration.Convert(inchs2) << std::endl;
+		return 960.0 * signnum_c(speed.getValue()) + 153.76 * speed.Convert(inch/second) + 35.7*acceleration.Convert(inchs2);
+		}, {});
 } // namespace Pronounce

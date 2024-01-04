@@ -92,12 +92,10 @@ namespace PathPlanner {
 					duration = deltaDistance/limitedSpeed;
 				}
 
-				std::cout << "HII4: " << currentMaxSpeed.Convert(inch/second) << " limited speed: " << limitedSpeed.Convert(inch/second) << " velocity limit: " << velocityLimits[i](1, 0) << std::endl;
-
 				timeRight.at(i) = duration;
 			}
 
-			std::vector<QTime> timeIndex = std::vector<QTime>({0.0_s});
+			std::vector<QTime> timeIndex = std::vector<QTime>({0.0});
 
 			for (size_t i = 0; i < combinedTime.size(); i++) {
 				combinedTime[i] = std::max(timeLeft[i], timeRight[i]);
@@ -110,14 +108,11 @@ namespace PathPlanner {
 			}
 
 			for (size_t i = 0; i < timeIndex.size(); i++) {
-				std::cout << "HII: " << i << " left: " << maxSpeedLeft[i].Convert(inch / second) << " right: " << maxSpeedRight[i].Convert(inch / second) << std::endl;
 				timeToVelocity.add(timeIndex[i].Convert(second), combinedMaxSpeed[i].getValue());
 				timeToDistance.add(timeIndex[i].Convert(second), velocityLimits[i](0, 0));
 			}
 
 			endTime = time + startTime;
-
-			std::cout << "HIITime: " << time.getValue() << std::endl;
 		}
 
 		QSpeed getSpeed(QTime currentTime) {
