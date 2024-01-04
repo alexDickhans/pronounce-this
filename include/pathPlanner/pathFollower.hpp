@@ -27,7 +27,6 @@ namespace PathPlanner {
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
-		Eigen::Vector<QSpeed, 2> lastSpeed{0.0, 0.0};
 
 		std::vector<std::pair<double, std::function<void()>>> commands;
 		int commandsIndex = 0;
@@ -120,17 +119,19 @@ namespace PathPlanner {
 			double index = getPathIndex(time);
 
 			if (commands.size() > commandsIndex) {
-				if (commands.at(commandsIndex).first < index) {
+				while (commands.at(commandsIndex).first < index) {
 					commands.at(commandsIndex).second();
 					commandsIndex ++;
 				}
 			}
 
 			Eigen::Vector<QSpeed, 2> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-			Eigen::Vector<QSpeed, 2> difference = driveSpeeds - lastSpeed;
-			lastSpeed = driveSpeeds;
+			Eigen::Vector<QSpeed, 2> nextDriveSpeeds = this->getChassisSpeeds(time + 10_ms, drivetrain.getTrackWidth());
+
+			Eigen::Vector<QSpeed, 2> difference = nextDriveSpeeds - driveSpeeds;
 			Eigen::Vector<QAcceleration, 2> acceleration = {difference(0) / 10_ms, difference(1) / 10_ms};
 			Eigen::Vector2d driveVoltages = {feedforwardFunction(driveSpeeds(0), acceleration(0)), feedforwardFunction(driveSpeeds(1), acceleration(1))};
+
 			if (pathSegments.at(index).first.getReversed()) {
 				Eigen::Matrix2d conversionMatrix {
 					{0, 1},
@@ -138,7 +139,10 @@ namespace PathPlanner {
 				};
 				driveVoltages = conversionMatrix * driveVoltages;
 			}
+
 			distancePID.setTarget(this->getDistance(time).getValue());
+
+			std::cout << "CURRENT-DISTANCE: " << this->getDistance(time).Convert(inch) << std::endl;
 
 			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
 			driveVoltages = driveVoltages + Eigen::Vector2d(distanceOutput, distanceOutput);
@@ -188,9 +192,12 @@ namespace PathPlanner {
 			double pathIndex = getPathIndex(time);
 
 			QCurvature curvature = pathSegments.at((int) pathIndex).first.getCurvature(pathIndex - std::floor(pathIndex));
-			QSpeed speed = profiles[profileIndex].getSpeed(time);
+			Eigen::Vector2d speed = {profiles[profileIndex].getSpeed(time).getValue(), profiles[profileIndex].getSpeed(time).getValue()};
+			std::cout << "CURRENT-SPEED: " << speed(0) * metre.Convert(inch) << std::endl;
+			Eigen::Matrix2d curvatureAdjustment {{1.0 + (curvature.getValue() * trackWidth.getValue() * 0.5), 0}, {1.0 -(curvature.getValue() * trackWidth.getValue() * 0.5)}};
+			speed = curvatureAdjustment * speed;
 
-			return {speed.getValue() * (2.0 + curvature.getValue() * trackWidth.getValue()) / 2.0, speed.getValue() * (2.0 - curvature.getValue() * trackWidth.getValue()) / 2.0};
+			return {speed(0), speed(1)};
 		}
 
 		QLength getDistance(QTime time) {

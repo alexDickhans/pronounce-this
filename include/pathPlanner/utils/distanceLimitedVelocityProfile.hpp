@@ -30,7 +30,10 @@ namespace PathPlanner {
 			this->startDistance = startDistance;
 
 			std::for_each(velocityLimits.begin(), velocityLimits.end(), [&](auto &item) {
-				assert(lastLength <= item(0, 0));
+				if (!(lastLength < item(0,0))) {
+					std::cout << "ERROR: " << lastLength << item(0, 0) << std::endl;
+				}
+				assert(lastLength < item(0, 0));
 				lastLength = item(0, 0);
 			});
 
@@ -38,11 +41,7 @@ namespace PathPlanner {
 
 			QSpeed maxSpeed = profileConstraints(0, 0);
 			QAcceleration maxAcceleration = profileConstraints(1, 0);
-			QAcceleration maxDeceleration = profileConstraints(2, 0);
-
-			if (abs(maxDeceleration.getValue()) < (20_in/second/second).getValue()) {
-				maxDeceleration = maxAcceleration;
-			}
+			QAcceleration maxDeceleration = std::max(profileConstraints(2, 0), maxAcceleration.getValue());
 
 			auto maxSpeedLeft = std::vector<QSpeed>(velocityLimits.size());
 			auto maxSpeedRight = std::vector<QSpeed>(velocityLimits.size());
@@ -95,7 +94,7 @@ namespace PathPlanner {
 				timeRight.at(i) = duration;
 			}
 
-			std::vector<QTime> timeIndex = std::vector<QTime>({0.0});
+			std::vector<QTime> timeIndex = std::vector<QTime>({startTime});
 
 			for (size_t i = 0; i < combinedTime.size(); i++) {
 				combinedTime[i] = std::max(timeLeft[i], timeRight[i]);
