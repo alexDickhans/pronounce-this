@@ -48,11 +48,15 @@ namespace PathPlanner {
 			ddy = dy.getDerivative();
 
 			length = 0.0;
+			distanceToT.add(0, 0);
 
-			for (int t = 0; t <= granularity; t ++) {
+			for (int t = 0; t < granularity; t ++) {
 				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
-				distanceToT.add(length.getValue(), (double)t/(double) granularity);
+				length += sqrt(pow(dx.evaluate((double)(t+1)/(double) granularity), 2) + pow(dy.evaluate((double)(t+1)/(double) granularity), 2)) / (double) granularity;
+				distanceToT.add(0.5 * (1.0/(double) granularity) * length.getValue(), (double)(t+1)/(double) granularity);
 			}
+
+			length = 0.5 * (1.0/(double) granularity) * length;
 		}
 
 		QLength getDistance() {
