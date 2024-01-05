@@ -45,7 +45,12 @@ namespace Pronounce {
 		void initialize() {
 			startTime = currentTime();
 			if (currentBehavior != nullptr) {
-				currentBehavior->initialize();
+				try {
+					currentBehavior->initialize();
+				} catch(...) {
+					std::cerr << "ERROR: In " << this->getName() << " \"" << currentBehavior->getName() << "\" failed to initialize, returning to default state" << std::endl;
+					this->useDefaultBehavior();
+				}
 			}
 			else {
 				defaultBehavior->initialize();
@@ -62,14 +67,24 @@ namespace Pronounce {
 			// If currentBehavior exists run it or transition
 			if (currentBehavior != nullptr) {
 				if (currentBehavior->isDone()) {
-					currentBehavior->exit();
+					try {
+						currentBehavior->exit();
+					} catch (std::exception &e) {
+						std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					}
+
 					currentBehavior = nullptr;
 					defaultBehavior->initialize();
 					defaultBehavior->update();
 					startTime = currentTime();
 				}
 				else {
-					currentBehavior->update();
+					try {
+						currentBehavior->update();
+					} catch (std::exception &e) {
+						std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to update. what: " << e.what() << ", returning to default state" << std::endl;
+						this->useDefaultBehavior();
+					}
 				}
 			}
 			else {
@@ -104,7 +119,11 @@ namespace Pronounce {
 		void exit() override {
 			// Exit the right behavior depending on which one is running
 			if (currentBehavior != nullptr) {
-				currentBehavior->exit();
+				try {
+					currentBehavior->exit();
+				} catch (std::exception &e) {
+					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+				}
 				currentBehavior = nullptr;
 			}
 			else {
@@ -133,18 +152,30 @@ namespace Pronounce {
 			}
 			// If the currentBehavior exists and transition from that if it does
 			else if (currentBehavior != nullptr) {
-				currentBehavior->exit();
-				currentBehavior = behavior;
-				currentBehavior->initialize();
-				currentBehavior->update();
+				try {
+					currentBehavior->exit();
+				} catch (std::exception &e) {
+					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+				}
+				try {
+					currentBehavior = behavior;
+					currentBehavior->initialize();
+				} catch (std::exception &e) {
+					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					this->useDefaultBehavior();
+				}
 				startTime = currentTime();
 			}
 			// Transition from default behavior if it doesn't
 			else {
 				defaultBehavior->exit();
-				currentBehavior = behavior;
-				currentBehavior->initialize();
-				currentBehavior->update();
+				try {
+					currentBehavior = behavior;
+					currentBehavior->initialize();
+				} catch (std::exception &e) {
+					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					this->useDefaultBehavior();
+				}
 				startTime = currentTime();
 			}
 		}
@@ -156,10 +187,14 @@ namespace Pronounce {
 		void useDefaultBehavior() {
 			// If we are currently running the current behavior transition
 			if (currentBehavior != nullptr) {
-				currentBehavior->exit();
+				try {
+					currentBehavior->exit();
+				} catch (std::exception &e) {
+					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+				}
+
 				currentBehavior = nullptr;
 				defaultBehavior->initialize();
-				defaultBehavior->update();
 				startTime = currentTime();
 			}
 			// If not no transition needed.

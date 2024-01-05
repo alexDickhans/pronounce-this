@@ -34,29 +34,35 @@ namespace PathPlanner {
 		pros::Mutex movingMutex;
 
 		PathFollower* calculate() {
-//			movingMutex.take();
 
-			if (pathSegments.empty())
+			if (pathSegments.empty()) {
+				movingMutex.give();
 				return this;
+			}
 
 			std::vector<Eigen::Vector2d> limitedVelocities;
 
 			QLength distance = 0.0;
 			QLength totalDistance = 0.0;
+			QLength lastDistance = 0.0;
 			QTime lastTime = 0.0;
 			bool lastInverted = pathSegments[0].first.getReversed();
 			profiles.clear();
+			distanceToT.clear();
 			distanceToT.add(0, 0);
 
 			for (int i = 0; i < this->pathSegments.size(); i++) {
-				int granularity = std::floor(std::max(5.0, abs(pathSegments.at(i).first.getDistance().Convert(inch))));
-				QLength distanceInterval = abs(pathSegments.at(i).first.getDistance().getValue()) / static_cast<double>(granularity);
+				const int granularity = std::floor(std::max(5.0, abs(pathSegments.at(i).first.getDistance().Convert(1_in))));
+				const QLength distanceInterval = abs(pathSegments.at(i).first.getDistance().getValue()) / static_cast<double>(granularity);
+
+				std::cout << "CALC-Length: " << pathSegments.at(i).first.getDistance().Convert(inch) << " Granularity: " << granularity << std::endl;
 
 				if (lastInverted != pathSegments[i].first.getReversed()) {
-					profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime, totalDistance-distance);
+					profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime, lastDistance);
 					lastInverted = pathSegments[i].first.getReversed();
 					limitedVelocities.clear();
 					lastTime = profiles[profiles.size() - 1].getEndTime();
+					lastDistance = profiles[profiles.size() - 1].getEndDistance();
 					distance = 0.0;
 				}
 
@@ -77,15 +83,24 @@ namespace PathPlanner {
 				}
 			}
 
-			profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime);
+			profiles.emplace_back(limitedVelocities, defaultProfileConstraints, lastInverted, lastTime, lastDistance);
 
-//			movingMutex.give();
+			std::for_each(profiles.begin(), profiles.end(), [&](auto &item) {
+				std::cout << "CALC-profile: " << item.getEndDistance().Convert(inch) << " time: " << item.getEndTime().Convert(second) << std::endl;
+			});
+
+			for (QTime i = 0.0; i < this->totalTime(); i += 0.1_s) {
+				std::cout << "CALC-time: " << i.Convert(second) << " displacement: " << this->getDistance(i).Convert(inch) << std::endl;
+			}
+
+			movingMutex.give();
 
 			return this;
 		}
 
 	public:
 		PathFollower(std::string name, Eigen::Vector3d defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, std::function<double(QSpeed, QAcceleration)> feedforwardFunction, std::initializer_list<std::pair<BezierSegment, QSpeed>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+			movingMutex.take(TIMEOUT_MAX);
 			this->pathSegments = pathSegments;
 			this->commands = functions;
 			this->turnPID = turnPID;
@@ -99,6 +114,7 @@ namespace PathPlanner {
 		}
 
 		PathFollower* changePath(Eigen::Vector3d defaultProfileConstraints, std::vector<std::pair<BezierSegment, QSpeed>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+			movingMutex.take(TIMEOUT_MAX);
 			this->defaultProfileConstraints = std::move(defaultProfileConstraints);
 			pathSegments = std::move(path);
 			this->commands = functions;
@@ -107,95 +123,101 @@ namespace PathPlanner {
 		}
 
 		void initialize() override {
+			movingMutex.take(TIMEOUT_MAX);
 			startTime = pros::millis() * 1_ms;
 			startDistance = drivetrain.getDistanceSinceReset();
 			distancePID.reset();
 			turnPID.reset();
 			commandsIndex = 0;
+			movingMutex.give();
 		}
 
 		void update() override {
-			QTime time = pros::millis() * 1_ms - startTime;
-			double index = getPathIndex(time);
+			movingMutex.take(TIMEOUT_MAX);
+			const QTime time = pros::millis() * 1_ms - startTime;
+
+			const double pathIndex = getPathIndex(time);
 
 			if (commands.size() > commandsIndex) {
-				while (commands.at(commandsIndex).first < index) {
+				while (commands.size() > commandsIndex && commands.at(commandsIndex).first < pathIndex) {
 					commands.at(commandsIndex).second();
 					commandsIndex ++;
 				}
 			}
 
-			Eigen::Vector<QSpeed, 2> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-			Eigen::Vector<QSpeed, 2> nextDriveSpeeds = this->getChassisSpeeds(time + 10_ms, drivetrain.getTrackWidth());
+			const Eigen::Vector<QSpeed, 2> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
+			const Eigen::Vector<QSpeed, 2> nextDriveSpeeds = this->getChassisSpeeds(time + 10_ms, drivetrain.getTrackWidth());
 
-			Eigen::Vector<QSpeed, 2> difference = nextDriveSpeeds - driveSpeeds;
-			Eigen::Vector<QAcceleration, 2> acceleration = {difference(0) / 10_ms, difference(1) / 10_ms};
+			const Eigen::Vector<QSpeed, 2> difference = nextDriveSpeeds - driveSpeeds;
+			const Eigen::Vector<QAcceleration, 2> acceleration = {difference(0) / 10_ms, difference(1) / 10_ms};
 			Eigen::Vector2d driveVoltages = {feedforwardFunction(driveSpeeds(0), acceleration(0)), feedforwardFunction(driveSpeeds(1), acceleration(1))};
-
-			if (pathSegments.at(index).first.getReversed()) {
-				Eigen::Matrix2d conversionMatrix {
-					{0, 1},
-					{1, 0}
-				};
-				driveVoltages = conversionMatrix * driveVoltages;
-			}
 
 			distancePID.setTarget(this->getDistance(time).getValue());
 
-			std::cout << "CURRENT-DISTANCE: " << this->getDistance(time).Convert(inch) << std::endl;
-
-			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
+			const double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
 			driveVoltages = driveVoltages + Eigen::Vector2d(distanceOutput, distanceOutput);
 
-			turnPID.setTarget((this->getAngle(time) + (pathSegments.at(index).first.getReversed() ? 180.0_deg : 0_deg)).Convert(radian));
-			double turnOutput = turnPID.update(this->angleFunction().Convert(radian));
+			turnPID.setTarget((this->getAngle(pathIndex) + (profiles[getProfileIndex(time)].isReversed() ? 180.0_deg : 0_deg)).Convert(radian));
+			const double turnOutput = turnPID.update(this->angleFunction().Convert(radian));
 			driveVoltages = driveVoltages + Eigen::Vector2d(turnOutput, -turnOutput);
 
 			drivetrain.tankSteerVoltage(driveVoltages(0), driveVoltages(1));
+			movingMutex.give();
 		}
 
 		void exit() override {
+			movingMutex.take(TIMEOUT_MAX);
 			drivetrain.tankSteerVoltage(0.0, 0.0);
+			movingMutex.give();
 		}
 
 		bool isDone() override {
 			return pros::millis() * 1_ms - startTime > totalTime();
 		}
 
-		double getPathIndex(QTime time) {
-			int index;
-
-			for (index = 0; time > profiles[index].getEndTime() && index < profiles.size(); index ++);
-
-			QLength distance = 0.0;
-
-			for (int i = 0; i < index; i ++) {
-				distance += profiles[i].getLength();
-			}
-
-			distance += profiles[index].getRawDistance(time);
-
-			std::cout << "HIIdistance: " << distance.Convert(inch) << " Time: " << time.getValue() << std::endl;
-
-			return std::clamp(distanceToT.get(distance.getValue()), 0.0, static_cast<double>((pathSegments.size())) - 0.0001);
-		}
-
 		QTime totalTime() {
 			return profiles[profiles.size()-1].getEndTime();
 		}
 
-		Eigen::Vector<QSpeed, 2> getChassisSpeeds(QTime time, QLength trackWidth) {
-			int profileIndex;
+		int getProfileIndex(const QTime time) {
+			int profileIndex = 0;
 
-			for (profileIndex = 0; time > profiles[profileIndex].getEndTime() && profileIndex < profiles.size(); profileIndex ++);
+			for (auto item : profiles) {
+				if (time > item.getEndTime()) {
+					profileIndex ++;
+				}
+			}
 
+			return profileIndex;
+		}
+
+		double getPathIndex(const QTime time) {
+			QLength distanceTraveled = 0.0;
+			int profileIndex = getProfileIndex(time);
+
+			for (int i = 0; i < profileIndex; i++) {
+				distanceTraveled += profiles[i].getLength();
+			}
+
+			distanceTraveled += profiles[profileIndex].getRawDistance(time);
+
+			return std::min(static_cast<double>(pathSegments.size()) - 0.001, distanceToT.get(distanceTraveled.getValue()));
+		}
+
+		Eigen::Vector<QSpeed, 2> getChassisSpeeds(const QTime time, const QLength trackWidth) {
+
+			int profileIndex = getProfileIndex(time);
 			double pathIndex = getPathIndex(time);
 
 			QCurvature curvature = pathSegments.at((int) pathIndex).first.getCurvature(pathIndex - std::floor(pathIndex));
+
 			Eigen::Vector2d speed = {profiles[profileIndex].getSpeed(time).getValue(), profiles[profileIndex].getSpeed(time).getValue()};
-			std::cout << "CURRENT-SPEED: " << speed(0) * metre.Convert(inch) << std::endl;
-			Eigen::Matrix2d curvatureAdjustment {{1.0 + (curvature.getValue() * trackWidth.getValue() * 0.5), 0}, {1.0 -(curvature.getValue() * trackWidth.getValue() * 0.5)}};
+			Eigen::Matrix2d curvatureAdjustment {{1.0 + (curvature.getValue() * trackWidth.getValue() * 0.5), 0}, {0, 1.0 -(curvature.getValue() * trackWidth.getValue() * 0.5)}};
 			speed = curvatureAdjustment * speed;
+
+			if (profiles[profileIndex].isReversed()) {
+				speed = {speed(1), speed(0)};
+			}
 
 			return {speed(0), speed(1)};
 		}
@@ -210,10 +232,9 @@ namespace PathPlanner {
 			return distance;
 		}
 
-		Angle getAngle(QTime time) {
-			double pathIndex = getPathIndex(time);
+		Angle getAngle(double pathIndex) {
 
-			std::cout << "HII: turntarget: " << (turnPID.getTarget() * 1_rad).Convert(degree) << " index: " << pathIndex << std::endl;
+//			std::cout << "HII: turntarget: " << (turnPID.getTarget() * 1_rad).Convert(degree) << " index: " << pathIndex << std::endl;
 
 			return pathSegments.at((int) pathIndex).first.getAngle(pathIndex - std::floor(pathIndex));
 		}

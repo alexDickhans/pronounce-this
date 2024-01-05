@@ -192,7 +192,7 @@ void far6BallRush(void* args) {
 }
 
 void skills(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 90_deg));
 	std::cout << "SKILLS START" << std::endl;
 
 	intakeStateController.setCurrentBehavior(&intakeHold);
@@ -246,6 +246,10 @@ void skills(void* args) {
 					}));
 
 	drivetrainStateController.waitUntilDone()();
+
+	pros::Task::delay(50);
+
+	return;
 
 	turnTo(197_deg, 400_ms);
 

@@ -21,23 +21,23 @@ namespace PathPlanner {
 	public:
 		DistanceLimitedTrapezoidalProfile() = delete;
 		DistanceLimitedTrapezoidalProfile(std::vector<Eigen::Vector2d> velocityLimits, Eigen::Vector3d profileConstraints, bool inverted = false, QTime startTime = 0.0, QLength startDistance = 0.0, QSpeed startSpeed = 0.0, QSpeed endSpeed = 0.0) {
-
-			assert(velocityLimits.size() > 2);
+			if (velocityLimits.size() <= 2) {
+				throw std::logic_error("Not enough velocity limits");
+			}
 
 			this->inverted = inverted;
 
-			double lastLength = 0.0;
+			double lastLength = -10e100;
 			this->startDistance = startDistance;
 
 			std::for_each(velocityLimits.begin(), velocityLimits.end(), [&](auto &item) {
-				if (!(lastLength < item(0,0))) {
-					std::cout << "ERROR: " << lastLength << item(0, 0) << std::endl;
+				if (lastLength >= item(0,0)) {
+					throw std::logic_error("ERROR: last length bigger than current length: " + std::to_string(lastLength) + " > " + std::to_string(item(0, 0)));
 				}
-				assert(lastLength < item(0, 0));
 				lastLength = item(0, 0);
 			});
 
-			distance = (*velocityLimits.end())(0, 0);
+			distance = velocityLimits[velocityLimits.size()-1](0, 0);
 
 			QSpeed maxSpeed = profileConstraints(0, 0);
 			QAcceleration maxAcceleration = profileConstraints(1, 0);
@@ -114,20 +114,28 @@ namespace PathPlanner {
 			endTime = time + startTime;
 		}
 
-		QSpeed getSpeed(QTime currentTime) {
+		bool isReversed() const {
+			return inverted;
+		}
+
+		QSpeed getSpeed(const QTime currentTime) {
 			return timeToVelocity.get(currentTime.Convert(second)) * (inverted ? -1 : 1);
 		}
 
-		QLength getDistance(QTime currentTime) {
+		QLength getDistance(const QTime currentTime) {
 			return timeToDistance.get(currentTime.Convert(second)) * (inverted ? -1 : 1) + startDistance.getValue();
 		}
 
-		QLength getRawDistance(QTime currentTime) {
+		QLength getRawDistance(const QTime currentTime) {
 			return timeToDistance.get(currentTime.Convert(second));
 		}
 
 		QLength getLength() {
 			return distance;
+		}
+
+		QLength getEndDistance() {
+			return startDistance.getValue() + distance.getValue() * (inverted ? -1.0 : 1.0);
 		}
 
 		QTime getDuration() {
