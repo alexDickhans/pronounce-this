@@ -26,8 +26,7 @@ namespace PathPlanner {
 		 * @brief Pair of keys and values
 		 *
 		 */
-		std::vector<KeyValuePair> values;
-		bool sorted{false};
+		std::vector<KeyValuePair> values{};
 	public:
 		/**
 		 * @brief Construct a new Linear Interpolator object
@@ -41,10 +40,9 @@ namespace PathPlanner {
 		 * @param key The new key to add
 		 * @param value The new value to add
 		 */
-		void add(const double key, const double value) {
+		void add(double key, double value) {
 			KeyValuePair pair = {key, value};
 			values.emplace_back(pair);
-			sorted = false;
 		}
 
 		/**
@@ -63,14 +61,6 @@ namespace PathPlanner {
 				return values.at(0).value;
 			}
 
-			// If we want to sort it - so much more overhead
-			if (!sorted) {
-				std::sort(values.begin(), values.end(), [](auto &left, auto &right) {
-					return left.key < right.key;
-				});
-				sorted = true;
-			}
-
 			for (int i = 1; i < values.size(); i++) {
 				if (key <= values.at(0).key) {
 					return values.at(i-1).value + (((values.at(i).value - values.at(i-1).value)/(values.at(i).key - values.at(i-1).key)) * (key - values.at(i-1).value));
@@ -84,6 +74,6 @@ namespace PathPlanner {
 			values.clear();
 		}
 
-		~LinearInterpolator() {}
+		~LinearInterpolator() = default;
 	};
 } // namespace Pronounce

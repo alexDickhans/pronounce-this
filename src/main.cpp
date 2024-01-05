@@ -195,37 +195,37 @@ void skills(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 90_deg));
 	std::cout << "SKILLS START" << std::endl;
 
-	intakeStateController.setCurrentBehavior(&intakeHold);
-
-	leftWingStateController.setCurrentBehavior(&leftWingOut);
-
-	auton.resetTriballs();
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills1));
-
-	drivetrainStateController.waitUntilDone()();
-
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
-
-	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
-		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-		pros::Task::delay(10);
-	}
-
-	pros::Task::delay(200);
-
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
-
-	turnTo(90_deg, 300_ms);
-
-	intakeStateController.setCurrentBehavior(&intakeEject);
-
-	move(25_in, oldDefaultProfileConstraints, 0.0, 90_deg);
-
-	pros::Task::delay(50);
-	leftWingStateController.setCurrentBehavior(&leftWingOut);
+//	intakeStateController.setCurrentBehavior(&intakeHold);
+//
+//	leftWingStateController.setCurrentBehavior(&leftWingOut);
+//
+//	auton.resetTriballs();
+//
+//	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills1));
+//
+//	drivetrainStateController.waitUntilDone()();
+//
+//	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
+//
+//	// Wait until the catapult triballs shot has increased to 46 triballs
+//	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
+//		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
+//		pros::Task::delay(10);
+//	}
+//
+//	pros::Task::delay(200);
+//
+//	leftWingStateController.useDefaultBehavior();
+//	rightWingStateController.useDefaultBehavior();
+//
+//	turnTo(90_deg, 300_ms);
+//
+//	intakeStateController.setCurrentBehavior(&intakeEject);
+//
+//	move(25_in, oldDefaultProfileConstraints, 0.0, 90_deg);
+//
+//	pros::Task::delay(50);
+//	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills2, {
 							{0.35, [] () -> void {

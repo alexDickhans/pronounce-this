@@ -52,8 +52,8 @@ namespace PathPlanner {
 			distanceToT.add(0, 0);
 
 			for (int i = 0; i < this->pathSegments.size(); i++) {
-				const int granularity = std::floor(std::max(5.0, abs(pathSegments.at(i).first.getDistance().Convert(1_in))));
-				const QLength distanceInterval = abs(pathSegments.at(i).first.getDistance().getValue()) / static_cast<double>(granularity);
+				int granularity = std::floor(std::max(5.0, abs(pathSegments.at(i).first.getDistance().Convert(1_in))));
+				QLength distanceInterval = abs(pathSegments.at(i).first.getDistance().getValue()) / static_cast<double>(granularity);
 
 				std::cout << "CALC-Length: " << pathSegments.at(i).first.getDistance().Convert(inch) << " Granularity: " << granularity << std::endl;
 
@@ -134,9 +134,9 @@ namespace PathPlanner {
 
 		void update() override {
 			movingMutex.take(TIMEOUT_MAX);
-			const QTime time = pros::millis() * 1_ms - startTime;
+			QTime time = pros::millis() * 1_ms - startTime;
 
-			const double pathIndex = getPathIndex(time);
+			double pathIndex = getPathIndex(time);
 
 			if (commands.size() > commandsIndex) {
 				while (commands.size() > commandsIndex && commands.at(commandsIndex).first < pathIndex) {
@@ -145,20 +145,22 @@ namespace PathPlanner {
 				}
 			}
 
-			const Eigen::Vector<QSpeed, 2> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-			const Eigen::Vector<QSpeed, 2> nextDriveSpeeds = this->getChassisSpeeds(time + 10_ms, drivetrain.getTrackWidth());
+			std::cout << "ERROR: start update" << std::endl;
+			Eigen::Vector<QSpeed, 2> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
+			Eigen::Vector<QSpeed, 2> nextDriveSpeeds = this->getChassisSpeeds(time + 10_ms, drivetrain.getTrackWidth());
 
-			const Eigen::Vector<QSpeed, 2> difference = nextDriveSpeeds - driveSpeeds;
-			const Eigen::Vector<QAcceleration, 2> acceleration = {difference(0) / 10_ms, difference(1) / 10_ms};
+			std::cout << "ERROR: start update" << std::endl;
+			Eigen::Vector<QSpeed, 2> difference = nextDriveSpeeds - driveSpeeds;
+			Eigen::Vector<QAcceleration, 2> acceleration = {difference(0) / 10_ms, difference(1) / 10_ms};
 			Eigen::Vector2d driveVoltages = {feedforwardFunction(driveSpeeds(0), acceleration(0)), feedforwardFunction(driveSpeeds(1), acceleration(1))};
 
 			distancePID.setTarget(this->getDistance(time).getValue());
 
-			const double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
+			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
 			driveVoltages = driveVoltages + Eigen::Vector2d(distanceOutput, distanceOutput);
 
 			turnPID.setTarget((this->getAngle(pathIndex) + (profiles[getProfileIndex(time)].isReversed() ? 180.0_deg : 0_deg)).Convert(radian));
-			const double turnOutput = turnPID.update(this->angleFunction().Convert(radian));
+			double turnOutput = turnPID.update(this->angleFunction().Convert(radian));
 			driveVoltages = driveVoltages + Eigen::Vector2d(turnOutput, -turnOutput);
 
 			drivetrain.tankSteerVoltage(driveVoltages(0), driveVoltages(1));
@@ -179,7 +181,7 @@ namespace PathPlanner {
 			return profiles[profiles.size()-1].getEndTime();
 		}
 
-		int getProfileIndex(const QTime time) {
+		int getProfileIndex(QTime time) {
 			int profileIndex = 0;
 
 			for (auto item : profiles) {
@@ -191,7 +193,7 @@ namespace PathPlanner {
 			return profileIndex;
 		}
 
-		double getPathIndex(const QTime time) {
+		double getPathIndex(QTime time) {
 			QLength distanceTraveled = 0.0;
 			int profileIndex = getProfileIndex(time);
 
@@ -204,10 +206,12 @@ namespace PathPlanner {
 			return std::min(static_cast<double>(pathSegments.size()) - 0.001, distanceToT.get(distanceTraveled.getValue()));
 		}
 
-		Eigen::Vector<QSpeed, 2> getChassisSpeeds(const QTime time, const QLength trackWidth) {
+		Eigen::Vector<QSpeed, 2> getChassisSpeeds(QTime time, QLength trackWidth) {
 
-			int profileIndex = getProfileIndex(time);
-			double pathIndex = getPathIndex(time);
+			std::cout << "ERROR: start getChassisSpeeds" << std::endl;
+
+			int profileIndex = 0;//getProfileIndex(std::min(time, totalTime()));
+			double pathIndex = 0.5;//getPathIndex(time);
 
 			QCurvature curvature = pathSegments.at((int) pathIndex).first.getCurvature(pathIndex - std::floor(pathIndex));
 
@@ -218,6 +222,8 @@ namespace PathPlanner {
 			if (profiles[profileIndex].isReversed()) {
 				speed = {speed(1), speed(0)};
 			}
+
+			std::cout << "ERROR: FINISH getChassisSpeeds" << std::endl;
 
 			return {speed(0), speed(1)};
 		}
@@ -233,8 +239,6 @@ namespace PathPlanner {
 		}
 
 		Angle getAngle(double pathIndex) {
-
-//			std::cout << "HII: turntarget: " << (turnPID.getTarget() * 1_rad).Convert(degree) << " index: " << pathIndex << std::endl;
 
 			return pathSegments.at((int) pathIndex).first.getAngle(pathIndex - std::floor(pathIndex));
 		}
