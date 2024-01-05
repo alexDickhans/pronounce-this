@@ -62,7 +62,7 @@ namespace PathPlanner {
 			}
 
 			for (int i = 1; i < values.size(); i++) {
-				if (key <= values.at(0).key) {
+				if (key < values.at(0).key) {
 					return values.at(i-1).value + (((values.at(i).value - values.at(i-1).value)/(values.at(i).key - values.at(i-1).key)) * (key - values.at(i-1).value));
 				}
 			}

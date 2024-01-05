@@ -210,10 +210,10 @@ namespace PathPlanner {
 
 			std::cout << "ERROR: start getChassisSpeeds" << std::endl;
 
-			int profileIndex = 0;//getProfileIndex(std::min(time, totalTime()));
-			double pathIndex = 0.5;//getPathIndex(time);
+			int profileIndex = getProfileIndex(std::min(time, totalTime()));
+			double pathIndex = getPathIndex(time);
 
-			QCurvature curvature = pathSegments.at((int) pathIndex).first.getCurvature(pathIndex - std::floor(pathIndex));
+			QCurvature curvature = pathSegments.at(std::floor(pathIndex)).first.getCurvature(pathIndex - std::floor(pathIndex));
 
 			Eigen::Vector2d speed = {profiles[profileIndex].getSpeed(time).getValue(), profiles[profileIndex].getSpeed(time).getValue()};
 			Eigen::Matrix2d curvatureAdjustment {{1.0 + (curvature.getValue() * trackWidth.getValue() * 0.5), 0}, {0, 1.0 -(curvature.getValue() * trackWidth.getValue() * 0.5)}};
