@@ -48,16 +48,11 @@ namespace PathPlanner {
 			ddy = dy.getDerivative();
 
 			length = 0.0;
-			distanceToT.add(0, 0);
 
-			for (int t = 0; t < granularity; t ++) {
-				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2));
-				length += sqrt(pow(dx.evaluate((double)(t+1)/(double) granularity), 2) + pow(dy.evaluate((double)(t+1)/(double) granularity), 2));
-				distanceToT.add(0.5 * (1.0/(double) granularity) * length.getValue(), (double)(t+1)/(double) granularity);
+			for (int t = 0.0; t <= granularity; t += 1) {
+				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
+				distanceToT.add(length.getValue(), (double)t/(double) granularity);
 			}
-
-			length = 0.5 * (1.0/(double) granularity) * length;
-			std::cout << "CALC-len " << length.Convert(inch) << std::endl;
 		}
 
 		QLength getDistance() {
@@ -72,6 +67,17 @@ namespace PathPlanner {
 			return -(dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
 		}
 
+		QCurvature getMaxCurvature(int granularity = 20) {
+			QCurvature maxCurvature = 0.0;
+
+			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
+				QCurvature curvature = this->getCurvature(t).getValue();
+				maxCurvature = std::max(abs(curvature.getValue()), maxCurvature.getValue());
+			}
+
+			return maxCurvature;
+		}
+
 		Angle getAngle(double t) {
 			return -atan2(dy.evaluate(t), dx.evaluate(t)) * radian + 90_deg;
 		}
@@ -80,11 +86,13 @@ namespace PathPlanner {
 			return {x.evaluate(t), y.evaluate(t)};
 		}
 
-		double getSpeedMultiplier(double t, QLength trackWidth) {
-			QCurvature maxCurvature = this->getCurvature(t);
+		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) {
+			QCurvature maxCurvature = this->getMaxCurvature(granularity);
 
 			if (maxCurvature.getValue() == 0.0)
 				return 1.0;
+
+			std::cout << "Curvy: " << 1.0/(1.0 + abs(maxCurvature.getValue()*0.5) * trackWidth.getValue()) << std::endl;
 
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}

@@ -2,19 +2,19 @@
 #include <vector>
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
-std::vector<std::pair<PathPlanner::BezierSegment, QSpeed>> Skills5 = {{PathPlanner::BezierSegment(
+std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Skills5 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(75.3391_in, 113.7_in),
 PathPlanner::Point(81.6667_in, 77.1186_in),
 PathPlanner::Point(130.31_in, 97.6834_in),
 PathPlanner::Point(144.152_in, 88.1914_in)
 ,false),
-0.0},
+nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(137.429_in, 85.4233_in),
 PathPlanner::Point(136.836_in, 115.875_in),
 PathPlanner::Point(109.746_in, 133.474_in),
 PathPlanner::Point(87.7967_in, 133.277_in)
 ,true),
-0.0},
+nullptr},
 };
 // PathPlanner made path
