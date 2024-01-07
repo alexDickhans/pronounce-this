@@ -179,6 +179,10 @@ namespace Pronounce {
 				startTime = currentTime();
 			}
 		}
+
+		void operator()(Behavior* behavior) {
+			this->setCurrentBehavior(behavior);
+		}
 		
 		/**
 		 * @brief Transition to the default behavior
