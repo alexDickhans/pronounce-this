@@ -181,13 +181,16 @@ void far6BallRush(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(59.5_in, {61_in/second, 150_in/second/second, 0.0}, 101.5_deg/55_in, 60_deg);
+	move(59.3_in, {61_in/second, 140_in/second/second, 0.0}, 12_deg/55_in, 60_deg);
 
 	turnTo(172_deg, 300_ms);
 
 	intakeStateController(&intakeEject);
+	rightWingStateController(&rightWingOut);
 
 	move(35_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 172_deg);
+
+	rightWingStateController();
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim2,
 																		 {
@@ -216,17 +219,17 @@ void far6BallRush(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(28_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 8_deg);
+	move(26_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 8_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim5,
 																		 {
 																				 {0.0, [] () -> void {
 																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
 																				 }},
-																				 {0.5, [] () -> void {
+																				 {0.3, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
-																				 {0.65, [] () -> void {
+																				 {0.47, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingIn);
 																				 }},
 																		 }));
@@ -235,11 +238,17 @@ void far6BallRush(void* args) {
 
 	rightWingStateController.setCurrentBehavior(&rightWingIn);
 
-	move(8_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
-	turnTo(90_deg, 400_ms);
+	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
+	turnTo(-255_deg, 660_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 90_deg);
-	move(-8_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 90_deg);
+	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
+
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim6,
+																		 {
+																				 {0.6, [] () -> void {
+																					 leftWingStateController(&leftWingOut);
+																				 }},
+																		 }));
 
 	pros::Task::delay(2000);
 }

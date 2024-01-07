@@ -4,9 +4,9 @@
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Auto6BallElim5 = {{PathPlanner::BezierSegment(
 PathPlanner::Point(11.8644_in, 69.0113_in),
-PathPlanner::Point(11.6666_in, 52.2034_in),
-PathPlanner::Point(18.9831_in, 25.7063_in),
-PathPlanner::Point(59.9153_in, 25.3108_in)
+PathPlanner::Point(9.49146_in, 17.9944_in),
+PathPlanner::Point(32.4294_in, 18.9831_in),
+PathPlanner::Point(59.1243_in, 18.1921_in)
 ,true),
 nullptr},
 };

@@ -183,6 +183,10 @@ namespace Pronounce {
 		void operator()(Behavior* behavior) {
 			this->setCurrentBehavior(behavior);
 		}
+
+		void operator()() {
+			this->useDefaultBehavior();
+		}
 		
 		/**
 		 * @brief Transition to the default behavior
