@@ -242,6 +242,21 @@ void far6BallRush(void* args) {
 	turnTo(-255_deg, 660_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
 	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
+}
+
+void far6BallRushAWP(void* args) {
+	far6BallRush(nullptr);
+
+
+	move(-10_in, speedProfileConstraints, -45_deg/-10_in, -270_deg);
+
+	move(60_in, speedProfileConstraints, 0.0, -315_deg);
+
+	pros::Task::delay(2000);
+}
+
+void far6BallRushElim(void* args) {
+	far6BallRush(nullptr);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim6,
 																		 {
@@ -254,7 +269,7 @@ void far6BallRush(void* args) {
 }
 
 void skills(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 90_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
 	std::cout << "SKILLS START" << std::endl;
 
 	intakeStateController.setCurrentBehavior(&intakeHold);
@@ -264,7 +279,6 @@ void skills(void* args) {
 	auton.resetTriballs();
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills1));
-
 	drivetrainStateController.waitUntilDone()();
 
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
@@ -277,8 +291,8 @@ void skills(void* args) {
 
 	pros::Task::delay(200);
 
-	leftWingStateController.useDefaultBehavior();
-	rightWingStateController.useDefaultBehavior();
+	leftWingStateController();
+	rightWingStateController();
 
 	turnTo(90_deg, 300_ms);
 
@@ -363,47 +377,58 @@ void skills(void* args) {
 
 	turnTo(90_deg, 500_ms);
 
-	rightWingStateController.setCurrentBehavior(&rightWingOut);
+	rightWingStateController(&rightWingOut);
+	leftWingStateController(&leftWingOut);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
+	move(58_in, defaultProfileConstraints, 0.0, 90_deg);
+
+	leftWingStateController(&leftWingIn);
+	rightWingStateController(&rightWingIn);
+
+	drivetrainStateController(pathFollower.changePath(defaultProfileConstraints,
 					DriverSkills6,
 					{
-							{4.5, [] () -> void {
+							{3.5, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{4.8, [] () -> void {
+							{3.8, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
-							{7.0, [] () -> void {
+							{6.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{7.3, [] () -> void {
+							{6.3, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
 					}));
 
 	drivetrainStateController.waitUntilDone()();
 
-	move(5_in, defaultProfileConstraints, 0.0, -270_deg);
-	move(-10_in, defaultProfileConstraints, 0.0, -270_deg);
-	move(5_in, defaultProfileConstraints, 0.0, -270_deg);
-	move(-10_in, defaultProfileConstraints, 0.0, -270_deg);
+	move(10_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -270_deg);
+	move(10_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -270_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
 					Skills6,
 					{
-							{1.0, [] () -> void {
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
-							}},
 							{2.0, [] () -> void {
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
-								leftWingStateController.setCurrentBehavior(&leftWingOut);
+								rightWingStateController(&rightWingOut);
+								leftWingStateController(&leftWingOut);
+							}},
+							{3.0, [] () -> void {
+								rightWingStateController(&rightWingIn);
+								leftWingStateController(&leftWingIn);
+							}},
+							{4.0, [] () -> void {
+								blockerStateController(&blockerOut);
 							}},
 					}));
 
 	drivetrainStateController.waitUntilDone()();
+
+	pros::Task::delay(500);
 }
 
 void safeCloseAWP(void* args) {
@@ -430,6 +455,18 @@ void safeCloseAWP(void* args) {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(20000);
+}
+
+void disruptorAuton(void* args) {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
+}
+
+void disruptorAutonAWP(void* args) {
+	disruptorAuton(nullptr);
+}
+
+void disruptorAutonElim(void* args) {
+	disruptorAuton(nullptr);
 }
 
 // !SECTION
@@ -590,16 +627,20 @@ void autonomous() {
 	#if AUTON == 0
 	auton.setAuton(far6BallFullAWP);
 	#elif AUTON == 1
-	auton.setAuton(closeAWP);
+	auton.setAuton(far6BallRushAWP);
 	#elif AUTON == 2
-	auton.setAuton(skills);
+	auton.setAuton(far6BallRushElim);
 	#elif AUTON == 3
-	auton.setAuton(safeCloseAWP)
+	auton.setAuton(far6BallMidRush);
 	#elif AUTON == 4
-	auton.setAuton(far6BallRush);
+	auton.setAuton(safeCloseAWP);
+	#elif AUTON == 5
+	auton.setAuton(disruptorAutonAWP);
+	#elif AUTON == 6
+	auton.setAuton(disruptorAutonElim);
+	#elif AUTON == 7
+	auton.setAuton(skills);
 	#endif // !1
-
-	std::cout << "HIIPROS auton starting" << std::endl;
 
 	competitionController.setCurrentBehavior(&auton);
 }
@@ -613,19 +654,15 @@ void autonomous() {
  */
 void opcontrol() {
 
-	std::cout << "Init: OP control" << std::endl;
-
 	// Causes the programming skills code to only run during skills
-#if AUTON == 2
+#if AUTON == 7
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();
-	while (!master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A)){// || !competitionController.isDone()) {
+	while (!master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A) && !competitionController.isDone()) {
 		pros::Task::delay(10);
 	}
 #endif
-
-	std::cout << "HII2: a pressed" << std::endl;
 
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(&teleop);

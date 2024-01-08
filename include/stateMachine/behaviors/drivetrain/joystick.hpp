@@ -83,7 +83,7 @@ namespace Pronounce {
 			std::cout << "DriverInputLeft: " << left << std::endl;
 			std::cout << "DriverInputRight: " << right << std::endl;
 
-			drivetrain.tankSteerVoltage(left * 12000.0, right * 12000.0);
+			drivetrain.tankSteerVoltage(left * 11040.0 + signnum_c(left) * 960.0, right * 11040.0 + signnum_c(right) * 960.0);
 
 			drivetrainMutex.give();
 		}
