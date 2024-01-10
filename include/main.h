@@ -119,6 +119,8 @@
 #include "AutoPaths/DriverSkills5.hpp"
 #include "AutoPaths/DriverSkills6.hpp"
 #include "AutoPaths/TestPath.hpp"
+#include "AutoPaths/DisruptorAuton1.hpp"
+#include "AutoPaths/DisruptorAuton2.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

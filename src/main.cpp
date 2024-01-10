@@ -458,15 +458,58 @@ void safeCloseAWP(void* args) {
 }
 
 void disruptorAuton(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
+	catapultStateController(&catapultFire);
+	delay(0.5_s);
+	catapultStateController.useDefaultBehavior();
+
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
+																		 Disruptor1,
+																		 {
+																				 {0.2, [] () -> void {
+																					 intakeStateController(&intakeIntaking);
+																				 }},
+																				 {2.5, [] () -> void {
+																					 leftWingStateController(&leftWingOut);
+																				 }},
+																				 {2.8, [] () -> void {
+																					 leftWingStateController(&leftWingIn);
+																				 }},
+																		 }));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(-355_deg, 800_ms);
+
+	intakeStateController(&intakeEject);
+
+	move(35_in, speedProfileConstraints, 0.0, -355_deg);
 }
 
 void disruptorAutonAWP(void* args) {
-	disruptorAuton(nullptr);
+	disruptorAuton(args);
+
+	move(-3_in, speedProfileConstraints, 0.0, -355_deg);
+
+	turnTo(-173_deg, 800_ms);
+
+	rightWingStateController(&rightWingOut);
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
+
+	pros::Task::delay(15000);
 }
 
 void disruptorAutonElim(void* args) {
-	disruptorAuton(nullptr);
+	disruptorAuton(args);
+
+	move(-3_in, speedProfileConstraints, 0.0, -355_deg);
+
+	turnTo(-180_deg, 800_ms);
+
+	drivetrainStateController(pathFollower.changePath(defaultProfileConstraints,Disruptor2));
+
+	drivetrainStateController.waitUntilDone()();
 }
 
 // !SECTION
