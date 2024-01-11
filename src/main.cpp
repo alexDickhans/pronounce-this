@@ -486,6 +486,10 @@ void disruptorAuton(void* args) {
 	move(35_in, speedProfileConstraints, 0.0, -355_deg);
 }
 
+void far4BallAWP(void* args) {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
+}
+
 void disruptorAutonAWP(void* args) {
 	disruptorAuton(args);
 
@@ -674,7 +678,7 @@ void autonomous() {
 	#elif AUTON == 2
 	auton.setAuton(far6BallRushElim);
 	#elif AUTON == 3
-	auton.setAuton(far6BallMidRush);
+	auton.setAuton(far4BallAWP);
 	#elif AUTON == 4
 	auton.setAuton(safeCloseAWP);
 	#elif AUTON == 5
