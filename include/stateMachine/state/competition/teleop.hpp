@@ -70,10 +70,10 @@ namespace Pronounce {
 		}
 
 		void update() override {
+			Enabled::update();
+
 			controller1->update();
 			controller2->update();
-
-			Enabled::update();
 		}
 
 		void exit() override {

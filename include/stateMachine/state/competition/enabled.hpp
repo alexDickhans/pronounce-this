@@ -56,10 +56,6 @@ namespace Pronounce {
 			stateControllers.exit();
 		}
 
-		bool isDone() override {
-			return false;
-		}
-
 		void resetTriballs() {
 			shotTriballs = 0;
 		}

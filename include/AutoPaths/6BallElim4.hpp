@@ -3,17 +3,17 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> Auto6BallElim4 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(10.4802_in, 44.2938_in),
-PathPlanner::Point(10.2825_in, 52.2034_in),
-PathPlanner::Point(9.88701_in, 56.9492_in),
-PathPlanner::Point(10.0847_in, 64.8588_in)
+PathPlanner::Point(49.8305_in, 54.1807_in),
+PathPlanner::Point(47.0622_in, 59.9152_in),
+PathPlanner::Point(46.4689_in, 60.9039_in),
+PathPlanner::Point(45.8757_in, 69.209_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(10.0847_in, 64.8588_in),
-PathPlanner::Point(10.4802_in, 33.2203_in),
-PathPlanner::Point(6.03107_in, 5.33898_in),
-PathPlanner::Point(43.1073_in, 5.14124_in)
+PathPlanner::Point(45.678_in, 63.0791_in),
+PathPlanner::Point(45.4802_in, 47.2599_in),
+PathPlanner::Point(17.8955_in, 42.2176_in),
+PathPlanner::Point(7.90972_in, 53.1921_in)
 ,true),
 nullptr},
 };

@@ -24,7 +24,7 @@ namespace Pronounce {
 	PT::TelemetryManager* telemetryManager;
 	PT::Logger* logger;
 
-	pros::Mutex controllerMutex;
+	pros::Mutex robotMutex;
 
 #ifndef SIM
 	AbstractJoystick* master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
@@ -47,7 +47,7 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(17_in, 61.261056745_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(18_in, 61_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
 	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
 	pros::Motor_Group catapultMotors({17, -14});
@@ -87,18 +87,12 @@ namespace Pronounce {
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualPosition", "Position", []() -> double {return drivetrain.getTargetDistance().Convert(inch);}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetPosition", "Position", []() -> double {return drivetrain.getDistanceSinceReset().Convert(inch);}));
 		telemetryManager->setUpdateTime(10);
-		telemetryManager->enableUpdateScheduler();
-
-		drivetrainMutex.take();
+//		telemetryManager->enableUpdateScheduler();
 
 		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 
 		intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
-		drivetrainMutex.give();
-
-		odometryMutex.take();
 
 		double turningFactor = 450.0 / 600.0;
 		double tuningFactor = 1.0;
@@ -115,18 +109,12 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		std::cout << "Before" << std::endl;
-
 		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
-			std::cout << "during" << std::endl;
 			while (imu.is_calibrating())
 				pros::Task::delay(50);
-			std::cout << "after" << std::endl;
 		}
-
-		odometryMutex.give();
 	}
 
 	int checkPorts(lv_obj_t* table) {

@@ -23,7 +23,7 @@ namespace Pronounce {
 		}
 
 		void exit() override {
-
+			catapultMotors.move_voltage(0.0);
 		}
 
 		bool isDone() override {
