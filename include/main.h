@@ -121,6 +121,8 @@
 #include "AutoPaths/TestPath.hpp"
 #include "AutoPaths/DisruptorAuton1.hpp"
 #include "AutoPaths/DisruptorAuton2.hpp"
+#include "AutoPaths/4Ball1.hpp"
+#include "AutoPaths/CloseMidRush2.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
