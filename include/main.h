@@ -35,9 +35,7 @@
 
 #include "pathPlanner/pathPlanner.hpp"
 
-#include "defines.h"
 #include "auton.h"
-#include "driver.h"
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"

@@ -826,13 +826,19 @@ void autonomous() {
 
 // SECTION Operator Control
 
+#ifdef ELIM
+#define SKILLS 4
+#else
+#define SKILLS 6
+#endif
+
 /**
  * Runs during operator/teleop control
  */
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == 7
+#if AUTON == SKILLS
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();

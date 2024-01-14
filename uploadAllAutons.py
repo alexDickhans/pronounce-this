@@ -1,12 +1,17 @@
+#!/usr/bin/env python3
+
 import os
 
 # Qual
-autons = ["FAR 6 BALL AWP", "FAR 6 MID RUSH AWP", "FAR 4 AWP" , "CLOSE SAFE AWP", "DISRUPTOR AWP", "CLOSE RUSH AWP", "SKILLS"]
-elim = False
 
-# Elim
-# autons = ["FAR 6 MID RUSH", "FAR 6 BARRIER RUSH", "DISRUPTOR ELIM" , "CLOSE RUSH ELIM", "DISRUPTOR AWP", "SKILLS"]
-# elim = True
+os.system("pros v5 rm-all")
+
+elim = True
+
+if elim:
+    autons = ["FAR 6 MID RUSH", "FAR 6 BARRIER RUSH", "DISRUPTOR ELIM" , "CLOSE RUSH ELIM", "DISRUPTOR AWP", "SKILLS"]
+else:
+    autons = ["FAR 6 BALL AWP", "FAR 6 MID RUSH AWP", "FAR 4 AWP" , "CLOSE SAFE AWP", "DISRUPTOR AWP", "CLOSE RUSH AWP", "SKILLS"]
 
 offset = 1
 

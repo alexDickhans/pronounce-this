@@ -3,7 +3,6 @@
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviors/robotBehaviors.hpp"
 #include "api.h"
-#include "driver.h"
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "enabled.hpp"
