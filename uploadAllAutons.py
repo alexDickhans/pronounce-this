@@ -6,7 +6,7 @@ import os
 
 os.system("pros v5 rm-all")
 
-elim = True
+elim = False
 
 if elim:
     autons = ["FAR 6 MID RUSH", "FAR 6 BARRIER RUSH", "DISRUPTOR ELIM" , "CLOSE RUSH ELIM", "DISRUPTOR AWP", "SKILLS"]

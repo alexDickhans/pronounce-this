@@ -282,10 +282,10 @@ void skills(void* args) {
 
 	auton.resetTriballs();
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills1));
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills1));
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 22.5_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
 	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
@@ -302,12 +302,12 @@ void skills(void* args) {
 
 	intakeStateController.setCurrentBehavior(&intakeEject);
 
-	move(25_in, defaultProfileConstraints, 0.0, 90_deg);
+	move(25_in, speedProfileConstraints, 0.0, 90_deg);
 
 	pros::Task::delay(50);
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills2, {
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills2, {
 							{0.35, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 							}},
@@ -332,7 +332,7 @@ void skills(void* args) {
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 	rightWingStateController.setCurrentBehavior(&rightWingOut);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints, Skills3,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills3,
 					{
 							{1.0, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingIn);
@@ -349,7 +349,7 @@ void skills(void* args) {
 
 	turnTo(175_deg, 450_ms);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints,
 					Skills4,
 					{
 							{1.0, [] () -> void {
@@ -367,7 +367,7 @@ void skills(void* args) {
 	leftWingStateController.setCurrentBehavior(&leftWingIn);
 	rightWingStateController.setCurrentBehavior(&rightWingIn);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints,
 					DriverSkills5,
 					{
 							{0.0, [] () -> void {
@@ -377,32 +377,32 @@ void skills(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	move(-10_in, defaultProfileConstraints, 0.0);
+	move(-10_in, speedProfileConstraints, 0.0);
 
 	turnTo(90_deg, 500_ms);
 
 	rightWingStateController(&rightWingOut);
 	leftWingStateController(&leftWingOut);
 
-	move(58_in, defaultProfileConstraints, 0.0, 90_deg);
+	move(58_in, speedProfileConstraints, 0.0, 90_deg);
 
 	leftWingStateController(&leftWingIn);
 	rightWingStateController(&rightWingIn);
 
-	drivetrainStateController(pathFollower.changePath(defaultProfileConstraints,
+	drivetrainStateController(pathFollower.changePath(speedProfileConstraints,
 					DriverSkills6,
 					{
-							{3.5, [] () -> void {
+							{1.5, [] () -> void {
 								rightWingStateController.setCurrentBehavior(&rightWingOut);
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{3.8, [] () -> void {
+							{1.8, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
-							{6.0, [] () -> void {
+							{4.0, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
-							{6.3, [] () -> void {
+							{4.3, [] () -> void {
 								leftWingStateController.setCurrentBehavior(&leftWingIn);
 							}},
 					}));
@@ -410,11 +410,11 @@ void skills(void* args) {
 	drivetrainStateController.waitUntilDone()();
 
 	move(10_in, speedProfileConstraints, 0.0, -270_deg);
-	move(-15_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 	move(10_in, speedProfileConstraints, 0.0, -270_deg);
-	move(-15_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(defaultProfileConstraints,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints,
 					Skills6,
 					{
 							{2.0, [] () -> void {
