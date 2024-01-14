@@ -1,1 +1,2 @@
-#define AUTON 6
+#define AUTON 5
+#define ELIM

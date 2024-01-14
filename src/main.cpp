@@ -213,7 +213,63 @@ void far6BallRushMid(void* args) {
 
 	move(50_in, speedProfileConstraints, 0.0, -100.7_deg);
 
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush1,
+																		 {
+																				 {0.9, [] () -> void {
+																					 intakeStateController.setCurrentBehavior(&intakeEject);
+																				 }},
+																		 }));
 
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(0_deg, 600_ms);
+
+	move(20_in, speedProfileConstraints, 0.0, 0_deg);
+
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush2,
+																		 {
+																				 {0.0, [] () -> void {
+																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
+																				 }},
+																				 {0.6, [] () -> void {
+																					 leftWingStateController(&leftWingOut);
+																				 }},
+																				 {0.8, [] () -> void {
+																					 leftWingStateController();
+																				 }},
+																		 }));
+
+	drivetrainStateController.waitUntilDone()();
+
+	rightWingStateController.setCurrentBehavior(&rightWingIn);
+
+	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
+	turnTo(-255_deg, 660_ms);
+	intakeStateController.setCurrentBehavior(&intakeEject);
+	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
+
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush3,
+																		 {
+																				 {0.0, [] () -> void {
+																					 intakeStateController(&intakeIntaking);
+																				 }},
+																		 }));
+
+	drivetrainStateController.waitUntilDone()();
+
+	turnTo(160_deg, 500_ms);
+	intakeStateController(&intakeEject);
+	turnTo(160_deg, 200_ms);
+
+	turnTo(80_deg, 600_ms);
+	intakeStateController(&intakeIntaking);
+	move(18_in, speedProfileConstraints, 0.0, 80_deg);
+
+	turnTo(200_deg, 600_ms);
+
+	intakeStateController(&intakeEject);
+
+	move(50_in, speedProfileConstraints, 0.0, 200_deg);
 }
 
 void skills(void* args) {
@@ -736,20 +792,14 @@ void autonomous() {
 
 #ifdef ELIM
 	#if AUTON == 0
-	auton.setAuton(far6BallFullAWP);
+	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
-	auton.setAuton(far6BallRushAWP);
-	#elif AUTON == 2
 	auton.setAuton(far6BallRushElim);
-	#elif AUTON == 3
-	auton.setAuton(far4BallAWP);
-	#elif AUTON == 4
-	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 5
-	auton.setAuton(disruptorAutonAWP);
-	#elif AUTON == 6
+	#elif AUTON == 2
 	auton.setAuton(disruptorAutonElim);
-	#elif AUTON == 7
+	#elif AUTON == 3
+	auton.setAuton(closeRushMidElim);
+	#elif AUTON == 4
 	auton.setAuton(skills);
 	#endif // !1
 #else
@@ -758,16 +808,14 @@ void autonomous() {
 	#elif AUTON == 1
 	auton.setAuton(far6BallRushAWP);
 	#elif AUTON == 2
-	auton.setAuton(far6BallRushElim);
-	#elif AUTON == 3
 	auton.setAuton(far4BallAWP);
-	#elif AUTON == 4
+	#elif AUTON == 3
 	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 5
+	#elif AUTON == 4
 	auton.setAuton(disruptorAutonAWP);
+	#elif AUTON == 5
+	auton.setAuton(closeRushMidAWP);
 	#elif AUTON == 6
-	auton.setAuton(disruptorAutonElim);
-	#elif AUTON == 7
 	auton.setAuton(skills);
 	#endif // !1
 #endif
