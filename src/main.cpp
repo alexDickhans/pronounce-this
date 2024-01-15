@@ -122,7 +122,9 @@ void far6BallRush(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(59.3_in, {61_in/second, 140_in/second/second, 0.0}, 12_deg/55_in, 60_deg);
+	move(59.3_in, {61_in/second, 140_in/second/second, 0.0}, 4_deg/55_in, 60_deg);
+
+	pros::Task::delay(100);
 
 	turnTo(172_deg, 300_ms);
 
@@ -142,7 +144,7 @@ void far6BallRush(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-30_deg, 400_ms);
+	turnTo(-20_deg, 400_ms);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim4,
 																		 {
@@ -160,7 +162,7 @@ void far6BallRush(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(26_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 8_deg);
+	move(23_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 8_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim5,
 																		 {
@@ -185,17 +187,17 @@ void far6BallRush(void* args) {
 	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
 }
 
-void far6BallRushAWP(void* args) {
+void far6BallRushElim(void* args) {
 	far6BallRush(nullptr);
 
-	move(-10_in, speedProfileConstraints, -45_deg/-10_in, -270_deg);
+	move(-10_in, speedProfileConstraints, -60_deg/-10_in, -270_deg);
 
-	move(60_in, speedProfileConstraints, 0.0, -315_deg);
+	move(60_in, speedProfileConstraints, 0.0, -330_deg);
 
 	pros::Task::delay(2000);
 }
 
-void far6BallRushElim(void* args) {
+void far6BallRushAWP(void* args) {
 	far6BallRush(nullptr);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim6,
@@ -384,16 +386,23 @@ void skills(void* args) {
 	rightWingStateController(&rightWingOut);
 	leftWingStateController(&leftWingOut);
 
-	move(58_in, speedProfileConstraints, 0.0, 90_deg);
+	move(55_in, defaultProfileConstraints, 0.0, 90_deg, 0.0, 0_in/second);
 
 	leftWingStateController(&leftWingIn);
 	rightWingStateController(&rightWingIn);
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 135_deg, drivetrainMutex, 5000));
+
+	pros::Task::delay(700);
+
+	turnTo(0_deg, 900_ms);
+
+	rightWingStateController(&rightWingOut);
 
 	drivetrainStateController(pathFollower.changePath(speedProfileConstraints,
 					DriverSkills6,
 					{
 							{1.5, [] () -> void {
-								rightWingStateController.setCurrentBehavior(&rightWingOut);
 								leftWingStateController.setCurrentBehavior(&leftWingOut);
 							}},
 							{1.8, [] () -> void {
@@ -409,8 +418,6 @@ void skills(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	move(10_in, speedProfileConstraints, 0.0, -270_deg);
-	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 	move(10_in, speedProfileConstraints, 0.0, -270_deg);
 	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 
@@ -514,7 +521,7 @@ void far4BallAWP(void* args) {
 
 void disruptorAuton(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
-	catapultStateController(&catapultFire);
+	catapultStateController(catapultFire.wait(800_ms));
 	delay(0.5_s);
 	catapultStateController.useDefaultBehavior();
 
@@ -538,7 +545,7 @@ void disruptorAuton(void* args) {
 
 	intakeStateController(&intakeEject);
 
-	move(35_in, speedProfileConstraints, 0.0, -355_deg);
+	move(31_in, speedProfileConstraints, 0.0, -355_deg);
 }
 
 void disruptorAutonAWP(void* args) {
@@ -669,6 +676,9 @@ void closeRushMidElim(void* args) {
 
 [[noreturn]] void updateDisplay() {
 
+	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
+	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
+
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
 	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
@@ -703,8 +713,6 @@ void closeRushMidElim(void* args) {
 	lv_table_set_col_width(drivetrainTable.get(), 1, 200);
 
 	// Flywheels
-	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
-	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
 
 	while (true) {
 		// Odometry

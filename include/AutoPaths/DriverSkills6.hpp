@@ -3,29 +3,29 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> DriverSkills6 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(110.735_in, 60.9039_in),
-PathPlanner::Point(99.8093_in, 56.6525_in),
-PathPlanner::Point(111.798_in, 44.3432_in),
-PathPlanner::Point(117.656_in, 26.695_in)
+PathPlanner::Point(111.13_in, 54.774_in),
+PathPlanner::Point(111.476_in, 44.5904_in),
+PathPlanner::Point(111.402_in, 34.8517_in),
+PathPlanner::Point(114.887_in, 25.5086_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(110.536_in, 23.9266_in),
-PathPlanner::Point(114.021_in, 14.9788_in),
-PathPlanner::Point(122.759_in, 12.0375_in),
-PathPlanner::Point(129.52_in, 25.5085_in)
+PathPlanner::Point(116.592_in, 15.1765_in),
+PathPlanner::Point(123.55_in, 12.0375_in),
+PathPlanner::Point(130.311_in, 25.5085_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(129.52_in, 25.7062_in),
 PathPlanner::Point(134.698_in, 40.9569_in),
-PathPlanner::Point(135.174_in, 55.6762_in),
-PathPlanner::Point(135.057_in, 70.3955_in)
+PathPlanner::Point(137.942_in, 55.2807_in),
+PathPlanner::Point(137.825_in, 70_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
-PathPlanner::Point(135.057_in, 70.3955_in),
-PathPlanner::Point(134.939_in, 85.1148_in),
+PathPlanner::Point(137.825_in, 70_in),
+PathPlanner::Point(137.707_in, 84.7193_in),
 PathPlanner::Point(136.777_in, 112.459_in),
 PathPlanner::Point(125.763_in, 123.983_in)
 ,true),

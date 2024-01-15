@@ -18,6 +18,7 @@ namespace Pronounce {
 	private:
 		static uint32_t shotTriballs;
 		QLength lastDistance{0.0};
+		QTime lastCount = 0.0;
 	public:
 		explicit Enabled() {
 		}
@@ -35,11 +36,13 @@ namespace Pronounce {
 			if (catapultDistance.get() * 1_mm <
 				0.75_in // see if an object is detected by the distance sensor on the catapult
 				&& lastDistance > 0.75_in && blockerStateController.getCurrentBehavior() !=
-											 &blockerIn) { // If the last distance sensor reading was greater than an inch indicates that the
+											 &blockerIn && pros::millis()*1_ms - lastCount > 0.25_s) { // If the last distance sensor reading was greater than an inch indicates that the
 				// triball is moving closer to the sensor, meaning that there is a new triball
 
 				// increase the count of shot triballs
 				shotTriballs += 1;
+
+				lastCount = pros::millis() * 1_ms;
 
 				// Set the catapult to try to shoot the triball until it has left the catapult
 				catapultStateController.setCurrentBehavior(
