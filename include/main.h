@@ -125,6 +125,7 @@
 #include "AutoPaths/Mid6BallRush2.hpp"
 #include "AutoPaths/Mid6BallRush3.hpp"
 #include "AutoPaths/Mid6BallRush4.hpp"
+#include "AutoPaths/Mid6BallRush5.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

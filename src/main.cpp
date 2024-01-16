@@ -228,7 +228,7 @@ void far6BallRushMid(void* args) {
 
 	move(20_in, speedProfileConstraints, 0.0, 0_deg);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush2,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
 																		 {
 																				 {0.0, [] () -> void {
 																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
@@ -261,17 +261,31 @@ void far6BallRushMid(void* args) {
 
 	turnTo(160_deg, 500_ms);
 	intakeStateController(&intakeEject);
-	turnTo(160_deg, 200_ms);
+	move(30_in, speedProfileConstraints, 0.0, 160_deg);
+	move(-5_in, speedProfileConstraints, 0.0, 180_deg);
+	turnTo(0_deg, 800_ms);
 
-	turnTo(80_deg, 600_ms);
-	intakeStateController(&intakeIntaking);
-	move(18_in, speedProfileConstraints, 0.0, 80_deg);
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush5,
+																		 {
+																				 {0.0, [] () -> void {
+																					 intakeStateController(&intakeIntaking);
+																				 }},
+																		 }));
 
-	turnTo(200_deg, 600_ms);
+	move(-10_in, speedProfileConstraints, -90_deg/-10_in, 80_deg);
 
+	turnTo(-180_deg, 600_ms);
 	intakeStateController(&intakeEject);
+	move(35_in, speedProfileConstraints, 0.0, -180_deg);
 
-	move(50_in, speedProfileConstraints, 0.0, 200_deg);
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush4,
+																		 {
+																				 {0.8, [] () -> void {
+																					 leftWingStateController(&leftWingOut);
+																				 }},
+																		 }));
+
+	drivetrainStateController.waitUntilDone()();
 }
 
 void skills(void* args) {
