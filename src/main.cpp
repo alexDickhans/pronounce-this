@@ -3,8 +3,6 @@
 // LVGL
 std::shared_ptr<lv_obj_t> tabview;
 
-bool skillsDone = false;
-
 // SECTION Auton
 
 void turnTo(Angle angle, QTime waitTimeMS) {
@@ -452,8 +450,6 @@ void skills(void* args) {
 					}));
 
 	drivetrainStateController.waitUntilDone()();
-
-	pros::Task::delay(500);
 }
 
 void safeCloseAWP(void* args) {
