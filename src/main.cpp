@@ -370,6 +370,8 @@ void skills(void* args) {
 void safeCloseAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
 
+	pros::Task::delay(8000);
+
 	move(10_in, defaultProfileConstraints, 0.0);
 
 	intakeStateController.setCurrentBehavior(&intakeEject);
@@ -388,7 +390,7 @@ void safeCloseAWP(void* args) {
 
 	rightWingStateController.setCurrentBehavior(&rightWingOut);
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -2000));
 
 	pros::Task::delay(20000);
 }
@@ -451,13 +453,13 @@ void disruptorAutonElim(void* args) {
 void closeRushMid(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
 
-	rightWingStateController.setCurrentBehavior(rightWingOut.wait(300_ms));
+	leftWingStateController(leftWingOut.wait(300_ms));
 
 	intakeStateController(&intakeIntaking);
 
-	move(50_in, {61_in/second, 140_in/second/second, 0.0}, 0.0, -75.7_deg);
+	move(47_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-	move(-35_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(-23_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	turnTo(104.3_deg, 800_ms);
 
@@ -483,11 +485,11 @@ void closeRushMid(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-355_deg, 800_ms);
+	turnTo(-360_deg, 800_ms);
 
 	intakeStateController(&intakeEject);
 
-	move(35_in, speedProfileConstraints, 0.0, -355_deg);
+	move(25_in, speedProfileConstraints, 0.0, -360_deg);
 }
 
 void closeRushMidAWP(void* args) {
@@ -510,6 +512,8 @@ void closeRushMidElim(void* args) {
 	move(-3_in, speedProfileConstraints, 0.0, -355_deg);
 
 	turnTo(-180_deg, 800_ms);
+
+	intakeStateController(&intakeIntaking);
 
 	drivetrainStateController(pathFollower.changePath(defaultProfileConstraints,Disruptor2));
 
@@ -676,8 +680,6 @@ void autonomous() {
 	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
 	auton.setAuton(far5BallAWP);
-	#elif AUTON == 2
-	auton.setAuton(far6BallFullAWP);
 	#elif AUTON == 3
 	auton.setAuton(disruptorAutonAWP);
 	#elif AUTON == 4
@@ -685,6 +687,10 @@ void autonomous() {
 	#elif AUTON == 5
 	auton.setAuton(safeCloseAWP);
 	#elif AUTON == 6
+	auton.setAuton(closeRushMidAWP);
+#elif AUTON == 6
+	auton.setAuton(closeRushMidElim);
+	#elif AUTON == 7
 	auton.setAuton(skills);
 	#endif // !1
 
@@ -701,7 +707,7 @@ void autonomous() {
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == 6
+#if AUTON == 7
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();

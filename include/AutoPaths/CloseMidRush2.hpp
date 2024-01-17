@@ -3,10 +3,10 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> CloseMidPath2 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(107.769_in, 40.339_in),
-PathPlanner::Point(101.638_in, 54.5762_in),
-PathPlanner::Point(97.8814_in, 61.6949_in),
-PathPlanner::Point(79.887_in, 66.2429_in)
+PathPlanner::Point(110.34_in, 48.2486_in),
+PathPlanner::Point(105.593_in, 57.3446_in),
+PathPlanner::Point(89.3786_in, 62.8813_in),
+PathPlanner::Point(76.3277_in, 65.6497_in)
 ,false),
 nullptr},
 {PathPlanner::BezierSegment(
@@ -19,8 +19,8 @@ nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(99.4633_in, 28.4746_in),
 PathPlanner::Point(107.571_in, 10.4802_in),
-PathPlanner::Point(120.028_in, 15.4237_in),
-PathPlanner::Point(121.412_in, 29.0678_in)
+PathPlanner::Point(117.655_in, 15.8192_in),
+PathPlanner::Point(119.039_in, 29.4633_in)
 ,true),
 nullptr},
 };
