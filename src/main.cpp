@@ -145,7 +145,7 @@ void far5BallRushMid(void* args) {
 																				 {0.25, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
-																				 {0.42, [] () -> void {
+																				 {0.39, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingIn);
 																				 }},
 																		 }));
@@ -157,15 +157,20 @@ void far5BallRushMid(void* args) {
 	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
 	turnTo(-230_deg, 300_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -230_deg);
+	move(18_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -230_deg);
 	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
 
-	turnTo(-230_deg, 500_ms);
-	intakeStateController(&intakeEject);
-	move(30_in, speedProfileConstraints, 0.0, -230_deg);
+	turnTo(-223_deg, 500_ms);
+	intakeExtensionStateController(&outtakeSequence);
+	move(38_in, speedProfileConstraints, 20_deg/30_in, -223_deg);
+}
+
+void far6BallRushMid(void* args) {
+	far5BallRushMid(args);
+
 	turnTo(-340_deg, 500_ms);
 
 	intakeStateController(&intakeIntaking);
@@ -173,17 +178,7 @@ void far5BallRushMid(void* args) {
 	move(28_in, defaultProfileConstraints, 0.0, -340_deg);
 
 	turnTo(-180_deg, 400_ms);
-	intakeStateController(&intakeEject);
-	move(35_in, speedProfileConstraints, 0.0, -190_deg);
-	move(-10_in, speedProfileConstraints, 0.0, -190_deg);
-	turnTo(-360_deg, 3_s);
-}
-
-void far6BallRushMid(void* args) {
-	far5BallRushMid(args);
-
-	turnTo(-180_deg, 400_ms);
-	intakeStateController(&intakeEject);
+	intakeExtensionStateController(&outtakeSequence);
 	move(35_in, speedProfileConstraints, 0.0, -190_deg);
 	move(-10_in, speedProfileConstraints, 0.0, -190_deg);
 	turnTo(-360_deg, 3_s);
@@ -191,7 +186,6 @@ void far6BallRushMid(void* args) {
 
 void far5BallAWP(void* args) {
 	far5BallRushMid(args);
-
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, MidRush4,
 																		 {
@@ -202,7 +196,7 @@ void far5BallAWP(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -285_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -300_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(5000);
 }
