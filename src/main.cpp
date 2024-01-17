@@ -113,64 +113,39 @@ void far6BallFullAWP(void* args) {
 	pros::Task::delay(2000);
 }
 
-void far6BallRush(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 60_deg));
+void far5BallRushMid(void* args) {
 
-	rightWingStateController.setCurrentBehavior(rightWingOut.wait(300_ms));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
 	intakeStateController(&intakeIntaking);
+	rightWingStateController(rightWingOut.wait(200_ms));
 
-	move(59.3_in, {61_in/second, 140_in/second/second, 0.0}, 4_deg/55_in, 60_deg);
+	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
 
-	pros::Task::delay(100);
-
-	turnTo(172_deg, 300_ms);
-
-	intakeStateController(&intakeEject);
-	rightWingStateController(&rightWingOut);
-
-	move(35_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 172_deg);
-
-	rightWingStateController();
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim2,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, MidRush1,
 																		 {
-																				 {0.1, [] () -> void {
+																				 {0.8, [] () -> void {
 																					 intakeStateController.setCurrentBehavior(&intakeEject);
 																				 }},
 																		 }));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-20_deg, 400_ms);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim4,
-																		 {
-																				 {0.1, [] () -> void {
-																					 intakeStateController.setCurrentBehavior(&intakeIntaking);
-																				 }},
-																				 {1.9, [] () -> void {
-																					 intakeStateController.setCurrentBehavior(&intakeEject);
-																				 }},
-																		 }));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(8_deg, 400_ms);
+	turnTo(0_deg, 600_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(23_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 8_deg);
+	move(17_in, speedProfileConstraints, 0.0, 0_deg);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim5,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
 																		 {
 																				 {0.0, [] () -> void {
 																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
 																				 }},
-																				 {0.3, [] () -> void {
+																				 {0.25, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
-																				 {0.47, [] () -> void {
+																				 {0.42, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingIn);
 																				 }},
 																		 }));
@@ -180,110 +155,56 @@ void far6BallRush(void* args) {
 	rightWingStateController.setCurrentBehavior(&rightWingIn);
 
 	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
-	turnTo(-255_deg, 660_ms);
+	turnTo(-230_deg, 300_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
-}
+	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -230_deg);
+	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
+	turnTo(-335_deg, 200_ms);
+	intakeStateController(&intakeIntaking);
+	move(48_in, speedProfileConstraints, 0.0, -335_deg);
 
-void far6BallRushElim(void* args) {
-	far6BallRush(nullptr);
+	turnTo(-230_deg, 500_ms);
+	intakeStateController(&intakeEject);
+	move(30_in, speedProfileConstraints, 0.0, -230_deg);
+	turnTo(-340_deg, 500_ms);
 
-	move(-10_in, speedProfileConstraints, -60_deg/-10_in, -270_deg);
+	intakeStateController(&intakeIntaking);
 
-	move(60_in, speedProfileConstraints, 0.0, -330_deg);
+	move(28_in, defaultProfileConstraints, 0.0, -340_deg);
 
-	pros::Task::delay(2000);
-}
-
-void far6BallRushAWP(void* args) {
-	far6BallRush(nullptr);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, Auto6BallElim6,
-																		 {
-																				 {0.6, [] () -> void {
-																					 leftWingStateController(&leftWingOut);
-																				 }},
-																		 }));
-
-	pros::Task::delay(2000);
+	turnTo(-180_deg, 400_ms);
+	intakeStateController(&intakeEject);
+	move(35_in, speedProfileConstraints, 0.0, -190_deg);
+	move(-10_in, speedProfileConstraints, 0.0, -190_deg);
+	turnTo(-360_deg, 3_s);
 }
 
 void far6BallRushMid(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -100.7_deg));
+	far5BallRushMid(args);
 
-	move(50_in, speedProfileConstraints, 0.0, -100.7_deg);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush1,
-																		 {
-																				 {0.9, [] () -> void {
-																					 intakeStateController.setCurrentBehavior(&intakeEject);
-																				 }},
-																		 }));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(0_deg, 600_ms);
-
-	move(20_in, speedProfileConstraints, 0.0, 0_deg);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
-																		 {
-																				 {0.0, [] () -> void {
-																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
-																				 }},
-																				 {0.6, [] () -> void {
-																					 leftWingStateController(&leftWingOut);
-																				 }},
-																				 {0.8, [] () -> void {
-																					 leftWingStateController();
-																				 }},
-																		 }));
-
-	drivetrainStateController.waitUntilDone()();
-
-	rightWingStateController.setCurrentBehavior(&rightWingIn);
-
-	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
-	turnTo(-255_deg, 660_ms);
-	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(16_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -255_deg);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush3,
-																		 {
-																				 {0.0, [] () -> void {
-																					 intakeStateController(&intakeIntaking);
-																				 }},
-																		 }));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(160_deg, 500_ms);
+	turnTo(-180_deg, 400_ms);
 	intakeStateController(&intakeEject);
-	move(30_in, speedProfileConstraints, 0.0, 160_deg);
-	move(-5_in, speedProfileConstraints, 0.0, 180_deg);
-	turnTo(0_deg, 800_ms);
+	move(35_in, speedProfileConstraints, 0.0, -190_deg);
+	move(-10_in, speedProfileConstraints, 0.0, -190_deg);
+	turnTo(-360_deg, 3_s);
+}
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush5,
-																		 {
-																				 {0.0, [] () -> void {
-																					 intakeStateController(&intakeIntaking);
-																				 }},
-																		 }));
+void far5BallAWP(void* args) {
+	far5BallRushMid(args);
 
-	move(-10_in, speedProfileConstraints, -90_deg/-10_in, 80_deg);
 
-	turnTo(-180_deg, 600_ms);
-	intakeStateController(&intakeEject);
-	move(35_in, speedProfileConstraints, 0.0, -180_deg);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 170_in/second/second, 0.0}, MidRush4,
+	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, MidRush4,
 																		 {
 																				 {0.8, [] () -> void {
-																					 leftWingStateController(&leftWingOut);
+																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
 																		 }));
 
 	drivetrainStateController.waitUntilDone()();
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -285_deg, drivetrainMutex, -1200));
+
+	pros::Task::delay(5000);
 }
 
 void skills(void* args) {
@@ -476,57 +397,6 @@ void safeCloseAWP(void* args) {
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -3000));
 
 	pros::Task::delay(20000);
-}
-
-void far4BallAWP(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 180_deg));
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({61_in/second, 200_in/second/second, 0.0}, Auto6BallPath1, {
-			{0.1, [] () -> void {
-				intakeStateController.setCurrentBehavior(&intakeIntaking);
-			}},
-			{1.2, [] () -> void {
-				leftWingStateController.setCurrentBehavior(&leftWingOut);
-				rightWingStateController.setCurrentBehavior(&rightWingOut);
-			}},
-			{1.5, [] () -> void {
-				leftWingStateController.useDefaultBehavior();
-				rightWingStateController.useDefaultBehavior();
-			}}
-	}));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(270_deg, 500_ms);
-
-	intakeStateController.setCurrentBehavior(&intakeEject);
-
-	move(20_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
-	move(-14.5_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, 270_deg);
-
-	turnTo(210_deg, 400_ms);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({64_in/second, 170_in/second/second, 0.0}, Auto6BallPath2, {
-			{0.6, [] () -> void {
-				intakeStateController.setCurrentBehavior(&intakeIntaking);
-			}},
-	}));
-
-	drivetrainStateController.waitUntilDone()();
-
-	turnTo(340_deg, 500_ms);
-
-	move(25_in, speedProfileConstraints, 0.0, 340_deg);
-
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath({64_in/second, 170_in/second/second, 0.0}, Auto4Ball1, {
-			{0.6, [] () -> void {
-				leftWingStateController(&leftWingOut);
-			}},
-	}));
-
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 240_deg, drivetrainMutex, -3000));
-
-	pros::Task::delay(15000);
 }
 
 void disruptorAuton(void* args) {
@@ -808,35 +678,22 @@ void autonomous() {
 
 	std::cout << "Init: Auton" << std::endl;
 
-#ifdef ELIM
 	#if AUTON == 0
 	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
-	auton.setAuton(far6BallRushElim);
+	auton.setAuton(far5BallAWP);
 	#elif AUTON == 2
-	auton.setAuton(disruptorAutonElim);
-	#elif AUTON == 3
-	auton.setAuton(closeRushMidElim);
-	#elif AUTON == 4
-	auton.setAuton(skills);
-	#endif // !1
-#else
-	#if AUTON == 0
 	auton.setAuton(far6BallFullAWP);
-	#elif AUTON == 1
-	auton.setAuton(far6BallRushAWP);
-	#elif AUTON == 2
-	auton.setAuton(far4BallAWP);
 	#elif AUTON == 3
-	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 4
 	auton.setAuton(disruptorAutonAWP);
+	#elif AUTON == 4
+	auton.setAuton(disruptorAutonElim);
 	#elif AUTON == 5
-	auton.setAuton(closeRushMidAWP);
+	auton.setAuton(safeCloseAWP);
 	#elif AUTON == 6
 	auton.setAuton(skills);
 	#endif // !1
-#endif
+
 	competitionController.setCurrentBehavior(&auton);
 }
 
@@ -844,19 +701,13 @@ void autonomous() {
 
 // SECTION Operator Control
 
-#ifdef ELIM
-#define SKILLS 4
-#else
-#define SKILLS 6
-#endif
-
 /**
  * Runs during operator/teleop control
  */
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == SKILLS
+#if AUTON == 6
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();

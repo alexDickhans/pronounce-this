@@ -8,10 +8,10 @@ os.system("pros v5 rm-all")
 
 elim = False
 
-if elim:
+if False:
     autons = ["FAR 6 MID RUSH", "FAR 6 BARRIER RUSH", "DISRUPTOR ELIM" , "CLOSE RUSH ELIM", "DISRUPTOR AWP", "SKILLS"]
 else:
-    autons = ["FAR 6 BALL AWP", "FAR 6 BARRIER RUSH AWP", "FAR 4 AWP" , "CLOSE SAFE AWP", "DISRUPTOR AWP", "CLOSE RUSH AWP", "SKILLS"]
+    autons = ["FAR 6 MID ELIM", "FAR 5 MID AWP", "FAR 6 SAFE AWP" , "CLOSE AWP DISRUPTOR", "CLOSE ELIM DISRUPTOR", "CLOSE SAFE AWP", "SKILLS"]
 
 offset = 1
 

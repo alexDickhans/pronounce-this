@@ -3,9 +3,9 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> MidRush5 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(59.322_in, 27.0904_in),
-PathPlanner::Point(59.1243_in, 42.7119_in),
-PathPlanner::Point(59.9153_in, 57.1469_in),
+PathPlanner::Point(60.5085_in, 45.2825_in),
+PathPlanner::Point(60.7063_in, 55.1695_in),
+PathPlanner::Point(63.0791_in, 59.9153_in),
 PathPlanner::Point(68.6158_in, 65.6497_in)
 ,false),
 nullptr},
