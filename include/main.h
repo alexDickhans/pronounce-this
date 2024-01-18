@@ -35,9 +35,7 @@
 
 #include "pathPlanner/pathPlanner.hpp"
 
-#include "defines.h"
 #include "auton.h"
-#include "driver.h"
 
 // Chassis
 #include "chassis/abstractDrivetrain.hpp"
@@ -121,6 +119,13 @@
 #include "AutoPaths/TestPath.hpp"
 #include "AutoPaths/DisruptorAuton1.hpp"
 #include "AutoPaths/DisruptorAuton2.hpp"
+#include "AutoPaths/4Ball1.hpp"
+#include "AutoPaths/CloseMidRush2.hpp"
+#include "AutoPaths/Mid6BallRush1.hpp"
+#include "AutoPaths/Mid6BallRush2.hpp"
+#include "AutoPaths/Mid6BallRush3.hpp"
+#include "AutoPaths/Mid6BallRush4.hpp"
+#include "AutoPaths/Mid6BallRush5.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
