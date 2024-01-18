@@ -214,7 +214,7 @@ void skills(void* args) {
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills1));
 	drivetrainStateController.waitUntilDone()();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 20.5_deg, drivetrainMutex, -1200));
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 18.5_deg, drivetrainMutex, -1200));
 
 	// Wait until the catapult triballs shot has increased to 46 triballs
 	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
