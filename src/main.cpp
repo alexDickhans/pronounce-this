@@ -135,7 +135,7 @@ void far5BallRushMid(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(17_in, speedProfileConstraints, 0.0, 0_deg);
+	move(18_in, speedProfileConstraints, 0.0, 0_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
 																		 {
@@ -345,6 +345,8 @@ void skills(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
+	move(10_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 	move(10_in, speedProfileConstraints, 0.0, -270_deg);
 	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 

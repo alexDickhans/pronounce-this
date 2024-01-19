@@ -18,14 +18,14 @@ PathPlanner::Point(132.486_in, 25.5085_in)
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(132.091_in, 25.7062_in),
-PathPlanner::Point(138.653_in, 38.7818_in),
-PathPlanner::Point(141.897_in, 51.5236_in),
-PathPlanner::Point(141.978_in, 70_in)
+PathPlanner::Point(136.873_in, 39.375_in),
+PathPlanner::Point(137.744_in, 51.5236_in),
+PathPlanner::Point(138.814_in, 69.8023_in)
 ,true),
 nullptr},
 {PathPlanner::BezierSegment(
 PathPlanner::Point(137.825_in, 70_in),
-PathPlanner::Point(137.707_in, 84.7193_in),
+PathPlanner::Point(138.893_in, 85.3125_in),
 PathPlanner::Point(136.777_in, 112.459_in),
 PathPlanner::Point(125.763_in, 123.983_in)
 ,true),
