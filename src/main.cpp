@@ -372,8 +372,6 @@ void skills(void* args) {
 void safeCloseAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
 
-	pros::Task::delay(8000);
-
 	move(10_in, defaultProfileConstraints, 0.0);
 
 	intakeStateController.setCurrentBehavior(&intakeEject);
@@ -676,19 +674,19 @@ void competition_initialize() {
  */
 void autonomous() {
 
-	std::cout << "Init: Auton" << std::endl;
+	std::cout << "Init: Auton" << AUTON << std::endl;
 
 	#if AUTON == 0
 	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
 	auton.setAuton(far5BallAWP);
-	#elif AUTON == 3
+	#elif AUTON == 2
 	auton.setAuton(disruptorAutonAWP);
-	#elif AUTON == 4
+	#elif AUTON == 3
 	auton.setAuton(disruptorAutonElim);
-	#elif AUTON == 5
+	#elif AUTON == 4
 	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 6
+	#elif AUTON == 5
 	auton.setAuton(closeRushMidAWP);
 	#elif AUTON == 6
 	auton.setAuton(closeRushMidElim);
