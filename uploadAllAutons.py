@@ -21,9 +21,7 @@ autons = [
 offset = 1
 
 if len(sys.argv) > 1:
-
-
-for i in range(len(autons)):
+    i = int(sys.argv[1])
     f = open("include/auton.h", "w")
     f.write("#define AUTON " + str(i) + "\n")
     f.close()
@@ -33,3 +31,12 @@ for i in range(len(autons)):
     print ("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
 
     os.system("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
+else:
+    for i in range(len(autons)):
+        f = open("include/auton.h", "w")
+        f.write("#define AUTON " + str(i) + "\n")
+        f.close()
+
+        print ("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
+
+        os.system("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
