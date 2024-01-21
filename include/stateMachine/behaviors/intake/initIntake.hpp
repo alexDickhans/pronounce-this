@@ -22,7 +22,7 @@ namespace Pronounce {
 		intakeSequence.addState(&intakeStateController, intakeIntaking.until([=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
 		intakeSequence.addState(&intakeStateController, &intakeHold);
 
-		outtakeSequence.addState(&intakeStateController, intakeIntaking.wait(200_ms));
+		outtakeSequence.addState(&intakeStateController, intakeIntaking.wait(170_ms));
 		outtakeSequence.addState(&intakeStateController, intakeEject.wait(500_ms));
     }
 } // namespace Pronounce

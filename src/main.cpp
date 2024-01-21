@@ -131,21 +131,21 @@ void far5BallRushMid(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(0_deg, 600_ms);
+	turnTo(2_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(18_in, speedProfileConstraints, 0.0, 0_deg);
+	move(19_in, speedProfileConstraints, 0.0, 2_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
 																		 {
 																				 {0.0, [] () -> void {
 																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
 																				 }},
-																				 {0.25, [] () -> void {
+																				 {0.20, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
-																				 {0.39, [] () -> void {
+																				 {0.41, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingIn);
 																				 }},
 																		 }));
@@ -155,17 +155,17 @@ void far5BallRushMid(void* args) {
 	rightWingStateController.setCurrentBehavior(&rightWingIn);
 
 	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
-	turnTo(-230_deg, 300_ms);
+	turnTo(-245_deg, 500_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(18_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -230_deg);
+	move(18_in, {61_in/second, 150_in/second/second, 0.0}, 0.0, -245_deg, 0.0, -60_in/second);
 	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
 
-	turnTo(-223_deg, 500_ms);
+	turnTo(-230_deg, 400_ms);
 	intakeExtensionStateController(&outtakeSequence);
-	move(38_in, speedProfileConstraints, 20_deg/30_in, -223_deg);
+	move(38_in, speedProfileConstraints, 20_deg/30_in, -230_deg);
 }
 
 void far6BallRushMid(void* args) {
@@ -478,18 +478,18 @@ void closeRushMid(void* args) {
 																				 {2.5, [] () -> void {
 																					 leftWingStateController(&leftWingOut);
 																				 }},
-																				 {2.8, [] () -> void {
+																				 {2.78, [] () -> void {
 																					 leftWingStateController(&leftWingIn);
 																				 }},
 																		 }));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-360_deg, 800_ms);
+	turnTo(15_deg, 800_ms);
 
 	intakeStateController(&intakeEject);
 
-	move(25_in, speedProfileConstraints, 0.0, -360_deg);
+	move(26_in, speedProfileConstraints, 0.0, 15_deg);
 }
 
 void closeRushMidAWP(void* args) {
@@ -509,7 +509,7 @@ void closeRushMidAWP(void* args) {
 void closeRushMidElim(void* args) {
 	closeRushMid(args);
 
-	move(-3_in, speedProfileConstraints, 0.0, -355_deg);
+	move(-8_in, speedProfileConstraints, 0.0, -355_deg);
 
 	turnTo(-180_deg, 800_ms);
 
