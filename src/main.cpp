@@ -131,21 +131,21 @@ void far5BallRushMid(void* args) {
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(0_deg, 600_ms);
+	turnTo(2_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(17_in, speedProfileConstraints, 0.0, 0_deg);
+	move(19_in, speedProfileConstraints, 0.0, 2_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Auto6BallElim5,
 																		 {
 																				 {0.0, [] () -> void {
 																					 rightWingStateController.setCurrentBehavior(&rightWingOut);
 																				 }},
-																				 {0.25, [] () -> void {
+																				 {0.20, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingOut);
 																				 }},
-																				 {0.39, [] () -> void {
+																				 {0.41, [] () -> void {
 																					 leftWingStateController.setCurrentBehavior(&leftWingIn);
 																				 }},
 																		 }));
@@ -155,17 +155,17 @@ void far5BallRushMid(void* args) {
 	rightWingStateController.setCurrentBehavior(&rightWingIn);
 
 	move(6_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -90_deg);
-	turnTo(-230_deg, 300_ms);
+	turnTo(-245_deg, 500_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(18_in, {61_in/second, 200_in/second/second, 0.0}, 0.0, -230_deg);
+	move(18_in, {61_in/second, 150_in/second/second, 0.0}, 0.0, -245_deg, 0.0, -60_in/second);
 	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
 
-	turnTo(-223_deg, 500_ms);
+	turnTo(-230_deg, 400_ms);
 	intakeExtensionStateController(&outtakeSequence);
-	move(38_in, speedProfileConstraints, 20_deg/30_in, -223_deg);
+	move(38_in, speedProfileConstraints, 20_deg/30_in, -230_deg);
 }
 
 void far6BallRushMid(void* args) {
@@ -347,6 +347,8 @@ void skills(void* args) {
 
 	move(10_in, speedProfileConstraints, 0.0, -270_deg);
 	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
+	move(10_in, speedProfileConstraints, 0.0, -270_deg);
+	move(-15_in, speedProfileConstraints, 0.0, -255_deg);
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints,
 					Skills6,
@@ -369,8 +371,6 @@ void skills(void* args) {
 
 void safeCloseAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
-
-	pros::Task::delay(8000);
 
 	move(10_in, defaultProfileConstraints, 0.0);
 
@@ -478,18 +478,18 @@ void closeRushMid(void* args) {
 																				 {2.5, [] () -> void {
 																					 leftWingStateController(&leftWingOut);
 																				 }},
-																				 {2.8, [] () -> void {
+																				 {2.78, [] () -> void {
 																					 leftWingStateController(&leftWingIn);
 																				 }},
 																		 }));
 
 	drivetrainStateController.waitUntilDone()();
 
-	turnTo(-360_deg, 800_ms);
+	turnTo(15_deg, 800_ms);
 
 	intakeStateController(&intakeEject);
 
-	move(25_in, speedProfileConstraints, 0.0, -360_deg);
+	move(26_in, speedProfileConstraints, 0.0, 15_deg);
 }
 
 void closeRushMidAWP(void* args) {
@@ -509,7 +509,7 @@ void closeRushMidAWP(void* args) {
 void closeRushMidElim(void* args) {
 	closeRushMid(args);
 
-	move(-3_in, speedProfileConstraints, 0.0, -355_deg);
+	move(-8_in, speedProfileConstraints, 0.0, -355_deg);
 
 	turnTo(-180_deg, 800_ms);
 
@@ -674,19 +674,19 @@ void competition_initialize() {
  */
 void autonomous() {
 
-	std::cout << "Init: Auton" << std::endl;
+	std::cout << "Init: Auton" << AUTON << std::endl;
 
 	#if AUTON == 0
 	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
 	auton.setAuton(far5BallAWP);
-	#elif AUTON == 3
+	#elif AUTON == 2
 	auton.setAuton(disruptorAutonAWP);
-	#elif AUTON == 4
+	#elif AUTON == 3
 	auton.setAuton(disruptorAutonElim);
-	#elif AUTON == 5
+	#elif AUTON == 4
 	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 6
+	#elif AUTON == 5
 	auton.setAuton(closeRushMidAWP);
 	#elif AUTON == 6
 	auton.setAuton(closeRushMidElim);

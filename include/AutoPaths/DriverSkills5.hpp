@@ -3,8 +3,8 @@
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 using namespace Pronounce;
 std::vector<std::pair<PathPlanner::BezierSegment, Pronounce::SinusoidalVelocityProfile*>> DriverSkills5 = {{PathPlanner::BezierSegment(
-PathPlanner::Point(79.2935_in, 116.864_in),
-PathPlanner::Point(74.548_in, 100.452_in),
+PathPlanner::Point(75.9319_in, 116.666_in),
+PathPlanner::Point(72.5706_in, 100.65_in),
 PathPlanner::Point(56.1581_in, 106.582_in),
 PathPlanner::Point(53.5876_in, 75.9322_in)
 ,false),
