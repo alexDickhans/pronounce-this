@@ -610,6 +610,10 @@ void closeRushMidElim(void* args) {
 		// Flywheel
 		lv_label_set_text(flywheelLabel.get(), ("Triball count: " + std::to_string(teleop.getTriballCount())).c_str());
 
+		auto gpsStatus = gps.get_status();
+
+		telemetryRadio.transmit("[" + std::to_string(static_cast<int>((gpsStatus.x * 350.0 / 1.8 + 350))) + "," + std::to_string(static_cast<int>((gpsStatus.y * 350.0 / 1.8 + 350))) + "]\n");
+
 		pros::Task::delay(50);
 	}
 }
