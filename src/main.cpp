@@ -360,10 +360,7 @@ void skills(void* args) {
 							{3.0, [] () -> void {
 								rightWingStateController(&rightWingIn);
 								leftWingStateController(&leftWingIn);
-							}},
-							{4.0, [] () -> void {
-								blockerStateController(&blockerOut);
-							}},
+							}}
 					}));
 
 	drivetrainStateController.waitUntilDone()();
