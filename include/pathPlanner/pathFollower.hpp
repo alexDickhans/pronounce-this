@@ -11,6 +11,7 @@
 #include "api.h"
 #include <math.h>
 #include "utils/utils.hpp"
+#include "json/asset.hpp"
 
 namespace PathPlanner {
 
@@ -64,6 +65,10 @@ namespace PathPlanner {
 			movingMutex.give();
 
 			return calculate();
+		}
+
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, asset path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+			json
 		}
 
 		PathFollower* calculate() {
