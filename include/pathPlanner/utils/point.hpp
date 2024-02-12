@@ -3,6 +3,9 @@
 #include <cmath>
 #include <string>
 #include "../../units/units.hpp"
+#include "json/json.hpp"
+
+using json = nlohmann::json;
 
 namespace PathPlanner {
 
@@ -37,6 +40,11 @@ namespace PathPlanner {
         Point(QLength x, QLength y) {
 			this->x = x;
 			this->y = y;
+		}
+
+		explicit Point(json jsonObject) {
+			this->x = jsonObject["x"].template get<double>();
+			this->y = jsonObject["y"].template get<double>();
 		}
 
 		/**
