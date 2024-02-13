@@ -38,6 +38,10 @@ namespace Pronounce {
 				leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
 				}));
+
+				if (!hangReleaseStateController.isDone()) {
+					drivetrainStateController(&hang);
+				}
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
@@ -86,18 +90,18 @@ namespace Pronounce {
 			controller2->update();
 
 			if (controller1->get_digital(E_CONTROLLER_DIGITAL_A) && controller1->get_digital(E_CONTROLLER_DIGITAL_LEFT) && drivetrainStateController.isDone()) {
-				drivetrainStateController(&hang);
+				hangReleaseStateController(&hangReleaseOut);
 			}
 
 			hang.setTier(hangList[hangIndex % 7]);
 
 			if (pros::millis() % 100 / 10 == 0 || pros::millis() % 100 / 10 == 5) {
 
-				char* upperTier = (char*) malloc(2*sizeof(char));
+				char* upperTier = (char*) calloc((2+hangIndex), sizeof(char));
 
 				snprintf(upperTier, 2, "%c", toupper(hangList[hangIndex % 7]));
 
-				controller1pros.set_text(1, 1, std::to_string(hang.getTargetPosition().Convert(inch)) + upperTier);
+				controller1pros.set_text(1, 1, upperTier);
 
 				free(upperTier);
 			}

@@ -45,10 +45,11 @@ namespace Pronounce {
 			startDistance = drivetrain.getDistanceSinceReset() + hangDistance;
 
 			startTime = pros::millis() * 1_ms;
+	        drivetrain.tankSteerVoltage(0.2e4, power*0.2e4);
         }
 
         void update() override {
-			if (pros::millis() * 1_ms - 100_ms > startTime) {
+			if (pros::millis() * 1_ms - 200_ms > startTime) {
 				drivetrain.tankSteerVoltage(power*1.2e4, power*1.2e4);
 			}
         }
