@@ -11,7 +11,6 @@ namespace Pronounce {
 		stateControllers.addBehavior(&catapultStateController);
 		stateControllers.addBehavior(&leftWingStateController);
 		stateControllers.addBehavior(&rightWingStateController);
-		stateControllers.addBehavior(&blockerStateController);
 	}
 
 	class Enabled : public Behavior {
@@ -35,8 +34,7 @@ namespace Pronounce {
 			// See if the distance sensor detects a new object within 1 inch of the sensor
 			if (catapultDistance.get() * 1_mm <
 				0.75_in // see if an object is detected by the distance sensor on the catapult
-				&& lastDistance > 0.75_in && blockerStateController.getCurrentBehavior() !=
-											 &blockerIn && pros::millis()*1_ms - lastCount > 0.25_s) { // If the last distance sensor reading was greater than an inch indicates that the
+				&& lastDistance > 0.75_in && pros::millis()*1_ms - lastCount > 0.25_s) { // If the last distance sensor reading was greater than an inch indicates that the
 				// triball is moving closer to the sensor, meaning that there is a new triball
 
 				// increase the count of shot triballs

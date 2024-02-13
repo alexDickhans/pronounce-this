@@ -34,37 +34,44 @@ namespace Pronounce {
 
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(18, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive2(19, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor leftDrive3(20, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive1(11, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive2(12, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive1(19, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive2(18, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive3(17, pros::E_MOTOR_GEAR_600, true);
+    pros::Motor leftDrive4(16, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive1(15, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive2(12, pros::E_MOTOR_GEAR_600, false);
 	pros::Motor rightDrive3(13, pros::E_MOTOR_GEAR_600, false);
+    pros::Motor rightDrive4(14, pros::E_MOTOR_GEAR_600, true);
 
-	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3 });
-	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3 });
+	pros::Motor_Group leftDriveMotors({ leftDrive1, leftDrive2, leftDrive3, leftDrive4 });
+	pros::Motor_Group rightDriveMotors({ rightDrive1, rightDrive2, rightDrive3, rightDrive4 });
 
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(18_in, 61_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(17_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
-	pros::Motor intakeMotor(15, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor_Group catapultMotors({17, -14});
+	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor_Group catapultMotors({-10});
 
-	pros::ADIDigitalOut leftSolenoid({3, 'A'}, false);
-	pros::ADIDigitalOut rightSolenoid({3, 'B'}, false);
-	pros::ADIDigitalOut blockerSolenoid({3, 'C'}, false);
+	pros::ADIDigitalOut leftSolenoid('A', false);
+	pros::ADIDigitalOut rightSolenoid('B', false);
+	pros::ADIDigitalOut hangPtoSolenoid('C', false);
+	pros::ADIDigitalOut hangReleaseSolenoid('D', false);
+	pros::ADIDigitalOut AWPSolenoid('F', false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 
-	pros::Distance catapultDistance(2);
+	pros::Distance catapultDistance(8);
 
 	// Inertial Measurement Unit
-	pros::Imu imu(16);
-	IMU imuOrientation(16);
+	pros::Imu imu(9);
+	IMU imuOrientation(9);
 
 	pros::Mutex odometryMutex;
+
+	PT::TelemetryRadio telemetryRadio(1, new PT::PassThroughEncoding());
+	pros::Gps gps(4, 0.0, 0.125);
 
 	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
 
@@ -74,19 +81,18 @@ namespace Pronounce {
 
 		logger = PT::Logger::getInstance();
 
-
-		telemetryManager = PT::TelemetryManager::getInstance();
-		telemetryManager->addTransmitter(std::make_shared<PT::TelemetryRadio>(1, new PT::PassThroughEncoding()));
+//		telemetryManager = PT::TelemetryManager::getInstance();
+//		telemetryManager->addTransmitter(std::make_shared<PT::TelemetryRadio>(1, new PT::PassThroughEncoding()));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<uint32_t>>("System", "Millis", pros::millis));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("Catapult", "Wattage", []() -> double {return catapultMotors.get_current_draws().at(0);}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("CatapultSpeed", "Speed", []() -> double {return catapultMotors.get_actual_velocities().at(0);}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("LeftDrive", "Speed", []() -> double {return leftDrive1.get_actual_velocity();}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("RightDrive", "Speed", []() -> double {return rightDrive1.get_actual_velocity();}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualSpeed", "Speed", []() -> double {return drivetrain.getSpeed().Convert(inch/second);}));
-		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetSpeed", "Speed", []() -> double {return drivetrain.getTargetSpeed().Convert(inch/second);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualSpeed", "Speed", []() -> double {return drivetrain.getSpeed().Convert(inch/second);}));
+//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetSpeed", "Speed", []() -> double {return drivetrain.getTargetSpeed().Convert(inch/second);}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualPosition", "Position", []() -> double {return drivetrain.getTargetDistance().Convert(inch);}));
 //		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetPosition", "Position", []() -> double {return drivetrain.getDistanceSinceReset().Convert(inch);}));
-		telemetryManager->setUpdateTime(10);
+//		telemetryManager->setUpdateTime(10);
 //		telemetryManager->enableUpdateScheduler();
 
 		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
@@ -109,7 +115,7 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
-		if (pros::c::registry_get_plugged_type(15) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(imu._port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
 
 			while (imu.is_calibrating())
