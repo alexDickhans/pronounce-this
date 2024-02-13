@@ -13,8 +13,10 @@ namespace Pronounce {
 	private:
 		AbstractJoystick* controller1;
 		AbstractJoystick* controller2;
+		pros::Controller controller1pros;
+		int hangIndex = 6;
 	public:
-		Teleop(AbstractJoystick* controller1, AbstractJoystick* controller2) : Enabled("Teleop") {
+		Teleop(AbstractJoystick* controller1, AbstractJoystick* controller2) : Enabled("Teleop"), controller1pros(pros::E_CONTROLLER_MASTER) {
 			this->controller1 = controller1;
 			this->controller2 = controller2;
 		}
@@ -36,6 +38,10 @@ namespace Pronounce {
 				leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
 				}));
+
+				if (!hangReleaseStateController.isDone()) {
+					drivetrainStateController(&hang);
+				}
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
@@ -54,15 +60,24 @@ namespace Pronounce {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [=] () -> void {
-				blockerStateController.setCurrentBehavior(blockerOut.until([=] () -> bool {
-					return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_Y);}));
-			});
-
 			controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&] () -> void {
 				catapultStateController.setCurrentBehavior(catapultDejam.until([&] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_RIGHT);
 				}));
+			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_DOWN, [&] () -> void {
+				hangIndex--;
+			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_UP, [&] () -> void {
+				hangIndex++;
+
+				hang.setTargetPosition(hangMap[hangList[hangIndex]]);
+
+				if (hang.hasHung()) {
+					drivetrainStateController(&hang);
+				}
 			});
 
 			Enabled::initialize();
@@ -73,6 +88,23 @@ namespace Pronounce {
 
 			controller1->update();
 			controller2->update();
+
+			if (controller1->get_digital(E_CONTROLLER_DIGITAL_A) && controller1->get_digital(E_CONTROLLER_DIGITAL_LEFT) && drivetrainStateController.isDone()) {
+				hangReleaseStateController(&hangReleaseOut);
+			}
+
+			hang.setTier(hangList[hangIndex % 7]);
+
+			if (pros::millis() % 100 / 10 == 0 || pros::millis() % 100 / 10 == 5) {
+
+				char* upperTier = (char*) calloc((2+hangIndex), sizeof(char));
+
+				snprintf(upperTier, 2, "%c", toupper(hangList[hangIndex % 7]));
+
+				controller1pros.set_text(1, 1, upperTier);
+
+				free(upperTier);
+			}
 		}
 
 		void exit() override {
