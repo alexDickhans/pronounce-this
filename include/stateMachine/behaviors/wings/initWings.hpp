@@ -11,6 +11,7 @@ namespace Pronounce {
 	Wing rightWingOut("WingOut", rightSolenoid, true);
 	Wing hangReleaseIn("WingIn", hangReleaseSolenoid, false);
 	Wing hangReleaseOut("WingOut", hangReleaseSolenoid, true);
+	Wing hangReleaseDown("WingOut", hangReleaseSolenoid, false);
 	Wing awpIn("WingIn", AWPSolenoid, false);
 	Wing awpOut("WingOut", AWPSolenoid, true);
 

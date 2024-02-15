@@ -11,6 +11,7 @@
 #include "api.h"
 #include <math.h>
 #include "utils/utils.hpp"
+#include "json/asset.hpp"
 
 namespace PathPlanner {
 
@@ -26,6 +27,7 @@ namespace PathPlanner {
 		std::function<Angle()> angleFunction;
 
 		std::vector<std::pair<double, std::function<void()>>> commands;
+		std::unordered_map<std::string, std::function<void()>> commandMap;
 		int commandsIndex = 0;
 
 		pros::Mutex movingMutex;
@@ -56,6 +58,10 @@ namespace PathPlanner {
 			calculate();
 		}
 
+		void addCommandMapping(const std::string& name, std::function<void()> function) {
+			commandMap[name] = std::move(function);
+		}
+
 		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
@@ -64,6 +70,55 @@ namespace PathPlanner {
 			movingMutex.give();
 
 			return calculate();
+		}
+
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
+			movingMutex.take();
+			this->defaultProfileConstraints = defaultProfileConstraints;
+			pathSegments = std::move(path);
+			this->commands = std::move(functions);
+			movingMutex.give();
+
+			return calculate();
+		}
+
+		PathFollower* changePath(asset path) {
+			json parsed_path = open_asset_as_json(path);
+
+			std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> parsedPath;
+
+			auto segments = parsed_path["segments"];
+
+			for (auto segment : segments) {
+				auto constraints = segment["constraints"];
+				auto paths = segment["paths"];
+
+				parsedPath.emplace_back(
+						BezierSegment(
+								Point(paths[0]),
+								Point(paths[1]),
+								Point(paths[2]),
+						        Point(paths[3]),
+				                segment["inverted"]),
+							new Pronounce::SinusoidalVelocityProfile(0.0,
+																	 Pronounce::ProfileConstraints{
+							constraints["velocity"].template get<double>() * (inch/second).Convert(metre/second),
+							constraints["accel"].template get<double>() * (inch/second/second).Convert(metre/second/second),
+							0.0
+							        }));
+			}
+
+			std::vector<std::pair<double, std::function<void()>>> functions;
+
+			auto commands = parsed_path["commands"];
+
+			for (auto command : commands) {
+					functions.emplace_back(
+						command["t"].template get<double>(),
+						commandMap.count(command["name"].template get<std::string>()) == 1 ? commandMap[command["name"].template get<std::string>()] : [&]() -> void {});
+			}
+
+			return changePath(defaultProfileConstraints, parsedPath, functions);
 		}
 
 		PathFollower* calculate() {

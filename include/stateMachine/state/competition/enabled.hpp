@@ -11,6 +11,8 @@ namespace Pronounce {
 		stateControllers.addBehavior(&catapultStateController);
 		stateControllers.addBehavior(&leftWingStateController);
 		stateControllers.addBehavior(&rightWingStateController);
+		stateControllers.addBehavior(&hangReleaseStateController);
+		stateControllers.addBehavior(&awpStateController);
 	}
 
 	class Enabled : public Behavior {

@@ -16,7 +16,7 @@ namespace Pronounce {
 	        {'d', 100_in},
 	        {'e', 105_in},
 	        {'f', 105_in},
-	        {'g', 110_in}};
+	        {'g', 230_in}};
 
     class Hang : public Behavior {
     private:

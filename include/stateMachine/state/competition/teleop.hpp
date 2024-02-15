@@ -35,19 +35,27 @@ namespace Pronounce {
 			catapultStateController.initialize();
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
-				leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
-				}));
 
 				if (!hangReleaseStateController.isDone()) {
 					drivetrainStateController(&hang);
+				} else {
+					leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+					}));
+					rightWingStateController.setCurrentBehavior(rightWingOut.until([&] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+					}));
 				}
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
-				rightWingStateController.setCurrentBehavior(rightWingOut.until([&] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);
-				}));
+				intakeExtensionStateController.useDefaultBehavior();
+				intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+
+				if (!hangReleaseStateController.isDone()) {
+					hangReleaseStateController(&hangReleaseDown);
+				}
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
@@ -55,9 +63,9 @@ namespace Pronounce {
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
-				intakeExtensionStateController.useDefaultBehavior();
-				intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);}));
+				awpStateController.setCurrentBehavior(awpOut.until([&] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);
+				}));
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&] () -> void {
