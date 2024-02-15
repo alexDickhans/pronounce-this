@@ -97,36 +97,6 @@
 
 #include "stateMachine/state/competition/auton.hpp"
 
-#include "AutoPaths/6ball1.hpp"
-#include "AutoPaths/6ball2.hpp"
-#include "AutoPaths/6ball3.hpp"
-#include "AutoPaths/6ball4.hpp"
-#include "AutoPaths/CloseAWP1.hpp"
-#include "AutoPaths/CloseAWP2.hpp"
-#include "AutoPaths/Skills1.hpp"
-#include "AutoPaths/Skills2.hpp"
-#include "AutoPaths/Skills3.hpp"
-#include "AutoPaths/Skills4.hpp"
-#include "AutoPaths/Skills5.hpp"
-#include "AutoPaths/Skills6.hpp"
-#include "AutoPaths/6BallElim2.hpp"
-#include "AutoPaths/6BallElim4.hpp"
-#include "AutoPaths/6BallElim5.hpp"
-#include "AutoPaths/6BallElim6.hpp"
-#include "AutoPaths/SafeCloseAWP1.hpp"
-#include "AutoPaths/DriverSkills5.hpp"
-#include "AutoPaths/DriverSkills6.hpp"
-#include "AutoPaths/TestPath.hpp"
-#include "AutoPaths/DisruptorAuton1.hpp"
-#include "AutoPaths/DisruptorAuton2.hpp"
-#include "AutoPaths/4Ball1.hpp"
-#include "AutoPaths/CloseMidRush2.hpp"
-#include "AutoPaths/Mid6BallRush1.hpp"
-#include "AutoPaths/Mid6BallRush2.hpp"
-#include "AutoPaths/Mid6BallRush3.hpp"
-#include "AutoPaths/Mid6BallRush4.hpp"
-#include "AutoPaths/Mid6BallRush5.hpp"
-
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
  * Motor, you can use the namespace with the following commented out line.

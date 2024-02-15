@@ -37,6 +37,5 @@ namespace Pronounce {
 	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, 8000.0/64.0, 61_in/second, {});
 
 	void initDrivetrain() {
-
 	}
 } // namespace Pronounce

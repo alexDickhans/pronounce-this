@@ -20,27 +20,60 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/customTargets.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/pronounce-this.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/tools/External Tools.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/close_mid_rush.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_awp.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/safe_close_awp.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/test.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/3Ball2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/4Ball1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim4.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim5.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim6.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball3.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball4.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseAWP1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseAWP2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseMidRush2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DisruptorAuton1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DisruptorAuton2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DriverSkills5.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DriverSkills6.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush3.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush4.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush5.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/SafeCloseAWP1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills2.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills3.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills4.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills5.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills6.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/TestPath.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AutoPaths/abi.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pathTest.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/runPathTest.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pathPlanner/utils/bezierSegment.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/utils/bezierSegment.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/utils/utils.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils/utils.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ClangdSettings">
-    <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -95,10 +128,13 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;C/C++ File.carl.cpp.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
+    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;new-path-planner&quot;,
@@ -110,7 +146,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Native Application.all">
+  <component name="RunManager" selected="Python.uploadAllAutons">
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -141,19 +177,50 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="carl.cpp" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="carl.cpp" CONFIG_NAME="carl.cpp">
+      <option name="compilerOptions" value="-Iinclude/ -std=c++14" />
+      <option name="sourceFile" value="carl.cpp" />
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="uploadAllAutons" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="pronounce-this" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/uploadAllAutons.py" />
+      <option name="PARAMETERS" value="0" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="C/C++ File.carl.cpp" />
       <item itemvalue="Native Application.all" />
       <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
       <item itemvalue="Native Application.cc-sysroot" />
       <item itemvalue="Native Application.cxx-sysroot" />
       <item itemvalue="Native Application.Makefile" />
+      <item itemvalue="Python.uploadAllAutons" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="C/C++ File.carl.cpp" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -165,6 +232,7 @@
       <updated>1707688474218</updated>
       <workItem from="1707688475293" duration="2760000" />
       <workItem from="1707697684971" duration="11000" />
+      <workItem from="1707929589082" duration="7618000" />
     </task>
     <servers />
   </component>

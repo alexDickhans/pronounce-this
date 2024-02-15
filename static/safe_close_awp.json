@@ -1,0 +1,1 @@
+{"segments":[{"inverted":false,"paths":[{"x":0.493,"y":3.301},{"x":0.325,"y":3.091},{"x":0.428,"y":2.698},{"x":0.481,"y":2.324}],"constraints":{"velocity":16,"accel":120}}],"commands":[{"t":0.0,"name":"awpOut"},{"t":0.0,"name":"awpIn"}]}

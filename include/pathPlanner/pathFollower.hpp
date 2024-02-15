@@ -72,7 +72,7 @@ namespace PathPlanner {
 			return calculate();
 		}
 
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions = {}) {
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
@@ -84,13 +84,6 @@ namespace PathPlanner {
 
 		PathFollower* changePath(asset path) {
 			json parsed_path = open_asset_as_json(path);
-
-			auto defaultConstraints = parsed_path["defaultConstraints"];
-			Pronounce::ProfileConstraints defaultProfileConstraints = {
-					defaultConstraints["velocity"].template get<double>(),
-					defaultConstraints["accel"].template get<double>(),
-					defaultConstraints["jerk"].template get<double>(),
-			};
 
 			std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> parsedPath;
 
@@ -105,12 +98,13 @@ namespace PathPlanner {
 								Point(paths[0]),
 								Point(paths[1]),
 								Point(paths[2]),
-						        Point(paths[3])),
+						        Point(paths[3]),
+				                segment["inverted"]),
 							new Pronounce::SinusoidalVelocityProfile(0.0,
 																	 Pronounce::ProfileConstraints{
-							constraints["velocity"].template get<double>(),
-							constraints["accel"].template get<double>(),
-							constraints["jerk"].template get<double>()
+							constraints["velocity"].template get<double>() * (inch/second).Convert(metre/second),
+							constraints["accel"].template get<double>() * (inch/second/second).Convert(metre/second/second),
+							0.0
 							        }));
 			}
 
@@ -121,7 +115,7 @@ namespace PathPlanner {
 			for (auto command : commands) {
 					functions.emplace_back(
 						command["t"].template get<double>(),
-						commandMap[command["name"].template get<std::string>()]);
+						commandMap.count(command["name"].template get<std::string>()) == 1 ? commandMap[command["name"].template get<std::string>()] : [&]() -> void {});
 			}
 
 			return changePath(defaultProfileConstraints, parsedPath, functions);
