@@ -65,8 +65,8 @@ namespace Pronounce {
 	pros::Distance catapultDistance(8);
 
 	// Inertial Measurement Unit
-	pros::Imu imu(9);
-	IMU imuOrientation(9);
+	pros::Imu imu(2);
+	IMU imuOrientation(2);
 
 	pros::Mutex odometryMutex;
 
