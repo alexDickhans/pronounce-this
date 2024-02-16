@@ -17,6 +17,7 @@ namespace Pronounce {
 
     Sequence intakeSequence("IntakeSequence");
 	Sequence outtakeSequence("OuttakeSequence");
+	Sequence deploySequence("StartSequence");
 
     void initIntake() {
 		intakeSequence.addState(&intakeStateController, intakeIntaking.until([=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
@@ -24,5 +25,8 @@ namespace Pronounce {
 
 		outtakeSequence.addState(&intakeStateController, intakeIntaking.wait(170_ms));
 		outtakeSequence.addState(&intakeStateController, intakeEject.wait(500_ms));
+
+		deploySequence.addState(&intakeStateController, intakeEject.wait(300_ms));
+		deploySequence.addState(&intakeStateController, &intakeIntaking);
     }
 } // namespace Pronounce

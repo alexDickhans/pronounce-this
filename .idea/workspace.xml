@@ -5,10 +5,13 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
+      <config projectName="pronounce-this" targetName="library" />
+      <config projectName="pronounce-this" targetName="template" />
       <config projectName="pronounce-this" targetName="quick" />
       <config projectName="pronounce-this" targetName="bin" />
       <config projectName="pronounce-this" targetName="cc-sysroot" />
       <config projectName="pronounce-this" targetName="Makefile" />
+      <config projectName="pronounce-this" targetName="clean-template" />
       <config projectName="pronounce-this" targetName="cxx-sysroot" />
       <config projectName="pronounce-this" targetName="all" />
     </generated>
@@ -20,9 +23,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/velocityProfile/sinusoidalVelocityProfile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/safe_close_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/safe_close_awp.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/test.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/test.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/velocityProfile/sCurveVelocityProfile.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/velocityProfile/sinusoidalVelocityProfile.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/velocityProfile/sinusoidalVelocityProfile.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/close_mid_rush.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/close_mid_rush.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,12 +136,27 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
+    <configuration name="clean-template" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="clean-template" CONFIG_NAME="clean-template" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
+    <configuration name="library" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="library" CONFIG_NAME="library" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="template" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="template" CONFIG_NAME="template" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -168,9 +193,12 @@
     <list>
       <item itemvalue="C/C++ File.carl.cpp" />
       <item itemvalue="Native Application.all" />
+      <item itemvalue="Native Application.library" />
+      <item itemvalue="Native Application.template" />
       <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
       <item itemvalue="Native Application.cc-sysroot" />
+      <item itemvalue="Native Application.clean-template" />
       <item itemvalue="Native Application.cxx-sysroot" />
       <item itemvalue="Native Application.Makefile" />
       <item itemvalue="Python.uploadAllAutons" />

@@ -11,6 +11,8 @@ ASSET(mid_6_ball_2_json);
 ASSET(mid_6_ball_awp_json);
 ASSET(safe_close_awp_json);
 ASSET(safe_close_awp_2_json);
+ASSET(skills_1_json);
+ASSET(skills_2_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
@@ -50,10 +52,13 @@ void far5BallRushMid(void* args) {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
-	intakeStateController(&intakeIntaking);
+	intakeExtensionStateController(&deploySequence);
 	rightWingStateController(rightWingOut.wait(200_ms));
 
 	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
+
+	intakeExtensionStateController();
+	intakeStateController(&intakeIntaking);
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_1_json))->wait();
 
@@ -133,9 +138,12 @@ void skills(void* args) {
 void safeCloseAWP(void* args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 45_deg));
 
+	intakeExtensionStateController(&deploySequence);
+
 	move(-10_in, defaultProfileConstraints, 0.0);
 
-	intakeStateController.setCurrentBehavior(&intakeIntaking);
+	intakeExtensionStateController();
+	intakeStateController(&intakeIntaking);
 
 	drivetrainStateController(pathFollower.changePath(safe_close_awp_json))->wait();
 
@@ -151,9 +159,12 @@ void closeRushMid(void* args) {
 
 	leftWingStateController(leftWingOut.wait(300_ms));
 
-	intakeStateController(&intakeIntaking);
+	intakeExtensionStateController(&deploySequence);
 
 	move(47_in, speedProfileConstraints, 0.0, -75.7_deg);
+
+	intakeExtensionStateController();
+	intakeStateController(&intakeIntaking);
 
 	move(-23_in, speedProfileConstraints, 0.0, -75.7_deg);
 
@@ -165,15 +176,16 @@ void closeRushMid(void* args) {
 
 	turnTo(-35.3_deg, 600_ms);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(close_mid_rush_json));
+	drivetrainStateController(pathFollower.changePath(close_mid_rush_json))->wait();
 
-	drivetrainStateController.waitUntilDone();
+	turnTo(10_deg, 400_ms);
+	move(-8_in, speedProfileConstraints, 0.0, 20_deg);
 
-	turnTo(15_deg, 800_ms);
+	turnTo(30_deg, 800_ms);
 
 	intakeStateController(&intakeEject);
 
-	move(26_in, speedProfileConstraints, 0.0, 15_deg);
+	drivetrainStateController(pathFollower.changePath(safe_close_awp_2_json))->wait();
 }
 
 void closeRushMidElim(void* args) {
@@ -400,8 +412,6 @@ void autonomous() {
 	#elif AUTON == 7
 	auton.setAuton(skills);
 	#endif // !1
-
-//	auton.setAuton(tuneTurnPid);
 
 	competitionController.setCurrentBehavior(&auton);
 }
