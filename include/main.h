@@ -82,8 +82,6 @@
 #include "units/units.hpp"
 
 // Utils
-#include "utils/ADIDigitalOutGroup.hpp"
-#include "utils/exponentialMovingAverage.hpp"
 #include "utils/point.hpp"
 #include "utils/pose2d.hpp"
 #include "utils/runningAverage.hpp"
