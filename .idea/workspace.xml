@@ -21,18 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapult.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapultHold.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/initCatapult.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/auton.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/auton.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/safe_close_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/safe_close_awp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/test.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/test.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
