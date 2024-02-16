@@ -61,42 +61,44 @@ void far5BallRushMid(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, -30_in/second);
-
-	pros::Task::delay(500);
+	move(19_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
+	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
 
 //	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(-180_deg, 600_ms);
+	turnTo(-170_deg, 700_ms);
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_2_json))->wait();
 
-	turnTo(-245_deg, 500_ms);
-	intakeStateController.setCurrentBehavior(&intakeEject);
+	move(-8_in, speedProfileConstraints, 0.0);
+
+	turnTo(-245_deg, 300_ms);
 	move(18_in, speedProfileConstraints, 0.0, -245_deg, 0.0, -60_in/second);
 	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
-	rightWingStateController();
+	leftWingStateController(&leftWingIn);
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
 
-	turnTo(-230_deg, 400_ms);
+	turnTo(-213_deg, 550_ms);
 	intakeExtensionStateController(&outtakeSequence);
-	move(38_in, speedProfileConstraints, 20_deg/30_in, -230_deg);
+	move(38_in, speedProfileConstraints, 0.0, -213_deg);
 }
 
 void far6BallRushMid(void* args) {
 	far5BallRushMid(args);
 
-	turnTo(-340_deg, 500_ms);
+	turnTo(-357_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(28_in, defaultProfileConstraints, 0.0, -340_deg);
+	move(28_in, defaultProfileConstraints, 0.0, -357_deg);
 
-	turnTo(-180_deg, 400_ms);
+	turnTo(-180_deg, 550_ms);
 	intakeExtensionStateController(&outtakeSequence);
-	move(35_in, speedProfileConstraints, 0.0, -190_deg);
-	move(-10_in, speedProfileConstraints, 0.0, -190_deg);
+	leftWingStateController(&leftWingOut);
+	rightWingStateController(&rightWingOut);
+	move(35_in, speedProfileConstraints, 0.0, -180_deg);
+	move(-10_in, speedProfileConstraints, 0.0, -180_deg);
 	turnTo(-360_deg, 3_s);
 }
 
