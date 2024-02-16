@@ -10,6 +10,7 @@ ASSET(mid_6_ball_1_json);
 ASSET(mid_6_ball_2_json);
 ASSET(mid_6_ball_awp_json);
 ASSET(safe_close_awp_json);
+ASSET(safe_close_awp_2_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
@@ -54,27 +55,26 @@ void far5BallRushMid(void* args) {
 
 	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(mid_6_ball_1_json));
-
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController(pathFollower.changePath(mid_6_ball_1_json))->wait();
 
 	turnTo(2_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(19_in, speedProfileConstraints, 0.0, 2_deg);
+	move(16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, -30_in/second);
 
-	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(180_deg, 400_ms);
+	pros::Task::delay(500);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(mid_6_ball_2_json));
+//	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
+	turnTo(-180_deg, 600_ms);
 
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController(pathFollower.changePath(mid_6_ball_2_json))->wait();
 
 	turnTo(-245_deg, 500_ms);
 	intakeStateController.setCurrentBehavior(&intakeEject);
-	move(18_in, {61_in/second, 150_in/second/second, 0.0}, 0.0, -245_deg, 0.0, -60_in/second);
+	move(18_in, speedProfileConstraints, 0.0, -245_deg, 0.0, -60_in/second);
 	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
+	rightWingStateController();
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
@@ -105,7 +105,7 @@ void far5BallAWP(void* args) {
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(mid_6_ball_awp_json));
 
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController.waitUntilDone();
 
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -300_deg, drivetrainMutex, -3000));
 
@@ -137,21 +137,19 @@ void skills(void* args) {
 }
 
 void safeCloseAWP(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -135_deg));
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 45_deg));
 
-	move(10_in, defaultProfileConstraints, 0.0);
+	move(-10_in, defaultProfileConstraints, 0.0);
 
-	intakeStateController.setCurrentBehavior(&intakeEject);
+	intakeStateController.setCurrentBehavior(&intakeIntaking);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(safe_close_awp_json));
+	drivetrainStateController(pathFollower.changePath(safe_close_awp_json))->wait();
 
-	drivetrainStateController.waitUntilDone()();
+	move(-8_in, defaultProfileConstraints, 0.0, -20_deg);
 
-	rightWingStateController.setCurrentBehavior(&rightWingOut);
+	drivetrainStateController(pathFollower.changePath(safe_close_awp_2_json))->wait();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -173_deg, drivetrainMutex, -2000));
-
-	pros::Task::delay(20000);
+	pros::Task::delay(15000);
 }
 
 void closeRushMid(void* args) {
@@ -175,7 +173,7 @@ void closeRushMid(void* args) {
 
 	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(close_mid_rush_json));
 
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController.waitUntilDone();
 
 	turnTo(15_deg, 800_ms);
 
@@ -195,9 +193,16 @@ void closeRushMidElim(void* args) {
 
 	drivetrainStateController(pathFollower.changePath(close_mid_rush_json));
 
-	drivetrainStateController.waitUntilDone()();
+	drivetrainStateController.waitUntilDone();
 }
 
+void tuneTurnPid(void* args) {
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0.0_deg));
+	while(1) {
+		turnTo(180_deg, 2_s);
+		turnTo(0.0_deg, 2_s);
+	}
+}
 // !SECTION
 
 // SECTION INIT
@@ -405,6 +410,8 @@ void autonomous() {
 	#elif AUTON == 7
 	auton.setAuton(skills);
 	#endif // !1
+
+//	auton.setAuton(tuneTurnPid);
 
 	competitionController.setCurrentBehavior(&auton);
 }

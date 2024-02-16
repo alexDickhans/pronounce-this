@@ -103,13 +103,14 @@ namespace Pronounce {
 			return currentBehavior == nullptr;
 		}
 
-		std::function<void ()> waitUntilDone() {
-			return [this] () -> void {
-				while(!this->isDone()) {
-					pros::Task::delay(10);
-				}
-				return;
-			};
+		void waitUntilDone() {
+			while(!this->isDone()) {
+				pros::Task::delay(10);
+			}
+		}
+
+		void wait() {
+			waitUntilDone();
 		}
 
 		/**
@@ -180,12 +181,14 @@ namespace Pronounce {
 			}
 		}
 
-		void operator()(Behavior* behavior) {
+		StateController* operator()(Behavior* behavior) {
 			this->setCurrentBehavior(behavior);
+			return this;
 		}
 
-		void operator()() {
+		StateController* operator()() {
 			this->useDefaultBehavior();
+			return this;
 		}
 		
 		/**
