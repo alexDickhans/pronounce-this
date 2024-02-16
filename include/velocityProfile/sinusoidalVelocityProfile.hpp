@@ -46,7 +46,7 @@ namespace Pronounce {
 
 		void calculate(int granularity) final;
 
-		void setDistance(QLength distance) final;
+		void setDistance(const QLength& distance) final;
 
 		~SinusoidalVelocityProfile() = default;
 	};

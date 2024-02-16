@@ -18,29 +18,16 @@ namespace Pronounce {
 		QSpeed initialSpeed = 0.0;
 		QSpeed endSpeed = 0.0;
 	public:
-		VelocityProfile() : distance(0.0), profileConstraints() {
-			
-		}
+		VelocityProfile();
 
-		VelocityProfile(QLength distance, ProfileConstraints profileConstraints) : distance(distance), profileConstraints(profileConstraints) {}
+		VelocityProfile(QLength distance, ProfileConstraints profileConstraints);
 
-		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed) : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {}
+		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed);
 
-		void setInitialSpeed(QSpeed speed) {
-			this->initialSpeed = speed;
-		}
-
-		void setEndSpeed(QSpeed speed) {
-			this->endSpeed = speed;
-		}
-
-		QSpeed getInitialSpeed() {
-			return initialSpeed;
-		}
-
-		QSpeed getEndSpeed() {
-			return endSpeed;
-		}
+		[[nodiscard]] const QSpeed &getInitialSpeed() const;
+		void setInitialSpeed(const QSpeed &initialSpeed);
+		[[nodiscard]] const QSpeed &getEndSpeed() const;
+		void setEndSpeed(const QSpeed &endSpeed);
 
 		virtual QTime getDuration() { return 0.0; }
 
@@ -60,21 +47,10 @@ namespace Pronounce {
 
 		virtual QTime getTimeByDistance(QLength distance) { return 0.0; }
 
-		QLength getDistance() {
-			return distance;
-		}
-
-		virtual void setDistance(QLength distance) {
-			this->distance = distance;
-		}
-
-		ProfileConstraints getProfileConstraints() {
-			return this->profileConstraints;
-		}
-
-		void setProfileConstraints(ProfileConstraints profileConstraints) {
-			this->profileConstraints = profileConstraints;
-		}
+		const QLength &getDistance() const;
+		virtual void setDistance(const QLength &distance);
+		const ProfileConstraints &getProfileConstraints() const;
+		virtual void setProfileConstraints(const ProfileConstraints &profileConstraints);
 
 		virtual void calculate(int granularity) {}
 

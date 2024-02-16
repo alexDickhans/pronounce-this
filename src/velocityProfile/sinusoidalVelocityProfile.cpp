@@ -103,7 +103,7 @@ namespace Pronounce {
 		Tt = endStartTime + endTime;
 	}
 
-	void SinusoidalVelocityProfile::setDistance(QLength distance) {
+	void SinusoidalVelocityProfile::setDistance(const QLength& distance) {
 		VelocityProfile::setDistance(abs(distance.getValue()));
 		this->reversed = signnum_c(distance.getValue()) == -1;
 	}
