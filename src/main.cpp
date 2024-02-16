@@ -122,18 +122,10 @@ void skills(void* args) {
 
 	leftWingStateController.setCurrentBehavior(&leftWingOut);
 
-	auton.resetTriballs();
-
 //	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills1));
 //	drivetrainStateController.waitUntilDone()();
 
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 18.5_deg, drivetrainMutex, -1200));
-
-	// Wait until the catapult triballs shot has increased to 46 triballs
-	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 1.6_s) {
-		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-		pros::Task::delay(10);
-	}
 
 	pros::Task::delay(200);
 }
@@ -292,9 +284,6 @@ void tuneTurnPid(void* args) {
 		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
 
-		// Flywheel
-		lv_label_set_text(flywheelLabel.get(), ("Triball count: " + std::to_string(teleop.getTriballCount())).c_str());
-
 		auto gpsStatus = gps.get_status();
 
 		telemetryRadio.transmit("[" + std::to_string(static_cast<int>((gpsStatus.x * 350.0 / 1.8 + 350))) + "," + std::to_string(static_cast<int>((gpsStatus.y * 350.0 / 1.8 + 350))) + "]\n");
@@ -317,7 +306,6 @@ void initialize() {
 	// Initialize functions
 	initHardware();
 	initIntake();
-	initCatapult();
 	initWings();
 	initBehaviors();
 

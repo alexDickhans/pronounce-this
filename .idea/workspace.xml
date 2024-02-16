@@ -21,10 +21,18 @@
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapult.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapultHold.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/initCatapult.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/auton.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/auton.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +111,11 @@
   }
 }]]></component>
   <component name="RunManager" selected="Python.uploadAllAutons">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />

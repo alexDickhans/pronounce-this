@@ -24,14 +24,16 @@ USE_PACKAGE:=1
 EXCLUDE_COLD_LIBRARIES:= 
 
 # Set this to 1 to add additional rules to compile your project as a PROS library template
-IS_LIBRARY:=0
+IS_LIBRARY:=1
 # TODO: CHANGE THIS!
 LIBNAME:=lib2654
-VERSION:=1.2.3
+VERSION:=1.0.0
 # EXCLUDE_SRC_FROM_LIB= $(SRCDIR)/unpublishedfile.c
-# EXCLUDE_SRC_FROM_LIB+= $(SRCDIR)/main.cpp
-# EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/main.h
-# EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/autoPaths.hpp
+EXCLUDE_SRC_FROM_LIB+= $(SRCDIR)/main.cpp
+EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/main.h
+EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/auton.h
+EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/stateMachine/behaviors
+EXCLUDE_SRC_FROM_LIB+= $(INCDIR)/stateMachine/state
 # this line excludes opcontrol.c and similar files
 
 # files that get distributed to every user (beyond your source archive) - add

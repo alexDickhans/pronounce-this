@@ -52,7 +52,6 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
 	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor_Group catapultMotors({-10});
 
 	pros::ADIDigitalOut leftSolenoid('A', false);
 	pros::ADIDigitalOut rightSolenoid('B', false);
@@ -61,9 +60,6 @@ namespace Pronounce {
 	pros::ADIDigitalOut AWPSolenoid('F', false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
-
-	pros::Distance catapultDistance(8);
-
 	// Inertial Measurement Unit
 	pros::Imu imu(3);
 	IMU imuOrientation(3);

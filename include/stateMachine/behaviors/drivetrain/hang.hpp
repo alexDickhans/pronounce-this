@@ -10,12 +10,12 @@ namespace Pronounce {
 	std::array<char, 7> hangList = {{'a', 'b', 'c', 'd', 'e', 'f', 'g'}};
 
 	std::unordered_map<char, QLength> hangMap = {
-	        {'a', 75_in},
-	        {'b', 85_in},
-	        {'c', 95_in},
-	        {'d', 100_in},
-	        {'e', 105_in},
-	        {'f', 105_in},
+	        {'a', 165_in},
+	        {'b', 170_in},
+	        {'c', 180_in},
+	        {'d', 190_in},
+	        {'e', 200_in},
+	        {'f', 210_in},
 	        {'g', 230_in}};
 
     class Hang : public Behavior {

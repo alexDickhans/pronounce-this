@@ -32,8 +32,6 @@ namespace Pronounce {
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();
 
-			catapultStateController.initialize();
-
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
 
 				if (!hangReleaseStateController.isDone()) {
@@ -65,12 +63,6 @@ namespace Pronounce {
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
 				awpStateController.setCurrentBehavior(awpOut.until([&] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);
-				}));
-			});
-
-			controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&] () -> void {
-				catapultStateController.setCurrentBehavior(catapultDejam.until([&] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_RIGHT);
 				}));
 			});
 

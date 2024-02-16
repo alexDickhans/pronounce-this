@@ -44,7 +44,6 @@ namespace Pronounce {
 
 			drivetrainStateController.useDefaultBehavior();
 			intakeStateController.useDefaultBehavior();
-			catapultStateController.useDefaultBehavior();
 
 			Enabled::exit();
 		}
