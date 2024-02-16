@@ -23,10 +23,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/include/utils/ADIDigitalOutGroup.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/utils/polynomialExpression.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/polynomialExpression.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/utils/polynomialExpression.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils/polynomialExpression.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/ADIDigitalOutGroup.cpp" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/libjson@1.0.0.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/linearInterpolator.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libjson.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/libjson.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/json/asset.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/json/asset.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/json/json.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/json/json.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/json/sd.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libjson@3.11.3.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.pros" beforeDir="false" afterPath="$PROJECT_DIR$/project.pros" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +104,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "colorado-sig-autos",
+    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this/static",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -105,7 +114,12 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/utils" />
     </key>
   </component>

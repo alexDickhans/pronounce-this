@@ -1,11 +1,10 @@
 #pragma once
 
+#include "../../units/units.hpp"
+#include "json/asset.hpp"
+#include "json/json.hpp"
 #include <cmath>
 #include <string>
-#include "../../units/units.hpp"
-#include "json/json.hpp"
-
-using json = nlohmann::json;
 
 namespace PathPlanner {
 
@@ -42,9 +41,9 @@ namespace PathPlanner {
 			this->y = y;
 		}
 
-		explicit Point(json jsonObject) {
-			this->x = jsonObject["x"].template get<double>();
-			this->y = jsonObject["y"].template get<double>();
+		explicit Point(Json jsonObject) {
+			this->x = jsonObject["x"].number_value();
+			this->y = jsonObject["y"].number_value();
 		}
 
 		/**

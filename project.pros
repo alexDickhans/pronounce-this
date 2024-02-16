@@ -579,7 +579,7 @@
                 "version": "0.0.1"
             },
             "libjson": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.3",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@1.0.0",
                 "metadata": {
                     "origin": "local"
                 },
@@ -587,15 +587,14 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^3.8.0",
                 "system_files": [
-                    "include/json/json.hpp",
+                    "firmware/libjson.a",
                     "include/json/asset.hpp",
-                    "include/json/sd.hpp",
                     "firmware/asset.mk",
-                    "firmware/libjson.a"
+                    "include/json/json.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "3.11.3"
+                "version": "1.0.0"
             }
         },
         "upload_options": {
