@@ -1,1 +1,1 @@
-{"segments":[{"inverted":false,"paths":[{"x":3.233,"y":0.461},{"x":3.435,"y":0.682},{"x":3.476,"y":1.276},{"x":3.466,"y":1.709}],"constraints":{"velocity":35,"accel":120}}],"commands":[{"t":0.0,"name":"leftWingOut"}]}
+{"segments":[{"inverted":false,"paths":[{"x":3.016,"y":0.45},{"x":3.502,"y":0.533},{"x":3.522,"y":0.902},{"x":3.509,"y":1.518}],"constraints":{"velocity":35,"accel":120}}],"commands":[{"t":0.0,"name":"leftWingOut"},{"t":0.77,"name":"outtake"}]}

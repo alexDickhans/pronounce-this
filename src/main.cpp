@@ -147,7 +147,9 @@ void safeCloseAWP(void* args) {
 
 	drivetrainStateController(pathFollower.changePath(safe_close_awp_json))->wait();
 
-	move(-8_in, defaultProfileConstraints, 0.0, -20_deg);
+	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
+
+	turnTo(75_deg, 300_ms);
 
 	drivetrainStateController(pathFollower.changePath(safe_close_awp_2_json))->wait();
 
