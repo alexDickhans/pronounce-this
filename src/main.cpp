@@ -13,6 +13,8 @@ ASSET(safe_close_awp_json);
 ASSET(safe_close_awp_2_json);
 ASSET(skills_1_json);
 ASSET(skills_2_json);
+ASSET(skills_front_push_json);
+ASSET(skills_pole_align_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
@@ -62,7 +64,7 @@ void far5BallRushMid(void* args) {
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_1_json))->wait();
 
-	turnTo(2_deg, 550_ms);
+	turnTo(-2_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
@@ -70,16 +72,19 @@ void far5BallRushMid(void* args) {
 	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
 
 //	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(-170_deg, 700_ms);
+	turnTo(-190_deg, 700_ms);
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_2_json))->wait();
 
-	move(-8_in, speedProfileConstraints, 0.0);
+	turnTo(-300_deg, 500_ms);
+	move(-8_in, speedProfileConstraints, 0.0, -300_deg);
 
-	turnTo(-245_deg, 300_ms);
-	move(18_in, speedProfileConstraints, 0.0, -245_deg, 0.0, -60_in/second);
-	move (-8_in, speedProfileConstraints, 0.0, -270_deg);
-	leftWingStateController(&leftWingIn);
+	leftWingStateController();
+	turnTo(-245_deg, 550_ms);
+	drivetrain.tankSteerVoltage(12000, 12000);
+	pros::Task::delay(600);
+	drivetrain.tankSteerVoltage(0.0, 0.0);
+	move (-6_in, speedProfileConstraints, 0.0, -270_deg);
 	turnTo(-335_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, -335_deg);
@@ -96,7 +101,7 @@ void far6BallRushMid(void* args) {
 
 	intakeStateController(&intakeIntaking);
 
-	move(28_in, defaultProfileConstraints, 0.0, -357_deg);
+	move(23_in, defaultProfileConstraints, 0.0, -357_deg);
 
 	turnTo(-180_deg, 550_ms);
 	intakeExtensionStateController(&outtakeSequence);
@@ -110,29 +115,62 @@ void far6BallRushMid(void* args) {
 void far5BallAWP(void* args) {
 	far5BallRushMid(args);
 
-	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(mid_6_ball_awp_json));
+	move(-5_in, speedProfileConstraints, 0.0, -360_deg);
 
-	drivetrainStateController.waitUntilDone();
+	turnTo(-450_deg, 600_ms);
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -300_deg, drivetrainMutex, -3000));
+	drivetrainStateController(pathFollower.changePath(mid_6_ball_awp_json))->wait();
 
+	drivetrain.tankSteerVoltage(5000, 3000);
 	pros::Task::delay(5000);
 }
 
 void skills(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -90_deg));
-	std::cout << "SKILLS START" << std::endl;
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, -20_deg));
 
-	intakeStateController.setCurrentBehavior(&intakeHold);
+	intakeStateController(&intakeEject);
 
-	leftWingStateController.setCurrentBehavior(&leftWingOut);
+	move(-18_in, pushingProfileConstraints, 0.0, -35_deg);
 
-//	drivetrainStateController.setCurrentBehavior(pathFollower.changePath(speedProfileConstraints, Skills1));
-//	drivetrainStateController.waitUntilDone()();
+	for (int i = 0; i < 3; i++) {
+		drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -35_deg, drivetrainMutex, -800.0));
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 18.5_deg, drivetrainMutex, -1200));
+		pros::Task::delay(3500);
 
-	pros::Task::delay(200);
+		turnTo(-45_deg, 200_ms);
+
+		drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
+		move(-12_in, speedProfileConstraints, 0.0, 80_deg);
+		move (22_in, speedProfileConstraints, 0.0, 65_deg);
+		move(-8_in, speedProfileConstraints, 0.0, 80_deg);
+		move (15_in, speedProfileConstraints, 0.0, 65_deg);
+		drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
+	}
+
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -35_deg, drivetrainMutex, 0.0));
+
+	pros::Task::delay(3500);
+
+	drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
+	move(-8_in, speedProfileConstraints, 0.0, 80_deg);
+	move (15_in, speedProfileConstraints, 0.0, 65_deg);
+	move(-8_in, speedProfileConstraints, 0.0, 80_deg);
+	move (15_in, speedProfileConstraints, 0.0, 65_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_pole_align_json))->wait();
+
+	move(8_in, defaultProfileConstraints, 0.0, 43_deg);
+	hangReleaseStateController(&hangReleaseOut);
+	pros::Task::delay(2000);
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 43_deg, drivetrainMutex, -8000));
+
+	pros::Task::delay(1200);
+
+	drivetrainStateController();
+
+	pros::Task::delay(800);
+
+	drivetrainStateController(&hang)->wait();
 }
 
 void safeCloseAWP(void* args) {
@@ -359,6 +397,20 @@ void initialize() {
 		awpStateController(&awpIn);
 	});
 
+	pathFollower.addCommandMapping("hang", [&]() -> void {
+		hangReleaseStateController(&hangReleaseOut);
+	});
+
+	pathFollower.addCommandMapping("wingsOut", [&]() -> void {
+		leftWingStateController(&leftWingOut);
+		rightWingStateController(&rightWingOut);
+	});
+
+	pathFollower.addCommandMapping("wingsIn", [&]() -> void {
+		leftWingStateController(&leftWingIn);
+		rightWingStateController(&rightWingIn);
+	});
+
 	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
 
@@ -407,11 +459,11 @@ void autonomous() {
 	auton.setAuton(far6BallRushMid);
 	#elif AUTON == 1
 	auton.setAuton(far5BallAWP);
-	#elif AUTON == 4
+	#elif AUTON == 2
 	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 5
+	#elif AUTON == 3
 	auton.setAuton(closeRushMidAWP);
-	#elif AUTON == 7
+	#elif AUTON == 4
 	auton.setAuton(skills);
 	#endif // !1
 
@@ -428,7 +480,7 @@ void autonomous() {
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == 7
+#if AUTON == 4
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();

@@ -5,13 +5,10 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="pronounce-this" targetName="library" />
-      <config projectName="pronounce-this" targetName="template" />
       <config projectName="pronounce-this" targetName="quick" />
       <config projectName="pronounce-this" targetName="bin" />
       <config projectName="pronounce-this" targetName="cc-sysroot" />
       <config projectName="pronounce-this" targetName="Makefile" />
-      <config projectName="pronounce-this" targetName="clean-template" />
       <config projectName="pronounce-this" targetName="cxx-sysroot" />
       <config projectName="pronounce-this" targetName="all" />
     </generated>
@@ -23,18 +20,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/libjson@1.0.0.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/linearInterpolator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/splinePoint.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/firmware/libjson.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/libjson.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/json/asset.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/json/asset.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/json/json.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/json/json.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/json/sd.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/utils/point.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libjson@3.11.3.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project.pros" beforeDir="false" afterPath="$PROJECT_DIR$/project.pros" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_awp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uploadAllAutons.py" beforeDir="false" afterPath="$PROJECT_DIR$/uploadAllAutons.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +105,8 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -124,11 +121,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.uploadAllAutons">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -149,27 +141,12 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="clean-template" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="clean-template" CONFIG_NAME="clean-template" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="library" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="library" CONFIG_NAME="library" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="template" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="template" CONFIG_NAME="template" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -206,12 +183,9 @@
     <list>
       <item itemvalue="C/C++ File.carl.cpp" />
       <item itemvalue="Native Application.all" />
-      <item itemvalue="Native Application.library" />
-      <item itemvalue="Native Application.template" />
       <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
       <item itemvalue="Native Application.cc-sysroot" />
-      <item itemvalue="Native Application.clean-template" />
       <item itemvalue="Native Application.cxx-sysroot" />
       <item itemvalue="Native Application.Makefile" />
       <item itemvalue="Python.uploadAllAutons" />
@@ -233,6 +207,7 @@
       <workItem from="1707688475293" duration="2760000" />
       <workItem from="1707697684971" duration="11000" />
       <workItem from="1707929589082" duration="7618000" />
+      <workItem from="1708137866530" duration="11917000" />
     </task>
     <servers />
   </component>

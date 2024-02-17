@@ -11,10 +11,7 @@ import time
 autons = [
     "FAR 6 MID ELIM",
     "FAR 5 MID AWP",
-    "CLOSE AWP DISRUPTOR",
-    "CLOSE ELIM DISRUPTOR",
     "CLOSE SAFE AWP",
-    "CLOSE RUSH AWP",
     "CLOSE RUSH ELIM",
     "SKILLS"]
 
