@@ -22,9 +22,8 @@
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_awp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/close_rush_mid_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/close_rush_mid_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,7 +201,7 @@
       <workItem from="1707688475293" duration="2760000" />
       <workItem from="1707697684971" duration="11000" />
       <workItem from="1707929589082" duration="7618000" />
-      <workItem from="1708137866530" duration="21830000" />
+      <workItem from="1708137866530" duration="23105000" />
     </task>
     <servers />
   </component>
