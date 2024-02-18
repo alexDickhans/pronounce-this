@@ -74,52 +74,53 @@ void far5BallRushMid(void* args) {
 	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
 
 //	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(-190_deg, 700_ms);
+	turnTo(170_deg, 700_ms);
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_2_json))->wait();
 
-	turnTo(-300_deg, 500_ms);
-	move(-8_in, speedProfileConstraints, 0.0, -300_deg);
+	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
 
 	leftWingStateController();
-	turnTo(-245_deg, 550_ms);
+	turnTo(120_deg, 300_ms);
+	leftWingStateController(&leftWingOut);
 	drivetrain.tankSteerVoltage(12000, 12000);
-	pros::Task::delay(600);
+	pros::Task::delay(800);
 	drivetrain.tankSteerVoltage(0.0, 0.0);
-	move (-6_in, speedProfileConstraints, 0.0, -270_deg);
-	turnTo(-335_deg, 200_ms);
+	leftWingStateController();
+	move (-6_in, speedProfileConstraints, 0.0, 90_deg);
+	turnTo(25_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
-	move(48_in, speedProfileConstraints, 0.0, -335_deg);
+	move(48_in, speedProfileConstraints, 0.0, 25_deg);
 
-	turnTo(-213_deg, 550_ms);
+	turnTo(150_deg, 550_ms);
 	intakeExtensionStateController(&outtakeSequence);
-	move(38_in, speedProfileConstraints, 0.0, -213_deg);
+	move(38_in, speedProfileConstraints, 0.0, 150_deg);
 }
 
 void far6BallRushMid(void* args) {
 	far5BallRushMid(args);
 
-	turnTo(-357_deg, 550_ms);
+	turnTo(3_deg, 550_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	move(23_in, defaultProfileConstraints, 0.0, -357_deg);
+	move(23_in, defaultProfileConstraints, 0.0, 3_deg);
 
-	turnTo(-180_deg, 550_ms);
+	turnTo(180_deg, 550_ms);
 	intakeExtensionStateController(&outtakeSequence);
 	leftWingStateController(&leftWingOut);
 	rightWingStateController(&rightWingOut);
-	move(35_in, speedProfileConstraints, 0.0, -180_deg);
-	move(-10_in, speedProfileConstraints, 0.0, -180_deg);
-	turnTo(-360_deg, 3_s);
+	move(35_in, speedProfileConstraints, 0.0, 180_deg);
+	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
+	turnTo(0_deg, 3_s);
 }
 
 void far5BallAWP(void* args) {
 	far5BallRushMid(args);
 
-	move(-5_in, speedProfileConstraints, 0.0, -360_deg);
+	move(-5_in, speedProfileConstraints, 0.0, 0_deg);
 
-	turnTo(-450_deg, 600_ms);
+	turnTo(-90_deg, 600_ms);
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_awp_json))->wait();
 
