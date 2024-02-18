@@ -13,6 +13,7 @@ autons = [
     "FAR 5 MID AWP",
     "CLOSE SAFE AWP",
     "CLOSE RUSH ELIM",
+    "CLOSE RUSH AWP",
     "SKILLS"]
 
 offset = 1

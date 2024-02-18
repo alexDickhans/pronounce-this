@@ -15,6 +15,8 @@ ASSET(skills_1_json);
 ASSET(skills_2_json);
 ASSET(skills_front_push_json);
 ASSET(skills_pole_align_json);
+ASSET(close_mid_rush_elim_json);
+ASSET(close_rush_mid_2_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	RotationController angleRotation("AngleTurn", drivetrain, odometry, turningPid, angle, drivetrainMutex);
@@ -201,14 +203,14 @@ void closeRushMid(void* args) {
 
 	intakeExtensionStateController(&deploySequence);
 
-	move(47_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	intakeExtensionStateController();
 	intakeStateController(&intakeIntaking);
 
-	move(-23_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(-13_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-	turnTo(104.3_deg, 800_ms);
+	turnTo(104.3_deg, 600_ms);
 
 	intakeStateController(&intakeEject);
 
@@ -218,26 +220,21 @@ void closeRushMid(void* args) {
 
 	drivetrainStateController(pathFollower.changePath(close_mid_rush_json))->wait();
 
-	turnTo(10_deg, 400_ms);
-	move(-8_in, speedProfileConstraints, 0.0, 20_deg);
-
-	turnTo(30_deg, 800_ms);
+	move(-10_in, speedProfileConstraints, 0.0, 56_deg);
 
 	intakeStateController(&intakeEject);
 
-	drivetrainStateController(pathFollower.changePath(safe_close_awp_2_json))->wait();
+	drivetrainStateController(pathFollower.changePath(close_rush_mid_2_json))->wait();
 }
 
 void closeRushMidElim(void* args) {
 	closeRushMid(args);
 
-	move(-8_in, speedProfileConstraints, 0.0, -355_deg);
-
 	turnTo(-180_deg, 800_ms);
 
 	intakeStateController(&intakeIntaking);
 
-	drivetrainStateController(pathFollower.changePath(close_mid_rush_json));
+	drivetrainStateController(pathFollower.changePath(close_mid_rush_elim_json));
 
 	drivetrainStateController.waitUntilDone();
 }
@@ -464,6 +461,8 @@ void autonomous() {
 	#elif AUTON == 3
 	auton.setAuton(closeRushMidElim);
 	#elif AUTON == 4
+	auton.setAuton(closeRushMid);
+	#elif AUTON == 5
 	auton.setAuton(skills);
 	#endif // !1
 
@@ -480,7 +479,7 @@ void autonomous() {
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == 4
+#if AUTON == 5
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController.setCurrentBehavior(auton.setAuton(skills));
 	robotMutex.give();
