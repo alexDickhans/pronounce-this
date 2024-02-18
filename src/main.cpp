@@ -462,7 +462,7 @@ void autonomous() {
 	#elif AUTON == 2
 	auton.setAuton(safeCloseAWP);
 	#elif AUTON == 3
-	auton.setAuton(closeRushMidAWP);
+	auton.setAuton(closeRushMidElim);
 	#elif AUTON == 4
 	auton.setAuton(skills);
 	#endif // !1
