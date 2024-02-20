@@ -49,10 +49,9 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(17_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
+	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors, 600.0 * (revolution/minute));
 
-	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, true);
-	pros::Motor_Group catapultMotors({-10});
+	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, false);
 
 	pros::ADIDigitalOut leftSolenoid('A', false);
 	pros::ADIDigitalOut rightSolenoid('B', false);
@@ -61,12 +60,9 @@ namespace Pronounce {
 	pros::ADIDigitalOut AWPSolenoid('F', false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});
-
-	pros::Distance catapultDistance(8);
-
 	// Inertial Measurement Unit
-	pros::Imu imu(9);
-	IMU imuOrientation(9);
+	pros::Imu imu(3);
+	IMU imuOrientation(3);
 
 	pros::Mutex odometryMutex;
 

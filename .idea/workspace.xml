@@ -20,55 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/static/close_mid_rush.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/mid_6_ball_awp.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/safe_close_awp.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/test.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/3Ball2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/4Ball1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim4.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim5.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6BallElim6.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball3.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/6ball4.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseAWP1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseAWP2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/CloseMidRush2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DisruptorAuton1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DisruptorAuton2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DriverSkills5.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/DriverSkills6.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush3.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush4.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Mid6BallRush5.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/SafeCloseAWP1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills2.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills3.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills4.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills5.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/Skills6.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/TestPath.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AutoPaths/abi.hpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/utils/bezierSegment.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/utils/bezierSegment.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/hang.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/utils/utils.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils/utils.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_awp.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,26 +81,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;C/C++ File.carl.cpp.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;new-path-planner&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C/C++ File.carl.cpp.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "colorado-sig-autos",
+    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this/static",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "structure.view.defaults.are.configured": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/utils" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.uploadAllAutons">
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
@@ -233,10 +201,22 @@
       <workItem from="1707688475293" duration="2760000" />
       <workItem from="1707697684971" duration="11000" />
       <workItem from="1707929589082" duration="7618000" />
+      <workItem from="1708137866530" duration="25392000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp</url>
+          <line>38</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

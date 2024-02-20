@@ -1,1 +1,1 @@
-{"segments":[{"inverted":false,"paths":[{"x":0.493,"y":3.301},{"x":0.325,"y":3.091},{"x":0.428,"y":2.698},{"x":0.481,"y":2.324}],"constraints":{"velocity":16,"accel":120}}],"commands":[{"t":0.0,"name":"awpOut"},{"t":0.0,"name":"awpIn"}]}
+{"segments":[{"inverted":false,"paths":[{"x":3.147,"y":0.398},{"x":3.319,"y":0.54},{"x":3.43,"y":0.674},{"x":3.425,"y":0.815}],"constraints":{"velocity":35,"accel":120}}],"commands":[{"t":0.0,"name":"awpOut"},{"t":0.4,"name":"awpIn"}]}

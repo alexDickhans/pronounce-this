@@ -43,7 +43,7 @@ class IMU : public Orientation, public pros::Imu {
 		 * @brief Reset all the values
 		 *
 		 */
-		void reset() {
+		void reset() override {
 			// if this is broken change the imu api to make _port public
 			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 				this->reset();

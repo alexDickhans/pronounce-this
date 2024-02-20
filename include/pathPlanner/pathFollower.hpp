@@ -83,13 +83,13 @@ namespace PathPlanner {
 		}
 
 		PathFollower* changePath(asset path) {
-			json parsed_path = open_asset_as_json(path);
+			Json parsed_path = open_asset_as_json(path);
 
 			std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> parsedPath;
 
 			auto segments = parsed_path["segments"];
 
-			for (auto segment : segments) {
+			for (auto segment : segments.array_items()) {
 				auto constraints = segment["constraints"];
 				auto paths = segment["paths"];
 
@@ -99,11 +99,11 @@ namespace PathPlanner {
 								Point(paths[1]),
 								Point(paths[2]),
 						        Point(paths[3]),
-				                segment["inverted"]),
+				                segment["inverted"].bool_value()),
 							new Pronounce::SinusoidalVelocityProfile(0.0,
 																	 Pronounce::ProfileConstraints{
-							constraints["velocity"].template get<double>() * (inch/second).Convert(metre/second),
-							constraints["accel"].template get<double>() * (inch/second/second).Convert(metre/second/second),
+							constraints["velocity"].number_value() * (inch/second).Convert(metre/second),
+							constraints["accel"].number_value() * (inch/second/second).Convert(metre/second/second),
 							0.0
 							        }));
 			}
@@ -112,10 +112,10 @@ namespace PathPlanner {
 
 			auto commands = parsed_path["commands"];
 
-			for (auto command : commands) {
+			for (auto command : commands.array_items()) {
 					functions.emplace_back(
-						command["t"].template get<double>(),
-						commandMap.count(command["name"].template get<std::string>()) == 1 ? commandMap[command["name"].template get<std::string>()] : [&]() -> void {});
+						command["t"].number_value(),
+						commandMap.count(command["name"].string_value()) == 1 ? commandMap[command["name"].string_value()] : [&]() -> void {});
 			}
 
 			return changePath(defaultProfileConstraints, parsedPath, functions);

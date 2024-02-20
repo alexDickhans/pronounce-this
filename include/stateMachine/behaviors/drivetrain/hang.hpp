@@ -10,13 +10,13 @@ namespace Pronounce {
 	std::array<char, 7> hangList = {{'a', 'b', 'c', 'd', 'e', 'f', 'g'}};
 
 	std::unordered_map<char, QLength> hangMap = {
-	        {'a', 75_in},
-	        {'b', 85_in},
-	        {'c', 95_in},
-	        {'d', 100_in},
-	        {'e', 105_in},
-	        {'f', 105_in},
-	        {'g', 230_in}};
+	        {'a', 110_in},
+	        {'b', 130_in},
+	        {'c', 150_in},
+	        {'d', 165_in},
+	        {'e', 185_in},
+	        {'f', 195_in},
+	        {'g', 250_in}};
 
     class Hang : public Behavior {
     private:
@@ -42,7 +42,9 @@ namespace Pronounce {
 
         void initialize() override {
 			ptoPiston.set_value(true);
-			startDistance = drivetrain.getDistanceSinceReset() + hangDistance;
+			if (startDistance.getValue() == 0.0) {
+				startDistance = drivetrain.getDistanceSinceReset();
+			}
 
 			startTime = pros::millis() * 1_ms;
 	        drivetrain.tankSteerVoltage(0.2e4, power*0.2e4);
