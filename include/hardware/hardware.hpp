@@ -26,6 +26,8 @@ namespace Pronounce {
 
 	pros::Mutex robotMutex;
 
+	bool isSkills = false;
+
 #ifndef SIM
 	AbstractJoystick* master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
 #else
@@ -55,8 +57,7 @@ namespace Pronounce {
 
 	pros::ADIDigitalOut leftSolenoid('A', false);
 	pros::ADIDigitalOut rightSolenoid('B', false);
-	pros::ADIDigitalOut hangPtoSolenoid('C', false);
-	pros::ADIDigitalOut hangReleaseSolenoid('D', false);
+	pros::ADIDigitalOut hangSolenoid('D', false);
 	pros::ADIDigitalOut AWPSolenoid('F', false);
 
 	pros::Motor_Group intakeMotors({intakeMotor});

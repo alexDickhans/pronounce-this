@@ -19,9 +19,6 @@ QLength Pronounce::TrapezoidalVelocityProfile::getDistanceByTime(QTime time) {
 	return VelocityProfile::getDistance();
 }
 
-QSpeed Pronounce::TrapezoidalVelocityProfile::getVelocityByDistance(QLength distance) {
-	return this->getVelocityByTime(this->getTimeByDistance(distance));
-}
 
 QSpeed Pronounce::TrapezoidalVelocityProfile::getVelocityByTime(QTime time) {
 	if (time < ta) {
@@ -32,9 +29,6 @@ QSpeed Pronounce::TrapezoidalVelocityProfile::getVelocityByTime(QTime time) {
 
 	}
 	return 0.0;
-}
-QAcceleration Pronounce::TrapezoidalVelocityProfile::getAccelerationByDistance(QLength distance) {
-    return this->getAccelerationByTime(this->getTimeByDistance(distance));
 }
 
 QAcceleration Pronounce::TrapezoidalVelocityProfile::getAccelerationByTime(QTime time) {
@@ -48,15 +42,23 @@ QAcceleration Pronounce::TrapezoidalVelocityProfile::getAccelerationByTime(QTime
 	return 0.0;
 }
 
-QJerk Pronounce::TrapezoidalVelocityProfile::getJerkByDistance(QLength distance) {
-	return std::numeric_limits<double>::quiet_NaN();
-}
 QJerk Pronounce::TrapezoidalVelocityProfile::getJerkByTime(QTime time) {
 	return std::numeric_limits<double>::quiet_NaN();
 }
 
 QTime Pronounce::TrapezoidalVelocityProfile::getTimeByDistance(QLength distance) {
 	return VelocityProfile::getTimeByDistance(distance);
+}
+
+QJerk Pronounce::TrapezoidalVelocityProfile::getJerkByDistance(QLength distance) {
+	return std::numeric_limits<double>::quiet_NaN();
+}
+QSpeed Pronounce::TrapezoidalVelocityProfile::getVelocityByDistance(QLength distance) {
+	return this->getVelocityByTime(this->getTimeByDistance(distance));
+}
+
+QAcceleration Pronounce::TrapezoidalVelocityProfile::getAccelerationByDistance(QLength distance) {
+	return this->getAccelerationByTime(this->getTimeByDistance(distance));
 }
 
 void Pronounce::TrapezoidalVelocityProfile::calculate(int granularity) {
