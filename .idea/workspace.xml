@@ -19,10 +19,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" afterDir="false" />
+    <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.clang-tidy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/pronounce-this.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/path_planner_gui" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_w_out_distance.data" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,49 +82,34 @@
     <option name="majorVersion" value="2023" />
     <option name="minorVersion" value="3.3" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 0
-}</component>
-  <component name="ProjectId" id="2cEtH6FdrJI5NNdJT14ouQs6lqH" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2ck0C4xqXoibybzh1PQYdnfZvku" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "C/C++ File.carl.cpp.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.advertisement.text.has.clang-format": "true",
-    "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "states",
-    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this/static",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.build",
-    "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/static" />
-      <recent name="$PROJECT_DIR$" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/velocityProfile" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/utils" />
-    </key>
-  </component>
   <component name="RunManager" selected="Native Application.all">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -148,15 +140,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="carl.cpp" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="carl.cpp" CONFIG_NAME="carl.cpp">
-      <option name="compilerOptions" value="-Iinclude/ -std=c++14" />
-      <option name="sourceFile" value="carl.cpp" />
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
-      <item itemvalue="C/C++ File.carl.cpp" />
       <item itemvalue="Native Application.all" />
       <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
@@ -164,43 +148,20 @@
       <item itemvalue="Native Application.cxx-sysroot" />
       <item itemvalue="Native Application.Makefile" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="C/C++ File.carl.cpp" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e3a5ae07-bc03-45ff-90c5-e34bd5e90430" name="Changes" comment="" />
-      <created>1707688474218</created>
+      <changelist id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="" />
+      <created>1708640139067</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1707688474218</updated>
-      <workItem from="1707688475293" duration="2760000" />
-      <workItem from="1707697684971" duration="11000" />
-      <workItem from="1707929589082" duration="7618000" />
-      <workItem from="1708137866530" duration="28291000" />
-      <workItem from="1708491321662" duration="973000" />
-      <workItem from="1708492324536" duration="45000" />
-      <workItem from="1708573629608" duration="650000" />
-      <workItem from="1708639693609" duration="255000" />
+      <updated>1708640139067</updated>
+      <workItem from="1708640140388" duration="22000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp</url>
-          <line>38</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
