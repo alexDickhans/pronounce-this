@@ -42,7 +42,7 @@ namespace Pronounce {
 
 		QSpeed getVelocityByTime(QTime t) final;
 
-		 QAcceleration getAccelerationByTime(QTime t) final;
+		QAcceleration getAccelerationByTime(QTime t) final;
 
 		void calculate(int granularity) final;
 

@@ -33,19 +33,11 @@ namespace Pronounce {
 
 		virtual QLength getDistanceByTime(QTime) { return 0.0; }
 
-		virtual QSpeed getVelocityByDistance(QLength distance) { return 0.0; }
-
 		virtual QSpeed getVelocityByTime(QTime time) { return 0.0; }
-
-		virtual QAcceleration getAccelerationByDistance(QLength distance) { return 0.0; }
 
 		virtual QAcceleration getAccelerationByTime(QTime time) { return 0.0; }
 
-		virtual QJerk getJerkByDistance(QLength distance) { return 0.0; }
-
 		virtual QJerk getJerkByTime(QTime time) { return 0.0; }
-
-		virtual QTime getTimeByDistance(QLength distance) { return 0.0; }
 
 		const QLength &getDistance() const;
 		virtual void setDistance(const QLength &distance);

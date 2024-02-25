@@ -163,17 +163,13 @@ void skills(void* args) {
 	drivetrainStateController(pathFollower.changePath(skills_pole_align_json))->wait();
 
 	move(8_in, defaultProfileConstraints, 0.0, 43_deg);
-	hangReleaseStateController(&hangReleaseOut);
+	hangReleaseStateController(&hangOut);
 	pros::Task::delay(2000);
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 43_deg, drivetrainMutex, -8000));
 
 	pros::Task::delay(1200);
 
 	drivetrainStateController();
-
-	pros::Task::delay(800);
-
-	drivetrainStateController(&hang)->wait();
 }
 
 void safeCloseAWP(void* args) {
@@ -396,7 +392,7 @@ void initialize() {
 	});
 
 	pathFollower.addCommandMapping("hang", [&]() -> void {
-		hangReleaseStateController(&hangReleaseOut);
+		hangReleaseStateController(&hangOut);
 	});
 
 	pathFollower.addCommandMapping("wingsOut", [&]() -> void {

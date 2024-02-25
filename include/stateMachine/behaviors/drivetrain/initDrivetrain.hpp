@@ -13,7 +13,6 @@
 #include "hardware/hardware.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 #include "chassis/tankDrive.hpp"
-#include "hang.hpp"
 
 namespace Pronounce {
 
@@ -27,7 +26,6 @@ namespace Pronounce {
 
 	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", odometry, master, drivetrain, 0.10, 2.4, 0.0);
 
-	Hang hang(drivetrain, hangPtoSolenoid, 1.0, 'g');
 	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
 
 	ProfileConstraints speedProfileConstraints = { 71_in / second, 280_in / second / second, 0.0 };
