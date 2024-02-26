@@ -56,7 +56,7 @@ namespace Pronounce {
 		}
 	}
 
-	void SinusoidalVelocityProfile::calculate(int granularity) {
+	void SinusoidalVelocityProfile::calculate() {
 
 		startSlope = (this->getInitialSpeed() - this->getProfileConstraints().maxVelocity).getValue()/2.0;
 		startB = (this->getInitialSpeed() + this->getProfileConstraints().maxVelocity).getValue()/2.0;

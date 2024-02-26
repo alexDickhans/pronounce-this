@@ -42,21 +42,36 @@ namespace Pronounce {
 				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
-				intakeExtensionStateController.useDefaultBehavior();
-				intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
-			});
-
-			controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
-				intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
-			});
-
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
 				awpStateController.setCurrentBehavior(awpOut.until([&] () -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);
 				}));
 			});
+
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [=] () -> void {
+				hangStateController.setCurrentBehavior(hangOut.until([&] () -> auto {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
+				}));
+			});
+
+			if (isSkills) {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [=] () -> void {
+					catapultStateController.setCurrentBehavior(catapultFire.until([&] () -> auto {
+						return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT);
+					}));
+				});
+
+			} else {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
+					intakeExtensionStateController.useDefaultBehavior();
+					intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+				});
+
+				controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
+					intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
+				});
+			}
 
 			Enabled::initialize();
 		}

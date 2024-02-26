@@ -44,7 +44,7 @@ namespace Pronounce {
 
 		QAcceleration getAccelerationByTime(QTime t) final;
 
-		void calculate(int granularity) final;
+		void calculate() final;
 
 		void setDistance(const QLength& distance) final;
 

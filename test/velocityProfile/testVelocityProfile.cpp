@@ -11,17 +11,24 @@
 #include <iostream>
 
 int main() {
-	Pronounce::TrapezoidalVelocityProfile velocityProfile = Pronounce::TrapezoidalVelocityProfile(20_in, {70_in/second, 170_in/second/second, 0.0}, 0_in/second, 0_in/second);
+	Pronounce::TrapezoidalVelocityProfile velocityProfile =
+			Pronounce::TrapezoidalVelocityProfile(30_in,
+			                                      {70_in / second,
+			                                       100_in / second /
+			                                       second, 0.0},
+			                                      0_in / second,
+			                                      1_in / second);
 
 	QTime frameTime = 10_ms;
 
-	velocityProfile.calculate(10);
+	velocityProfile.calculate();
 
 	// std::cout << "Total time: " << velocityProfile.getDuration().Convert(second) << std::endl;
 
 	for (QTime time = 0.0; time <= velocityProfile.getDuration(); time += frameTime) {
 
-		std::cout << "Time:" << time.Convert(second) << " Velocity:" << velocityProfile.getVelocityByTime(time).Convert(inch/second) << std::endl;
+		std::cout << "Time:" << time.Convert(second) << " Velocity:"
+		          << velocityProfile.getVelocityByTime(time).Convert(inch / second) << std::endl;
 //		std::cout << "Time:" << time.Convert(second) << " Distance:" << velocityProfile.getDistanceByTime(time).Convert(inch) << std::endl;
 	}
 

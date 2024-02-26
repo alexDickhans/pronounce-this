@@ -163,7 +163,7 @@ void skills(void* args) {
 	drivetrainStateController(pathFollower.changePath(skills_pole_align_json))->wait();
 
 	move(8_in, defaultProfileConstraints, 0.0, 43_deg);
-	hangReleaseStateController(&hangOut);
+	hangStateController(&hangOut);
 	pros::Task::delay(2000);
 	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 43_deg, drivetrainMutex, -8000));
 
@@ -392,7 +392,7 @@ void initialize() {
 	});
 
 	pathFollower.addCommandMapping("hang", [&]() -> void {
-		hangReleaseStateController(&hangOut);
+		hangStateController(&hangOut);
 	});
 
 	pathFollower.addCommandMapping("wingsOut", [&]() -> void {

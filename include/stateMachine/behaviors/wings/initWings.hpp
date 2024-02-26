@@ -16,7 +16,7 @@ namespace Pronounce {
 
 	StateController leftWingStateController("WingsStateController", &leftWingIn);
 	StateController rightWingStateController("WingsStateController", &rightWingIn);
-	StateController hangReleaseStateController("HangReleaseStateController", &hangIn);
+	StateController hangStateController("HangReleaseStateController", &hangIn);
 	StateController awpStateController("HangReleaseStateController", &awpIn);
 
 	void initWings() {

@@ -31,6 +31,10 @@ namespace Pronounce {
 
 		std::int32_t get_digital_new_press(controller_digital_e_t channel) override { return controller->get_digital_new_press((pros::controller_digital_e_t) channel); }
 
+		pros::Controller *getController() const {
+			return controller;
+		}
+
 		~RobotJoystick() {
             delete controller;
         };

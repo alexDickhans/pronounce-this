@@ -47,12 +47,12 @@ QJerk Pronounce::TrapezoidalVelocityProfile::getJerkByTime(QTime time) {
 	return std::numeric_limits<double>::quiet_NaN();
 }
 
-void Pronounce::TrapezoidalVelocityProfile::calculate(int granularity) {
+void Pronounce::TrapezoidalVelocityProfile::calculate() {
 	ProfileConstraints profileConstraints = this->getProfileConstraints();
 	cruiseSpeed = signnum_c(this->getDistance().getValue()) * profileConstraints.maxVelocity;
 	aa = signnum_c((cruiseSpeed - this->getInitialSpeed()).getValue()) * profileConstraints.maxAcceleration;
 	ad = signnum_c((this->getEndSpeed() - cruiseSpeed).getValue()) * profileConstraints.maxAcceleration;
-	ta = (cruiseSpeed - this->getInitialSpeed()) / aa;
+	ta = aa.getValue() == 0.0 ? 0.0 : (cruiseSpeed - this->getInitialSpeed()) / aa;
 	td = ad.getValue() == 0.0 ? 0.0 : (this->getEndSpeed() - cruiseSpeed) / ad;
 	QLength la = 0.5 * Qsq(ta) * aa + this->getInitialSpeed() * ta;
 	QLength ld = 0.5 * Qsq(td) * ad + cruiseSpeed * td;
@@ -72,11 +72,11 @@ void Pronounce::TrapezoidalVelocityProfile::calculate(int granularity) {
 			ts = ta;
 			td = ta;
 		} else {
-			ta = (sqrt(2) * Qsqrt(-Qsq(ad) * (2 * ad * this->getDistance() - Qsq(this->getInitialSpeed()) + Qsq(this->getEndSpeed()))) + 2 * ad * this->getInitialSpeed() - 2 * ad * this->getEndSpeed())/(2 * Qsq(ad));
-			td = (this->getInitialSpeed() + ta * aa - this->getEndSpeed())/-ad + ta;
-			cruiseSpeed = this->getInitialSpeed() + ta * aa;
-			ad = -ad;
+			QLength distance = this->getDistance() - this->getEndSpeed() * 1_s;
+			ta = (sqrt(2) * Qsqrt(-Qsq(ad) * (2 * ad * distance - Qsq(this->getInitialSpeed()) + Qsq(this->getEndSpeed()))) + 2 * ad * this->getInitialSpeed() - 2 * ad * this->getEndSpeed())/(2 * Qsq(ad));
+			td = Qabs(this->getInitialSpeed() + ta * aa - this->getEndSpeed())/Qabs(ad) + ta;
 			ts = ta;
+			cruiseSpeed = this->getInitialSpeed() + ta * aa;
 		}
 	}
 }

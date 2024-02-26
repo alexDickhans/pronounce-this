@@ -68,7 +68,7 @@ namespace Pronounce {
 					drivetrainMutex(drivetrainMutex),
 					distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(fabs(distance.getValue()), profileConstraints, initialSpeed, endSpeed);
-			velocityProfile->calculate(100);
+			velocityProfile->calculate();
 			this->distance = distance;
 			this->curvature = curvature;
 		}
@@ -94,7 +94,7 @@ namespace Pronounce {
 					turnPid(turnPid),
 					distancePid(distancePid) {
 			velocityProfile = new SinusoidalVelocityProfile(distance, profileConstraints, initialSpeed, endSpeed);
-			velocityProfile->calculate(100);
+			velocityProfile->calculate();
 			this->distance = distance;
 			this->curvature = curvature;
 		}
@@ -117,7 +117,7 @@ namespace Pronounce {
 			this->velocityProfile->setDistance(this->distance);
 			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
 
-			this->velocityProfile->calculate(100);
+			this->velocityProfile->calculate();
 
 			beforeBrakeMode = drivetrain->getBrakeMode();
 			drivetrain->setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
@@ -128,9 +128,9 @@ namespace Pronounce {
 
 			drivetrainMutex.take();
 
-			QAcceleration acceleration = velocityProfile->getAccelerationByTime(duration).getValue() * signnum_c(distance.getValue());
-			QSpeed speed = velocityProfile->getVelocityByTime(duration).getValue() * signnum_c(distance.getValue());
-			QLength targetDistance = velocityProfile->getDistanceByTime(duration).getValue() * signnum_c(distance.getValue());
+			QAcceleration acceleration = velocityProfile->getAccelerationByTime(duration);
+			QSpeed speed = velocityProfile->getVelocityByTime(duration);
+			QLength targetDistance = velocityProfile->getDistanceByTime(duration);
 
 			drivetrain->targetSpeed = speed;
 			drivetrain->targetDistance = targetDistance + startDistance;

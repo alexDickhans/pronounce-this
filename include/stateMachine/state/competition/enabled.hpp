@@ -7,11 +7,16 @@ namespace Pronounce {
 	void initBehaviors() {
 		stateControllers.addBehavior(&drivetrainStateController);
 		stateControllers.addBehavior(&intakeExtensionStateController);
-		stateControllers.addBehavior(&intakeStateController);
 		stateControllers.addBehavior(&leftWingStateController);
 		stateControllers.addBehavior(&rightWingStateController);
-		stateControllers.addBehavior(&hangReleaseStateController);
+		stateControllers.addBehavior(&hangStateController);
 		stateControllers.addBehavior(&awpStateController);
+
+		if (isSkills) {
+			stateControllers.addBehavior(&catapultStateController);
+		} else {
+			stateControllers.addBehavior(&intakeStateController);
+		}
 	}
 
 	class Enabled : public Behavior {

@@ -19,6 +19,6 @@ namespace Pronounce {
 
 		[[deprecated("Jerk doesn't work with trapezoidal mp")]] QJerk getJerkByTime(QTime time) override;
 
-		void calculate(int granularity) override;
+		void calculate() override;
 	};
 }

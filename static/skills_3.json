@@ -1,0 +1,1 @@
+{"segments":[{"inverted":false,"paths":[{"x":0.57,"y":0.235},{"x":0.693,"y":0.531},{"x":0.376,"y":1.091},{"x":0.269,"y":1.53}],"constraints":{"velocity":71,"accel":120}},{"inverted":false,"paths":[{"x":0.269,"y":1.53},{"x":-0.008,"y":2.999},{"x":0.886,"y":3.326},{"x":1.383,"y":3.322}],"constraints":{"velocity":71,"accel":120}}],"commands":[{"t":0.0,"name":"rightWingOut"}]}

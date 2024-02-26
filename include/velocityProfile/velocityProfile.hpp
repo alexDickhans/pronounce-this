@@ -44,7 +44,7 @@ namespace Pronounce {
 		const ProfileConstraints &getProfileConstraints() const;
 		virtual void setProfileConstraints(const ProfileConstraints &profileConstraints);
 
-		virtual void calculate(int granularity) {}
+		virtual void calculate() {}
 
 		~VelocityProfile() {}
 	};
