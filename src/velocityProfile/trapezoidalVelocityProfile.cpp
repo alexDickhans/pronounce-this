@@ -72,8 +72,8 @@ void Pronounce::TrapezoidalVelocityProfile::calculate() {
 			ts = ta;
 			td = ta;
 		} else {
-			QLength distance = this->getDistance() - this->getEndSpeed() * 1_s;
-			ta = (sqrt(2) * Qsqrt(-Qsq(ad) * (2 * ad * distance - Qsq(this->getInitialSpeed()) + Qsq(this->getEndSpeed()))) + 2 * ad * this->getInitialSpeed() - 2 * ad * this->getEndSpeed())/(2 * Qsq(ad));
+//			QLength distance = this->getDistance() - this->getEndSpeed() * 1_s;
+			ta = (Qsqrt(ad * (4 * ad * this->getDistance() - Qsq(this->getInitialSpeed()) + 2 * Qsq(this->getEndSpeed()))) + ad * this->getInitialSpeed() - 2 * ad * this->getEndSpeed())/(2 * Qsq(ad));
 			td = Qabs(this->getInitialSpeed() + ta * aa - this->getEndSpeed())/Qabs(ad) + ta;
 			ts = ta;
 			cruiseSpeed = this->getInitialSpeed() + ta * aa;

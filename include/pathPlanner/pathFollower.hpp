@@ -132,7 +132,7 @@ namespace PathPlanner {
 				Pronounce::VelocityProfile* profile = this->pathSegments.at(i).second;
 
 				if (profile == nullptr) {
-					profile = new Pronounce::TrapezoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
+					profile = new Pronounce::SinusoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
 				}
 
 				profile->setDistance(this->pathSegments.at(i).first.getDistance());

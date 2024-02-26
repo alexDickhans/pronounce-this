@@ -20,34 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/include/pathPlanner/motionProfiles/simpleSplineProfile.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapult.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/initCatapult.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pathPlanner/motionProfiles/simpleSplineProfile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/field.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hardwareAbstractions/joystick/robotJoystick.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardwareAbstractions/joystick/robotJoystick.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/motionControl/tankMotionProfiling.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/motionControl/tankMotionProfiling.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/robotBehaviors.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/wings/initWings.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/units/units.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/units/units.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/velocityProfile/sinusoidalVelocityProfile.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/velocityProfile/sinusoidalVelocityProfile.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/velocityProfile/trapezoidalVelocityProfile.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/velocityProfile/trapezoidalVelocityProfile.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/velocityProfile/velocityProfile.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/velocityProfile/velocityProfile.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/velocityProfile/sinusoidalVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/velocityProfile/sinusoidalVelocityProfile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/velocityProfile/testVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/velocityProfile/testVelocityProfile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testVelocityProfile" beforeDir="false" afterPath="$PROJECT_DIR$/testVelocityProfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testVelocityProfile.dSYM/Contents/Resources/DWARF/testVelocityProfile" beforeDir="false" afterPath="$PROJECT_DIR$/testVelocityProfile.dSYM/Contents/Resources/DWARF/testVelocityProfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testVelocityProfile.dSYM/Contents/Resources/Relocations/aarch64/testVelocityProfile.yml" beforeDir="false" afterPath="$PROJECT_DIR$/testVelocityProfile.dSYM/Contents/Resources/Relocations/aarch64/testVelocityProfile.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +179,7 @@
       <workItem from="1708706249611" duration="6356000" />
       <workItem from="1708795084236" duration="18180000" />
       <workItem from="1708960187577" duration="1256000" />
-      <workItem from="1708973569350" duration="3955000" />
+      <workItem from="1708973569350" duration="4968000" />
     </task>
     <servers />
   </component>
