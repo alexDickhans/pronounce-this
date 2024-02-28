@@ -17,7 +17,9 @@ ASSET(skills_3_json);
 ASSET(skills_4_json);
 ASSET(skills_5_json);
 ASSET(skills_6_json);
+ASSET(skills_6_5_json);
 ASSET(skills_7_json);
+ASSET(skills_7_5_json);
 ASSET(skills_8_json);
 ASSET(skills_9_json);
 ASSET(skills_10_json);
@@ -37,30 +39,36 @@ void turnTo(Angle angle, QTime waitTimeMS) {
 	pros::Task::delay(10);
 }
 
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
-	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, initialSpeed, endSpeed));
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0,
+          QSpeed endSpeed = 0.0) {
+	drivetrainStateController.setCurrentBehavior(
+			new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid,
+			                        drivetrainMutex, curvature, initialSpeed, endSpeed));
 
 	pros::delay(50);
 
-	while(!drivetrainStateController.isDone())
+	while (!drivetrainStateController.isDone())
 		pros::Task::delay(10);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle,
+          QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
 
-	drivetrainStateController.setCurrentBehavior(new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid, drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed));
+	drivetrainStateController.setCurrentBehavior(
+			new TankMotionProfiling("moveDistance", &drivetrain, profileConstraints, distance, &odometry, &distancePid,
+			                        drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed, endSpeed));
 
 	pros::delay(50);
 
-	while(!drivetrainStateController.isDone())
+	while (!drivetrainStateController.isDone())
 		pros::Task::delay(10);
 
 	drivetrainStateController.setCurrentBehavior(&drivetrainStopped);
 }
 
-void far5BallRushMid(void* args) {
+void far5BallRushMid(void *args) {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
@@ -95,7 +103,7 @@ void far5BallRushMid(void* args) {
 	pros::Task::delay(800);
 	drivetrain.tankSteerVoltage(0.0, 0.0);
 	leftWingStateController();
-	move (-6_in, speedProfileConstraints, 0.0, 90_deg);
+	move(-6_in, speedProfileConstraints, 0.0, 90_deg);
 	turnTo(25_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, 25_deg);
@@ -105,7 +113,7 @@ void far5BallRushMid(void* args) {
 	move(38_in, speedProfileConstraints, 0.0, 150_deg);
 }
 
-void far6BallRushMid(void* args) {
+void far6BallRushMid(void *args) {
 	far5BallRushMid(args);
 
 	turnTo(3_deg, 550_ms);
@@ -123,7 +131,7 @@ void far6BallRushMid(void* args) {
 	turnTo(0_deg, 3_s);
 }
 
-void far5BallAWP(void* args) {
+void far5BallAWP(void *args) {
 	far5BallRushMid(args);
 
 	move(-5_in, speedProfileConstraints, 0.0, 0_deg);
@@ -136,15 +144,17 @@ void far5BallAWP(void* args) {
 	pros::Task::delay(5000);
 }
 
-void skills(void* args) {
+void skills(void *args) {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
 
 	drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
 
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21_deg, drivetrainMutex, -800.0));
+	drivetrainStateController.setCurrentBehavior(
+			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21_deg,
+			                       drivetrainMutex, -800.0));
 
-	pros::Task::delay(20000);
+	pros::Task::delay(2000);
 
 	drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
 	rightWingStateController(&rightWingIn);
@@ -158,35 +168,58 @@ void skills(void* args) {
 	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
-	move(-7_in, speedProfileConstraints, 0.0, -75_deg);
+	move(-3_in, speedProfileConstraints, 0.0, -75_deg);
 
 	turnTo(-160_deg, 400_ms);
 
 	drivetrainStateController(pathFollower.changePath(skills_5_json))->wait();
 
-	move(-3_in, defaultProfileConstraints, 0.0);
+	move(-5_in, defaultProfileConstraints, 0.0);
 
-	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_6_json))->wait();
 
 	move(-3_in, defaultProfileConstraints, 0.0);
 
-	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_6_5_json))->wait();
+
+	move(-3_in, defaultProfileConstraints, 0.0);
+
+	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_7_json))->wait();
 
 	move(-3_in, defaultProfileConstraints, 0.0);
 
-	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_7_5_json))->wait();
+
+	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 5);
+
+	drivetrainStateController(
+			pathFollower.changePath(speedProfileConstraints, {{
+					                                                  PathPlanner::BezierSegment(
+							                                                  PathPlanner::Point(
+									                                                  wallDistance, 60_in),
+							                                                  PathPlanner::Point(
+									                                                  wallDistance, 30_in),
+							                                                  PathPlanner::Point(
+									                                                  24_in, 25_in),
+							                                                  PathPlanner::Point(
+									                                                  24_in, 10_in)),
+					                                                  nullptr}}))->wait();
 
 	drivetrainStateController(pathFollower.changePath(skills_8_json))->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
+	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+	move(-15_in, speedProfileConstraints, 0.0, 75_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
@@ -201,7 +234,7 @@ void skills(void* args) {
 	hangStateController();
 }
 
-void safeCloseAWP(void* args) {
+void safeCloseAWP(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 45_deg));
 
 	intakeExtensionStateController(&deploySequence);
@@ -222,7 +255,7 @@ void safeCloseAWP(void* args) {
 	pros::Task::delay(15000);
 }
 
-void closeRushMid(void* args) {
+void closeRushMid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
 
 	leftWingStateController(leftWingOut.wait(300_ms));
@@ -253,7 +286,7 @@ void closeRushMid(void* args) {
 	drivetrainStateController(pathFollower.changePath(close_rush_mid_2_json))->wait();
 }
 
-void closeRushMidElim(void* args) {
+void closeRushMidElim(void *args) {
 	closeRushMid(args);
 
 	turnTo(-180_deg, 800_ms);
@@ -265,9 +298,9 @@ void closeRushMidElim(void* args) {
 	drivetrainStateController.waitUntilDone();
 }
 
-void tuneTurnPid(void* args) {
+void tuneTurnPid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0.0_deg));
-	while(1) {
+	while (1) {
 		turnTo(180_deg, 2_s);
 		turnTo(0.0_deg, 2_s);
 	}
@@ -317,7 +350,7 @@ void tuneTurnPid(void* args) {
 	std::shared_ptr<lv_obj_t> portsPage = std::shared_ptr<lv_obj_t>(lv_page_create(portsTab.get(), NULL));
 	std::shared_ptr<lv_obj_t> portsLabel = std::shared_ptr<lv_obj_t>(lv_label_create(portsTab.get(), NULL));
 	std::shared_ptr<lv_obj_t> portsTable = std::shared_ptr<lv_obj_t>(lv_table_create(portsPage.get(), NULL));
-	
+
 	lv_obj_set_width(portsPage.get(), 400);
 	lv_obj_set_height(portsPage.get(), 100);
 
@@ -333,7 +366,8 @@ void tuneTurnPid(void* args) {
 	}
 
 	// Drivetrain
-	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Drivetrain"));
+	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(
+			lv_tabview_add_tab(tabview.get(), "Drivetrain"));
 	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get(), NULL));
 
 	lv_table_set_row_cnt(drivetrainTable.get(), 4);
@@ -347,17 +381,25 @@ void tuneTurnPid(void* args) {
 	while (true) {
 		// Odometry
 		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()
-			+ "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
-			", R: " + std::to_string(rightDrive1Odom.getPosition().Convert(inch))).c_str());
+		                                    + "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
+		                                    ", R: " +
+		                                    std::to_string(rightDrive1Odom.getPosition().Convert(inch))).c_str());
 
 		// Drivetrain
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 0, (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 0, (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 0, (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 0, (std::to_string(intakeMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 1, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 0,
+		                        (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 0,
+		                        (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 0,
+		                        (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 3, 0,
+		                        (std::to_string(intakeMotor.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 0, 1,
+		                        (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 1, 1,
+		                        (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
+		lv_table_set_cell_value(drivetrainTable.get(), 2, 1,
+		                        (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
 
 		pros::Task::delay(50);
 	}
@@ -456,7 +498,7 @@ void disabled() {
 	competitionController.useDefaultBehavior();
 
 	// Create a label
-	lv_obj_t* disabledLabel = lv_label_create(lv_scr_act(), NULL);
+	lv_obj_t *disabledLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
 	lv_label_set_text(disabledLabel, "Robot Disabled.");
 }
@@ -482,19 +524,19 @@ void autonomous() {
 
 	std::cout << "Init: Auton" << AUTON << std::endl;
 
-	#if AUTON == 0
+#if AUTON == 0
 	auton.setAuton(far6BallRushMid);
-	#elif AUTON == 1
+#elif AUTON == 1
 	auton.setAuton(far5BallAWP);
-	#elif AUTON == 2
+#elif AUTON == 2
 	auton.setAuton(safeCloseAWP);
-	#elif AUTON == 3
+#elif AUTON == 3
 	auton.setAuton(closeRushMidElim);
-	#elif AUTON == 4
+#elif AUTON == 4
 	auton.setAuton(closeRushMid);
-	#elif AUTON == 5
+#elif AUTON == 5
 	auton.setAuton(skills);
-	#endif // !1
+#endif // !1
 
 	competitionController.setCurrentBehavior(&auton);
 }

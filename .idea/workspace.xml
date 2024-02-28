@@ -21,7 +21,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/utils/utils.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils/utils.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_5.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_5.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_6.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_6.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_7.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_7.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_8.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_8.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +194,7 @@
       <workItem from="1708706249611" duration="6356000" />
       <workItem from="1708795084236" duration="18180000" />
       <workItem from="1708960187577" duration="1256000" />
-      <workItem from="1708973569350" duration="24248000" />
+      <workItem from="1708973569350" duration="27208000" />
     </task>
     <servers />
   </component>

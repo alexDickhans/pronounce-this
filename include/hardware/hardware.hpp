@@ -54,8 +54,8 @@ namespace Pronounce {
 
 	pros::Motor_Group leftDriveMotors({leftDrive1, leftDrive2, leftDrive3, leftDrive4});
 	pros::Motor_Group rightDriveMotors({rightDrive1, rightDrive2, rightDrive3, rightDrive4});
-	pros::Gps gps(10, -(5.25_in).Convert(metre), -(4.1_in).Convert(metre));
-	GpsOrientation gpsOrientation(gps, 90_deg);
+//	pros::Gps gps(10, -(5.25_in).Convert(metre), -(4.1_in).Convert(metre));
+//	GpsOrientation gpsOrientation(gps, 90_deg);
 
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
@@ -76,6 +76,8 @@ namespace Pronounce {
 	// Inertial Measurement Unit
 	pros::Imu imu(3);
 	IMU imuOrientation(3);
+
+	pros::Distance distanceSensor(10);
 
 	pros::Mutex odometryMutex;
 
