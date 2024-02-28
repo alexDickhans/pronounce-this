@@ -3,6 +3,7 @@
 #include "locolib/localization/particleFilter/particle.hpp"
 #include <limits>
 #include "pros/gps.hpp"
+#include "utils/pose2d.hpp"
 
 namespace Loco {
 	class FieldModel {
@@ -60,8 +61,12 @@ namespace Loco {
 		}
 
         static Eigen::Vector3d fromGps(pros::c::gps_status_s gpsStatus) {
-            return Eigen::Vector3d({gpsStatus.x, -gpsStatus.y, -gpsStatus.yaw * degree.Convert(radian)});
+            return Eigen::Vector3d({gpsStatus.x, gpsStatus.y, -gpsStatus.yaw * degree.Convert(radian)});
         }
+
+		static Pronounce::Pose2D toPronounceRed(Eigen::Vector3d vector3D) {
+			return {-vector3D.y() * 1_m + 70_in, -vector3D.x() * 1_m + 70_in, vector3D.z() * -1_rad - 90_deg};
+		}
 
 		static Eigen::Vector2d minPosition;
 		static Eigen::Vector2d maxPosition;

@@ -40,6 +40,7 @@
 // Continuous Odometry
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
+#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"

@@ -20,9 +20,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/include/odometry/continuousOdometry/particleFilterOdometry.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/odometry/orientation/gpsOrientation.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/localization/particleFilter/particleFilter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/localization/particleFilter/particleFilter.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/locolib.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/locolib.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/deadWheel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/deadWheel.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/motorDeadWheel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/motorDeadWheel.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/gps/gamePositioningSystem.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/gps/gamePositioningSystem.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/timeOfFlight/distanceSensor.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/timeOfFlight/timeOfFlight.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/units/units.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/locolib/utils/fieldModel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/utils/fieldModel.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +107,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "C/C++ File.testVelocityProfile.cpp.executor": "Debug",
+    "Makefile Target.quick.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -97,7 +115,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "states",
-    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this/include/stateMachine/behaviors",
+    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -108,13 +126,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/include/stateMachine/behaviors" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/pathPlanner/motionProfiles" />
     </key>
   </component>
-  <component name="RunManager" selected="C/C++ File.testVelocityProfile.cpp">
+  <component name="RunManager" selected="Native Application.quick">
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pronounce-this" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -152,8 +171,15 @@
         <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="quick" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="" workingDirectory="$PROJECT_DIR$" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="C/C++ File.testVelocityProfile.cpp" />
+      <item itemvalue="Makefile Target.quick" />
       <item itemvalue="Native Application.all" />
       <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
@@ -179,11 +205,22 @@
       <workItem from="1708706249611" duration="6356000" />
       <workItem from="1708795084236" duration="18180000" />
       <workItem from="1708960187577" duration="1256000" />
-      <workItem from="1708973569350" duration="4968000" />
+      <workItem from="1708973569350" duration="22887000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

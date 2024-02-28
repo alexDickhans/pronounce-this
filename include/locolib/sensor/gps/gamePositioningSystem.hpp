@@ -20,7 +20,7 @@ namespace Loco {
 
 			QLength distance = (particlePosition - measuredPosition).norm();
 
-			return gps.get_error()/sqrt(distance.getValue());
+			return std::min(gps.get_error()/sqrt(distance.getValue()), 0.2);
 		}
 
 		Eigen::Vector3d getCurrentPosition() {

@@ -13,6 +13,11 @@ ASSET(safe_close_awp_json);
 ASSET(safe_close_awp_2_json);
 ASSET(skills_1_json);
 ASSET(skills_2_json);
+ASSET(skills_3_json);
+ASSET(skills_4_json);
+ASSET(skills_5_json);
+ASSET(skills_6_json);
+ASSET(skills_7_json);
 ASSET(skills_front_push_json);
 ASSET(skills_pole_align_json);
 ASSET(close_mid_rush_elim_json);
@@ -129,47 +134,48 @@ void far5BallAWP(void* args) {
 }
 
 void skills(void* args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -20_deg));
 
-	intakeStateController(&intakeEject);
-
-	move(-18_in, pushingProfileConstraints, 0.0, -35_deg);
-
-	for (int i = 0; i < 3; i++) {
-		drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -35_deg, drivetrainMutex, -800.0));
-
-		pros::Task::delay(3500);
-
-		turnTo(-45_deg, 200_ms);
-
-		drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
-		move(-12_in, speedProfileConstraints, 0.0, 80_deg);
-		move (22_in, speedProfileConstraints, 0.0, 65_deg);
-		move(-8_in, speedProfileConstraints, 0.0, 80_deg);
-		move (15_in, speedProfileConstraints, 0.0, 65_deg);
-		drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
-	}
-
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, -35_deg, drivetrainMutex, 0.0));
-
-	pros::Task::delay(3500);
+	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
 
 	drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
-	move(-8_in, speedProfileConstraints, 0.0, 80_deg);
-	move (15_in, speedProfileConstraints, 0.0, 65_deg);
-	move(-8_in, speedProfileConstraints, 0.0, 80_deg);
-	move (15_in, speedProfileConstraints, 0.0, 65_deg);
 
-	drivetrainStateController(pathFollower.changePath(skills_pole_align_json))->wait();
+	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21_deg, drivetrainMutex, -800.0));
 
-	move(8_in, defaultProfileConstraints, 0.0, 43_deg);
-	hangStateController(&hangOut);
-	pros::Task::delay(2000);
-	drivetrainStateController.setCurrentBehavior(new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 43_deg, drivetrainMutex, -8000));
+	pros::Task::delay(20000);
 
-	pros::Task::delay(1200);
+	drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
+	rightWingStateController(&rightWingIn);
+	turnTo(180_deg, 300_ms);
+	drivetrainStateController(pathFollower.changePath(skills_3_json))->wait();
 
-	drivetrainStateController();
+	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
+	move(-7_in, speedProfileConstraints, 0.0, -75_deg);
+
+	turnTo(-160_deg, 400_ms);
+
+	drivetrainStateController(pathFollower.changePath(skills_5_json))->wait();
+
+	move(-3_in, defaultProfileConstraints, 0.0);
+
+	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_6_json))->wait();
+
+	move(-3_in, defaultProfileConstraints, 0.0);
+
+	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_7_json))->wait();
+
+	move(-3_in, defaultProfileConstraints, 0.0);
+
+	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
 }
 
 void safeCloseAWP(void* args) {
@@ -277,12 +283,12 @@ void tuneTurnPid(void* args) {
 
 [[noreturn]] void updateDisplay() {
 
-	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
-	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
-
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
 	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
+
+	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
+	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
 
 	std::shared_ptr<lv_obj_t> portsTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Ports"));
 	std::shared_ptr<lv_obj_t> portsPage = std::shared_ptr<lv_obj_t>(lv_page_create(portsTab.get(), NULL));
@@ -329,10 +335,6 @@ void tuneTurnPid(void* args) {
 		lv_table_set_cell_value(drivetrainTable.get(), 0, 1, (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 1, 1, (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
 		lv_table_set_cell_value(drivetrainTable.get(), 2, 1, (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-
-		auto gpsStatus = gps.get_status();
-
-		telemetryRadio.transmit("[" + std::to_string(static_cast<int>((gpsStatus.x * 350.0 / 1.8 + 350))) + "," + std::to_string(static_cast<int>((gpsStatus.y * 350.0 / 1.8 + 350))) + "]\n");
 
 		pros::Task::delay(50);
 	}
@@ -403,6 +405,14 @@ void initialize() {
 	pathFollower.addCommandMapping("wingsIn", [&]() -> void {
 		leftWingStateController(&leftWingIn);
 		rightWingStateController(&rightWingIn);
+	});
+
+	pathFollower.addCommandMapping("catapult", [&]() -> void {
+		catapultStateController(&catapultFire);
+	});
+
+	pathFollower.addCommandMapping("catapultStop", [&]() -> void {
+		catapultStateController();
 	});
 
 	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);

@@ -3,8 +3,10 @@
 #include <vector>
 #include "particle.hpp"
 #include <random>
-#include "locolib/units/units.hpp"
+#include "units/units.hpp"
 #include "locolib/prediction/deadWheel/twoWheelOdometry.hpp"
+#include "locolib/sensor/sensorModel.hpp"
+#include "locolib/utils/fieldModel.hpp"
 
 namespace Loco {
 	template<size_t size>

@@ -13,6 +13,10 @@
 #include <map>
 #include "telemetryRadio/telemetryManager.hpp"
 #include "auton.h"
+#include "locolib/locolib.hpp"
+#include "units/units.hpp"
+#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
+#include "odometry/orientation/gpsOrientation.hpp"
 
 #ifndef SIM
 
@@ -50,6 +54,8 @@ namespace Pronounce {
 
 	pros::Motor_Group leftDriveMotors({leftDrive1, leftDrive2, leftDrive3, leftDrive4});
 	pros::Motor_Group rightDriveMotors({rightDrive1, rightDrive2, rightDrive3, rightDrive4});
+	pros::Gps gps(10, -(5.25_in).Convert(metre), -(4.1_in).Convert(metre));
+	GpsOrientation gpsOrientation(gps, 90_deg);
 
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
@@ -73,8 +79,7 @@ namespace Pronounce {
 
 	pros::Mutex odometryMutex;
 
-	PT::TelemetryRadio telemetryRadio(1, new PT::PassThroughEncoding());
-	pros::Gps gps(10, 0.0, 0.125);
+	PT::TelemetryRadio telemetryRadio(2, new PT::PassThroughEncoding());
 
 	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
 
@@ -124,7 +129,7 @@ namespace Pronounce {
 			    pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) !=
 			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
 				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) !=
+			} else if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) ==
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
 				master->getController()->rumble(". . . . ");
 			}
@@ -136,7 +141,7 @@ namespace Pronounce {
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
 			           pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) ==
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				master->getController()->rumble(". . . . ");
+				master->getController()->rumble("........");
 			}
 		}
 
@@ -145,6 +150,8 @@ namespace Pronounce {
 
 			while (imu.is_calibrating())
 				pros::Task::delay(50);
+
+			master->getController()->rumble(".");
 		}
 	}
 
