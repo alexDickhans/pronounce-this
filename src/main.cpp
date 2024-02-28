@@ -18,6 +18,9 @@ ASSET(skills_4_json);
 ASSET(skills_5_json);
 ASSET(skills_6_json);
 ASSET(skills_7_json);
+ASSET(skills_8_json);
+ASSET(skills_9_json);
+ASSET(skills_10_json);
 ASSET(skills_front_push_json);
 ASSET(skills_pole_align_json);
 ASSET(close_mid_rush_elim_json);
@@ -176,6 +179,26 @@ void skills(void* args) {
 	move(-3_in, defaultProfileConstraints, 0.0);
 
 	move (10_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_8_json))->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
+
+	rightWingStateController();
+
+	move(-4_in, speedProfileConstraints, 0.0, -75_deg);
+
+	drivetrainStateController(pathFollower.changePath(skills_10_json))->wait();
+
+	pros::Task::delay(500);
+
+	hangStateController();
 }
 
 void safeCloseAWP(void* args) {

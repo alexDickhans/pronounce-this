@@ -20,26 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/include/odometry/continuousOdometry/particleFilterOdometry.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/odometry/orientation/gpsOrientation.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/localization/particleFilter/particleFilter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/localization/particleFilter/particleFilter.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/locolib.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/locolib.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/deadWheel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/deadWheel.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/motorDeadWheel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/deadWheel/motorDeadWheel.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/gps/gamePositioningSystem.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/sensor/gps/gamePositioningSystem.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/timeOfFlight/distanceSensor.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/sensor/timeOfFlight/timeOfFlight.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/units/units.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/locolib/utils/fieldModel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/locolib/utils/fieldModel.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/velocityProfile/trapezoidalVelocityProfile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,7 +187,7 @@
       <workItem from="1708706249611" duration="6356000" />
       <workItem from="1708795084236" duration="18180000" />
       <workItem from="1708960187577" duration="1256000" />
-      <workItem from="1708973569350" duration="22887000" />
+      <workItem from="1708973569350" duration="24248000" />
     </task>
     <servers />
   </component>
