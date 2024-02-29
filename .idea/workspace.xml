@@ -23,12 +23,17 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/drivetrain/initDrivetrain.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/close_mid_rush.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/close_mid_rush.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/mid_6_ball_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/mid_6_ball_2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/safe_close_awp.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/safe_close_awp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_4.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_5.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_5.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_6.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_6.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_6_5.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_6_5.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_7.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_7.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_7_5.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_7_5.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_8.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_8.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_9.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_9.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +201,7 @@
       <workItem from="1708960187577" duration="1256000" />
       <workItem from="1708973569350" duration="29341000" />
       <workItem from="1709224710572" duration="235000" />
-      <workItem from="1709225050529" duration="3608000" />
+      <workItem from="1709225050529" duration="6124000" />
     </task>
     <servers />
   </component>

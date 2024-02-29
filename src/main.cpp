@@ -23,8 +23,6 @@ ASSET(skills_7_5_json);
 ASSET(skills_8_json);
 ASSET(skills_9_json);
 ASSET(skills_10_json);
-ASSET(skills_front_push_json);
-ASSET(skills_pole_align_json);
 ASSET(close_mid_rush_elim_json);
 ASSET(close_rush_mid_2_json);
 
@@ -163,10 +161,10 @@ void skills(void *args) {
 	drivetrainStateController(pathFollower.changePath(skills_3_json))->wait();
 
 	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
-
-	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
-
-	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+//
+//	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
+//
+//	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
 	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
@@ -203,8 +201,6 @@ void skills(void *args) {
 			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 0_deg,
 			                       drivetrainMutex));
 
-	pros::Task::delay(100);
-
 	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 5) * 1_mm;
 	drivetrainStateController();
 
@@ -216,9 +212,9 @@ void skills(void *args) {
 							                                                  PathPlanner::Point(
 									                                                  wallDistance.getValue() * 0.78, 68_in),
 							                                                  PathPlanner::Point(
-									                                                  22_in, 45_in),
+									                                                  21_in, 50_in),
 							                                                  PathPlanner::Point(
-									                                                  22_in, 10_in), true),
+									                                                  22_in, 20_in), true),
 					                                                  nullptr}}))->wait();
 
 	drivetrainStateController(pathFollower.changePath(skills_8_json))->wait();
@@ -227,9 +223,9 @@ void skills(void *args) {
 
 	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, 75_deg);
-
-	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
+//	move(-15_in, speedProfileConstraints, 0.0, 75_deg);
+//
+//	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
 	rightWingStateController();
 
