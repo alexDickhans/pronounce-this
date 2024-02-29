@@ -147,6 +147,7 @@ void far5BallAWP(void *args) {
 void skills(void *args) {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
+//	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0_deg));
 
 	drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
 
@@ -154,7 +155,7 @@ void skills(void *args) {
 			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21_deg,
 			                       drivetrainMutex, -800.0));
 
-	pros::Task::delay(2000);
+	pros::Task::delay(20000);
 
 	drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
 	rightWingStateController(&rightWingIn);
@@ -168,49 +169,56 @@ void skills(void *args) {
 	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
-	move(-3_in, speedProfileConstraints, 0.0, -75_deg);
+	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
 
-	turnTo(-160_deg, 400_ms);
+	turnTo(-160_deg, 200_ms);
 
 	drivetrainStateController(pathFollower.changePath(skills_5_json))->wait();
 
-	move(-5_in, defaultProfileConstraints, 0.0);
+	move(-5_in, speedProfileConstraints, 0.0);
 
-	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_6_json))->wait();
 
-	move(-3_in, defaultProfileConstraints, 0.0);
+	move(-3_in, speedProfileConstraints, 0.0);
 
-	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_6_5_json))->wait();
 
-	move(-3_in, defaultProfileConstraints, 0.0);
+	move(-3_in, speedProfileConstraints, 0.0);
 
-	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_7_json))->wait();
 
-	move(-3_in, defaultProfileConstraints, 0.0);
+	move(-3_in, speedProfileConstraints, 0.0);
 
-	move(10_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_7_5_json))->wait();
 
-	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 5);
+	drivetrainStateController.setCurrentBehavior(
+			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 0_deg,
+			                       drivetrainMutex));
+
+	pros::Task::delay(100);
+
+	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 5) * 1_mm;
+	drivetrainStateController();
 
 	drivetrainStateController(
-			pathFollower.changePath(speedProfileConstraints, {{
+			pathFollower.changePath(pushingProfileConstraints, {{
 					                                                  PathPlanner::BezierSegment(
 							                                                  PathPlanner::Point(
-									                                                  wallDistance, 60_in),
+									                                                  wallDistance, 76_in),
 							                                                  PathPlanner::Point(
-									                                                  wallDistance, 30_in),
+									                                                  wallDistance.getValue() * 0.78, 68_in),
 							                                                  PathPlanner::Point(
-									                                                  24_in, 25_in),
+									                                                  22_in, 45_in),
 							                                                  PathPlanner::Point(
-									                                                  24_in, 10_in)),
+									                                                  22_in, 10_in), true),
 					                                                  nullptr}}))->wait();
 
 	drivetrainStateController(pathFollower.changePath(skills_8_json))->wait();
