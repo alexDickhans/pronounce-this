@@ -221,13 +221,13 @@ void skills(void *args) {
 
 	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, 75_deg);
+	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_9_json))->wait();
 
 	rightWingStateController();
 
-	move(-15_in, speedProfileConstraints, 0.0, 75_deg);
+	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
 	drivetrainStateController(pathFollower.changePath(skills_10_json))->wait();
 

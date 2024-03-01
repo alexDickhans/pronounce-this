@@ -1,1 +1,1 @@
-{"segments":[{"inverted":false,"paths":[{"x":0.665,"y":3.14},{"x":0.878,"y":3.295},{"x":1.02,"y":3.35},{"x":1.282,"y":3.387}],"constraints":{"velocity":71,"accel":200}}],"commands":[]}
+{"segments":[{"inverted":false,"paths":[{"x":0.665,"y":3.14},{"x":0.878,"y":3.295},{"x":1.004,"y":3.38},{"x":1.282,"y":3.343}],"constraints":{"velocity":71,"accel":200}}],"commands":[]}
