@@ -149,7 +149,7 @@ void skills(void *args) {
 	drivetrainStateController(pathFollower.changePath(skills_1_json))->wait();
 
 	drivetrainStateController.setCurrentBehavior(
-			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21.05_deg,
+			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21.1_deg,
 			                       drivetrainMutex, -800.0));
 
 	pros::Task::delay(20000);
