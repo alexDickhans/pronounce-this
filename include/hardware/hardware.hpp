@@ -79,6 +79,7 @@ namespace Pronounce {
 
 	pros::Distance distanceSensor(10);
 	pros::Distance hopperDistanceSensor(5);
+	pros::Distance catapultDistance(6);
 
 	pros::Mutex odometryMutex;
 

@@ -152,8 +152,16 @@ void skills(void *args) {
 	drivetrainStateController.setCurrentBehavior(
 			new RotationController("MatchloadRotationController", drivetrain, odometry, turningPid, 21.1_deg,
 			                       drivetrainMutex, -800.0));
+	auton.resetTriballs();
+	pros::Task::delay(500);
 
-	pros::Task::delay(20000);
+	// Wait until the catapult triballs shot has increased to 44 triballs
+	while (auton.getTriballCount() < 44 && catapultStateController.getDuration() < 2.0_s) {
+		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
+		pros::Task::delay(10);
+	}
+
+	pros::Task::delay(200);
 
 	drivetrainStateController(pathFollower.changePath(skills_2_json))->wait();
 	rightWingStateController(&rightWingIn);
@@ -424,6 +432,7 @@ void initialize() {
 	initIntake();
 	initWings();
 	initBehaviors();
+	initCatapult();
 
 	pathFollower.addCommandMapping("intake", [&]() -> void {
 		intakeStateController(&intakeIntaking);

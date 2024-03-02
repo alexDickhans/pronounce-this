@@ -20,13 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/catapultHold.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behavior.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behavior.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/initCatapult.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/catapult/initCatapult.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stateMachine/stateController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/stateController.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,28 +92,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;C/C++ File.testVelocityProfile.cpp.executor&quot;: &quot;Debug&quot;,
-    &quot;Makefile Target.quick.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;states&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/alex/CLionProjects/pronounce-this&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C/C++ File.testVelocityProfile.cpp.executor": "Debug",
+    "Makefile Target.quick.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "states",
+    "last_opened_file_path": "/Users/alex/CLionProjects/pronounce-this/include/stateMachine/behaviors/catapult",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/stateMachine/behaviors/catapult" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/include/stateMachine/behaviors" />
     </key>
@@ -194,7 +196,7 @@
       <workItem from="1708960187577" duration="1256000" />
       <workItem from="1708973569350" duration="29341000" />
       <workItem from="1709224710572" duration="235000" />
-      <workItem from="1709225050529" duration="18003000" />
+      <workItem from="1709225050529" duration="19804000" />
     </task>
     <servers />
   </component>
