@@ -208,11 +208,11 @@ void skills(void *args) {
 							                                                  PathPlanner::Point(
 									                                                  wallDistance, 76_in),
 							                                                  PathPlanner::Point(
-									                                                  wallDistance.getValue() * 0.78, 68_in),
+									                                                  wallDistance.getValue() * 0.74, 68_in),
 							                                                  PathPlanner::Point(
-									                                                  21_in, 50_in),
+									                                                  19_in, 55_in),
 							                                                  PathPlanner::Point(
-									                                                  22_in, 20_in), true),
+									                                                  20_in, 20_in), true),
 					                                                  nullptr}}))->wait();
 
 	drivetrainStateController(pathFollower.changePath(skills_8_json))->wait();
@@ -250,7 +250,7 @@ void safeCloseAWP(void *args) {
 
 	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
 
-	turnTo(75_deg, 300_ms);
+	turnTo(45_deg, 300_ms);
 
 	drivetrainStateController(pathFollower.changePath(safe_close_awp_2_json))->wait();
 
@@ -426,6 +426,10 @@ void initialize() {
 
 	pathFollower.addCommandMapping("intake", [&]() -> void {
 		intakeStateController(&intakeIntaking);
+	});
+
+	pathFollower.addCommandMapping("intakeHold", [&]() -> void {
+		intakeStateController(&intakeHold);
 	});
 
 	pathFollower.addCommandMapping("intakeStopped", [&]() -> void {
