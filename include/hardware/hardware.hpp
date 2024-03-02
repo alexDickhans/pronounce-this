@@ -78,6 +78,7 @@ namespace Pronounce {
 	IMU imuOrientation(3);
 
 	pros::Distance distanceSensor(10);
+	pros::Distance hopperDistanceSensor(5);
 
 	pros::Mutex odometryMutex;
 

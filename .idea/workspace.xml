@@ -21,9 +21,12 @@
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/hardware/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/hardware/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behavior.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behavior.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/stateController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/stateController.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +194,7 @@
       <workItem from="1708960187577" duration="1256000" />
       <workItem from="1708973569350" duration="29341000" />
       <workItem from="1709224710572" duration="235000" />
-      <workItem from="1709225050529" duration="15004000" />
+      <workItem from="1709225050529" duration="18003000" />
     </task>
     <servers />
   </component>

@@ -63,13 +63,13 @@ namespace Pronounce {
 
 			} else {
 				controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
-					intakeExtensionStateController.useDefaultBehavior();
 					intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
 						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
 				});
 
 				controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
-					intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
+					intakeStateController.setCurrentBehavior(intakeIntaking.until([=] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R1);}));
 				});
 			}
 

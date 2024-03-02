@@ -55,7 +55,7 @@ namespace Pronounce {
         Behavior* continueBehavior();
 		Behavior* wait(QTime time);
 
-		std::string getName() {
+		virtual std::string getName() {
 			return name;
 		}
 
