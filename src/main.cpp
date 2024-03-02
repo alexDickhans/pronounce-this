@@ -102,7 +102,7 @@ void far5BallRushMid(void *args) {
 	pros::Task::delay(800);
 	drivetrain.tankSteerVoltage(0.0, 0.0);
 	leftWingStateController();
-	move(-6_in, speedProfileConstraints, 0.0, 90_deg);
+	move(-9_in, speedProfileConstraints, 0.0, 90_deg);
 	turnTo(25_deg, 200_ms);
 	intakeStateController(&intakeIntaking);
 	move(48_in, speedProfileConstraints, 0.0, 25_deg);
@@ -122,7 +122,8 @@ void far6BallRushMid(void *args) {
 	move(23_in, defaultProfileConstraints, 0.0, 3_deg);
 
 	turnTo(180_deg, 550_ms);
-	intakeExtensionStateController(&outtakeSequence);
+	intakeExtensionStateController();
+	intakeStateController(&intakeEject);
 	leftWingStateController(&leftWingOut);
 	rightWingStateController(&rightWingOut);
 	move(35_in, speedProfileConstraints, 0.0, 180_deg);

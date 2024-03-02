@@ -38,8 +38,7 @@ namespace Pronounce {
 
 		void update() override {
 			if (hopperDistanceSensor.get() * 1_mm < 8_in &&
-			    intakeStateController.getName().find(intakeEject.getName()) == -1 &&
-			    intakeStateController.getName().find(intakeHold.getName()) == -1) {
+			    intakeStateController.getName().find(intakeEject.getName()) == -1) {
 				intakeStateController.setCurrentBehavior(&intakeHold);
 			}
 
