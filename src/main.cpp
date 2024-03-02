@@ -87,6 +87,7 @@ void far5BallRushMid(void *args) {
 	move(19_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
 	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
 
+	intakeStateController(&intakeHold);
 //	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
 	turnTo(170_deg, 700_ms);
 
@@ -138,7 +139,7 @@ void far5BallAWP(void *args) {
 
 	drivetrainStateController(pathFollower.changePath(mid_6_ball_awp_json))->wait();
 
-	drivetrain.tankSteerVoltage(5000, 3000);
+	drivetrain.tankSteerVoltage(3000, 2000);
 	pros::Task::delay(5000);
 }
 
