@@ -16,10 +16,10 @@
 // TODO: Add docstrings
 
 namespace Pronounce {
-	Disabled disabled;
-	Auton auton([](void *) -> void { printf("Auton"); });
-	Teleop teleop(new Pronounce::RobotJoystick(static_cast<controller_id_e_t>(0)), new Pronounce::RobotJoystick(
+	auto disabled = std::make_shared<Disabled>();
+	auto auton = std::make_shared<Auton>([](void *) -> void { printf("Auton"); });
+	auto teleop = std::make_shared<Teleop>(new Pronounce::RobotJoystick(static_cast<controller_id_e_t>(0)), new Pronounce::RobotJoystick(
 			static_cast<controller_id_e_t>(1)));
 
-	StateController competitionController("CompetitionController", &disabled);
+	auto competitionController = std::make_shared<StateController>("CompetitionController", disabled);
 } // namespace Pronounce

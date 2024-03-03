@@ -34,33 +34,29 @@ namespace Pronounce {
 	private:
 		QTime startTime;
 		QTime duration;
-		Behavior* behavior;
+		std::shared_ptr<Behavior> behavior;
 	public:
-		Wait(Behavior* behavior, QTime duration) {
+		Wait(std::shared_ptr<Behavior> behavior, QTime duration) {
 			this->duration = duration;
 			this->behavior = behavior;
 			this->setName(behavior->getName()+std::to_string(duration.Convert(second))+"s");
 		}
 
-		void initialize() {
+		void initialize() override {
 			this->startTime = get_time_ms()*1_ms;
 			behavior->initialize();
 		}
 
-		void update() {
+		void update() override {
 			behavior->update();
 		}
 
-		bool isDone() {
+		bool isDone() final {
 			return (get_time_ms()*1_ms) - this->startTime >= this->duration;
 		}
 
-		void exit() {
+		void exit() override {
 			behavior->exit();
 		}
 	};
-
-	Behavior* Behavior::wait(QTime time) {
-		return new Wait(this, time);
-	}
 } // namespace Pronounce

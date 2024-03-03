@@ -22,17 +22,17 @@ namespace Pronounce {
 	PID distancePid(1.5e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
-	JoystickDrivetrain normalJoystick("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);
+	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);
 
-	JoystickDrivetrain drivetrainStopped("DrivetrainStopped", odometry, master, drivetrain, 0.10, 2.4, 0.0);
+	auto drivetrainStopped = std::make_shared<JoystickDrivetrain>("DrivetrainStopped", odometry, master, drivetrain, 0.10, 2.4, 0.0);
 
-	StateController drivetrainStateController("DrivetrainStateController", &drivetrainStopped);
+	auto drivetrainStateController = std::make_shared<StateController>("DrivetrainStateController", drivetrainStopped);
 
 	ProfileConstraints speedProfileConstraints = { 71_in / second, 280_in / second / second, 0.0 };
 	ProfileConstraints defaultProfileConstraints = { 70_in / second, 140_in / second / second, 0.0 };
 	ProfileConstraints pushingProfileConstraints = { 50_in / second, 140_in / second / second, 0.0 };
 
-	PathPlanner::PathFollower pathFollower("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, 7000.0/72.0, 71_in/second, {});
+	auto pathFollower = std::make_shared<PathPlanner::PathFollower>("PathFollower", defaultProfileConstraints, drivetrain, [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); }, movingTurnPid, distancePid, 7000.0/72.0, 71_in/second);
 
 	void initDrivetrain() {
 		turningPid.setIntegralBound((20_deg).Convert(radian));

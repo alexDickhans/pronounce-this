@@ -12,7 +12,7 @@ namespace Pronounce {
 	 */
 	class Parallel : public Behavior {
 	private:
-		std::unordered_map<StateController*, Behavior*> behaviors;
+		std::unordered_map<std::shared_ptr<StateController>, std::shared_ptr<Behavior>> behaviors;
 	public:
 		/**
 		 * @brief Construct a new Parallel object
@@ -54,7 +54,7 @@ namespace Pronounce {
 		 * @param stateController 
 		 * @param behavior 
 		 */
-		void addBehavior(StateController* stateController, Behavior* behavior) {
+		void addBehavior(const std::shared_ptr<Behavior>& stateController, Behavior* behavior) {
 			behaviors[stateController] = behavior;
 		}
 
@@ -63,7 +63,7 @@ namespace Pronounce {
 		 * 
 		 * @param stateController 
 		 */
-		void removeBehavior(StateController* stateController) {
+		void removeBehavior(const std::shared_ptr<Behavior>& stateController) {
 			behaviors.erase(stateController);
 		}
 

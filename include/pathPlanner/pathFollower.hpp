@@ -59,11 +59,24 @@ namespace PathPlanner {
 			calculate();
 		}
 
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+			this->pathSegments = {};
+			this->commands = {};
+			this->turnPID = turnPID;
+			this->turnPID.setTurnPid(true);
+			this->distancePID = distancePID;
+			this->feedforwardMultiplier = feedforwardMultiplier;
+			this->angleFunction = std::move(angleFunction);
+			this->defaultProfileConstraints = defaultProfileConstraints;
+
+			calculate();
+		}
+
 		void addCommandMapping(const std::string& name, std::function<void()> function) {
 			commandMap[name] = std::move(function);
 		}
 
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+		std::shared_ptr<PathFollower> changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
@@ -73,7 +86,7 @@ namespace PathPlanner {
 			return calculate();
 		}
 
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
+		std::shared_ptr<PathFollower> changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
@@ -83,7 +96,7 @@ namespace PathPlanner {
 			return calculate();
 		}
 
-		PathFollower* changePath(asset path) {
+		void changePath(asset path) {
 			Json parsed_path = open_asset_as_json(path);
 
 			std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> parsedPath;
@@ -122,7 +135,7 @@ namespace PathPlanner {
 			return changePath(defaultProfileConstraints, parsedPath, functions);
 		}
 
-		PathFollower* calculate() {
+		std::shared_ptr<PathFollower> calculate() {
 			movingMutex.take();
 
 			for (int i = 0; i < this->pathSegments.size(); ++i) {
@@ -159,7 +172,7 @@ namespace PathPlanner {
 
 			movingMutex.give();
 
-			return this;
+			return std::shared_ptr<PathFollower>(this);
 		}
 
 		void initialize() override {

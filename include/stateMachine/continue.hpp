@@ -11,9 +11,9 @@ namespace Pronounce {
      */
     class Continue : public Behavior {
     private:
-        Behavior* behavior;
+	    std::shared_ptr<Behavior> behavior;
     public:
-        Continue(std::string name, Behavior* behavior);
+        Continue(std::string name, std::shared_ptr<Behavior> behavior);
 
 		void initialize() override {
 			behavior->initialize();
@@ -34,9 +34,9 @@ namespace Pronounce {
         ~Continue() = default;
     };
     
-    Continue::Continue(std::string name, Behavior* behavior) : Behavior(std::move(name)), behavior(behavior) {}
+    Continue::Continue(std::string name, std::shared_ptr<Behavior> behavior) : Behavior(std::move(name)), behavior(behavior) {}
 
-    Behavior *Behavior::continueBehavior() {
+	std::shared_ptr<Behavior> Behavior::continueBehavior() {
         return new Continue("continue" + this->getName(), this);
     }
 } // namespace Pronounce
