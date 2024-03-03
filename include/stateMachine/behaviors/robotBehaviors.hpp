@@ -10,3 +10,5 @@
 
 #include "wings/wings.hpp"
 #include "wings/initWings.hpp"
+
+#include "catapult/initCatapult.hpp"

@@ -27,7 +27,6 @@ def main():
         totalVelocity += float(userInputData[1].split(":")[1])*0.01
 
         maxAcceleration = abs(float(userInputData[1].split(":")[1]) - lastSpeed)*100
-        print(maxAcceleration)
 
         lastSpeed = float(userInputData[1].split(":")[1])
 

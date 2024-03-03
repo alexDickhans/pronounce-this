@@ -1,26 +1,6 @@
-/**
- * \file main.h
- *
- * Contains common definitions and header files used throughout your PROS
- * project.
- *
- * Copyright (c) 2017-2021, Purdue University ACM SIGBots.
- * All rights reserved.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 #ifndef _PROS_MAIN_H_
 #define _PROS_MAIN_H_
 
-/**
- * If defined, C++ literals will be available for use. All literals are in the
- * pros::literals namespace.
- *
- * For instance, you can do `4_mtr = 50` to set motor 4's target velocity to 50
- */
 //#define PROS_USE_LITERALS
 
 #include "api.h"
@@ -60,6 +40,7 @@
 // Continuous Odometry
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
+#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 
 // Interrupt Odom
 #include "odometry/interruptOdometry/gpsOdometry.hpp"
@@ -89,30 +70,15 @@
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"
 #include "utils/polynomialExpression.hpp"
-#include "utils/path/combinedPath.hpp"
 
 #include "telemetryRadio/telemetryManager.hpp"
 
+#include "velocityProfile/trapezoidalVelocityProfile.hpp"
+
 #include "stateMachine/state/competition/auton.hpp"
 
-/**
- * If you find doing pros::Motor() to be tedious and you'd prefer just to do
- * Motor, you can use the namespace with the following commented out line.
- *
- * IMPORTANT: Only the okapi or pros namespace may be used, not both
- * concurrently! The okapi namespace will export all symbols inside the pros
- * namespace.
- */
-// using namespace pros;
-// using namespace pros::literals;
-using namespace Pronounce; // General Lib
-//using namespace PathPlanner;
+using namespace Pronounce;
 
-/**
- * Prototypes for the competition control tasks are redefined here to ensure
- * that they can be called from user code (i.e. calling autonomous from a
- * button press in opcontrol() for testing purposes).
- */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -126,9 +92,6 @@ void opcontrol(void);
 #endif
 
 #ifdef __cplusplus
-/**
- * You can add C++-only headers here
- */
 //#include <iostream>
 #endif
 

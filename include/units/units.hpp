@@ -392,6 +392,14 @@ constexpr RQuantity<std::ratio_divide<M, std::ratio<2>>, std::ratio_divide<L, st
 		(sqrt(num.getValue()));
 }
 
+template <typename M, typename L, typename T, typename A>
+constexpr RQuantity<M, L, T, A>
+Qabs(const RQuantity<M, L, T, A>& num)
+{
+	return RQuantity<M, L, T, A>
+			(abs(num.getValue()));
+}
+
 // Typesafe mathematical operations:
 // ---------------------------------
 template <typename M, typename L, typename T, typename A>

@@ -1,25 +1,35 @@
 
 #define SIM
 
-#include "utils/utils.cpp"
+#include "../../src/utils/utils.cpp"
 #include "../../include/units/units.hpp"
 #include "../../include/velocityProfile/velocityProfile.hpp"
-#include "../../include/velocityProfile/sinusoidalVelocityProfile.hpp"
+#include "../../src/velocityProfile/velocityProfile.cpp"
+#include "../../include/velocityProfile/trapezoidalVelocityProfile.hpp"
+#include "../../src/velocityProfile/trapezoidalVelocityProfile.cpp"
 // #include "../../include/velocityProfile/sCurveVelocityProfile.hpp"
 #include <iostream>
 
 int main() {
-	Pronounce::SinusoidalVelocityProfile velocityProfile = Pronounce::SinusoidalVelocityProfile(-100_in, 70_in/second, 125_in/second/second, 0.0, 0_in/second, -70_in/second);
+	Pronounce::TrapezoidalVelocityProfile velocityProfile =
+			Pronounce::TrapezoidalVelocityProfile(30_in,
+			                                      {70_in / second,
+			                                       100_in / second /
+			                                       second, 0.0},
+			                                      0_in / second,
+			                                      1_in / second);
 
 	QTime frameTime = 10_ms;
 
-	velocityProfile.calculate(10);
+	velocityProfile.calculate();
 
 	// std::cout << "Total time: " << velocityProfile.getDuration().Convert(second) << std::endl;
 
 	for (QTime time = 0.0; time <= velocityProfile.getDuration(); time += frameTime) {
 
-		std::cout << "Time:" << time.Convert(second) << " Distance:" << velocityProfile.getDistanceByTime(time).Convert(inch) << std::endl;
+		std::cout << "Time:" << time.Convert(second) << " Velocity:"
+		          << velocityProfile.getVelocityByTime(time).Convert(inch / second) << std::endl;
+//		std::cout << "Time:" << time.Convert(second) << " Distance:" << velocityProfile.getDistanceByTime(time).Convert(inch) << std::endl;
 	}
 
 	std::cout << "Done" << std::endl;

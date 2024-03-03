@@ -12,12 +12,13 @@
 #include <math.h>
 #include "utils/utils.hpp"
 #include "json/asset.hpp"
+#include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
 namespace PathPlanner {
 
 	class PathFollower : public Pronounce::Behavior {
 	private:
-		std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments;
+		std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> pathSegments;
 		Pronounce::AbstractTankDrivetrain& drivetrain;
 		Pronounce::ProfileConstraints defaultProfileConstraints;
 		Pronounce::PID turnPID, distancePID;
@@ -32,7 +33,7 @@ namespace PathPlanner {
 
 		pros::Mutex movingMutex;
 	public:
-		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::initializer_list<std::pair<BezierSegment, Pronounce::VelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = pathSegments;
 			this->commands = functions;
 			this->turnPID = turnPID;
@@ -45,7 +46,7 @@ namespace PathPlanner {
 			calculate();
 		}
 
-		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
+		PathFollower(std::string name, Pronounce::ProfileConstraints defaultProfileConstraints, Pronounce::AbstractTankDrivetrain& drivetrain, std::function<Angle()> angleFunction, const Pronounce::PID& turnPID, const Pronounce::PID& distancePID, double feedforwardMultiplier, QSpeed maxSpeed, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> pathSegments, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) : Pronounce::Behavior(std::move(name)), drivetrain(drivetrain) {
 			this->pathSegments = std::move(pathSegments);
 			this->commands = functions;
 			this->turnPID = turnPID;
@@ -62,7 +63,7 @@ namespace PathPlanner {
 			commandMap[name] = std::move(function);
 		}
 
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
@@ -72,7 +73,7 @@ namespace PathPlanner {
 			return calculate();
 		}
 
-		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
+		PathFollower* changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
@@ -85,7 +86,7 @@ namespace PathPlanner {
 		PathFollower* changePath(asset path) {
 			Json parsed_path = open_asset_as_json(path);
 
-			std::vector<std::pair<BezierSegment, Pronounce::SinusoidalVelocityProfile*>> parsedPath;
+			std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> parsedPath;
 
 			auto segments = parsed_path["segments"];
 
@@ -128,7 +129,7 @@ namespace PathPlanner {
 
 				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(drivetrain.getTrackWidth()) * drivetrain.getMaxSpeed();
 
-				Pronounce::SinusoidalVelocityProfile* profile = this->pathSegments.at(i).second;
+				Pronounce::VelocityProfile* profile = this->pathSegments.at(i).second;
 
 				if (profile == nullptr) {
 					profile = new Pronounce::SinusoidalVelocityProfile(this->pathSegments.at(i).first.getDistance(), defaultProfileConstraints);
@@ -151,7 +152,7 @@ namespace PathPlanner {
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
-				profile->calculate(20);
+				profile->calculate();
 
 				this->pathSegments.at(i).second = profile;
 			}
@@ -173,8 +174,6 @@ namespace PathPlanner {
 			QTime time = pros::millis() * 1_ms - startTime;
 			double index = getIndex(time);
 
-			std::cout << "HII: " << index << std::endl;
-
 			if (commands.size() > commandsIndex) {
 				if (commands.at(commandsIndex).first < index) {
 					commands.at(commandsIndex).second();
@@ -183,7 +182,6 @@ namespace PathPlanner {
 			}
 
 			std::pair<QSpeed, QSpeed> driveSpeeds = this->getChassisSpeeds(time, drivetrain.getTrackWidth());
-//			double accelerationFF = pathSegments.at(std::floor(index)).second->getAccelerationByTime(relativeTime).Convert(inch/second/second)*accelerationFeedforward;
 
 			std::pair<double, double> driveVoltages = {driveSpeeds.first.Convert(inch/second) * feedforwardMultiplier, driveSpeeds.second.Convert(inch/second) * feedforwardMultiplier};
 			if ((driveSpeeds.first + driveSpeeds.second).getValue() < 0.0) {

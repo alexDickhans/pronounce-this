@@ -9,15 +9,14 @@ namespace Pronounce {
 	Wing leftWingOut("WingOut", leftSolenoid, true);
 	Wing rightWingIn("WingIn", rightSolenoid, false);
 	Wing rightWingOut("WingOut", rightSolenoid, true);
-	Wing hangReleaseIn("WingIn", hangReleaseSolenoid, false);
-	Wing hangReleaseOut("WingOut", hangReleaseSolenoid, true);
-	Wing hangReleaseDown("WingOut", hangReleaseSolenoid, false);
+	Wing hangIn("WingIn", hangSolenoid, false);
+	Wing hangOut("WingOut", hangSolenoid, true);
 	Wing awpIn("WingIn", AWPSolenoid, false);
 	Wing awpOut("WingOut", AWPSolenoid, true);
 
 	StateController leftWingStateController("WingsStateController", &leftWingIn);
 	StateController rightWingStateController("WingsStateController", &rightWingIn);
-	StateController hangReleaseStateController("HangReleaseStateController", &hangReleaseIn);
+	StateController hangStateController("HangReleaseStateController", &hangIn);
 	StateController awpStateController("HangReleaseStateController", &awpIn);
 
 	void initWings() {

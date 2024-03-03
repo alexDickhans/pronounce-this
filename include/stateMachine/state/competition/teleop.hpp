@@ -34,30 +34,12 @@ namespace Pronounce {
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&] () -> void {
 
-				if (!hangReleaseStateController.isDone()) {
-					drivetrainStateController(&hang);
-				} else {
-					leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
-						return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
-					}));
-					rightWingStateController.setCurrentBehavior(rightWingOut.until([&] () -> bool {
-						return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
-					}));
-				}
-			});
-
-			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
-				intakeExtensionStateController.useDefaultBehavior();
-				intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
-					return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
-
-				if (!hangReleaseStateController.isDone()) {
-					hangReleaseStateController(&hangReleaseDown);
-				}
-			});
-
-			controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
-				intakeExtensionStateController.setCurrentBehavior(&intakeSequence);
+				leftWingStateController.setCurrentBehavior(leftWingOut.until([=] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+				}));
+				rightWingStateController.setCurrentBehavior(rightWingOut.until([&] () -> bool {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
+				}));
 			});
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=] () -> void {
@@ -66,19 +48,30 @@ namespace Pronounce {
 				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_DOWN, [&] () -> void {
-				hangIndex--;
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [=] () -> void {
+				hangStateController.setCurrentBehavior(hangOut.until([&] () -> auto {
+					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
+				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_UP, [&] () -> void {
-				hangIndex++;
+			if (isSkills) {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [=] () -> void {
+					catapultStateController.setCurrentBehavior(catapultFire.until([&] () -> auto {
+						return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT);
+					}));
+				});
 
-				hang.setTargetPosition(hangMap[hangList[hangIndex]]);
+			} else {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&] () -> void {
+					intakeStateController.setCurrentBehavior(intakeEject.until([=] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+				});
 
-				if (hang.hasHung()) {
-					drivetrainStateController(&hang);
-				}
-			});
+				controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=] () -> void {
+					intakeStateController.setCurrentBehavior(intakeIntaking.until([=] () -> bool {
+						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R1);}));
+				});
+			}
 
 			Enabled::initialize();
 		}
@@ -88,23 +81,6 @@ namespace Pronounce {
 
 			controller1->update();
 			controller2->update();
-
-			if (controller1->get_digital(E_CONTROLLER_DIGITAL_A) && controller1->get_digital(E_CONTROLLER_DIGITAL_LEFT) && drivetrainStateController.isDone()) {
-				hangReleaseStateController(&hangReleaseOut);
-			}
-
-			hang.setTier(hangList[hangIndex % 7]);
-
-			if (pros::millis() % 100 / 10 == 0 || pros::millis() % 100 / 10 == 5) {
-
-				char* upperTier = (char*) calloc((2+hangIndex), sizeof(char));
-
-				snprintf(upperTier, 2, "%c", toupper(hangList[hangIndex % 7]));
-
-				controller1pros.set_text(1, 1, upperTier);
-
-				free(upperTier);
-			}
 		}
 
 		void exit() override {

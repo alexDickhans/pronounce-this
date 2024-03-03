@@ -223,6 +223,14 @@ namespace Pronounce {
 			return currentTime() - startTime;
 		}
 
+		std::string getName() override {
+			if (this->currentBehavior != nullptr) {
+				return this->currentBehavior->getName();
+			} else {
+				return this->defaultBehavior->getName();
+			}
+		}
+
 		~StateController() = default;
 	};
 } // namespace Pronounce
