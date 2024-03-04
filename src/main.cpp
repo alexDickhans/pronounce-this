@@ -5,26 +5,26 @@ std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
 
-ASSET(close_mid_rush_json);
-ASSET(mid_6_ball_1_json);
-ASSET(mid_6_ball_2_json);
-ASSET(mid_6_ball_awp_json);
-ASSET(safe_close_awp_json);
-ASSET(safe_close_awp_2_json);
-ASSET(skills_1_json);
-ASSET(skills_2_json);
-ASSET(skills_3_json);
-ASSET(skills_4_json);
-ASSET(skills_5_json);
-ASSET(skills_6_json);
-ASSET(skills_6_5_json);
-ASSET(skills_7_json);
-ASSET(skills_7_5_json);
-ASSET(skills_8_json);
-ASSET(skills_9_json);
-ASSET(skills_10_json);
-ASSET(close_mid_rush_elim_json);
-ASSET(close_rush_mid_2_json);
+SIMPLE_SPLINE_PATH_ASSET(close_mid_rush);
+SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_1);
+SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_2);
+SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_awp);
+SIMPLE_SPLINE_PATH_ASSET(safe_close_awp);
+SIMPLE_SPLINE_PATH_ASSET(safe_close_awp_2);
+SIMPLE_SPLINE_PATH_ASSET(skills_1);
+SIMPLE_SPLINE_PATH_ASSET(skills_2);
+SIMPLE_SPLINE_PATH_ASSET(skills_3);
+SIMPLE_SPLINE_PATH_ASSET(skills_4);
+SIMPLE_SPLINE_PATH_ASSET(skills_5);
+SIMPLE_SPLINE_PATH_ASSET(skills_6);
+SIMPLE_SPLINE_PATH_ASSET(skills_6_5);
+SIMPLE_SPLINE_PATH_ASSET(skills_7);
+SIMPLE_SPLINE_PATH_ASSET(skills_7_5);
+SIMPLE_SPLINE_PATH_ASSET(skills_8);
+SIMPLE_SPLINE_PATH_ASSET(skills_9);
+SIMPLE_SPLINE_PATH_ASSET(skills_10);
+SIMPLE_SPLINE_PATH_ASSET(close_mid_rush_elim);
+SIMPLE_SPLINE_PATH_ASSET(close_rush_mid_2);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain, odometry, turningPid, angle,
@@ -68,7 +68,7 @@ void far5BallRushMid(void *args) {
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
 
-	pathFollower->changePath(mid_6_ball_1_json);
+	pathFollower->setMotionProfile(mid_6_ball_1);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	turnTo(-2_deg, 550_ms);
@@ -82,7 +82,7 @@ void far5BallRushMid(void *args) {
 //	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
 	turnTo(170_deg, 700_ms);
 
-	pathFollower->changePath(mid_6_ball_2_json);
+	pathFollower->setMotionProfile(mid_6_ball_2);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
@@ -130,7 +130,7 @@ void far5BallAWP(void *args) {
 
 	turnTo(-90_deg, 600_ms);
 
-	pathFollower->changePath(mid_6_ball_awp_json);
+	pathFollower->setMotionProfile(mid_6_ball_awp);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	drivetrain.tankSteerVoltage(3000, 2000);
@@ -141,7 +141,7 @@ void skills(void *args) {
 
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
 
-	pathFollower->changePath(skills_1_json);
+	pathFollower->setMotionProfile(skills_1);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	drivetrainStateController->sb(
@@ -159,13 +159,13 @@ void skills(void *args) {
 
 	pros::Task::delay(200);
 
-	pathFollower->changePath(skills_2_json);
+	pathFollower->setMotionProfile(skills_2);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	rightWingStateController->sb(rightWingIn);
 	turnTo(180_deg, 300_ms);
 
-	pathFollower->changePath(skills_3_json);
+	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
@@ -174,41 +174,41 @@ void skills(void *args) {
 //
 //	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
 
-	pathFollower->changePath(skills_4_json);
+	pathFollower->setMotionProfile(skills_4);
 	drivetrainStateController->sb(pathFollower).wait();
 	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
 
 	turnTo(-160_deg, 200_ms);
 
-	pathFollower->changePath(skills_5_json);
+	pathFollower->setMotionProfile(skills_5);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-5_in, speedProfileConstraints, 0.0);
 
 	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
-	pathFollower->changePath(skills_6_json);
+	pathFollower->setMotionProfile(skills_6);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-3_in, speedProfileConstraints, 0.0);
 
 	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
-	pathFollower->changePath(skills_6_5_json);
+	pathFollower->setMotionProfile(skills_6_5);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-3_in, speedProfileConstraints, 0.0);
 
 	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
-	pathFollower->changePath(skills_7_json);
+	pathFollower->setMotionProfile(skills_7);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-3_in, speedProfileConstraints, 0.0);
 
 	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
 
-	pathFollower->changePath(skills_7_5_json);
+	pathFollower->setMotionProfile(skills_7_5);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	drivetrainStateController->sb(
@@ -217,7 +217,7 @@ void skills(void *args) {
 
 	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
 
-	pathFollower->changePath(pushingProfileConstraints, {{
+	pathFollower->setMotionProfile(PathPlanner::SimpleSplineProfile(pushingProfileConstraints, {{
 			                                                     PathPlanner::BezierSegment(
 					                                                     PathPlanner::Point(
 							                                                     wallDistance, 76_in),
@@ -228,27 +228,27 @@ void skills(void *args) {
 							                                                     19_in, 55_in),
 					                                                     PathPlanner::Point(
 							                                                     20_in, 20_in), true),
-			                                                     nullptr}});
+			                                                     nullptr}}, {}));
 	drivetrainStateController->sb(pathFollower).wait();
 
-	pathFollower->changePath(skills_8_json);
+	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
 
-	pathFollower->changePath(skills_9_json);
+	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
-	pathFollower->changePath(skills_9_json);
+	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	rightWingStateController->ud();
 
 	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
-	pathFollower->changePath(skills_10_json);
+	pathFollower->setMotionProfile(skills_10);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	pros::Task::delay(500);
@@ -266,14 +266,14 @@ void safeCloseAWP(void *args) {
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
 
-	pathFollower->changePath(safe_close_awp_json);
+	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
 
 	turnTo(45_deg, 300_ms);
 
-	pathFollower->changePath(safe_close_awp_2_json);
+	pathFollower->setMotionProfile(safe_close_awp_2);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	pros::Task::delay(15000);
@@ -301,14 +301,14 @@ void closeRushMid(void *args) {
 
 	turnTo(-35.3_deg, 600_ms);
 
-	pathFollower->changePath(close_mid_rush_json);
+	pathFollower->setMotionProfile(close_mid_rush);
 	drivetrainStateController->sb(pathFollower).wait();
 
 	move(-10_in, speedProfileConstraints, 0.0, 56_deg);
 
 	intakeStateController->sb(intakeEject);
 
-	pathFollower->changePath(close_rush_mid_2_json);
+	pathFollower->setMotionProfile(close_rush_mid_2);
 	drivetrainStateController->sb(pathFollower).wait();
 }
 
@@ -319,7 +319,7 @@ void closeRushMidElim(void *args) {
 
 	intakeStateController->sb(intakeIntaking);
 
-	pathFollower->changePath(close_mid_rush_elim_json);
+	pathFollower->setMotionProfile(close_mid_rush_elim);
 	drivetrainStateController->sb(pathFollower).wait();
 }
 
@@ -447,6 +447,7 @@ void initialize() {
 	initWings();
 	initBehaviors();
 	initCatapult();
+	initDrivetrain();
 
 	pathFollower->addCommandMapping("intake", [&]() -> void {
 		intakeStateController->sb(intakeIntaking);

@@ -153,3 +153,5 @@ namespace PathPlanner {
 
 	};
 }
+
+#define SIMPLE_SPLINE_PATH_ASSET(x) ASSET(x##_json); auto x = PathPlanner::SimpleSplineProfile(x##_json);
