@@ -18,21 +18,21 @@ namespace Pronounce {
 		 * @brief A list of all the behaviors in this state
 		 * 
 		 */
-		std::vector<Behavior*> behaviors;
+		std::vector<std::shared_ptr<Behavior>> behaviors;
 	public:
 		/**
 		 * @brief Construct a new Behavior Group object
 		 * 
 		 */
-		BehaviorGroup() {}
+		BehaviorGroup() = default;
 
 		/**
 		 * @brief Initialize all the objects
 		 * 
 		 */
-		void initialize() {
-			for (int i = 0; i < behaviors.size(); i++) {
-				behaviors.at(i)->initialize();
+		void initialize() override {
+			for (auto & behavior : behaviors) {
+				behavior->initialize();
 			}
 		}
 
@@ -40,9 +40,9 @@ namespace Pronounce {
 		 * @brief Update all the objects
 		 * 
 		 */
-		void update() {
-			for (int i = 0; i < behaviors.size(); i++) {
-				behaviors.at(i)->update();
+		void update() override {
+			for (auto & behavior : behaviors) {
+				behavior->update();
 			}
 		}
 
@@ -50,9 +50,9 @@ namespace Pronounce {
 		 * @brief Exit all the objects
 		 * 
 		 */
-		void exit() {
-			for (int i = 0; i < behaviors.size(); i++) {
-				behaviors.at(i)->exit();
+		void exit() override {
+			for (auto & behavior : behaviors) {
+				behavior->exit();
 			}
 		}
 
@@ -61,10 +61,10 @@ namespace Pronounce {
 		 * 
 		 * @param behavior New behavior to add
 		 */
-		void addBehavior(Behavior* behavior) {
+		void addBehavior(const std::shared_ptr<Behavior>& behavior) {
 			behaviors.emplace_back(behavior);
 		}
 
-		~BehaviorGroup() {}
+		~BehaviorGroup() = default;
 	};	
 } // namespace Pronounce

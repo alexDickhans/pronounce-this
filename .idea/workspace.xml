@@ -22,6 +22,7 @@
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/include/pathPlanner/motionProfiles/abstractMotionProfile.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/include/pathPlanner/motionProfiles/simpleSplineProfile.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/motionProfiles/simpleSplineProfile.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pathPlanner/pathFollower.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pathPlanner/motionProfiles/simpleSplineProfile.cpp" beforeDir="false" />
@@ -89,6 +90,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;C/C++ File.testVelocityProfile.cpp.executor&quot;: &quot;Debug&quot;,
@@ -194,6 +196,7 @@
       <workItem from="1708973569350" duration="29341000" />
       <workItem from="1709224710572" duration="235000" />
       <workItem from="1709225050529" duration="23768000" />
+      <workItem from="1709493866801" duration="4523000" />
     </task>
     <servers />
   </component>

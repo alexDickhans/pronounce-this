@@ -9,11 +9,12 @@ namespace Pronounce {
     class Until : public Behavior {
     private:
         BooleanCallback interruptCallback;
-        Behavior* behavior;
+	    std::shared_ptr<Behavior> behavior;
     public:
-        Until(std::string name, Behavior* behavior, BooleanCallback  interruptCallback);
+	    Until(const std::shared_ptr<Behavior> &behavior, const BooleanCallback &interruptCallback) : interruptCallback(
+			    interruptCallback), behavior(behavior), Behavior(behavior->getName()+"until") {}
 
-        void initialize() override {
+	    void initialize() override {
             behavior->initialize();
         }
 
@@ -25,25 +26,13 @@ namespace Pronounce {
             behavior->exit();
         }
 
-        bool isDone() override {
+        bool isDone() final {
             return interruptCallback();
         }
 
-		Behavior * rawBehavior() override {
-			return behavior;
-		}
-
         ~Until();
     };
-    
-    Until::Until(std::string name, Behavior* behavior, BooleanCallback  interruptCallback) : Behavior(std::move(name)), interruptCallback(std::move(interruptCallback)) {
-		this->behavior = behavior;
-    }
-    
-    Until::~Until() = default;
 
-    Behavior* Behavior::until(const BooleanCallback& booleanCallback) {
-        return new Until(this->getName() + "until", this, booleanCallback);
-    }
+    Until::~Until() = default;
     
 } // namespace Pronounce

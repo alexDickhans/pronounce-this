@@ -8,7 +8,6 @@
 #include "behaviorGroup.hpp"
 #include "callbackHelper.hpp"
 #include "continue.hpp"
-#include "parallel.hpp"
 #include "sequence.hpp"
 #include "stateController.hpp"
 #include "until.hpp"

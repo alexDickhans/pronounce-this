@@ -19,13 +19,13 @@ namespace Pronounce {
 		 * @brief Default behavior that the stateController returns to when the current state isn't running
 		 * 
 		 */
-		Behavior* defaultBehavior;
+		std::shared_ptr<Behavior> defaultBehavior;
 		
 		/**
 		 * @brief The current behavior that runs if it exists.
 		 * 
 		 */
-		Behavior* currentBehavior = nullptr;
+		std::shared_ptr<Behavior> currentBehavior = nullptr;
 
 		QTime startTime = 0.0;
 	public:
@@ -34,7 +34,7 @@ namespace Pronounce {
 		 * 
 		 * @param defaultBehavior 
 		 */
-		StateController(std::string name, Behavior* defaultBehavior) : Behavior(name) {
+		StateController(std::string name, std::shared_ptr<Behavior> defaultBehavior) : Behavior(name) {
 			this->defaultBehavior = defaultBehavior;
 		}
 
@@ -42,7 +42,7 @@ namespace Pronounce {
 		 * @brief Initialize the behavior. If currentbehavior exists that one gets initialized
 		 * 
 		 */
-		void initialize() {
+		void initialize() override {
 			startTime = currentTime();
 			if (currentBehavior != nullptr) {
 				try {
@@ -99,7 +99,7 @@ namespace Pronounce {
 		 * @return true Current behavior is not running
 		 * @return false Default behavior is not running
 		 */
-		bool isDone() {
+		bool isDone() override {
 			return currentBehavior == nullptr;
 		}
 
@@ -137,7 +137,7 @@ namespace Pronounce {
 		 * 
 		 * @param behavior 
 		 */
-		void setDefaultBehavior(Behavior* behavior) {
+		void setDefaultBehavior(std::shared_ptr<Behavior> behavior) {
 			defaultBehavior = behavior;
 		}
 
@@ -146,7 +146,7 @@ namespace Pronounce {
 		 * 
 		 * @param behavior 
 		 */
-		void setCurrentBehavior(Behavior* behavior) {
+		void setCurrentBehavior(std::shared_ptr<Behavior> behavior) {
 			// If the defaultBehavior and current behavior are equal then switch to default behavior
 			if (defaultBehavior == behavior) {
 				this->useDefaultBehavior();
@@ -181,7 +181,17 @@ namespace Pronounce {
 			}
 		}
 
-		StateController* operator()(Behavior* behavior) {
+		StateController sb(std::shared_ptr<Behavior> behavior) {
+			this->setCurrentBehavior(behavior);
+			return *this;
+		}
+
+		StateController ud() {
+			this->useDefaultBehavior();
+			return *this;
+		}
+
+		StateController* operator()(std::shared_ptr<Behavior> behavior) {
 			this->setCurrentBehavior(behavior);
 			return this;
 		}
@@ -211,7 +221,7 @@ namespace Pronounce {
 			// If not no transition needed.
 		}
 
-		Behavior* getCurrentBehavior() {
+		std::shared_ptr<Behavior> getCurrentBehavior() {
 			return currentBehavior;
 		}
 

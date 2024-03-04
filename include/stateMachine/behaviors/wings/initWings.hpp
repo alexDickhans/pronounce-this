@@ -5,19 +5,19 @@
 #include "hardware/hardware.hpp"
 
 namespace Pronounce {
-	Wing leftWingIn("WingIn", leftSolenoid, false);
-	Wing leftWingOut("WingOut", leftSolenoid, true);
-	Wing rightWingIn("WingIn", rightSolenoid, false);
-	Wing rightWingOut("WingOut", rightSolenoid, true);
-	Wing hangIn("WingIn", hangSolenoid, false);
-	Wing hangOut("WingOut", hangSolenoid, true);
-	Wing awpIn("WingIn", AWPSolenoid, false);
-	Wing awpOut("WingOut", AWPSolenoid, true);
+	auto leftWingIn = std::make_shared<Wing>("WingIn", leftSolenoid, false);
+	auto leftWingOut = std::make_shared<Wing>("WingOut", leftSolenoid, true);
+	auto rightWingIn = std::make_shared<Wing>("WingIn", rightSolenoid, false);
+	auto rightWingOut = std::make_shared<Wing>("WingOut", rightSolenoid, true);
+	auto hangIn = std::make_shared<Wing>("WingIn", hangSolenoid, false);
+	auto hangOut = std::make_shared<Wing>("WingOut", hangSolenoid, true);
+	auto awpIn = std::make_shared<Wing>("WingIn", AWPSolenoid, false);
+	auto awpOut = std::make_shared<Wing>("WingOut", AWPSolenoid, true);
 
-	StateController leftWingStateController("WingsStateController", &leftWingIn);
-	StateController rightWingStateController("WingsStateController", &rightWingIn);
-	StateController hangStateController("HangReleaseStateController", &hangIn);
-	StateController awpStateController("HangReleaseStateController", &awpIn);
+	auto leftWingStateController = std::make_shared<StateController>("WingsStateController", leftWingIn);
+	auto rightWingStateController = std::make_shared<StateController>("WingsStateController", rightWingIn);
+	auto hangStateController = std::make_shared<StateController>("HangReleaseStateController", hangIn);
+	auto awpStateController = std::make_shared<StateController>("HangReleaseStateController", awpIn);
 
 	void initWings() {
 
