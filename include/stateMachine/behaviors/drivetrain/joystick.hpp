@@ -13,8 +13,7 @@ namespace Pronounce {
 
 	class JoystickDrivetrain : public Behavior {
 	private:
-		double deadband = 0.10;
-		double exponentializeValue = 1.0;
+		double deadband = 0.02;
 		QSpeed maxDriveSpeed;
 
 		/**
@@ -35,14 +34,13 @@ namespace Pronounce {
 
 	public:
 
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, double exponentializerValue, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
-			this->exponentializeValue = exponentializerValue;
 			this->maxDriveSpeed = maxSpeed;
 			this->arcade = false;
 		}
 
-		void initialize() {
+		void initialize() override {
 			if (maxDriveSpeed == 0.0_in / second) {
 				drivetrain.tankSteerVoltage(0.0, 0.0);
 				drivetrainMutex.give();
@@ -67,12 +65,12 @@ namespace Pronounce {
 			}
 
 			if (arcade) {
-				power = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-				turn = controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+				power = filterAxis(controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0);
+				turn = filterAxis(controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0);
 			}
 			else {
-				double left = controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-				double right = controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
+				double left = filterAxis(controller->get_analog(E_CONTROLLER_ANALOG_LEFT_Y) / 127.0);
+				double right = filterAxis(controller->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
 				power = (left + right) / 2.0;
 				turn = (left - right) / 2.0;
 			}
@@ -96,6 +94,6 @@ namespace Pronounce {
 			return false;
 		}
 
-		~JoystickDrivetrain() {}
+		~JoystickDrivetrain() = default;
 	};
 } // namespace Pronounce

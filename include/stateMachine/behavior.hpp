@@ -51,20 +51,12 @@ namespace Pronounce {
 		 */
 		virtual void exit() {}
 
-		Behavior* until(const BooleanCallback& booleanCallback);
-        Behavior* continueBehavior();
-		Behavior* wait(QTime time);
-
 		virtual std::string getName() {
 			return name;
 		}
 
 		void setName(std::string newName) {
 			this->name = std::move(newName);
-		}
-
-		virtual Behavior* rawBehavior() {
-			return this;
 		}
 
 		~Behavior() = default;

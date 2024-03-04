@@ -7,27 +7,26 @@
 #include "intake.hpp"
 
 namespace Pronounce {
-    Intake intakeStopped("IntakeStopped", intakeMotors, 0.0, false);
-	Intake intakeIntaking("IntakeIntaking", intakeMotors, 1.0, false);
-	Intake intakeHold("IntakeHold", intakeMotors, 0.55, false);
-	Intake intakeEject("IntakeEject", intakeMotors, -1.0, false);
+    auto intakeStopped = std::make_shared<Intake>("IntakeStopped", intakeMotors, 0.0, false);
+	auto intakeIntaking = std::make_shared<Intake>("IntakeIntaking", intakeMotors, 1.0, false);
+	auto intakeHold = std::make_shared<Intake>("IntakeHold", intakeMotors, 0.55, false);
+	auto intakeEject = std::make_shared<Intake>("IntakeEject", intakeMotors, -1.0, false);
 
-    StateController intakeStateController("IntakeStateController", &intakeStopped);
-	StateController intakeExtensionStateController("IntakeStateExtensionController", new Behavior());
+    auto intakeStateController = std::make_shared<StateController>("IntakeStateController", intakeStopped);
+	auto intakeExtensionStateController = std::make_shared<StateController>("IntakeStateExtensionController", std::make_shared<Behavior>());
 
-    Sequence intakeSequence("IntakeSequence");
-	Sequence outtakeSequence("OuttakeSequence");
-	Sequence outtakeSequence2("OuttakeSequence");
-	Sequence deploySequence("StartSequence");
+    auto intakeSequence = std::make_shared<Sequence>("IntakeSequence");
+	auto outtakeSequence = std::make_shared<Sequence>("OuttakeSequence");
+	auto deploySequence = std::make_shared<Sequence>("StartSequence");
 
     void initIntake() {
-		intakeSequence.addState(&intakeStateController, intakeIntaking.until([=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
-		intakeSequence.addState(&intakeStateController, &intakeHold);
+		intakeSequence->addState(intakeStateController, std::make_shared<Until>(intakeIntaking, [=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
+		intakeSequence->addState(intakeStateController, intakeHold);
 
-		outtakeSequence.addState(&intakeStateController, intakeHold.wait(170_ms));
-		outtakeSequence.addState(&intakeStateController, intakeEject.wait(500_ms));
+		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeHold, 170_ms));
+		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeEject, 500_ms));
 
-		deploySequence.addState(&intakeStateController, intakeEject.wait(300_ms));
-		deploySequence.addState(&intakeStateController, &intakeIntaking);
+		deploySequence->addState(intakeStateController, std::make_shared<Wait>(intakeEject, 300_ms));
+		deploySequence->addState(intakeStateController, intakeIntaking);
     }
 } // namespace Pronounce

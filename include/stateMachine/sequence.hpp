@@ -13,21 +13,21 @@
 namespace Pronounce {
 	class Sequence : public Behavior {
 	private:
-		std::vector<StateController*> stateControllers;
-		std::vector<Behavior*> behaviors;
+		std::vector<std::shared_ptr<StateController>> stateControllers;
+		std::vector<std::shared_ptr<Behavior>> behaviors;
 
 		int currentIndex = 0;
 	public:
 		explicit Sequence(std::string name) : Behavior(std::move(name)) {}
 
-		void initialize() {
+		void initialize() override {
 			currentIndex = 0;
-			if (behaviors.size() > 0) {
+			if (!behaviors.empty()) {
 				stateControllers.at(currentIndex)->setCurrentBehavior(behaviors.at(currentIndex));
 			}
 		}
 
-		void update() {
+		void update() override {
 			
 			// If the current behavior is done then we will move onto the next behavior
 			if (behaviors.at(currentIndex)->isDone()) {
@@ -44,22 +44,22 @@ namespace Pronounce {
 			}
 		}
 
-		void exit() {
+		void exit() override {
 			if (!this->isDone()) {
 				stateControllers.at(currentIndex)->useDefaultBehavior();
 				currentIndex = stateControllers.size() - 1;
 			}
 		}
 
-		bool isDone() {
+		bool isDone() override {
 			return currentIndex >= stateControllers.size();
 		}
 
-		void addState(StateController* stateController, Behavior* behavior) {
+		void addState(std::shared_ptr<StateController> stateController, std::shared_ptr<Behavior> behavior) {
 			stateControllers.emplace_back(stateController);
 			behaviors.emplace_back(behavior);
 		}
 
-		~Sequence() {}
+		~Sequence() = default;
 	};
 } // namespace Pronounce
