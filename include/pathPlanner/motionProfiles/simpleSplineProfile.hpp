@@ -1,14 +1,11 @@
-//
-// Created by Alex on 2/25/24.
-//
+#pragma once
 
-#ifndef PRONOUNCE_THIS_SIMPLESPLINEPROFILE_HPP
-#define PRONOUNCE_THIS_SIMPLESPLINEPROFILE_HPP
+#include "abstractMotionProfile.hpp"
 
-
-class simpleSplineProfile {
-
-};
-
-
-#endif //PRONOUNCE_THIS_SIMPLESPLINEPROFILE_HPP
+namespace PathPlanner {
+	class SimpleSplineProfile : public AbstractMotionProfile {
+		std
+	public:
+		SimpleSplineProfile() {}
+	};
+}

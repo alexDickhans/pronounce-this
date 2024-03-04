@@ -9,7 +9,9 @@
 #include "feedbackControllers/pid.hpp"
 #include "feedbackControllers/feedbackController.hpp"
 #include "api.h"
-#include <math.h>
+#include <cmath>
+#include "motionProfiles/simpleSplineProfile.hpp"
+#include "motionProfiles/abstractMotionProfile.hpp"
 #include "utils/utils.hpp"
 #include "json/asset.hpp"
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
