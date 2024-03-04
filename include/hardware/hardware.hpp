@@ -17,6 +17,7 @@
 #include "units/units.hpp"
 #include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 #include "odometry/orientation/gpsOrientation.hpp"
+#include "constants.hpp"
 
 #ifndef SIM
 
@@ -60,7 +61,7 @@ namespace Pronounce {
 	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
 	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
 
-	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors,
+	TankDrivetrain drivetrain(Constants::trackWidth, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors,
 	                          600.0 * (revolution / minute));
 
 	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, false);
