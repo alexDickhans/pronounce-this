@@ -76,24 +76,24 @@ namespace PathPlanner {
 			commandMap[name] = std::move(function);
 		}
 
-		std::shared_ptr<PathFollower> changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
+		void changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::initializer_list<std::pair<double, std::function<void()>>> functions = {}) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
 			this->commands = functions;
 			movingMutex.give();
 
-			return calculate();
+			calculate();
 		}
 
-		std::shared_ptr<PathFollower> changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
+		void changePath(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> path, std::vector<std::pair<double, std::function<void()>>> functions) {
 			movingMutex.take();
 			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
 			this->commands = std::move(functions);
 			movingMutex.give();
 
-			return calculate();
+			calculate();
 		}
 
 		void changePath(asset path) {
@@ -132,10 +132,10 @@ namespace PathPlanner {
 						commandMap.count(command["name"].string_value()) == 1 ? commandMap[command["name"].string_value()] : [&]() -> void {});
 			}
 
-			return changePath(defaultProfileConstraints, parsedPath, functions);
+			changePath(defaultProfileConstraints, parsedPath, functions);
 		}
 
-		std::shared_ptr<PathFollower> calculate() {
+		void calculate() {
 			movingMutex.take();
 
 			for (int i = 0; i < this->pathSegments.size(); ++i) {
@@ -171,8 +171,6 @@ namespace PathPlanner {
 			}
 
 			movingMutex.give();
-
-			return std::shared_ptr<PathFollower>(this);
 		}
 
 		void initialize() override {

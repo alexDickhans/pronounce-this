@@ -22,9 +22,9 @@ namespace Pronounce {
 	PID distancePid(1.5e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
-	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", odometry, master, drivetrain, 0.10, 2.4, 61_in / second);
+	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", odometry, master, drivetrain, 0.10, 61_in / second);
 
-	auto drivetrainStopped = std::make_shared<JoystickDrivetrain>("DrivetrainStopped", odometry, master, drivetrain, 0.10, 2.4, 0.0);
+	auto drivetrainStopped = std::make_shared<JoystickDrivetrain>("DrivetrainStopped", odometry, master, drivetrain, 0.10, 0.0);
 
 	auto drivetrainStateController = std::make_shared<StateController>("DrivetrainStateController", drivetrainStopped);
 

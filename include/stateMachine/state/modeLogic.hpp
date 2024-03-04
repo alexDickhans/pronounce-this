@@ -3,7 +3,6 @@
 #include "stateMachine/behaviors/robotBehaviors.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviorGroup.hpp"
-#include "stateMachine/parallel.hpp"
 #include "utils/utils.hpp"
 
 #include "competition/disabled.hpp"

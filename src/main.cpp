@@ -217,19 +217,19 @@ void skills(void *args) {
 
 	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
 
-	drivetrainStateController->sb(
-			pathFollower->changePath(pushingProfileConstraints, {{
-					                                                     PathPlanner::BezierSegment(
-							                                                     PathPlanner::Point(
-									                                                     wallDistance, 76_in),
-							                                                     PathPlanner::Point(
-									                                                     wallDistance.getValue() * 0.74,
-									                                                     68_in),
-							                                                     PathPlanner::Point(
-									                                                     19_in, 55_in),
-							                                                     PathPlanner::Point(
-									                                                     20_in, 20_in), true),
-					                                                     nullptr}})).wait();
+	pathFollower->changePath(pushingProfileConstraints, {{
+			                                                     PathPlanner::BezierSegment(
+					                                                     PathPlanner::Point(
+							                                                     wallDistance, 76_in),
+					                                                     PathPlanner::Point(
+							                                                     wallDistance.getValue() * 0.74,
+							                                                     68_in),
+					                                                     PathPlanner::Point(
+							                                                     19_in, 55_in),
+					                                                     PathPlanner::Point(
+							                                                     20_in, 20_in), true),
+			                                                     nullptr}});
+	drivetrainStateController->sb(pathFollower).wait();
 
 	pathFollower->changePath(skills_8_json);
 	drivetrainStateController->sb(pathFollower).wait();

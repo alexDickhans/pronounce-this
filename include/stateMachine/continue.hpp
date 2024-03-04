@@ -35,8 +35,4 @@ namespace Pronounce {
     };
     
     Continue::Continue(std::string name, std::shared_ptr<Behavior> behavior) : Behavior(std::move(name)), behavior(behavior) {}
-
-	std::shared_ptr<Behavior> Behavior::continueBehavior() {
-        return new Continue("continue" + this->getName(), this);
-    }
 } // namespace Pronounce

@@ -17,14 +17,13 @@ namespace Pronounce {
 
 		void setAuton(pros::task_fn_t auton) {
 			this->auton = auton;
-			return this;
 		}
 
 		void initialize() override {
 			Enabled::initialize();
 
-			drivetrainStateController.setDefaultBehavior(&drivetrainStopped);
-			drivetrainStateController.useDefaultBehavior();
+			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
+			drivetrainStateController->useDefaultBehavior();
 			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -42,8 +41,8 @@ namespace Pronounce {
 			if (task.get_state() == 2)
 				task.remove();
 
-			drivetrainStateController.useDefaultBehavior();
-			intakeStateController.useDefaultBehavior();
+			drivetrainStateController->ud();
+			intakeStateController->ud();
 
 			Enabled::exit();
 		}
