@@ -1,592 +1,93 @@
 #include "main.h"
 
-// LVGL
-std::shared_ptr<lv_obj_t> tabview;
-
-// SECTION Auton
-
-SIMPLE_SPLINE_PATH_ASSET(close_mid_rush);
-SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_1);
-SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_2);
-SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_awp);
-SIMPLE_SPLINE_PATH_ASSET(safe_close_awp);
-SIMPLE_SPLINE_PATH_ASSET(safe_close_awp_2);
-SIMPLE_SPLINE_PATH_ASSET(skills_1);
-SIMPLE_SPLINE_PATH_ASSET(skills_2);
-SIMPLE_SPLINE_PATH_ASSET(skills_3);
-SIMPLE_SPLINE_PATH_ASSET(skills_4);
-SIMPLE_SPLINE_PATH_ASSET(skills_5);
-SIMPLE_SPLINE_PATH_ASSET(skills_6);
-SIMPLE_SPLINE_PATH_ASSET(skills_6_5);
-SIMPLE_SPLINE_PATH_ASSET(skills_7);
-SIMPLE_SPLINE_PATH_ASSET(skills_7_5);
-SIMPLE_SPLINE_PATH_ASSET(skills_8);
-SIMPLE_SPLINE_PATH_ASSET(skills_9);
-SIMPLE_SPLINE_PATH_ASSET(skills_10);
-SIMPLE_SPLINE_PATH_ASSET(close_mid_rush_elim);
-SIMPLE_SPLINE_PATH_ASSET(close_rush_mid_2);
-
-void turnTo(Angle angle, QTime waitTimeMS) {
-	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain, odometry, turningPid, angle,
-	                                                          drivetrainMutex);
-
-	drivetrainStateController->sb(angleRotation);
-
-	pros::Task::delay(waitTimeMS.Convert(millisecond));
-
-	drivetrainStateController->ud();
-	pros::Task::delay(10);
-}
-
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0,
-          QSpeed endSpeed = 0.0) {
-	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
-			                                      &distancePid,
-			                                      drivetrainMutex, curvature, initialSpeed, endSpeed)).wait();
-}
-
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle,
-          QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
-
-	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
-			                                      &distancePid,
-			                                      drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed,
-			                                      endSpeed)).wait();
-}
-
-void far5BallRushMid(void *args) {
-
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
-
-	intakeExtensionStateController->sb(deploySequence);
-	rightWingStateController->sb(std::make_shared<Wait>(rightWingOut, 200_ms));
-
-	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
-
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
-
-	pathFollower->setMotionProfile(mid_6_ball_1);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	turnTo(-2_deg, 550_ms);
-
-	intakeStateController->sb(intakeIntaking);
-
-	move(19_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
-	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
-
-	intakeStateController->sb(intakeHold);
-//	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(170_deg, 700_ms);
-
-	pathFollower->setMotionProfile(mid_6_ball_2);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
-
-	leftWingStateController->ud();
-	turnTo(120_deg, 300_ms);
-	leftWingStateController->sb(leftWingOut);
-	drivetrain.tankSteerVoltage(12000, 12000);
-	pros::Task::delay(800);
-	drivetrain.tankSteerVoltage(0.0, 0.0);
-	leftWingStateController->ud();
-	move(-9_in, speedProfileConstraints, 0.0, 90_deg);
-	turnTo(25_deg, 200_ms);
-	intakeStateController->sb(intakeIntaking);
-	move(48_in, speedProfileConstraints, 0.0, 25_deg);
-
-	turnTo(150_deg, 550_ms);
-	intakeExtensionStateController->sb(outtakeSequence);
-	move(38_in, speedProfileConstraints, 0.0, 150_deg);
-}
-
-void far6BallRushMid(void *args) {
-	far5BallRushMid(args);
-
-	turnTo(3_deg, 550_ms);
-
-	intakeStateController->sb(intakeIntaking);
-
-	move(23_in, defaultProfileConstraints, 0.0, 3_deg);
-
-	turnTo(180_deg, 550_ms);
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeEject);
-	leftWingStateController->sb(leftWingOut);
-	rightWingStateController->sb(rightWingOut);
-	move(35_in, speedProfileConstraints, 0.0, 180_deg);
-	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
-	turnTo(0_deg, 3_s);
-}
-
-void far5BallAWP(void *args) {
-	far5BallRushMid(args);
-
-	move(-5_in, speedProfileConstraints, 0.0, 0_deg);
-
-	turnTo(-90_deg, 600_ms);
-
-	pathFollower->setMotionProfile(mid_6_ball_awp);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	drivetrain.tankSteerVoltage(3000, 2000);
-	pros::Task::delay(5000);
-}
-
-void skills(void *args) {
-
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
-
-	pathFollower->setMotionProfile(skills_1);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	drivetrainStateController->sb(
-			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, odometry, turningPid,
-			                                     21.1_deg,
-			                                     drivetrainMutex, -800.0));
-	auton->resetTriballs();
-	pros::Task::delay(500);
-
-	// Wait until the catapult triballs shot has increased to 44 triballs
-	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
-		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-		pros::Task::delay(10);
-	}
-
-	pros::Task::delay(200);
-
-	pathFollower->setMotionProfile(skills_2);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	rightWingStateController->sb(rightWingIn);
-	turnTo(180_deg, 300_ms);
-
-	pathFollower->setMotionProfile(skills_3);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
-//
-//	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
-//
-//	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
-
-	pathFollower->setMotionProfile(skills_4);
-	drivetrainStateController->sb(pathFollower).wait();
-	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
-
-	turnTo(-160_deg, 200_ms);
-
-	pathFollower->setMotionProfile(skills_5);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-5_in, speedProfileConstraints, 0.0);
-
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-
-	pathFollower->setMotionProfile(skills_6);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-3_in, speedProfileConstraints, 0.0);
-
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-
-	pathFollower->setMotionProfile(skills_6_5);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-3_in, speedProfileConstraints, 0.0);
-
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-
-	pathFollower->setMotionProfile(skills_7);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-3_in, speedProfileConstraints, 0.0);
-
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-
-	pathFollower->setMotionProfile(skills_7_5);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	drivetrainStateController->sb(
-			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, odometry, turningPid, 0_deg,
-			                                     drivetrainMutex));
-
-	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
-
-	pathFollower->setMotionProfile(PathPlanner::SimpleSplineProfile(pushingProfileConstraints, {{
-			                                                     PathPlanner::BezierSegment(
-					                                                     PathPlanner::Point(
-							                                                     wallDistance, 76_in),
-					                                                     PathPlanner::Point(
-							                                                     wallDistance.getValue() * 0.74,
-							                                                     68_in),
-					                                                     PathPlanner::Point(
-							                                                     19_in, 55_in),
-					                                                     PathPlanner::Point(
-							                                                     20_in, 20_in), true),
-			                                                     nullptr}}, {}));
-	drivetrainStateController->sb(pathFollower).wait();
-
-	pathFollower->setMotionProfile(skills_8);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
-
-	pathFollower->setMotionProfile(skills_9);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
-
-	pathFollower->setMotionProfile(skills_9);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	rightWingStateController->ud();
-
-	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
-
-	pathFollower->setMotionProfile(skills_10);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	pros::Task::delay(500);
-
-	hangStateController->ud();
-}
-
-void safeCloseAWP(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 45_deg));
-
-	intakeExtensionStateController->sb(deploySequence);
-
-	move(-10_in, defaultProfileConstraints, 0.0);
-
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
-
-	pathFollower->setMotionProfile(safe_close_awp);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
-
-	turnTo(45_deg, 300_ms);
-
-	pathFollower->setMotionProfile(safe_close_awp_2);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	pros::Task::delay(15000);
-}
-
-void closeRushMid(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
-
-	leftWingStateController->sb(std::make_shared<Wait>(leftWingOut, 300_ms));
-
-	intakeExtensionStateController->sb(deploySequence);
-
-	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
-
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
-
-	move(-13_in, speedProfileConstraints, 0.0, -75.7_deg);
-
-	turnTo(104.3_deg, 600_ms);
-
-	intakeStateController->sb(intakeEject);
-
-	turnTo(104.3_deg, 200_ms);
-
-	turnTo(-35.3_deg, 600_ms);
-
-	pathFollower->setMotionProfile(close_mid_rush);
-	drivetrainStateController->sb(pathFollower).wait();
-
-	move(-10_in, speedProfileConstraints, 0.0, 56_deg);
-
-	intakeStateController->sb(intakeEject);
-
-	pathFollower->setMotionProfile(close_rush_mid_2);
-	drivetrainStateController->sb(pathFollower).wait();
-}
-
-void closeRushMidElim(void *args) {
-	closeRushMid(args);
-
-	turnTo(-180_deg, 800_ms);
-
-	intakeStateController->sb(intakeIntaking);
-
-	pathFollower->setMotionProfile(close_mid_rush_elim);
-	drivetrainStateController->sb(pathFollower).wait();
-}
-
-void tuneTurnPid(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0.0_deg));
-	while (1) {
-		turnTo(180_deg, 2_s);
-		turnTo(0.0_deg, 2_s);
-	}
-}
-// !SECTION
-
-// SECTION INIT
-
-[[noreturn]] void update() {
-
-	std::cout << "Init: update" << std::endl;
-
-	competitionController->initialize();
-
-	robotMutex.give();
-
-	uint32_t startTime;
-	uint32_t startTimeMicros;
-
-	while (true) {
-		// Create stuff for exact delay
-		startTime = pros::millis();
-		startTimeMicros = pros::micros();
-
-		robotMutex.take(TIMEOUT_MAX);
-		odometry.update();
-		competitionController->update();
-		robotMutex.give();
-
-		// Wait a maximum of 10 milliseconds
-		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
-
-		std::cout << "FrameTime: " << pros::micros() - startTimeMicros << std::endl;
-	}
-}
-
-[[noreturn]] void updateDisplay() {
-
-	Log("Init");
-
-	// Odom
-	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
-	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
-
-	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
-	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
-
-	std::shared_ptr<lv_obj_t> portsTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Ports"));
-	std::shared_ptr<lv_obj_t> portsPage = std::shared_ptr<lv_obj_t>(lv_page_create(portsTab.get(), NULL));
-	std::shared_ptr<lv_obj_t> portsLabel = std::shared_ptr<lv_obj_t>(lv_label_create(portsTab.get(), NULL));
-	std::shared_ptr<lv_obj_t> portsTable = std::shared_ptr<lv_obj_t>(lv_table_create(portsPage.get(), NULL));
-
-	lv_obj_set_width(portsPage.get(), 400);
-	lv_obj_set_height(portsPage.get(), 100);
-
-	// Drivetrain
-	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(
-			lv_tabview_add_tab(tabview.get(), "Drivetrain"));
-	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get(), NULL));
-
-	lv_table_set_row_cnt(drivetrainTable.get(), 4);
-	lv_table_set_col_cnt(drivetrainTable.get(), 2);
-
-	lv_table_set_col_width(drivetrainTable.get(), 0, 200);
-	lv_table_set_col_width(drivetrainTable.get(), 1, 200);
-
-	// Flywheels
-
-	while (true) {
-		// Odometry
-		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()
-		                                    + "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
-		                                    ", R: " +
-		                                    std::to_string(rightDrive1Odom.getPosition().Convert(inch))).c_str());
-
-		// Drivetrain
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 0,
-		                        (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 0,
-		                        (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 0,
-		                        (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 0,
-		                        (std::to_string(intakeMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 1,
-		                        (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 1,
-		                        (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 1,
-		                        (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
-
-		pros::Task::delay(50);
+/**
+ * A callback function for LLEMU's center button.
+ *
+ * When this callback is fired, it will toggle line 2 of the LCD text between
+ * "I was pressed!" and nothing.
+ */
+void on_center_button() {
+	static bool pressed = false;
+	pressed = !pressed;
+	if (pressed) {
+		pros::lcd::set_text(2, "I was pressed!");
+	} else {
+		pros::lcd::clear_line(2);
 	}
 }
 
 /**
- * Runs when the robot starts up
+ * Runs initialization code. This occurs as soon as the program is started.
+ *
+ * All other competition modes are blocked by initialize; it is recommended
+ * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, "Hello PROS User!");
 
-	logger = Logger::getInstance();
-	Log("Initialize");
-
-	lv_init();
-	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
-
-	// Initialize functions
-	initHardware();
-	initIntake();
-	initWings();
-	initBehaviors();
-	initCatapult();
-	initDrivetrain();
-
-	pathFollower->addCommandMapping("intake", [&]() -> void {
-		intakeStateController->sb(intakeIntaking);
-	});
-
-	pathFollower->addCommandMapping("intakeHold", [&]() -> void {
-		intakeStateController->sb(intakeHold);
-	});
-
-	pathFollower->addCommandMapping("intakeStopped", [&]() -> void {
-		intakeStateController->ud();
-	});
-
-	pathFollower->addCommandMapping("outtake", [&]() -> void {
-		intakeStateController->sb(intakeEject);
-	});
-
-	pathFollower->addCommandMapping("leftWingOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-	});
-
-	pathFollower->addCommandMapping("leftWingIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-	});
-
-	pathFollower->addCommandMapping("rightWingOut", [&]() -> void {
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("rightWingIn", [&]() -> void {
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("awpOut", [&]() -> void {
-		awpStateController->sb(awpOut);
-	});
-
-	pathFollower->addCommandMapping("awpIn", [&]() -> void {
-		awpStateController->sb(awpIn);
-	});
-
-	pathFollower->addCommandMapping("hang", [&]() -> void {
-		hangStateController->sb(hangOut);
-	});
-
-	pathFollower->addCommandMapping("wingsOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("wingsIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("catapult", [&]() -> void {
-		catapultStateController->sb(catapultFire);
-	});
-
-	pathFollower->addCommandMapping("catapultStop", [&]() -> void {
-		catapultStateController->ud();
-	});
-
-	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);
-	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
-
-	pros::Task::delay(10);
+	pros::lcd::register_btn1_cb(on_center_button);
 }
 
-// !SECTION
-
-// SECTION Disabled
 /**
- * Runs while the robot is disabled i.e. before and after match, between auton
- * and teleop period
+ * Runs while the robot is in the disabled state of Field Management System or
+ * the VEX Competition Switch, following either autonomous or opcontrol. When
+ * the robot is enabled, this task will exit.
  */
-void disabled() {
-	std::cout << "Init: disabled" << std::endl;
-	competitionController->ud();
-
-	// Create a label
-	lv_obj_t *disabledLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
-	lv_label_set_text(disabledLabel, "Robot Disabled.");
-}
-
-// !SECTION
-
-// SECTION Competition Initialize
+void disabled() {}
 
 /**
- * Starts when connected to the field
+ * Runs after initialize(), and before autonomous when connected to the Field
+ * Management System or the VEX Competition Switch. This is intended for
+ * competition-specific initialization routines, such as an autonomous selector
+ * on the LCD.
+ *
+ * This task will exit when the robot is enabled and autonomous or opcontrol
+ * starts.
  */
-void competition_initialize() {
-//	Log("Competition Initialize");
-}
+void competition_initialize() {}
 
-// !SECTION
-
-// SECTION Auton
-//#define ELIM
 /**
- * Runs during the autonomous. NO user control
+ * Runs the user autonomous code. This function will be started in its own task
+ * with the default priority and stack size whenever the robot is enabled via
+ * the Field Management System or the VEX Competition Switch in the autonomous
+ * mode. Alternatively, this function may be called in initialize or opcontrol
+ * for non-competition testing purposes.
+ *
+ * If the robot is disabled or communications is lost, the autonomous task
+ * will be stopped. Re-enabling the robot will restart the task, not re-start it
+ * from where it left off.
  */
-void autonomous() {
-
-//	Log("Auton Init");
-
-#if AUTON == 0
-	auton->setAuton(far6BallRushMid);
-#elif AUTON == 1
-	auton->setAuton(far5BallAWP);
-#elif AUTON == 2
-	auton->setAuton(safeCloseAWP);
-#elif AUTON == 3
-	auton->setAuton(closeRushMidElim);
-#elif AUTON == 4
-	auton->setAuton(closeRushMid);
-#elif AUTON == 5
-	auton->setAuton(skills);
-#endif // !1
-
-	competitionController->sb(auton);
-}
-
-// !SECTION
-
-// SECTION Operator Control
+void autonomous() {}
 
 /**
- * Runs during operator/teleop control
+ * Runs the operator control code. This function will be started in its own task
+ * with the default priority and stack size whenever the robot is enabled via
+ * the Field Management System or the VEX Competition Switch in the operator
+ * control mode.
+ *
+ * If no competition control is connected, this function will run immediately
+ * following initialize().
+ *
+ * If the robot is disabled or communications is lost, the
+ * operator control task will be stopped. Re-enabling the robot will restart the
+ * task, not resume it from where it left off.
  */
 void opcontrol() {
+	pros::Controller master(pros::E_CONTROLLER_MASTER);
+	pros::MotorGroup left_mg({1,-2,3}); // Creates a motor group with forwards ports 1 & 3 and reversed port 2
+	pros::MotorGroup right_mg({-4,5,-6}); // Creates a motor group with forwards port 4 and reversed ports 4 & 6
 
-	// Causes the programming skills code to only run during skills
-#if AUTON == 5
-	robotMutex.take(TIMEOUT_MAX);
-	auton->setAuton(skills);
-	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
-		return master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
-	}));
-	robotMutex.give();
-	competitionController->wait();
-#endif
-
-	robotMutex.take(TIMEOUT_MAX);
-	competitionController->sb(teleop);
-	robotMutex.give();
+	while (true) {
+		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0); // Prints status of the emulated screen LCDs
+						 
+		// Arcade control scheme
+		int dir = master.get_analog(ANALOG_LEFT_Y); // Gets amount forward/backward from left joystick
+		int turn = master.get_analog(ANALOG_RIGHT_X); // Gets the turn left/right from right joystick
+		left_mg = dir - turn; // Sets left motor voltage
+		right_mg = dir + turn; // Sets right motor voltage
+		pros::delay(20); // Run for 20 ms then update
+	}
 }
-
-// !SECTION
