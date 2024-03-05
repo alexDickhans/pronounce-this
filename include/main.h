@@ -77,6 +77,8 @@
 
 #include "stateMachine/state/competition/auton.hpp"
 
+#include "Logger/logger.hpp"
+
 using namespace Pronounce;
 
 #ifdef __cplusplus

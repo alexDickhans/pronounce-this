@@ -12,8 +12,10 @@ namespace Pronounce {
 	auto catapultStateController = std::make_shared<StateController>("CatapultStateController", catapultHold);
 
 	void initCatapult() {
+		Log("Catapult Init");
 		catapultMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 		catapultMotors.at(0).set_zero_position(0.0);
 		catapultMotors.at(1).set_zero_position(0.0);
+		Log("Catapult Init Done");
 	}
 }

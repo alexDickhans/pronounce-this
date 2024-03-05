@@ -364,6 +364,8 @@ void tuneTurnPid(void *args) {
 
 [[noreturn]] void updateDisplay() {
 
+	Log("Init");
+
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
 	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
@@ -378,17 +380,6 @@ void tuneTurnPid(void *args) {
 
 	lv_obj_set_width(portsPage.get(), 400);
 	lv_obj_set_height(portsPage.get(), 100);
-
-	int count = checkPorts(portsTable.get());
-
-	// std::cout << count << std::endl;
-
-	if (count > 0) {
-		lv_label_set_text(portsLabel.get(), "SOMETHING IS MISSING");
-		// lv_label_set_style(portsLabel.get(), )
-	} else {
-		lv_label_set_text(portsLabel.get(), "All Good");
-	}
 
 	// Drivetrain
 	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(
@@ -435,8 +426,8 @@ void tuneTurnPid(void *args) {
  */
 void initialize() {
 
-//	robotMutex.take(TIMEOUT_MAX);
-	std::cout << "Init: initialize" << std::endl;
+	logger = Logger::getInstance();
+	Log("Initialize");
 
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
@@ -542,6 +533,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
+//	Log("Competition Initialize");
 }
 
 // !SECTION
@@ -553,7 +545,7 @@ void competition_initialize() {
  */
 void autonomous() {
 
-	std::cout << "Init: Auton" << AUTON << std::endl;
+//	Log("Auton Init");
 
 #if AUTON == 0
 	auton->setAuton(far6BallRushMid);

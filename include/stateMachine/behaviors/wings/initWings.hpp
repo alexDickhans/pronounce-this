@@ -20,6 +20,7 @@ namespace Pronounce {
 	auto awpStateController = std::make_shared<StateController>("HangReleaseStateController", awpIn);
 
 	void initWings() {
-
+		Log("Wings Init");
+		Log("Wings Init Done");
 	}
 }

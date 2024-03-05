@@ -16,10 +16,12 @@ namespace Pronounce {
 		}
 
 		void setAuton(pros::task_fn_t auton) {
+			Log("Set auton");
 			this->auton = auton;
 		}
 
 		void initialize() override {
+			Log("Init");
 			Enabled::initialize();
 
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
@@ -34,10 +36,12 @@ namespace Pronounce {
 		}
 
 		void update() override {
+			Log("Update");
 			Enabled::update();
 		}
 
 		void exit() override {
+			Log("Exit");
 			if (task.get_state() == 2)
 				task.remove();
 
