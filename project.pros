@@ -597,7 +597,7 @@
                 "version": "1.0.0"
             },
             "liblog": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@1.0.0",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@1.0.1",
                 "metadata": {
                     "origin": "local"
                 },
@@ -610,7 +610,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "1.0.0"
+                "version": "1.0.1"
             },
             "locolib": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/locolib@0.0.1",

@@ -2,6 +2,9 @@
 
 #include <string>
 #include "pros/rtos.hpp"
+#include "pros/misc.h"
+
+#define Log(msg)   logger->log(std::string(__PRETTY_FUNCTION__) + ":" + std::to_string(__LINE__), msg)
 
 namespace Pronounce {
 
@@ -19,11 +22,15 @@ namespace Pronounce {
 
 		FILE* logFile;
 
+		bool installed = false;
+
 	protected:
 		Logger();
 		~Logger() = default;
 
 		void update();
+
+		void newFile();
 
 		void writeLog(const std::string& write) {
 			buffer.append(write);
