@@ -597,7 +597,7 @@
                 "version": "1.0.0"
             },
             "liblog": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@1.0.1",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@1.0.2",
                 "metadata": {
                     "origin": "local"
                 },
@@ -605,12 +605,12 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^3.8.0",
                 "system_files": [
-                    "firmware/liblog.a",
-                    "include/Logger/logger.hpp"
+                    "include/Logger/logger.hpp",
+                    "firmware/liblog.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "1.0.1"
+                "version": "1.0.2"
             },
             "locolib": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/locolib@0.0.1",
