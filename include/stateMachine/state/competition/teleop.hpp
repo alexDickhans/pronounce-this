@@ -23,6 +23,7 @@ namespace Pronounce {
 		}
 
 		void initialize() override {
+			Log("Init");
 			drivetrainStateController->setDefaultBehavior(normalJoystick);
 			drivetrainStateController->ud();
 
@@ -80,6 +81,7 @@ namespace Pronounce {
 		}
 
 		void update() override {
+			Log("Update");
 			Enabled::update();
 
 			controller1->update();
@@ -87,6 +89,7 @@ namespace Pronounce {
 		}
 
 		void exit() override {
+			Log("Exit");
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
 			drivetrainStateController->ud();
 			controller1->clearCallbacks();

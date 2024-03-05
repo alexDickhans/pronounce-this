@@ -21,6 +21,7 @@
 #ifndef SIM
 
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
+#include "Logger/logger.hpp"
 
 #else
 #include "hardwareAbstractions/joystick/simJoystick.hpp"
@@ -28,8 +29,7 @@
 
 namespace Pronounce {
 
-	PT::TelemetryManager *telemetryManager;
-	PT::Logger *logger;
+	Logger* logger = nullptr;
 
 	pros::Mutex robotMutex;
 
@@ -90,22 +90,7 @@ namespace Pronounce {
 	OdomFuser odometry(threeWheelOdom);
 
 	void initHardware() {
-
-		logger = PT::Logger::getInstance();
-
-//		telemetryManager = PT::TelemetryManager::getInstance();
-//		telemetryManager->addTransmitter(std::make_shared<PT::TelemetryRadio>(1, new PT::PassThroughEncoding()));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<uint32_t>>("System", "Millis", pros::millis));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("Catapult", "Wattage", []() -> double {return catapultMotors.get_current_draws().at(0);}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("CatapultSpeed", "Speed", []() -> double {return catapultMotors.get_actual_velocities().at(0);}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("LeftDrive", "Speed", []() -> double {return leftDrive1.get_actual_velocity();}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("RightDrive", "Speed", []() -> double {return rightDrive1.get_actual_velocity();}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualSpeed", "Speed", []() -> double {return drivetrain.getSpeed().Convert(inch/second);}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetSpeed", "Speed", []() -> double {return drivetrain.getTargetSpeed().Convert(inch/second);}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveActualPosition", "Position", []() -> double {return drivetrain.getTargetDistance().Convert(inch);}));
-//		telemetryManager->addMeasurementSource(std::make_shared<PT::FunctionMeasurement<double>>("DriveTargetPosition", "Position", []() -> double {return drivetrain.getDistanceSinceReset().Convert(inch);}));
-//		telemetryManager->setUpdateTime(10);
-//		telemetryManager->enableUpdateScheduler();
+		Log("Hardware Init");
 
 		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
@@ -128,83 +113,44 @@ namespace Pronounce {
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
 		if (isSkills) {
+			Log("Skills");
 			if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) !=
 			    pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
 			    pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) !=
 			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
+				Log("Catapult not plugged in");
 				master->getController()->rumble(".-.-.-.-");
 			} else if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) ==
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
+				Log("Intake plugged in");
 				master->getController()->rumble(". . . . ");
 			}
 		} else {
+			Log("Competition");
 			if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) !=
 			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
+				Log("Intake not plugged in");
 				master->getController()->rumble(".-.-.-.-");
 			} else if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) ==
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
 			           pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) ==
 			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
+				Log("Catapult plugged in");
 				master->getController()->rumble("........");
 			}
 		}
 
 		if (pros::c::registry_get_plugged_type(imu._port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
 			imu.reset();
+			Log("Imu: calibrate");
 
 			while (imu.is_calibrating())
 				pros::Task::delay(50);
 
+			Log("Imu: done calibrating");
 			master->getController()->rumble(".");
 		}
-	}
 
-	int checkPorts(lv_obj_t *table) {
-		std::map<uint8_t, pros::c::v5_device_e_t> portsList;
-
-		portsList.emplace(0, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(1, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(2, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(3, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(4, pros::c::v5_device_e_t::E_DEVICE_RADIO);
-		portsList.emplace(5, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(6, pros::c::v5_device_e_t::E_DEVICE_IMU);
-		portsList.emplace(7, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(8, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(9, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-		portsList.emplace(10, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(11, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(12, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(13, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(14, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(15, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(16, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(17, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(18, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(19, pros::c::v5_device_e_t::E_DEVICE_NONE);
-		portsList.emplace(20, pros::c::v5_device_e_t::E_DEVICE_MOTOR);
-
-		lv_table_set_col_cnt(table, 3);
-		lv_table_set_row_cnt(table, portsList.size());
-
-		int count = 0;
-		int missingCount = 0;
-
-		for (auto &i: portsList) {
-			lv_table_set_cell_value(table, count, 0, std::to_string(i.first).c_str());
-			lv_table_set_cell_value(table, count, 1, std::to_string(i.second).c_str());
-			lv_table_set_cell_value(table, count, 2, std::to_string(
-					pros::c::registry_get_plugged_type(i.first - 1) == i.second).c_str());
-
-			if (pros::c::registry_get_plugged_type(i.first - 1) != i.second) {
-				missingCount++;
-				std::cout << "PortMissing: " << std::to_string(i.first) << std::endl;
-//				exit(1);
-			}
-
-			count++;
-		}
-
-		return missingCount;
+		Log("Hardware Init Done");
 	}
 } // namespace Pronoucne

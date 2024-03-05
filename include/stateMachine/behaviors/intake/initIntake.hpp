@@ -20,6 +20,7 @@ namespace Pronounce {
 	auto deploySequence = std::make_shared<Sequence>("StartSequence");
 
     void initIntake() {
+	    Log("Intake Init");
 		intakeSequence->addState(intakeStateController, std::make_shared<Until>(intakeIntaking, [=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
 		intakeSequence->addState(intakeStateController, intakeHold);
 
@@ -28,5 +29,7 @@ namespace Pronounce {
 
 		deploySequence->addState(intakeStateController, std::make_shared<Wait>(intakeEject, 300_ms));
 		deploySequence->addState(intakeStateController, intakeIntaking);
+
+	    Log("Intake Init Done");
     }
 } // namespace Pronounce

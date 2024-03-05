@@ -5,16 +5,20 @@ namespace Pronounce {
 	BehaviorGroup stateControllers;
 
 	void initBehaviors() {
+
+		Log("Init");
 		stateControllers.addBehavior(drivetrainStateController);
-		stateControllers.addBehavior(intakeExtensionStateController);
 		stateControllers.addBehavior(leftWingStateController);
 		stateControllers.addBehavior(rightWingStateController);
 		stateControllers.addBehavior(hangStateController);
 		stateControllers.addBehavior(awpStateController);
 
 		if (isSkills) {
+			Log("Init Catapult");
 			stateControllers.addBehavior(catapultStateController);
 		} else {
+			Log("Init Intake");
+			stateControllers.addBehavior(intakeExtensionStateController);
 			stateControllers.addBehavior(intakeStateController);
 		}
 	}
@@ -33,12 +37,15 @@ namespace Pronounce {
 		}
 
 		void initialize() override {
+			Log("Init");
 			stateControllers.initialize();
 		}
 
 		void update() override {
+			Log("Update");
 			if (hopperDistanceSensor.get() * 1_mm < 8_in &&
 			    intakeStateController->getName().find(intakeEject->getName()) == -1) {
+				Log("Triball detected");
 				intakeStateController->sb(intakeHold);
 			}
 
@@ -51,6 +58,7 @@ namespace Pronounce {
 
 				// increase the count of shot triballs
 				shotTriballs += 1;
+				Log("Triball count: " + std::to_string(shotTriballs));
 
 				lastCount = pros::millis() * 1_ms;
 
@@ -67,10 +75,12 @@ namespace Pronounce {
 		}
 
 		void exit() override {
+			Log("Exit");
 			stateControllers.exit();
 		}
 
 		void resetTriballs() {
+			Log("Reset triballs");
 			shotTriballs = 0;
 		}
 

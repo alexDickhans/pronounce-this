@@ -29,7 +29,7 @@ namespace Pronounce {
 		bool arcade;
 
 		double filterAxis(double axis) {
-			return axis < deadband ? 0.0 : axis;
+			return abs(axis) < deadband ? 0.0 : axis;
 		}
 
 	public:
