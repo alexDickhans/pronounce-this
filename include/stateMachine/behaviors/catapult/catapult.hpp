@@ -7,10 +7,10 @@ namespace Pronounce {
 
 	class Catapult : public Behavior {
 	private:
-		pros::Motor_Group& catapultMotors;
+		pros::AbstractMotor& catapultMotors;
 		double speed;
 	public:
-		Catapult(std::string name, pros::Motor_Group& motors, double speed) : Behavior(name), catapultMotors(motors) {
+		Catapult(std::string name, pros::AbstractMotor& motors, double speed) : Behavior(name), catapultMotors(motors) {
 			this->speed = speed;
 		}
 

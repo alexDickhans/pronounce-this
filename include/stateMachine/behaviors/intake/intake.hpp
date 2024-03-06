@@ -9,7 +9,7 @@ namespace Pronounce {
 
     class Intake : public Behavior {
     private:
-        pros::Motor_Group& intake;
+        pros::AbstractMotor& intake;
         double intakeSpeed{0};
 
         bool exitWithTriball{false};
@@ -19,7 +19,7 @@ namespace Pronounce {
         const double thresholdCurrent = 750;
         const uint32_t thresholdTime = 250;
     public:
-        Intake(std::string name, pros::Motor_Group& intake, double intakeSpeed, bool exit) : Behavior(name), intake(intake), intakeSpeed(intakeSpeed), exitWithTriball(exit) {
+        Intake(std::string name, pros::AbstractMotor& intake, double intakeSpeed, bool exit) : Behavior(name), intake(intake), intakeSpeed(intakeSpeed), exitWithTriball(exit) {
 
         }
 
@@ -33,14 +33,8 @@ namespace Pronounce {
         }
 
         void update() {
-            // Leave voltage where it is once the program starts
-            double totalCurrent = 0;
 
-            for (double current : this->intake.get_current_draws()) {
-                totalCurrent += current;
-            }
-
-            double averageCurrent = totalCurrent/this->intake.size();
+            double averageCurrent = mean(intake.get_current_draw_all());
 
             if (averageCurrent < thresholdCurrent) {
                 startTime = pros::millis();

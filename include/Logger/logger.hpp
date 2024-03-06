@@ -34,6 +34,7 @@ namespace Pronounce {
 
 		void writeLog(const std::string& write) {
 			buffer.append(write);
+			std::cout << write;
 		}
 
 	public:

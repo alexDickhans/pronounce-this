@@ -9,7 +9,6 @@
 using namespace Pronounce;
 
 int main() {
-	std::cout << "Hello World" << std::endl;
 
 	CombinedPath path = CombinedPath({{30_in, 0.0}, {10_in, 0.0}});
 

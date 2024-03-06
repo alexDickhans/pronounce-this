@@ -43,7 +43,6 @@
 #include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 
 // Interrupt Odom
-#include "odometry/interruptOdometry/gpsOdometry.hpp"
 #include "odometry/interruptOdometry/interruptOdometry.hpp"
 
 #include "pathPlanner/pathPlanner.hpp"

@@ -50,6 +50,26 @@ namespace Pronounce {
 	
 	double findMedian(double arr[], int size);
 
+	double mean(std::vector<double> array) {
+		double sum = 0.0;
+
+		for (const auto &item: array) {
+			sum += item;
+		}
+
+		return sum/array.size();
+	}
+
+	double mean(std::vector<int32_t> array) {
+		double sum = 0.0;
+
+		for (const auto &item: array) {
+			sum += static_cast<double>(item);
+		}
+
+		return sum/array.size();
+	}
+
 	double getDistanceSensorMedian(pros::Distance &distance, int samples);
 
 	unsigned int factorial(const unsigned int& x);
