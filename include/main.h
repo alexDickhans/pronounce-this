@@ -71,8 +71,6 @@
 #include "utils/vector.hpp"
 #include "utils/polynomialExpression.hpp"
 
-#include "telemetryRadio/telemetryManager.hpp"
-
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
 #include "stateMachine/state/competition/auton.hpp"

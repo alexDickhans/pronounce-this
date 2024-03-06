@@ -11,13 +11,13 @@
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "pros/apix.h"
 #include <map>
-#include "telemetryRadio/telemetryManager.hpp"
 #include "auton.h"
 #include "locolib/locolib.hpp"
 #include "units/units.hpp"
 #include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 #include "odometry/orientation/gpsOrientation.hpp"
 #include "constants.hpp"
+#include "pros/motor_group.hpp"
 
 #ifndef SIM
 
