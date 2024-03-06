@@ -53,7 +53,6 @@
 
 // State Machine
 #include "stateMachine/stateMachine.hpp"
-
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"

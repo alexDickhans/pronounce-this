@@ -368,23 +368,15 @@ void tuneTurnPid(void *args) {
 
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
-	std::shared_ptr<lv_obj_t> odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get(), NULL));
+	auto odomLabel = std::shared_ptr<lv_obj_t>(lv_label_create(odomTab.get()));
 
 	std::shared_ptr<lv_obj_t> flywheelTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "PTO"));
-	std::shared_ptr<lv_obj_t> flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get(), NULL));
-
-	std::shared_ptr<lv_obj_t> portsTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Ports"));
-	std::shared_ptr<lv_obj_t> portsPage = std::shared_ptr<lv_obj_t>(lv_page_create(portsTab.get(), NULL));
-	std::shared_ptr<lv_obj_t> portsLabel = std::shared_ptr<lv_obj_t>(lv_label_create(portsTab.get(), NULL));
-	std::shared_ptr<lv_obj_t> portsTable = std::shared_ptr<lv_obj_t>(lv_table_create(portsPage.get(), NULL));
-
-	lv_obj_set_width(portsPage.get(), 400);
-	lv_obj_set_height(portsPage.get(), 100);
+	auto flywheelLabel = std::shared_ptr<lv_obj_t>(lv_label_create(flywheelTab.get()));
 
 	// Drivetrain
 	std::shared_ptr<lv_obj_t> drivetrainTab = std::shared_ptr<lv_obj_t>(
 			lv_tabview_add_tab(tabview.get(), "Drivetrain"));
-	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get(), NULL));
+	std::shared_ptr<lv_obj_t> drivetrainTable = std::shared_ptr<lv_obj_t>(lv_table_create(drivetrainTab.get()));
 
 	lv_table_set_row_cnt(drivetrainTable.get(), 4);
 	lv_table_set_col_cnt(drivetrainTable.get(), 2);
@@ -396,26 +388,22 @@ void tuneTurnPid(void *args) {
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()
-		                                    + "\nL: " + std::to_string(leftDrive1Odom.getPosition().Convert(inch)) +
-		                                    ", R: " +
-		                                    std::to_string(rightDrive1Odom.getPosition().Convert(inch))).c_str());
+		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()).c_str());
+
+		auto leftDriveTemps = leftDriveMotors.get_temperature_all();
+		auto rightDriveTemps = rightDriveMotors.get_temperature_all();
 
 		// Drivetrain
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 0,
-		                        (std::to_string(leftDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 0,
-		                        (std::to_string(leftDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 0,
-		                        (std::to_string(leftDrive3.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 3, 0,
-		                        (std::to_string(intakeMotor.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 0, 1,
-		                        (std::to_string(rightDrive1.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 1, 1,
-		                        (std::to_string(rightDrive2.get_temperature()) + " C").c_str());
-		lv_table_set_cell_value(drivetrainTable.get(), 2, 1,
-		                        (std::to_string(rightDrive3.get_temperature()) + " C").c_str());
+		for (int i = 0; i < 4; i++) {
+			lv_table_set_cell_value(drivetrainTable.get(), i, 0,
+			                        (std::to_string(leftDriveTemps[i]) + " C").c_str());
+		}
+
+		for (int i = 0; i < 4; i++) {
+			lv_table_set_cell_value(drivetrainTable.get(), i, 1,
+			                        (std::to_string(rightDriveTemps[i]) + " C").c_str());
+		}
+
 
 		pros::Task::delay(50);
 	}
@@ -430,7 +418,7 @@ void initialize() {
 	Log("Initialize");
 
 	lv_init();
-	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), NULL));
+	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), LV_DIR_TOP, 50));
 
 	// Initialize functions
 	initHardware();
@@ -520,8 +508,8 @@ void disabled() {
 	competitionController->ud();
 
 	// Create a label
-	lv_obj_t *disabledLabel = lv_label_create(lv_scr_act(), NULL);
-	lv_obj_align(disabledLabel, NULL, LV_ALIGN_CENTER, 0, 0);
+	lv_obj_t *disabledLabel = lv_label_create(lv_scr_act());
+	lv_obj_align(disabledLabel, LV_ALIGN_CENTER, 0, 0);
 	lv_label_set_text(disabledLabel, "Robot Disabled.");
 }
 
