@@ -100,11 +100,7 @@ namespace PathPlanner {
 		}
 
 		bool isDone() override {
-			return pros::millis() * 1_ms - startTime > totalTime();
-		}
-
-		QTime totalTime() {
-			return this->motionProfile.getDuration();
+			return pros::millis() * 1_ms - startTime > this->motionProfile.getDuration();
 		}
 
 		std::pair<QSpeed, QSpeed> getChassisSpeeds(QSpeed speed, QCurvature curvature) {
