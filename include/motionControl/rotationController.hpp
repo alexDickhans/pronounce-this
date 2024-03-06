@@ -17,7 +17,7 @@ namespace Pronounce
 		ContinuousOdometry& odometry;
 		Angle target;
 
-		pros::motor_brake_mode_e_t beforeBrakeMode;
+		pros::MotorBrake beforeBrakeMode;
 
 		double idleSpeed = 0.0;
 
@@ -33,11 +33,11 @@ namespace Pronounce
 			rotationPID.reset();
 			rotationPID.setTarget(target.Convert(radian));
 
-			beforeBrakeMode = leftDriveMotors.get_brake_modes().at(0);
+			beforeBrakeMode = leftDriveMotors.get_brake_mode();
 
 			drivetrain.tankSteerVoltage(0, 0);
-			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			leftDriveMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+			rightDriveMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
 		}
 
 		void update() {
@@ -48,8 +48,8 @@ namespace Pronounce
 
 		void exit() {
 			drivetrain.skidSteerVelocity(0.0, 0.0);
-			leftDriveMotors.set_brake_modes(beforeBrakeMode);
-			rightDriveMotors.set_brake_modes(beforeBrakeMode);
+			leftDriveMotors.set_brake_mode_all(beforeBrakeMode);
+			rightDriveMotors.set_brake_mode_all(beforeBrakeMode);
 
 			leftDriveMotors.tare_position();
 			rightDriveMotors.tare_position();

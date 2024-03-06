@@ -26,8 +26,7 @@ namespace Pronounce {
 
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
 			drivetrainStateController->useDefaultBehavior();
-			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
-			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+			drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
 			if (task.get_state() == 2)
 				task.remove();

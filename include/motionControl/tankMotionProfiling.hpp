@@ -30,7 +30,7 @@ namespace Pronounce {
 		QLength distance;
 		QCurvature curvature;
 
-		pros::motor_brake_mode_e_t beforeBrakeMode;
+		pros::MotorBrake beforeBrakeMode;
 
 		QLength startDistance;
 
@@ -120,7 +120,7 @@ namespace Pronounce {
 			this->velocityProfile->calculate();
 
 			beforeBrakeMode = drivetrain->getBrakeMode();
-			drivetrain->setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain->setBrakeMode(pros::MotorBrake::coast);
 		}
 
 		void update() override {
@@ -131,9 +131,6 @@ namespace Pronounce {
 			QAcceleration acceleration = velocityProfile->getAccelerationByTime(duration);
 			QSpeed speed = velocityProfile->getVelocityByTime(duration);
 			QLength targetDistance = velocityProfile->getDistanceByTime(duration);
-
-			drivetrain->targetSpeed = speed;
-			drivetrain->targetDistance = targetDistance + startDistance;
 
 			double turnPower = 0;
 

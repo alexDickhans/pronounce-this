@@ -24,8 +24,6 @@ namespace Pronounce {
 	 */
 	double lerp(double a, double b, double t);
 
-	double toRadians(double degrees);
-	double toDegrees(double radians);
 	double angleDifference(double angle1, double angle2);
 
 	/**
@@ -50,25 +48,9 @@ namespace Pronounce {
 	
 	double findMedian(double arr[], int size);
 
-	double mean(std::vector<double> array) {
-		double sum = 0.0;
+	double mean(std::vector<double> array);
 
-		for (const auto &item: array) {
-			sum += item;
-		}
-
-		return sum/array.size();
-	}
-
-	double mean(std::vector<int32_t> array) {
-		double sum = 0.0;
-
-		for (const auto &item: array) {
-			sum += static_cast<double>(item);
-		}
-
-		return sum/array.size();
-	}
+	double mean(std::vector<int32_t> array);
 
 	double getDistanceSensorMedian(pros::Distance &distance, int samples);
 

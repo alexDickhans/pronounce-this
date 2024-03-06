@@ -72,7 +72,7 @@ namespace Pronounce {
 			       ) / 2.0;
 		}
 
-		void setBrakeMode(pros::motor_brake_mode_e_t brakeMode) {
+		void setBrakeMode(pros::MotorBrake brakeMode) {
 			leftMotors.set_brake_mode_all(brakeMode);
 			rightMotors.set_brake_mode_all(brakeMode);
 		}

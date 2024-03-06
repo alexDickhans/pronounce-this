@@ -27,9 +27,8 @@ namespace Pronounce {
 			drivetrainStateController->setDefaultBehavior(normalJoystick);
 			drivetrainStateController->ud();
 
-			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-			intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.setBrakeMode(pros::MotorBrake::coast);
+			intakeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
 
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();

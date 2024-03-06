@@ -5,15 +5,6 @@ namespace Pronounce
 	double lerp(double a, double b, double t) {
 		return a + t * (b - a);
 	}
-	
-    double toRadians(double degrees) {
-        return degrees * M_PI / 180;
-    }
-
-    double toDegrees(double radians) {
-        return radians * 180 / M_PI;
-    }
-
     double signum_c(double x) {
         if (x > 0.0) return 1.0;
         if (x < 0.0) return -1.0;
@@ -45,6 +36,26 @@ namespace Pronounce
 		if (size % 2 != 0)
 			return (double)arr[size/2];
 		return (double)(arr[(size-1)/2] + arr[size/2])/2.0;
+	}
+
+	double mean(std::vector<double> array) {
+		double sum = 0.0;
+
+		for (const auto &item: array) {
+			sum += item;
+		}
+
+		return sum/array.size();
+	}
+
+	double mean(std::vector<int32_t> array) {
+		double sum = 0.0;
+
+		for (const auto &item: array) {
+			sum += static_cast<double>(item);
+		}
+
+		return sum/array.size();
 	}
 
 	double getDistanceSensorMedian(pros::Distance &distance, int samples) {

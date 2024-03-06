@@ -12,7 +12,6 @@
 #include <map>
 #include "auton.h"
 #include "units/units.hpp"
-#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
 #include "odometry/orientation/gpsOrientation.hpp"
 #include "constants.hpp"
 #include "pros/motor_group.hpp"
@@ -71,7 +70,7 @@ namespace Pronounce {
 	void initHardware() {
 		Log("Hardware Init");
 
-		drivetrain.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+		drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
 		intakeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
 
