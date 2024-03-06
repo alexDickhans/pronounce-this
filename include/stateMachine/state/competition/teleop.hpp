@@ -34,8 +34,7 @@ namespace Pronounce {
 			controller2->clearCallbacks();
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&]() -> void {
-
-				leftWingStateController->sb(std::make_shared<Until>(leftWingOut, [=]() -> bool {
+				leftWingStateController->sb(std::make_shared<Until>(leftWingOut, [=, this]() -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
 				}));
 				rightWingStateController->sb(std::make_shared<Until>(rightWingOut, [&]() -> bool {
@@ -43,20 +42,20 @@ namespace Pronounce {
 				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [=]() -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_L1, [&]() -> void {
 				awpStateController->sb(std::make_shared<Until>(awpOut, [&]() -> bool {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_L1);
 				}));
 			});
 
-			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [=]() -> void {
+			controller1->onPressed(E_CONTROLLER_DIGITAL_Y, [&]() -> void {
 				hangStateController->sb(std::make_shared<Until>(hangOut, [&]() -> auto {
 					return !controller1->get_digital(E_CONTROLLER_DIGITAL_Y);
 				}));
 			});
 
 			if (isSkills) {
-				controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [=]() -> void {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&]() -> void {
 					catapultStateController->sb(std::make_shared<Until>(catapultFire, [&]() -> auto {
 						return controller1->get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT);
 					}));
@@ -64,13 +63,13 @@ namespace Pronounce {
 
 			} else {
 				controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&]() -> void {
-					intakeStateController->sb(std::make_shared<Until>(intakeEject, [=]() -> bool {
+					intakeStateController->sb(std::make_shared<Until>(intakeEject, [&]() -> bool {
 						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);
 					}));
 				});
 
-				controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [=]() -> void {
-					intakeStateController->sb(std::make_shared<Until>(intakeIntaking, [=]() -> bool {
+				controller1->onPressed(E_CONTROLLER_DIGITAL_R1, [&]() -> void {
+					intakeStateController->sb(std::make_shared<Until>(intakeIntaking, [&]() -> bool {
 						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R1);
 					}));
 				});

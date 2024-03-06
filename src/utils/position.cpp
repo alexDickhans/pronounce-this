@@ -1,6 +1,9 @@
 #include "pose2d.hpp"
 
 namespace Pronounce {
+
+	Logger* Pose2D::logger{Logger::getInstance()};
+
     Pose2D::Pose2D() : Point() {
         this->angle = 0.0;
     }

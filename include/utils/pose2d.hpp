@@ -5,6 +5,7 @@
 #include "units/units.hpp"
 #include <iostream>
 #include "utils/vector.hpp"
+#include "Logger/logger.hpp"
 
 namespace Pronounce {
     /**
@@ -14,6 +15,8 @@ namespace Pronounce {
      */
     class Pose2D : public Point {
     private:
+		static Logger* logger;
+
 		/**
 		 * @brief Angle of the pose
 		 * 
@@ -70,7 +73,7 @@ namespace Pronounce {
         }
 
 		void log(std::string poseName) {
-            std::cout << poseName << ";X: " << this->getX().Convert(inch) << ",Y: " << this->getY().Convert(inch) << ",T: " << this->angle.Convert(degree) << std::endl;
+			Log(string_format("%s;X: %f,Y: %f,T: %f", poseName.c_str(), this->getY().getValue(), this->getY().getValue(), this->getAngle().getValue()));
         }
 
         /**

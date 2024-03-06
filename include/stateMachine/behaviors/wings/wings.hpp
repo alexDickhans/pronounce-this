@@ -10,10 +10,10 @@
 namespace Pronounce {
 	class Wing : public Behavior {
 	private:
-		pros::ADIDigitalOut& solenoid;
+		pros::adi::DigitalOut& solenoid;
 		bool state{false};
 	public:
-		Wing(std::string name, pros::ADIDigitalOut& solenoid, bool state) : Behavior(std::move(name)), solenoid(solenoid), state(state) {
+		Wing(std::string name, pros::adi::DigitalOut& solenoid, bool state) : Behavior(std::move(name)), solenoid(solenoid), state(state) {
 
 		}
 
