@@ -13,7 +13,6 @@ namespace Pronounce {
 
 	class Logger {
 	private:
-		static Logger * pinstance_;
 		static pros::Task task;
 
 		static uint32_t currentIndex;
@@ -23,17 +22,11 @@ namespace Pronounce {
 		static bool installed;
 
 	protected:
-		Logger();
-		~Logger() = default;
-
 		static void update();
 
 		static void newFile();
 
-		static void writeLog(const std::string& write) {
-			buffer.append(write);
-			std::cout << write;
-		}
+		static void writeLog(const std::string& write);
 
 	public:
 		/**

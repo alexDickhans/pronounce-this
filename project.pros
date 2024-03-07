@@ -487,7 +487,7 @@
                 "version": "1.0.0"
             },
             "liblog": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@2.0.0",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@2.0.2",
                 "metadata": {
                     "origin": "local"
                 },
@@ -495,50 +495,12 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.0.6",
                 "system_files": [
-                    "include/pros/optical.hpp",
-                    "include/pros/motors.h",
-                    "include/pros/error.h",
-                    "include/pros/rtos.h",
-                    "include/pros/imu.h",
-                    "include/pros/screen.hpp",
-                    "include/pros/distance.hpp",
-                    "include/pros/imu.hpp",
-                    "include/pros/vision.h",
-                    "include/pros/gps.h",
-                    "include/pros/llemu.hpp",
-                    "include/pros/misc.hpp",
-                    "include/pros/motor_group.hpp",
-                    "include/pros/serial.hpp",
-                    "include/pros/misc.h",
-                    "include/pros/motors.hpp",
-                    "include/pros/adi.h",
-                    "include/pros/optical.h",
-                    "include/pros/rotation.h",
-                    "include/pros/device.h",
-                    "include/pros/colors.h",
-                    "include/pros/abstract_motor.hpp",
-                    "include/api.h",
-                    "include/pros/distance.h",
-                    "include/pros/link.h",
-                    "include/pros/adi.hpp",
-                    "include/pros/vision.hpp",
-                    "include/pros/apix.h",
-                    "include/pros/rtos.hpp",
-                    "include/pros/ext_adi.h",
-                    "include/pros/device.hpp",
                     "include/Logger/logger.hpp",
-                    "include/pros/rotation.hpp",
-                    "include/pros/colors.hpp",
-                    "firmware/liblog.a",
-                    "include/pros/screen.h",
-                    "include/pros/llemu.h",
-                    "include/pros/gps.hpp",
-                    "include/pros/link.hpp",
-                    "include/pros/serial.h"
+                    "firmware/liblog.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "2.0.0"
+                "version": "2.0.2"
             },
             "liblvgl": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/liblvgl@8.3.6",
