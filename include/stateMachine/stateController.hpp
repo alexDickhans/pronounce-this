@@ -15,7 +15,6 @@ namespace Pronounce {
 	 */
 	class StateController : public Behavior {
 	private:
-		static Logger* logger;
 		/**
 		 * @brief Default behavior that the stateController returns to when the current state isn't running
 		 * 
@@ -44,13 +43,13 @@ namespace Pronounce {
 		 * 
 		 */
 		void initialize() override {
-			logger->log(this->getName(), "Initialize");
+			Logger::log(this->getName(), "Initialize");
 			startTime = currentTime();
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->initialize();
 				} catch(...) {
-					logger->log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
+					Logger::log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					this->useDefaultBehavior();
 					defaultBehavior->initialize();
 				}
@@ -65,7 +64,7 @@ namespace Pronounce {
 		 * 
 		 */
 		void update() {
-			logger->log(this->getName(), "Update");
+			Logger::log(this->getName(), "Update");
 
 			// If currentBehavior exists run it or transition
 			if (currentBehavior != nullptr) {
@@ -73,7 +72,7 @@ namespace Pronounce {
 					try {
 						currentBehavior->exit();
 					} catch (std::exception &e) {
-						logger->log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
+						Logger::log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					}
 
 					currentBehavior = nullptr;
@@ -85,7 +84,8 @@ namespace Pronounce {
 					try {
 						currentBehavior->update();
 					} catch (std::exception &e) {
-						std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to update. what: " << e.what() << ", returning to default state" << std::endl;
+
+						Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to update. what: " + e.what() + ", returning to default state");
 						this->useDefaultBehavior();
 					}
 				}
@@ -126,7 +126,7 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				currentBehavior = nullptr;
 			}
@@ -159,13 +159,13 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				try {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
 				startTime = currentTime();
@@ -177,7 +177,7 @@ namespace Pronounce {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
 				startTime = currentTime();
@@ -214,7 +214,7 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed on exit. what: " + e.what() + ", returning to default state");
 				}
 
 				currentBehavior = nullptr;
@@ -246,6 +246,4 @@ namespace Pronounce {
 
 		~StateController() = default;
 	};
-
-	Logger* StateController::logger{Logger::getInstance()};
 } // namespace Pronounce

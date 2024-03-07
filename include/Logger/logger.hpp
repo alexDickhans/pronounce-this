@@ -2,9 +2,10 @@
 
 #include <string>
 #include "pros/rtos.hpp"
+#include "pros/rtos.h"
 #include "pros/misc.h"
 
-#define Log(msg)   logger->log(std::string(__PRETTY_FUNCTION__) + ":" + std::to_string(__LINE__), msg)
+#define Log(msg)   Logger::log(std::string(__PRETTY_FUNCTION__) + ":" + std::to_string(__LINE__), msg)
 
 namespace Pronounce {
 
@@ -13,26 +14,23 @@ namespace Pronounce {
 	class Logger {
 	private:
 		static Logger * pinstance_;
-		static pros::Mutex mutex_;
-		std::shared_ptr<pros::Task> task_ = nullptr;
+		static pros::Task task;
 
-		uint32_t currentIndex;
-		std::string fileName;
-		std::string buffer;
+		static uint32_t currentIndex;
+		static std::string fileName;
+		static std::string buffer;
 
-		FILE* logFile;
-
-		bool installed = false;
+		static bool installed;
 
 	protected:
 		Logger();
 		~Logger() = default;
 
-		void update();
+		static void update();
 
-		void newFile();
+		static void newFile();
 
-		void writeLog(const std::string& write) {
+		static void writeLog(const std::string& write) {
 			buffer.append(write);
 			std::cout << write;
 		}
@@ -48,12 +46,10 @@ namespace Pronounce {
 		 */
 		void operator=(const Logger &) = delete;
 
-		static Logger* getInstance();
+		static void log(const std::string& className, const std::string& logData);
 
-		void log(const std::string& className, const std::string& logData);
+		[[nodiscard]] static const std::string &getFileName();
 
-		[[nodiscard]] const std::string &getFileName() const;
-
-		uint32_t getCurrentIndex() const;
+		static uint32_t getCurrentIndex();
 	};
 } // Pronounce

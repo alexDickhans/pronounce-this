@@ -55,7 +55,6 @@ namespace Pronounce {
          * Set the position
          */
         virtual void setPosition(QLength position) {
-			std::cout << "Position: " << position.Convert(inch) << std::endl;
             this->position = position;
         }
 

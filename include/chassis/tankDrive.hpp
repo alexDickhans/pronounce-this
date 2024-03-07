@@ -9,7 +9,6 @@
 namespace Pronounce {
 	class TankDrivetrain : public AbstractTankDrivetrain, public HardwareDrivetrain {
 	private:
-		static Logger *logger;
 		pros::AbstractMotor& leftMotors;
 		pros::AbstractMotor& rightMotors;
 		QAngularVelocity maxMotorSpeed = 0.0;
@@ -83,8 +82,6 @@ namespace Pronounce {
 
 		~TankDrivetrain() = default;
 	};
-
-	Logger *TankDrivetrain::logger{Logger::getInstance()};
 
 	TankDrivetrain::TankDrivetrain(const QLength &trackWidth, const QSpeed &maxSpeed, pros::AbstractMotor &leftMotors,
 	                               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed)

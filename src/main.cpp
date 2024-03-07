@@ -336,7 +336,7 @@ void tuneTurnPid(void *args) {
 
 [[noreturn]] void update() {
 
-	std::cout << "Init: update" << std::endl;
+	Log("Init");
 
 	competitionController->initialize();
 
@@ -358,7 +358,8 @@ void tuneTurnPid(void *args) {
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 
-		std::cout << "FrameTime: " << pros::micros() - startTimeMicros << std::endl;
+		Log(string_format("Frame time: %d", pros::micros() - startTimeMicros));
+		Log(string_format("Competition Status: %s", !pros::competition::is_connected() ? "Not Connected" : pros::competition::is_disabled() ? "Disabled" : pros::competition::is_autonomous() ? "Autonomous" : "Driver"));
 	}
 }
 
@@ -414,7 +415,6 @@ void tuneTurnPid(void *args) {
  */
 void initialize() {
 
-	logger = Logger::getInstance();
 	Log("Initialize");
 
 	lv_init();
@@ -504,7 +504,7 @@ void initialize() {
  * and teleop period
  */
 void disabled() {
-	std::cout << "Init: disabled" << std::endl;
+	Log("Init");
 	competitionController->ud();
 
 	// Create a label

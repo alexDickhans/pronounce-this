@@ -15,7 +15,6 @@ namespace Pronounce {
      */
     class Pose2D : public Point {
     private:
-		static Logger* logger;
 
 		/**
 		 * @brief Angle of the pose

@@ -27,8 +27,6 @@
 
 namespace Pronounce {
 
-	Logger* logger = nullptr;
-
 	pros::Mutex robotMutex;
 
 	bool isSkills = AUTON == 5;
