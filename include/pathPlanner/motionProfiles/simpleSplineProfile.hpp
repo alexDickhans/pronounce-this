@@ -8,7 +8,7 @@ namespace PathPlanner {
 	public:
 		SimpleSplineProfile(const Pronounce::ProfileConstraints &defaultProfileConstraints,
 		                    const std::vector<std::pair<BezierSegment, std::shared_ptr<Pronounce::VelocityProfile>>> &pathSegments)
-				: AbstractMotionProfile(defaultProfileConstraints), pathSegments(pathSegments) {}
+				: AbstractMotionProfile(defaultProfileConstraints), pathSegments(pathSegments) { calculate(); }
 
 		SimpleSplineProfile(asset path) {
 			Json parsed_path = open_asset_as_json(path);
@@ -45,6 +45,8 @@ namespace PathPlanner {
 						command["t"].number_value(),
 						command["name"].string_value());
 			}
+
+			calculate();
 		}
 
 		SimpleSplineProfile(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, std::shared_ptr<Pronounce::VelocityProfile>>> path, std::initializer_list<std::pair<double, std::string>> functions = {}) {
@@ -74,12 +76,12 @@ namespace PathPlanner {
 				profile->setEndSpeed(0.0);
 
 				if (i < this->pathSegments.size()-1) {
-					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed() && !this->pathSegments.at(i).first.isStopEnd())
 						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
 				if (i > 0) {
-					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed())
+					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed() && !this->pathSegments.at(i-1).first.isStopEnd())
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
@@ -106,7 +108,6 @@ namespace PathPlanner {
 
 			point.targetCurvature = pathSegments.at(index).first.getCurvature(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue())));
 			point.targetSpeed = pathSegments.at(index).second->getVelocityByTime(time);
-			point.targetAcceleration = pathSegments.at(index).second->getAccelerationByTime(time);
 			point.targetT = index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
 			Angle targetAngle = pathSegments.at(index).first.getAngle(abs(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()))));
 			Point targetPoint = pathSegments.at(index).first.evaluate(abs(pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()))));
@@ -121,6 +122,8 @@ namespace PathPlanner {
 			std::for_each(pathSegments.begin(), pathSegments.end(), [&](const auto &item) {
 				totalTime += item.second->getDuration();
 			});
+
+			Log(std::to_string(totalTime.getValue()));
 
 			return totalTime;
 		}

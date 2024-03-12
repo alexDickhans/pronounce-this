@@ -5,7 +5,7 @@
 #include "pros/rtos.h"
 #include "pros/misc.h"
 
-#define Log(msg)   Logger::log(std::string(__PRETTY_FUNCTION__) + ":" + std::to_string(__LINE__), msg)
+#define Log(msg)   Pronounce::Logger::log(std::string(__PRETTY_FUNCTION__) + ":" + std::to_string(__LINE__), msg)
 
 namespace Pronounce {
 

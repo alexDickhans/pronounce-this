@@ -15,6 +15,7 @@
 #include "utils/utils.hpp"
 #include "json/asset.hpp"
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
+#include "motionProfiles/smoothSplineProfile.hpp"
 
 namespace PathPlanner {
 

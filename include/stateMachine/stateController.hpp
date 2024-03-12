@@ -149,7 +149,8 @@ namespace Pronounce {
 		 * 
 		 * @param behavior 
 		 */
-		void setCurrentBehavior(std::shared_ptr<Behavior> behavior) {
+		void setCurrentBehavior(const std::shared_ptr<Behavior>& behavior) {
+			Logger::log(this->getName(), "INFO: transitioning to behavior (" + behavior->getName() + ")");
 			// If the defaultBehavior and current behavior are equal then switch to default behavior
 			if (defaultBehavior == behavior) {
 				this->useDefaultBehavior();
@@ -209,6 +210,7 @@ namespace Pronounce {
 		 * 
 		 */
 		void useDefaultBehavior() {
+			Logger::log(this->getName(), "INFO: transitioning to default (" + this->defaultBehavior->getName() + ")");
 			// If we are currently running the current behavior transition
 			if (currentBehavior != nullptr) {
 				try {
@@ -221,7 +223,6 @@ namespace Pronounce {
 				defaultBehavior->initialize();
 				startTime = currentTime();
 			}
-			// If not no transition needed.
 		}
 
 		std::shared_ptr<Behavior> getCurrentBehavior() {

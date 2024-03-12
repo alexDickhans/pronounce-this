@@ -8,7 +8,6 @@ namespace PathPlanner {
 		Pronounce::Pose2D targetPose;
 		QLength targetDistance;
 		QSpeed targetSpeed;
-		QAcceleration targetAcceleration;
 		QCurvature targetCurvature;
 		double targetT;
 	} MotionProfilePoint;

@@ -58,6 +58,8 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 
 void far5BallRushMid(void *args) {
 
+	Log("5 ball start");
+
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
 	intakeExtensionStateController->sb(deploySequence);
@@ -105,6 +107,8 @@ void far5BallRushMid(void *args) {
 }
 
 void far6BallRushMid(void *args) {
+	Log("6 ball");
+
 	far5BallRushMid(args);
 
 	turnTo(3_deg, 550_ms);
@@ -350,16 +354,17 @@ void tuneTurnPid(void *args) {
 		startTime = pros::millis();
 		startTimeMicros = pros::micros();
 
+		Log(string_format("Competition Status: %s", !pros::competition::is_connected() ? "Not Connected" : pros::competition::is_disabled() ? "Disabled" : pros::competition::is_autonomous() ? "Autonomous" : "Driver"));
+
 		robotMutex.take(TIMEOUT_MAX);
 		odometry.update();
 		competitionController->update();
 		robotMutex.give();
 
 		// Wait a maximum of 10 milliseconds
-		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
+		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 0));
 
-		Log(string_format("Frame time: %d", pros::micros() - startTimeMicros));
-		Log(string_format("Competition Status: %s", !pros::competition::is_connected() ? "Not Connected" : pros::competition::is_disabled() ? "Disabled" : pros::competition::is_autonomous() ? "Autonomous" : "Driver"));
+		Log(string_format("Frame time: %s", std::to_string(pros::micros() - startTimeMicros).c_str()));
 	}
 }
 
@@ -533,7 +538,7 @@ void competition_initialize() {
  */
 void autonomous() {
 
-//	Log("Auton Init");
+	Log(string_format("Auton Init: %d", AUTON));
 
 #if AUTON == 0
 	auton->setAuton(far6BallRushMid);

@@ -22,10 +22,10 @@ namespace Pronounce {
 
 		void initialize() override {
 			Log("Init");
-			Enabled::initialize();
-
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
 			drivetrainStateController->useDefaultBehavior();
+			Enabled::initialize();
+
 			drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
 			if (task.get_state() == 2)

@@ -86,7 +86,7 @@ namespace Pronounce {
 		}
 
 		void exit() {
-			drivetrain.skidSteerVelocity(0.0, 0.0);
+			drivetrain.tankSteerVoltage(0.0, 0.0);
 		}
 
 		bool isDone() {

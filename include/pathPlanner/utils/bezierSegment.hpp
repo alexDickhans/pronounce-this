@@ -18,9 +18,10 @@ namespace PathPlanner {
 		LinearInterpolator distanceToT;
 
 		bool reversed;
+		bool stopEnd;
 
 	public:
-		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, int granularity = 100) {
+		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, bool stopEnd = false, int granularity = 100) {
 			this->a = a;
 			this->b = b;
 			this->c = c;
@@ -113,6 +114,10 @@ namespace PathPlanner {
 
 		bool getReversed() const {
 			return reversed;
+		}
+
+		bool isStopEnd() const {
+			return stopEnd;
 		}
 	};
 }

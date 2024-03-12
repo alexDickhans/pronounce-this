@@ -59,6 +59,20 @@ namespace PathPlanner {
 			return values.at(values.size()-2).second + ((values.at(values.size()-1).second - values.at(values.size()-2).second)/(values.at(values.size()-1).first - values.at(values.size()-2).first)) * (key - values.at(values.size()-1).first);
 		}
 
+		double getIntegral(double key) { // TODO: implement
+			if (key <= values.at(0).first) {
+				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
+			}
+
+			for (int i = 0; i < values.size(); i++) {
+				if (key <= values.at(i).first) {
+					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
+				}
+			}
+
+			return values.at(values.size()-2).second + ((values.at(values.size()-1).second - values.at(values.size()-2).second)/(values.at(values.size()-1).first - values.at(values.size()-2).first)) * (key - values.at(values.size()-1).first);
+		}
+
 		void clear() {
 			values.clear();
 		}

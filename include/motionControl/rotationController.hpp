@@ -47,7 +47,6 @@ namespace Pronounce
 		}
 
 		void exit() {
-			drivetrain.skidSteerVelocity(0.0, 0.0);
 			leftDriveMotors.set_brake_mode_all(beforeBrakeMode);
 			rightDriveMotors.set_brake_mode_all(beforeBrakeMode);
 
