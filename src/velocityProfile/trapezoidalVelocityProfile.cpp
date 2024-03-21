@@ -1,7 +1,7 @@
 
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
-Pronounce::TrapezoidalVelocityProfile::TrapezoidalVelocityProfile(QLength distance, Pronounce::ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed) : VelocityProfile(distance, profileConstraints, initialSpeed, endSpeed) {
+Pronounce::TrapezoidalVelocityProfile::TrapezoidalVelocityProfile(QLength distance, Pronounce::ProfileConstraints profileConstraints, QVelocity initialSpeed, QVelocity endSpeed) : VelocityProfile(distance, profileConstraints, initialSpeed, endSpeed) {
 }
 
 QTime Pronounce::TrapezoidalVelocityProfile::getDuration() {
@@ -21,7 +21,7 @@ QLength Pronounce::TrapezoidalVelocityProfile::getDistanceByTime(QTime time) {
 }
 
 
-QSpeed Pronounce::TrapezoidalVelocityProfile::getVelocityByTime(QTime time) {
+QVelocity Pronounce::TrapezoidalVelocityProfile::getVelocityByTime(QTime time) {
 	if (time <= ta) {
 		return time * aa + this->getInitialSpeed();
 	} else if (time <= ts) {

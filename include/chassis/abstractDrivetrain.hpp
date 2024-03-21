@@ -17,9 +17,9 @@ namespace Pronounce {
 		/**
 		 * @brief Get the current speed of the drivetrain
 		 * 
-		 * @return QSpeed 
+		 * @return QVelocity
 		 */
-		virtual QSpeed getSpeed() { return 0.0; }
+		virtual QVelocity getSpeed() { return 0.0; }
 
 		~AbstractDrivetrain() {}
 	};

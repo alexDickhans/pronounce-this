@@ -11,7 +11,7 @@ SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_2);
 SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_awp);
 SIMPLE_SPLINE_PATH_ASSET(safe_close_awp);
 SIMPLE_SPLINE_PATH_ASSET(safe_close_awp_2);
-SIMPLE_SPLINE_PATH_ASSET(skills_1);
+SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SIMPLE_SPLINE_PATH_ASSET(skills_2);
 SIMPLE_SPLINE_PATH_ASSET(skills_3);
 SIMPLE_SPLINE_PATH_ASSET(skills_4);
@@ -38,8 +38,8 @@ void turnTo(Angle angle, QTime waitTimeMS) {
 	pros::Task::delay(10);
 }
 
-void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QSpeed initialSpeed = 0.0,
-          QSpeed endSpeed = 0.0) {
+void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QVelocity initialSpeed = 0.0,
+          QVelocity endSpeed = 0.0) {
 	drivetrainStateController->sb(
 			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
 			                                      &distancePid,
@@ -47,7 +47,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle,
-          QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0) {
+          QVelocity initialSpeed = 0.0, QVelocity endSpeed = 0.0) {
 
 	drivetrainStateController->sb(
 			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
@@ -221,18 +221,19 @@ void skills(void *args) {
 
 	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
 
-	pathFollower->setMotionProfile(PathPlanner::SimpleSplineProfile(pushingProfileConstraints, {{
-			                                                                                            PathPlanner::BezierSegment(
-					                                                                                            PathPlanner::Point(
-							                                                                                            wallDistance, 76_in),
-					                                                                                            PathPlanner::Point(
-							                                                                                            wallDistance.getValue() * 0.74,
-							                                                                                            68_in),
-					                                                                                            PathPlanner::Point(
-							                                                                                            19_in, 55_in),
-					                                                                                            PathPlanner::Point(
-							                                                                                            20_in, 20_in), true),
-			                                                                                            nullptr}}, {}));
+	pathFollower->setMotionProfile(
+			PathPlanner::SmoothSplineProfile::build(
+					{PathPlanner::SmoothBezierSegment(PathPlanner::Point(
+							                                  wallDistance, 76_in),
+					                                  PathPlanner::Point(
+							                                  wallDistance.getValue() * 0.74,
+							                                  68_in),
+					                                  PathPlanner::Point(
+							                                  19_in, 55_in),
+					                                  PathPlanner::Point(
+							                                  20_in, 20_in), true, true,
+					                                  pushingProfileConstraints)}));
+
 	drivetrainStateController->sb(pathFollower).wait();
 
 	pathFollower->setMotionProfile(skills_8);
@@ -354,7 +355,11 @@ void tuneTurnPid(void *args) {
 		startTime = pros::millis();
 		startTimeMicros = pros::micros();
 
-		Log(string_format("Competition Status: %s", !pros::competition::is_connected() ? "Not Connected" : pros::competition::is_disabled() ? "Disabled" : pros::competition::is_autonomous() ? "Autonomous" : "Driver"));
+		Log(string_format("Competition Status: %s",
+		                  !pros::competition::is_connected() ? "Not Connected" : pros::competition::is_disabled()
+		                                                                         ? "Disabled"
+		                                                                         : pros::competition::is_autonomous()
+		                                                                           ? "Autonomous" : "Driver"));
 
 		robotMutex.take(TIMEOUT_MAX);
 		odometry.update();

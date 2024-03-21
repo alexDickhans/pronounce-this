@@ -7,14 +7,14 @@
 namespace Pronounce {
 	class TrapezoidalVelocityProfile : public VelocityProfile {
 		QTime ta, ts, td;
-		QSpeed cruiseSpeed;
+		QVelocity cruiseSpeed;
 		QAcceleration aa, ad;
 	public:
-		TrapezoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed = 0.0, QSpeed endSpeed = 0.0);
+		TrapezoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initialSpeed = 0.0, QVelocity endSpeed = 0.0);
 
 		QTime getDuration() override;
 		QLength getDistanceByTime(QTime time) override;
-		QSpeed getVelocityByTime(QTime time) override;
+		QVelocity getVelocityByTime(QTime time) override;
 		QAcceleration getAccelerationByTime(QTime time) override;
 
 		[[deprecated("Jerk doesn't work with trapezoidal mp")]] QJerk getJerkByTime(QTime time) override;

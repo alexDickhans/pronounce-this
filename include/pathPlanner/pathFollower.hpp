@@ -22,7 +22,7 @@ namespace PathPlanner {
 
 	class PathFollower : public Pronounce::Behavior {
 	private:
-		AbstractMotionProfile motionProfile;
+		std::shared_ptr<AbstractMotionProfile> motionProfile;
 		Pronounce::AbstractTankDrivetrain& drivetrain;
 		Pronounce::PID turnPID, distancePID;
 		double feedforwardMultiplier;
@@ -36,18 +36,17 @@ namespace PathPlanner {
 
 		pros::Mutex movingMutex;
 	public:
-		PathFollower(const AbstractMotionProfile &motionProfile,
-		             Pronounce::AbstractTankDrivetrain &drivetrain,
-					 const Pronounce::PID &turnPid,
-		             const Pronounce::PID &distancePid,
-					 double feedforwardMultiplier,
-		             const std::function<Angle()> &angleFunction) : Behavior("PathPlanner"), motionProfile(motionProfile),
+		PathFollower(const std::shared_ptr<AbstractMotionProfile> &motionProfile,
+		             Pronounce::AbstractTankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
+		             const Pronounce::PID &distancePid, double feedforwardMultiplier,
+		             const std::function<Angle()> &angleFunction) : motionProfile(motionProfile),
 		                                                            drivetrain(drivetrain), turnPID(turnPid),
 		                                                            distancePID(distancePid),
 		                                                            feedforwardMultiplier(feedforwardMultiplier),
 		                                                            angleFunction(angleFunction) {}
 
-		void setMotionProfile(const AbstractMotionProfile &motionProfile) {
+
+		void setMotionProfile(const std::shared_ptr<AbstractMotionProfile> &motionProfile) {
 			movingMutex.lock();
 			PathFollower::motionProfile = motionProfile;
 			movingMutex.give();
@@ -69,7 +68,7 @@ namespace PathPlanner {
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
 
-			auto target = motionProfile.update(time - startTime);
+			auto target = motionProfile->update(time - startTime);
 
 			double index = target.targetT;
 
@@ -101,7 +100,7 @@ namespace PathPlanner {
 		}
 
 		bool isDone() override {
-			return pros::millis() * 1_ms - startTime > this->motionProfile.getDuration();
+			return pros::millis() * 1_ms - startTime > this->motionProfile->getDuration();
 		}
 
 		std::pair<QVelocity, QVelocity> getChassisSpeeds(QVelocity speed, QCurvature curvature) {

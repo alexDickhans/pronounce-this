@@ -55,9 +55,11 @@ namespace PathPlanner {
 					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
 				}
 			}
+
+			return 0;
 		}
 
-		[[nodiscard]] double getIntegral(double key) const { // TODO: implement
+		[[nodiscard]] double getIntegral(double key) const {
 			if (key <= values.at(1).first || values.size() < 2) {
 				double x = (key - values.at(1).first);
 				return 0.5 * values.at(1).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * x * x;
@@ -73,6 +75,8 @@ namespace PathPlanner {
 
 				total += 0.5 * (values.at(i).first - values.at(i-1).first) * (values.at(1).second - values.at(0).second);
 			}
+
+			return 0;
 		}
 
 		void clear() {

@@ -1,11 +1,11 @@
 #include "sinusoidalVelocityProfile.hpp"
 
 namespace Pronounce {
-	SinusoidalVelocityProfile::SinusoidalVelocityProfile(QLength distance, Pronounce::ProfileConstraints profileConstraints, QSpeed initalVelocity, QSpeed endVelocity) : VelocityProfile(fabs(distance.getValue()) * 1_m, profileConstraints, initalVelocity, endVelocity) {
+	SinusoidalVelocityProfile::SinusoidalVelocityProfile(QLength distance, Pronounce::ProfileConstraints profileConstraints, QVelocity initalVelocity, QVelocity endVelocity) : VelocityProfile(fabs(distance.getValue()) * 1_m, profileConstraints, initalVelocity, endVelocity) {
 		reversed = signnum_c(distance.getValue()) == -1;
 	}
 
-	SinusoidalVelocityProfile::SinusoidalVelocityProfile(QLength distance, QSpeed maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QSpeed initalSpeed, QSpeed endSpeed)  : VelocityProfile(fabs(distance.getValue()) * 1_m, ProfileConstraints(), initalSpeed.getValue() * signnum_c(distance.getValue()), endSpeed.getValue() * signnum_c(distance.getValue())) {
+	SinusoidalVelocityProfile::SinusoidalVelocityProfile(QLength distance, QVelocity maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QVelocity initalSpeed, QVelocity endSpeed)  : VelocityProfile(fabs(distance.getValue()) * 1_m, ProfileConstraints(), initalSpeed.getValue() * signnum_c(distance.getValue()), endSpeed.getValue() * signnum_c(distance.getValue())) {
 		ProfileConstraints profileConstraints;
 		profileConstraints.maxVelocity = maxVelocity;
 		profileConstraints.maxAcceleration = maxAcceleration;
@@ -32,7 +32,7 @@ namespace Pronounce {
 		}
 	}
 
-	QSpeed SinusoidalVelocityProfile::getVelocityByTime(QTime t) {
+	QVelocity SinusoidalVelocityProfile::getVelocityByTime(QTime t) {
 		if (t.getValue() < startTime.getValue()) {
 			return (reversed ? -1 : 1) * (cos(startOmega * t.getValue()) * startSlope + startB);
 		} else if (t.getValue() < endStartTime.getValue() && !isSingleSine) {

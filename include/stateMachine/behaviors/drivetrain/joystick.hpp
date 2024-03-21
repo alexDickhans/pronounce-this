@@ -14,7 +14,7 @@ namespace Pronounce {
 	class JoystickDrivetrain : public Behavior {
 	private:
 		double deadband = 0.02;
-		QSpeed maxDriveSpeed;
+		QVelocity maxDriveSpeed;
 
 		/**
 		 * @brief Used for field oriented and targeting control
@@ -34,7 +34,7 @@ namespace Pronounce {
 
 	public:
 
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, QSpeed maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, QVelocity maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->maxDriveSpeed = maxSpeed;
 			this->arcade = false;

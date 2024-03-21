@@ -7,7 +7,7 @@
 
 namespace Pronounce {
 	typedef struct TankChassisSpeeds_ {
-		QSpeed speed = 0.0;
+		QVelocity speed = 0.0;
 		QCurvature curvature = 0.0;
 	} TankChassisSpeeds;
 
@@ -30,7 +30,7 @@ namespace Pronounce {
 		 * @brief Max speed of the drivetrain
 		 * 
 		 */
-		QSpeed maxSpeed;
+		QVelocity maxSpeed;
 	public:
 		/**
 		 * @brief Construct a new Abstract Tank Drivetrain object with all values set to zero. 
@@ -44,14 +44,14 @@ namespace Pronounce {
 		 * 
 		 * @param trackWidth The trackWidth of the drivetrain
 		 */
-		AbstractTankDrivetrain(QLength trackWidth, QSpeed maxSpeed) : trackWidth(trackWidth), maxSpeed(maxSpeed) {}
+		AbstractTankDrivetrain(QLength trackWidth, QVelocity maxSpeed) : trackWidth(trackWidth), maxSpeed(maxSpeed) {}
 
 		/**
 		 * @brief Get the current speed of the robot
 		 * 
-		 * @return QSpeed The current speed of the robot
+		 * @return QVelocity The current speed of the robot
 		 */
-		virtual QSpeed getSpeed() { return 0.0; }
+		virtual QVelocity getSpeed() { return 0.0; }
 
 		/**
 		 * @brief Get the Track Width distance 
@@ -85,7 +85,7 @@ namespace Pronounce {
 
 		virtual QLength getDistanceSinceReset() { return 0.0; }
 
-		QSpeed getMaxSpeed() {
+		QVelocity getMaxSpeed() {
 			return maxSpeed;
 		}
 

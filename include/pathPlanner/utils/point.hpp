@@ -41,7 +41,7 @@ namespace PathPlanner {
 			this->y = y;
 		}
 
-		explicit Point(Json jsonObject) {
+		Point(Json jsonObject) {
 			this->x = jsonObject["x"].number_value();
 			this->y = jsonObject["y"].number_value();
 		}

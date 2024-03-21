@@ -60,8 +60,8 @@ namespace Pronounce {
 				FeedbackController* distancePid,
 				pros::Mutex& drivetrainMutex,
 				QCurvature curvature,
-				QSpeed initialSpeed = 0.0,
-				QSpeed endSpeed = 0.0) :
+				QVelocity initialSpeed = 0.0,
+				QVelocity endSpeed = 0.0) :
 					Behavior(std::move(name)),
 					drivetrain(drivetrain),
 					odometry(odometry),
@@ -84,8 +84,8 @@ namespace Pronounce {
 				QCurvature curvature,
 				Angle targetAngle,
 				PID* turnPid,
-				QSpeed initialSpeed = 0.0,
-				QSpeed endSpeed = 0.0) :
+				QVelocity initialSpeed = 0.0,
+				QVelocity endSpeed = 0.0) :
 					Behavior(std::move(name)),
 					drivetrain(drivetrain),
 					odometry(odometry),
@@ -112,7 +112,7 @@ namespace Pronounce {
 
 			startDistance = drivetrain->getDistanceSinceReset();
 
-			QSpeed adjustedSpeed = this->getSpeedMultiplier() * this->velocityProfile->getProfileConstraints().maxVelocity.getValue();
+			QVelocity adjustedSpeed = this->getSpeedMultiplier() * this->velocityProfile->getProfileConstraints().maxVelocity.getValue();
 
 			this->velocityProfile->setDistance(this->distance);
 			this->velocityProfile->setProfileConstraints({adjustedSpeed, velocityProfile->getProfileConstraints().maxAcceleration, velocityProfile->getProfileConstraints().maxJerk});
@@ -129,7 +129,7 @@ namespace Pronounce {
 			drivetrainMutex.take();
 
 			QAcceleration acceleration = velocityProfile->getAccelerationByTime(duration);
-			QSpeed speed = velocityProfile->getVelocityByTime(duration);
+			QVelocity speed = velocityProfile->getVelocityByTime(duration);
 			QLength targetDistance = velocityProfile->getDistanceByTime(duration);
 
 			double turnPower;

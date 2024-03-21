@@ -7,7 +7,7 @@ namespace PathPlanner {
 	typedef struct MotionProfilePoint_ {
 		Pronounce::Pose2D targetPose = {};
 		QLength targetDistance = 0.0;
-		QSpeed targetSpeed = 0.0;
+		QVelocity targetSpeed = 0.0;
 		QCurvature targetCurvature = 0.0;
 		double targetT = 0.0;
 		bool inverted = false;
@@ -21,7 +21,15 @@ namespace PathPlanner {
 	public:
 		AbstractMotionProfile() = default;
 
-		[[nodiscard]] virtual MotionProfilePoint update(QTime t) const { return {}; }
+		void processCommands(const Json& jsonCommands) {
+			for (const auto& command : jsonCommands.array_items()) {
+				this->commands.emplace_back(
+						command["t"].number_value(),
+						command["name"].string_value());
+			}
+		}
+
+		[[nodiscard]] virtual MotionProfilePoint update(const QTime t) const { return {}; }
 
 		[[nodiscard]] virtual QTime getDuration() const { return {}; }
 

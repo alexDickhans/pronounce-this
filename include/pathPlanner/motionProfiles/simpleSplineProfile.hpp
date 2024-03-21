@@ -36,15 +36,7 @@ namespace PathPlanner {
 						                                         }));
 			}
 
-			std::vector<std::pair<double, std::function<void()>>> functions;
-
-			auto commands = parsed_path["commands"];
-
-			for (const auto& command : commands.array_items()) {
-				this->commands.emplace_back(
-						command["t"].number_value(),
-						command["name"].string_value());
-			}
+			this->processCommands(parsed_path["commands"]);
 
 			calculate();
 		}
@@ -145,4 +137,4 @@ namespace PathPlanner {
 	};
 }
 
-#define SIMPLE_SPLINE_PATH_ASSET(x) ASSET(x##_json); auto x = PathPlanner::SimpleSplineProfile(x##_json);
+#define SIMPLE_SPLINE_PATH_ASSET(x) ASSET(x##_json); auto x = std::make_shared<PathPlanner::SimpleSplineProfile>(x##_json);

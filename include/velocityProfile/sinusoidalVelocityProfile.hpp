@@ -32,15 +32,15 @@ namespace Pronounce {
 		bool reversed;
 
 	public:
-		SinusoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initalVelocity = 0.0, QSpeed endVelocity = 0.0);
+		SinusoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initalVelocity = 0.0, QVelocity endVelocity = 0.0);
 
-		SinusoidalVelocityProfile(QLength distance, QSpeed maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QSpeed initalSpeed = 0.0, QSpeed endSpeed = 0.0);
+		SinusoidalVelocityProfile(QLength distance, QVelocity maxVelocity, QAcceleration maxAcceleration, QJerk maxJerk, QVelocity initalSpeed = 0.0, QVelocity endSpeed = 0.0);
 
 		QTime getDuration() final;
 
 		QLength getDistanceByTime(QTime t) final;
 
-		QSpeed getVelocityByTime(QTime t) final;
+		QVelocity getVelocityByTime(QTime t) final;
 
 		QAcceleration getAccelerationByTime(QTime t) final;
 

@@ -41,9 +41,6 @@
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "odometry/continuousOdometry/threeWheelOdom.hpp"
 
-// Interrupt Odom
-#include "odometry/interruptOdometry/interruptOdometry.hpp"
-
 #include "pathPlanner/pathPlanner.hpp"
 
 // Position

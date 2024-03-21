@@ -14,10 +14,10 @@ namespace Pronounce {
 		QAngularVelocity maxMotorSpeed = 0.0;
 	public:
 
-		TankDrivetrain(const QLength &trackWidth, const QSpeed &maxSpeed, pros::AbstractMotor &leftMotors,
+		TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
 		               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed);
 
-		QSpeed getSpeed() {
+		QVelocity getSpeed() final {
 			return ((mean(leftMotors.get_actual_velocity_all()) + mean(rightMotors.get_actual_velocity_all())) /
 			        2.0) / 600.0 * this->getMaxSpeed();
 		}
@@ -58,7 +58,7 @@ namespace Pronounce {
 		~TankDrivetrain() = default;
 	};
 
-	TankDrivetrain::TankDrivetrain(const QLength &trackWidth, const QSpeed &maxSpeed, pros::AbstractMotor &leftMotors,
+	TankDrivetrain::TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
 	                               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed)
 			: AbstractTankDrivetrain(trackWidth, maxSpeed), leftMotors(leftMotors), rightMotors(rightMotors),
 			  maxMotorSpeed(maxMotorSpeed) {}

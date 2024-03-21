@@ -23,14 +23,16 @@ namespace PathPlanner {
 		QVelocity startSpeed = 0.0;
 		QVelocity endSpeed = 0.0;
 
-		static std::vector<MaxSpeedPoint> limitSpeed(const std::vector<MaxSpeedPoint>& unlimitedSpeed, QVelocity startSpeed) {
+		static std::vector<MaxSpeedPoint>
+		limitSpeed(const std::vector<MaxSpeedPoint> &unlimitedSpeed, QVelocity startSpeed) {
 			std::vector<MaxSpeedPoint> result = unlimitedSpeed;
 			result.at(0).velocity = startSpeed;
 
 			for (auto item = result.begin() + 1; item < result.end(); item++) {
-				QLength deltaDistance = item->distance - (item-1)->distance;
-				QVelocity endVelocity = std::min(Qsqrt((Qsq((item-1)->velocity) + 2 * (item-1)->accel * deltaDistance)), item->velocity);
-				(item-1)->accel = (Qsq(endVelocity) - Qsq((item-1)->velocity))/(2*deltaDistance);
+				QLength deltaDistance = item->distance - (item - 1)->distance;
+				QVelocity endVelocity = std::min(
+						Qsqrt((Qsq((item - 1)->velocity) + 2 * (item - 1)->accel * deltaDistance)), item->velocity);
+				(item - 1)->accel = (Qsq(endVelocity) - Qsq((item - 1)->velocity)) / (2 * deltaDistance);
 			}
 
 			return unlimitedSpeed;
@@ -62,7 +64,7 @@ namespace PathPlanner {
 					                           min((segment.getMaxSpeedMultiplier(trackWidth, segment.getTByLength(
 							                               i * intervalDistance)) * maxSpeed),
 					                               segment.getProfileConstraints().maxVelocity),
-												   segment.getProfileConstraints().maxAcceleration);
+					                           segment.getProfileConstraints().maxAcceleration);
 				}
 
 				totalDistance += distance;
@@ -85,10 +87,11 @@ namespace PathPlanner {
 			// Calculate time for finalized array
 			for (int i = 1; i < maxSpeedArray.size(); i++) {
 				// add stuff to current time
-				QLength deltaDistance = maxSpeedArray.at(i).distance - maxSpeedArray.at(i-1).distance;
-				QAcceleration a = (Qsq(maxSpeedArray.at(i).velocity) - Qsq(maxSpeedArray.at(i).velocity)) / (2*deltaDistance);
+				QLength deltaDistance = maxSpeedArray.at(i).distance - maxSpeedArray.at(i - 1).distance;
+				QAcceleration a =
+						(Qsq(maxSpeedArray.at(i).velocity) - Qsq(maxSpeedArray.at(i).velocity)) / (2 * deltaDistance);
 
-				duration += (maxSpeedArray.at(i).velocity - maxSpeedArray.at(i-1).velocity)/a;
+				duration += (maxSpeedArray.at(i).velocity - maxSpeedArray.at(i - 1).velocity) / a;
 
 				timeToVelocityInterpolator.add(duration.getValue(), maxSpeedArray.at(i).velocity.getValue());
 			}
@@ -139,25 +142,48 @@ namespace PathPlanner {
 			return motionProfile;
 		}
 
-		[[nodiscard]] MotionProfilePoint update(QTime t) const override {
+		static std::shared_ptr<CombinedMotionProfile> build(asset path) {
+			Json parsed_path = open_asset_as_json(path);
+			std::vector<SmoothBezierSegment> bezierSegment;
 
-			if (t > duration) {
-				return update(duration);
-			}
+			auto jsonPathSegments = parsed_path["segments"];
 
-			MotionProfilePoint point = {};
+			std::for_each(jsonPathSegments.array_items().begin(), jsonPathSegments.array_items().end(),
+			              [&](const auto &segment) {
+				              auto constraints = segment["constraints"];
+				              auto paths = segment["paths"];
+				              bezierSegment.emplace_back(SmoothBezierSegment(paths[0], paths[1], paths[2], paths[3],
+				                                                             segment["inverted"].bool_value(),
+				                                                             segment["stopEnd"].bool_value(),
+				                                                             {constraints["velocity"].number_value(),
+				                                                              constraints["accel"].number_value(),
+				                                                              0.0}));
+			              });
 
-			auto targetT = getTAtDistance(point.targetDistance);
+			auto noCommands = build(bezierSegment);
+
+			noCommands->processCommands(parsed_path["commands"]);
+
+			return noCommands;
+		}
+
+		[[nodiscard]] MotionProfilePoint update(const QTime time) const override {
+
+			QTime t = std::min(duration, time);
+
+			MotionProfilePoint point;
+
+			auto [index, targetT] = getTAtDistance(point.targetDistance);
 
 			double invertedMultiplier = this->bezierSegment.at(0).isReversed() ? -1 : 1;
 
 			point.targetDistance = timeToVelocityInterpolator.getIntegral(t.getValue()) * invertedMultiplier;
-			point.targetT = static_cast<double>(targetT.first) + targetT.second;
+			point.targetT = static_cast<double>(index) + targetT;
 			point.targetSpeed = timeToVelocityInterpolator.get(t.getValue()) * invertedMultiplier;
-			auto targetPoint = bezierSegment.at(targetT.first).evaluate(targetT.second);
+			auto targetPoint = bezierSegment.at(index).evaluate(targetT);
 			point.targetPose = Pronounce::Pose2D(targetPoint.getX(), targetPoint.getY(),
-			                                     bezierSegment.at(targetT.first).getAngle(targetT.second));
-			point.targetCurvature = bezierSegment.at(targetT.first).getCurvature(targetT.second);
+			                                     bezierSegment.at(index).getAngle(targetT));
+			point.targetCurvature = bezierSegment.at(index).getCurvature(targetT);
 
 			return point;
 		}
@@ -168,3 +194,5 @@ namespace PathPlanner {
 	};
 
 } // Pronounce
+
+#define SMOOTH_SPLINE_PATH_ASSET(x) ASSET(x##_json); auto x = PathPlanner::SmoothSplineProfile::build(x##_json);
