@@ -6,7 +6,7 @@
 
 namespace PathPlanner {
 	class BezierSegment {
-	private:
+	protected:
 		PolynomialExpression x, y, dx, dy, ddx, ddy;
 
 		Point a;
@@ -21,13 +21,14 @@ namespace PathPlanner {
 		bool stopEnd;
 
 	public:
-		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, bool stopEnd = false, int granularity = 100) {
+		BezierSegment(Point a, Point b, Point c, Point d, bool reversed, bool stopEnd, int granularity = 100) {
 			this->a = a;
 			this->b = b;
 			this->c = c;
 			this->d = d;
 
 			this->reversed = reversed;
+			this->stopEnd = stopEnd;
 
 			x = PolynomialExpression({
 				a.getX().getValue(),
@@ -56,19 +57,20 @@ namespace PathPlanner {
 			}
 		}
 
-		QLength getDistance() {
+
+		[[nodiscard]] virtual QLength getDistance() const {
 			return length.getValue() * (reversed ? -1.0 : 1.0);
 		}
 
-		double getTByLength(QLength distance) {
+		[[nodiscard]] double getTByLength(QLength distance) const {
 			return distanceToT.get(distance.getValue());
 		}
 
-		QCurvature getCurvature(double t) {
-			return -(dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
+		[[nodiscard]] QCurvature getCurvature(double t) const {
+			return (reversed ? 1.0 : -1.0) * (dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
 		}
 
-		QCurvature getMaxCurvature(int granularity = 20) {
+		[[nodiscard]] QCurvature getMaxCurvature(int granularity = 20) const {
 			QCurvature maxCurvature = 0.0;
 
 			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
@@ -79,15 +81,15 @@ namespace PathPlanner {
 			return maxCurvature;
 		}
 
-		Angle getAngle(double t) {
+		[[nodiscard]] Angle getAngle(double t) const {
 			return -atan2(dy.evaluate(t), dx.evaluate(t)) * radian + 90_deg;
 		}
 
-		Point evaluate(double t) {
+		[[nodiscard]] Point evaluate(double t) const {
 			return {x.evaluate(t), y.evaluate(t)};
 		}
 
-		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) {
+		[[nodiscard]] double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) const {
 			QCurvature maxCurvature = this->getMaxCurvature(granularity);
 
 			if (maxCurvature.getValue() == 0.0)
@@ -96,27 +98,40 @@ namespace PathPlanner {
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
 
-		Point getA() {
+		[[nodiscard]] double getMaxSpeedMultiplier(QLength trackWidth, double t) const {
+			QCurvature curvature = this->getCurvature(t);
+
+			if (curvature.getValue() == 0.0)
+				return 1.0;
+
+			return 1.0/(1.0 + abs(curvature.getValue() * 0.5) * trackWidth.getValue());
+		}
+
+		[[nodiscard]] const Point &getA() const {
 			return a;
 		}
 
-		Point getB() {
+		[[nodiscard]] const Point &getB() const {
 			return b;
 		}
 
-		Point getC() {
+		[[nodiscard]] const Point &getC() const {
 			return c;
 		}
 
-		Point getD() {
+		[[nodiscard]] const Point &getD() const {
 			return d;
 		}
 
-		bool getReversed() const {
+		[[nodiscard]] bool isReversed() const {
 			return reversed;
 		}
 
-		bool isStopEnd() const {
+		[[deprecated("Use isReversed instead")]] [[nodiscard]] bool getReversed() const {
+			return reversed;
+		}
+
+		[[nodiscard]] bool isStopEnd() const {
 			return stopEnd;
 		}
 	};

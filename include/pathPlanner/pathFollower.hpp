@@ -16,6 +16,7 @@
 #include "json/asset.hpp"
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 #include "motionProfiles/smoothSplineProfile.hpp"
+#include "motionProfiles/combinedMotionProfile.hpp"
 
 namespace PathPlanner {
 
@@ -47,7 +48,7 @@ namespace PathPlanner {
 		                                                            angleFunction(angleFunction) {}
 
 		void setMotionProfile(const AbstractMotionProfile &motionProfile) {
-			movingMutex.take();
+			movingMutex.lock();
 			PathFollower::motionProfile = motionProfile;
 			movingMutex.give();
 		}
@@ -57,6 +58,7 @@ namespace PathPlanner {
 		}
 
 		void initialize() override {
+			movingMutex.lock();
 			startTime = pros::millis() * 1_ms;
 			startDistance = drivetrain.getDistanceSinceReset();
 			distancePID.reset();
@@ -78,12 +80,9 @@ namespace PathPlanner {
 				}
 			}
 
-			std::pair<QSpeed, QSpeed> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
+			std::pair<QVelocity, QVelocity> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
 
 			std::pair<double, double> driveVoltages = {driveSpeeds.first.Convert(inch/second) * feedforwardMultiplier, driveSpeeds.second.Convert(inch/second) * feedforwardMultiplier};
-			if ((driveSpeeds.first + driveSpeeds.second).getValue() < 0.0) {
-				driveVoltages = {driveVoltages.second, driveVoltages.first};
-			}
 			distancePID.setTarget(target.targetDistance.getValue());
 
 			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
@@ -98,13 +97,14 @@ namespace PathPlanner {
 
 		void exit() override {
 			drivetrain.tankSteerVoltage(0.0, 0.0);
+			movingMutex.unlock();
 		}
 
 		bool isDone() override {
 			return pros::millis() * 1_ms - startTime > this->motionProfile.getDuration();
 		}
 
-		std::pair<QSpeed, QSpeed> getChassisSpeeds(QSpeed speed, QCurvature curvature) {
+		std::pair<QVelocity, QVelocity> getChassisSpeeds(QVelocity speed, QCurvature curvature) {
 			return {speed.getValue() * (2.0 + curvature.getValue() * drivetrain.getTrackWidth().getValue()) / 2.0, speed.getValue() * (2.0 - curvature.getValue() * drivetrain.getTrackWidth().getValue()) / 2.0};
 		}
 	};

@@ -31,7 +31,7 @@ namespace PathPlanner {
 			}
 		}
 
-		double evaluate(double x) {
+		double evaluate(double x) const {
 			double result = 0.0;
 
 			for (int i = 0; i < coefficients.size(); i++) {

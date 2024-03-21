@@ -59,6 +59,9 @@ public:
 #define QUANTITY_TYPE(_Mdim, _Ldim, _Tdim, _Adim, name) \
     typedef RQuantity<std::ratio<_Mdim>, std::ratio<_Ldim>, std::ratio<_Tdim>, std::ratio<_Adim>> name;
 
+#define LEGACY_TYPEDEF(old_name, new_name) \
+    using old_name [[deprecated("use " #new_name " instead")]] = new_name
+
 // Replacement of "double" type
 QUANTITY_TYPE(0, 0, 0, 0, Number);
 
@@ -68,7 +71,8 @@ QUANTITY_TYPE(0, 1, 0, 0, QLength);
 QUANTITY_TYPE(0, 2, 0, 0, QArea);
 QUANTITY_TYPE(0, 3, 0, 0, QVolume);
 QUANTITY_TYPE(0, 0, 1, 0, QTime);
-QUANTITY_TYPE(0, 1, -1, 0, QSpeed);
+QUANTITY_TYPE(0, 1, -1, 0, QVelocity);
+LEGACY_TYPEDEF(QSpeed, QVelocity);
 QUANTITY_TYPE(0, 1, -2, 0, QAcceleration);
 QUANTITY_TYPE(0, 1, -3, 0, QJerk);
 QUANTITY_TYPE(0, 0, -1, 0, QFrequency);

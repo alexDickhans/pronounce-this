@@ -27,7 +27,7 @@ namespace PathPlanner {
 		 * @brief Construct a new Linear Interpolator object
 		 *
 		 */
-		LinearInterpolator() {}
+		LinearInterpolator() = default;
 
 		/**
 		 * @brief Add a key and value to the linear interpolator
@@ -45,38 +45,40 @@ namespace PathPlanner {
 		 * @param key The key to check at
 		 * @return double The value at that key
 		 */
-		double get(double key) {
+		[[nodiscard]] double get(double key) const {
 			if (key <= values.at(0).first) {
 				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
 			}
 
 			for (int i = 0; i < values.size(); i++) {
-				if (key <= values.at(i).first) {
+				if (key <= values.at(i).first || i == values.size()-1) {
 					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
 				}
 			}
-
-			return values.at(values.size()-2).second + ((values.at(values.size()-1).second - values.at(values.size()-2).second)/(values.at(values.size()-1).first - values.at(values.size()-2).first)) * (key - values.at(values.size()-1).first);
 		}
 
-		double getIntegral(double key) { // TODO: implement
-			if (key <= values.at(0).first) {
-				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
+		[[nodiscard]] double getIntegral(double key) const { // TODO: implement
+			if (key <= values.at(1).first || values.size() < 2) {
+				double x = (key - values.at(1).first);
+				return 0.5 * values.at(1).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * x * x;
 			}
 
-			for (int i = 0; i < values.size(); i++) {
-				if (key <= values.at(i).first) {
-					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
+			double total = 0.5 * (values.at(1).first - values.at(0).first) * (values.at(1).second - values.at(0).second);
+
+			for (int i = 2; i < values.size(); i++) {
+				if (key <= values.at(i).first || i == values.size()-1) {
+					double x = (key - values.at(i).first);
+					return total + 0.5 * values.at(i).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * x * x;
 				}
-			}
 
-			return values.at(values.size()-2).second + ((values.at(values.size()-1).second - values.at(values.size()-2).second)/(values.at(values.size()-1).first - values.at(values.size()-2).first)) * (key - values.at(values.size()-1).first);
+				total += 0.5 * (values.at(i).first - values.at(i-1).first) * (values.at(1).second - values.at(0).second);
+			}
 		}
 
 		void clear() {
 			values.clear();
 		}
 
-		~LinearInterpolator() {}
+		~LinearInterpolator() = default;
 	};
 } // namespace Pronounce

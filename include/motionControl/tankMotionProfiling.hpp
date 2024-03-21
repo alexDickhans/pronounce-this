@@ -132,7 +132,7 @@ namespace Pronounce {
 			QSpeed speed = velocityProfile->getVelocityByTime(duration);
 			QLength targetDistance = velocityProfile->getDistanceByTime(duration);
 
-			double turnPower = 0;
+			double turnPower;
 
 			QLength currentDistance = (drivetrain->getDistanceSinceReset()-startDistance);
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "api.h"
 #include "stateMachine/behavior.hpp"
 
@@ -19,7 +21,7 @@ namespace Pronounce {
         const double thresholdCurrent = 750;
         const uint32_t thresholdTime = 250;
     public:
-        Intake(std::string name, pros::AbstractMotor& intake, double intakeSpeed, bool exit) : Behavior(name), intake(intake), intakeSpeed(intakeSpeed), exitWithTriball(exit) {
+        Intake(std::string name, pros::AbstractMotor& intake, double intakeSpeed, bool exit) : Behavior(std::move(name)), intake(intake), intakeSpeed(intakeSpeed), exitWithTriball(exit) {
 
         }
 

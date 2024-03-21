@@ -1,16 +1,15 @@
 #pragma once
 
 #include "abstractMotionProfile.hpp"
-
 namespace PathPlanner {
 	class SimpleSplineProfile : public AbstractMotionProfile {
 		std::vector<std::pair<BezierSegment, std::shared_ptr<Pronounce::VelocityProfile>>> pathSegments;
 	public:
 		SimpleSplineProfile(const Pronounce::ProfileConstraints &defaultProfileConstraints,
 		                    const std::vector<std::pair<BezierSegment, std::shared_ptr<Pronounce::VelocityProfile>>> &pathSegments)
-				: AbstractMotionProfile(defaultProfileConstraints), pathSegments(pathSegments) { calculate(); }
+				: pathSegments(pathSegments) { calculate(defaultProfileConstraints); }
 
-		SimpleSplineProfile(asset path) {
+		explicit SimpleSplineProfile(asset path) {
 			Json parsed_path = open_asset_as_json(path);
 
 			std::vector<std::pair<BezierSegment, Pronounce::VelocityProfile*>> parsedPath;
@@ -27,7 +26,8 @@ namespace PathPlanner {
 								Point(paths[1]),
 								Point(paths[2]),
 								Point(paths[3]),
-								segment["inverted"].bool_value()),
+								segment["inverted"].bool_value(),
+								segment["stopEnd"].bool_value()),
 						new Pronounce::SinusoidalVelocityProfile(0.0,
 						                                         Pronounce::ProfileConstraints{
 								                                         constraints["velocity"].number_value() * (inch/second).Convert(metre/second),
@@ -50,17 +50,16 @@ namespace PathPlanner {
 		}
 
 		SimpleSplineProfile(Pronounce::ProfileConstraints defaultProfileConstraints, std::vector<std::pair<BezierSegment, std::shared_ptr<Pronounce::VelocityProfile>>> path, std::initializer_list<std::pair<double, std::string>> functions = {}) {
-			this->defaultProfileConstraints = defaultProfileConstraints;
 			pathSegments = std::move(path);
 			this->commands = functions;
 
-			calculate();
+			calculate(defaultProfileConstraints);
 		}
 
-		void calculate() {
+		void calculate(Pronounce::ProfileConstraints defaultProfileConstraints = {0.0, 0.0, 0.0}) {
 			for (int i = 0; i < this->pathSegments.size(); ++i) {
 
-				QSpeed adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(trackWidth) * maxSpeed;
+				QVelocity adjustedSpeed = this->pathSegments.at(i).first.getMaxSpeedMultiplier(trackWidth) * maxSpeed;
 
 				auto profile = this->pathSegments.at(i).second;
 
@@ -70,18 +69,18 @@ namespace PathPlanner {
 
 				profile->setDistance(this->pathSegments.at(i).first.getDistance());
 
-				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity.getValue(), adjustedSpeed.getValue()), profile->getProfileConstraints().maxAcceleration, 0.0});
+				profile->setProfileConstraints({std::min(profile->getProfileConstraints().maxVelocity, adjustedSpeed), profile->getProfileConstraints().maxAcceleration, 0.0});
 
 				profile->setInitialSpeed(0.0);
 				profile->setEndSpeed(0.0);
 
 				if (i < this->pathSegments.size()-1) {
-					if (this->pathSegments.at(i+1).first.getReversed() == this->pathSegments.at(i).first.getReversed() && !this->pathSegments.at(i).first.isStopEnd())
+					if (this->pathSegments.at(i+1).first.isReversed() == this->pathSegments.at(i).first.isReversed() && !this->pathSegments.at(i).first.isStopEnd())
 						profile->setEndSpeed(profile->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
 				if (i > 0) {
-					if (this->pathSegments.at(i-1).first.getReversed() == this->pathSegments.at(i).first.getReversed() && !this->pathSegments.at(i-1).first.isStopEnd())
+					if (this->pathSegments.at(i-1).first.isReversed() == this->pathSegments.at(i).first.isReversed() && !this->pathSegments.at(i-1).first.isStopEnd())
 						profile->setInitialSpeed(this->pathSegments.at(i-1).second->getProfileConstraints().maxVelocity.getValue());// * (this->pathSegments.at(i).first.getReversed() ? -1.0 : 1.0));
 				}
 
@@ -91,7 +90,7 @@ namespace PathPlanner {
 			}
 		}
 
-		MotionProfilePoint update(QTime t) override {
+		[[nodiscard]] MotionProfilePoint update(QTime t) const override {
 			MotionProfilePoint point;
 
 			point.targetDistance = this->getDistance(t);
@@ -116,7 +115,7 @@ namespace PathPlanner {
 			return point;
 		}
 
-		QTime getDuration() override {
+		[[nodiscard]] QTime getDuration() const override {
 			QTime totalTime = 0.0;
 
 			std::for_each(pathSegments.begin(), pathSegments.end(), [&](const auto &item) {
@@ -128,18 +127,7 @@ namespace PathPlanner {
 			return totalTime;
 		}
 
-		double getIndex(QTime time) {
-			int index = 0;
-
-			while (time >= pathSegments.at(index).second->getDuration()) {
-				time -= pathSegments.at(index).second->getDuration();
-				index ++;
-			}
-
-			return index + pathSegments.at(index).first.getTByLength(abs(pathSegments.at(index).second->getDistanceByTime(time).getValue()));
-		}
-
-		QLength getDistance(QTime time) {
+		[[nodiscard]] QLength getDistance(QTime time) const {
 			int index = 0;
 			QLength totalDistance = 0.0;
 
