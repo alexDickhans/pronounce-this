@@ -42,7 +42,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	drivetrainStateController->sb(
 			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
 			                                      &distancePid,
-			                                      drivetrainMutex, curvature, initialSpeed, endSpeed)).wait();
+			                                      drivetrainMutex, curvature, drivetrainFeedforward, initialSpeed, endSpeed)).wait();
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle,
@@ -51,7 +51,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	drivetrainStateController->sb(
 			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
 			                                      &distancePid,
-			                                      drivetrainMutex, curvature, startAngle, &movingTurnPid, initialSpeed,
+			                                      drivetrainMutex, curvature, drivetrainFeedforward, startAngle, &movingTurnPid, initialSpeed,
 			                                      endSpeed)).wait();
 }
 

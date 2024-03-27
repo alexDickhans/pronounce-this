@@ -81,6 +81,7 @@ QUANTITY_TYPE(1, -1, -2, 0, QPressure);
 QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
 QUANTITY_TYPE(0, 1, 0, -1, QRadius);
 QUANTITY_TYPE(0, 0, -1, 1, QAngularVelocity);
+//QUANTITY_TYPE()
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);

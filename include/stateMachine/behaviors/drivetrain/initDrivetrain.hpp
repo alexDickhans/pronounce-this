@@ -16,6 +16,14 @@
 
 namespace Pronounce {
 
+	constexpr double kS = 900; // mV
+	constexpr double kV = 130; // mVsecond/inch
+	constexpr double kA = 26.7; // mVs^2/inch
+
+	double drivetrainFeedforward(QVelocity velocity, QAcceleration acceleration) {
+		return signnum_c(velocity.getValue()) * kS + velocity.Convert(inch/second) * kV + acceleration.Convert(inch/second/second) * kA;
+	}
+
 	PID turningPid(2.0, 0.01, 22.0, 0.0, 0.0, false);
 	PID movingTurnPid(2.4e4, 0.0, 2.64e5, 0.0, 0.0, true);
 
@@ -28,7 +36,7 @@ namespace Pronounce {
 
 	auto drivetrainStateController = std::make_shared<StateController>("DrivetrainStateController", drivetrainStopped);
 
-	ProfileConstraints speedProfileConstraints = {71_in / second, 280_in / second / second, 0.0};
+	ProfileConstraints speedProfileConstraints = {76_in / second, 300_in / second / second, 0.0};
 	ProfileConstraints defaultProfileConstraints = {70_in / second, 140_in / second / second, 0.0};
 	ProfileConstraints pushingProfileConstraints = {50_in / second, 140_in / second / second, 0.0};
 

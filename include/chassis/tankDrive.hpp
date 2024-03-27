@@ -38,12 +38,15 @@ namespace Pronounce {
 		QLength getDistanceSinceReset() override {
 			leftMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 			rightMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			return (
-					       ((mean(leftMotors.get_position_all()) * revolution) *
-					        (this->getMaxSpeed() / this->maxMotorSpeed))
-					       + ((mean(rightMotors.get_position_all()) * revolution) *
-					          (this->getMaxSpeed() / this->maxMotorSpeed))
-			       ) / 2.0;
+			auto result = (
+					                ((mean(leftMotors.get_position_all()) * revolution) *
+					                 (this->getMaxSpeed() / this->maxMotorSpeed))
+					                + ((mean(rightMotors.get_position_all()) * revolution) *
+					                   (this->getMaxSpeed() / this->maxMotorSpeed))
+			                ) / 2.0;
+
+			Log(std::to_string(result.Convert(inch)));
+			return result;
 		}
 
 		void setBrakeMode(pros::MotorBrake brakeMode) {

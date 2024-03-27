@@ -69,6 +69,10 @@ namespace Pronounce {
 
 	void initHardware() {
 		Log("Hardware Init");
+		leftDriveMotors.set_gearing_all(pros::MotorGears::blue);
+		rightDriveMotors.set_gearing_all(pros::MotorGears::blue);
+		leftDriveMotors.set_zero_position_all(0.0);
+		rightDriveMotors.set_zero_position_all(0.0);
 
 		drivetrain.setBrakeMode(pros::MotorBrake::coast);
 

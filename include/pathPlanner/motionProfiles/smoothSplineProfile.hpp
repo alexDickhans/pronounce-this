@@ -52,18 +52,14 @@ namespace PathPlanner {
 
 				if (!maxSpeedArray.empty()) {
 					maxSpeedArray.at(maxSpeedArray.size() - 1).velocity =
-							min(
-									min(
-											maxSpeedArray.at(maxSpeedArray.size() - 1).velocity,
-											segment.getMaxSpeedMultiplier(trackWidth, 0.0) * maxSpeed),
-									segment.getProfileConstraints().maxVelocity);
+							min(maxSpeedArray.at(maxSpeedArray.size() - 1).velocity, segment.getMaxSpeedMultiplier(trackWidth, 0.0) * segment.getProfileConstraints().maxVelocity);
 				}
 
 				for (int i = 1; i <= granularity; i++) {
 					maxSpeedArray.emplace_back(totalDistance + (i * intervalDistance),
-					                           min((segment.getMaxSpeedMultiplier(trackWidth, segment.getTByLength(
-							                               i * intervalDistance)) * maxSpeed),
-					                               segment.getProfileConstraints().maxVelocity),
+					                           segment.getMaxSpeedMultiplier(trackWidth, segment.getTByLength(
+							                           i * intervalDistance)) *
+					                           segment.getProfileConstraints().maxVelocity,
 					                           segment.getProfileConstraints().maxAcceleration);
 				}
 
