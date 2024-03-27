@@ -12,3 +12,6 @@
 #include "wings/initWings.hpp"
 
 #include "catapult/initCatapult.hpp"
+
+#include "winch/initWinch.hpp"
+#include "winch/winch.hpp"

@@ -39,26 +39,28 @@ namespace Pronounce {
 
 	pros::Mutex drivetrainMutex;
 
-	pros::MotorGroup leftDriveMotors({-19, -18, -17, -16}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
-	pros::MotorGroup rightDriveMotors({8, 12, 13, 14}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+	pros::MotorGroup leftDriveMotors({-18, -19, -20}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+	pros::MotorGroup rightDriveMotors({11, 12, 13}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 
 	TankDrivetrain drivetrain(Constants::trackWidth, 76.57632093_in / second, leftDriveMotors, rightDriveMotors,
 	                          600.0 * (revolution / minute));
 
-	pros::MotorGroup catapultMotors({7, -4});
+	pros::MotorGroup catapultMotors({1, -10});
 
-	pros::adi::DigitalOut leftSolenoid('A', false);
-	pros::adi::DigitalOut rightSolenoid('B', false);
-	pros::adi::DigitalOut hangSolenoid('C', false);
-	pros::adi::DigitalOut AWPSolenoid('F', false);
+	pros::MotorGroup winch({2}, pros::v5::MotorGears::red);
 
-	pros::MotorGroup intakeMotors({20}, pros::MotorGears::blue);
+	pros::adi::DigitalOut frontLeftSolenoid('G', false);
+	pros::adi::DigitalOut frontRightSolenoid('F', false);
+	pros::adi::DigitalOut backLeftSolenoid('D', false);
+	pros::adi::DigitalOut backRightSolenoid('E', false);
+
+	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue);
 	// Inertial Measurement Unit
-	pros::Imu imu(3);
-	IMU imuOrientation(3);
+	pros::Imu imu(14);
+	IMU imuOrientation(14);
 
 	pros::Distance distanceSensor(10);
-	pros::Distance hopperDistanceSensor(5);
+	pros::Distance hopperDistanceSensor(16);
 	pros::Distance catapultDistance(6);
 
 	ThreeWheelOdom threeWheelOdom(new OdomWheel(), new OdomWheel(), new OdomWheel(), &imuOrientation);
@@ -110,7 +112,7 @@ namespace Pronounce {
 			}
 		}
 
-		if (pros::c::registry_get_plugged_type(imu.get_port() - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		if (pros::c::registry_get_plugged_type(imu.get_port() - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU && isSkills) {
 			imu.reset();
 			Log("Imu: calibrate");
 

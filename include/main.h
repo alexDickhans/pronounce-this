@@ -71,7 +71,6 @@
 
 #include "Logger/logger.hpp"
 
-using namespace Pronounce;
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,6 +83,8 @@ void opcontrol(void);
 #ifdef __cplusplus
 }
 #endif
+
+using namespace Pronounce;
 
 #ifdef __cplusplus
 //#include <iostream>

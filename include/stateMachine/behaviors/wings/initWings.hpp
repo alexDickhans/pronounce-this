@@ -5,19 +5,19 @@
 #include "hardware/hardware.hpp"
 
 namespace Pronounce {
-	auto leftWingIn = std::make_shared<Wing>("WingIn", leftSolenoid, false);
-	auto leftWingOut = std::make_shared<Wing>("WingOut", leftSolenoid, true);
-	auto rightWingIn = std::make_shared<Wing>("WingIn", rightSolenoid, false);
-	auto rightWingOut = std::make_shared<Wing>("WingOut", rightSolenoid, true);
-	auto hangIn = std::make_shared<Wing>("WingIn", hangSolenoid, false);
-	auto hangOut = std::make_shared<Wing>("WingOut", hangSolenoid, true);
-	auto awpIn = std::make_shared<Wing>("WingIn", AWPSolenoid, false);
-	auto awpOut = std::make_shared<Wing>("WingOut", AWPSolenoid, true);
+	auto frontLeftWingIn = std::make_shared<Wing>("WingIn", frontLeftSolenoid, false);
+	auto frontLeftWingOut = std::make_shared<Wing>("WingOut", frontLeftSolenoid, true);
+	auto frontRightWingIn = std::make_shared<Wing>("WingIn", frontRightSolenoid, false);
+	auto frontRightWingOut = std::make_shared<Wing>("WingOut", frontRightSolenoid, true);
+	auto backLeftWingIn = std::make_shared<Wing>("WingIn", backLeftSolenoid, false);
+	auto backLeftWingOut = std::make_shared<Wing>("WingOut", backLeftSolenoid, true);
+	auto backRightWingIn = std::make_shared<Wing>("WingIn", backRightSolenoid, false);
+	auto backRightWingOut = std::make_shared<Wing>("WingOut", backRightSolenoid, true);
 
-	auto leftWingStateController = std::make_shared<StateController>("WingsStateController", leftWingIn);
-	auto rightWingStateController = std::make_shared<StateController>("WingsStateController", rightWingIn);
-	auto hangStateController = std::make_shared<StateController>("HangReleaseStateController", hangIn);
-	auto awpStateController = std::make_shared<StateController>("HangReleaseStateController", awpIn);
+	auto frontLeftWingStateController = std::make_shared<StateController>("WingsStateController", frontLeftWingIn);
+	auto frontRightWingStateController = std::make_shared<StateController>("WingsStateController", frontRightWingIn);
+	auto backLeftWingStateController = std::make_shared<StateController>("HangReleaseStateController", backLeftWingIn);
+	auto backRightWingStateController = std::make_shared<StateController>("HangReleaseStateController", backRightWingIn);
 
 	void initWings() {
 		Log("Wings Init");

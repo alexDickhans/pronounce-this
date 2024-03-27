@@ -4,7 +4,6 @@
 std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
-
 SIMPLE_SPLINE_PATH_ASSET(close_mid_rush);
 SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_1);
 SIMPLE_SPLINE_PATH_ASSET(mid_6_ball_2);
@@ -63,7 +62,7 @@ void far5BallRushMid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
 	intakeExtensionStateController->sb(deploySequence);
-	rightWingStateController->sb(std::make_shared<Wait>(rightWingOut, 200_ms));
+	frontRightWingStateController->sb(std::make_shared<Wait>(frontRightWingOut, 200_ms));
 
 	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
 
@@ -89,13 +88,13 @@ void far5BallRushMid(void *args) {
 
 	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
 
-	leftWingStateController->ud();
+	frontLeftWingStateController->ud();
 	turnTo(120_deg, 300_ms);
-	leftWingStateController->sb(leftWingOut);
+	frontLeftWingStateController->sb(frontLeftWingOut);
 	drivetrain.tankSteerVoltage(12000, 12000);
 	pros::Task::delay(800);
 	drivetrain.tankSteerVoltage(0.0, 0.0);
-	leftWingStateController->ud();
+	frontLeftWingStateController->ud();
 	move(-9_in, speedProfileConstraints, 0.0, 90_deg);
 	turnTo(25_deg, 200_ms);
 	intakeStateController->sb(intakeIntaking);
@@ -120,8 +119,8 @@ void far6BallRushMid(void *args) {
 	turnTo(180_deg, 550_ms);
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeEject);
-	leftWingStateController->sb(leftWingOut);
-	rightWingStateController->sb(rightWingOut);
+	frontLeftWingStateController->sb(frontLeftWingOut);
+	frontRightWingStateController->sb(frontRightWingOut);
 	move(35_in, speedProfileConstraints, 0.0, 180_deg);
 	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
 	turnTo(0_deg, 3_s);
@@ -166,7 +165,7 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_2);
 	drivetrainStateController->sb(pathFollower).wait();
 
-	rightWingStateController->sb(rightWingIn);
+	frontRightWingStateController->sb(frontRightWingIn);
 	turnTo(180_deg, 300_ms);
 
 	pathFollower->setMotionProfile(skills_3);
@@ -249,7 +248,7 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower).wait();
 
-	rightWingStateController->ud();
+	frontRightWingStateController->ud();
 
 	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
@@ -258,7 +257,7 @@ void skills(void *args) {
 
 	pros::Task::delay(500);
 
-	hangStateController->ud();
+	backLeftWingStateController->ud();
 }
 
 void safeCloseAWP(void *args) {
@@ -287,7 +286,7 @@ void safeCloseAWP(void *args) {
 void closeRushMid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
 
-	leftWingStateController->sb(std::make_shared<Wait>(leftWingOut, 300_ms));
+	frontLeftWingStateController->sb(std::make_shared<Wait>(frontLeftWingOut, 300_ms));
 
 	intakeExtensionStateController->sb(deploySequence);
 
@@ -367,7 +366,7 @@ void tuneTurnPid(void *args) {
 		robotMutex.give();
 
 		// Wait a maximum of 10 milliseconds
-		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 0));
+		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
 
 		Log(string_format("Frame time: %s", std::to_string(pros::micros() - startTimeMicros).c_str()));
 	}
@@ -376,6 +375,14 @@ void tuneTurnPid(void *args) {
 [[noreturn]] void updateDisplay() {
 
 	Log("Init");
+
+	lv_theme_t *th = lv_theme_default_init(lv_disp_get_default(),  /*Use the DPI, size, etc from this display*/
+	                                       lv_color_hex(0xff7d26),
+	                                       lv_color_hex(0x303236),   /*Primary and secondary palette*/
+	                                       true,    /*Light or dark mode*/
+	                                       &lv_font_montserrat_14); /*Small, normal, large fonts*/
+
+	lv_disp_set_theme(lv_disp_get_default(), th); /*Assign the theme to the display*/
 
 	// Odom
 	std::shared_ptr<lv_obj_t> odomTab = std::shared_ptr<lv_obj_t>(lv_tabview_add_tab(tabview.get(), "Odom"));
@@ -415,6 +422,7 @@ void tuneTurnPid(void *args) {
 			                        (std::to_string(rightDriveTemps[i]) + " C").c_str());
 		}
 
+		lv_label_set_text(flywheelLabel.get(), std::to_string(Pronounce::Logger::getCurrentIndex()).c_str());
 
 		pros::Task::delay(50);
 	}
@@ -430,6 +438,22 @@ void initialize() {
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), LV_DIR_TOP, 50));
 
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
+
+#if AUTON == 0
+	auton->setAuton(far6BallRushMid);
+#elif AUTON == 1
+	auton->setAuton(far5BallAWP);
+#elif AUTON == 2
+		auton->setAuton(safeCloseAWP);
+#elif AUTON == 3
+		auton->setAuton(closeRushMidElim);
+#elif AUTON == 4
+		auton->setAuton(closeRushMid);
+#elif AUTON == 5
+		auton->setAuton(skills);
+#endif // !1
+
 	// Initialize functions
 	initHardware();
 	initIntake();
@@ -437,71 +461,10 @@ void initialize() {
 	initBehaviors();
 	initCatapult();
 	initDrivetrain();
+	initAutonomousMappings();
+	initWinch();
 
-	pathFollower->addCommandMapping("intake", [&]() -> void {
-		intakeStateController->sb(intakeIntaking);
-	});
-
-	pathFollower->addCommandMapping("intakeHold", [&]() -> void {
-		intakeStateController->sb(intakeHold);
-	});
-
-	pathFollower->addCommandMapping("intakeStopped", [&]() -> void {
-		intakeStateController->ud();
-	});
-
-	pathFollower->addCommandMapping("outtake", [&]() -> void {
-		intakeStateController->sb(intakeEject);
-	});
-
-	pathFollower->addCommandMapping("leftWingOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-	});
-
-	pathFollower->addCommandMapping("leftWingIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-	});
-
-	pathFollower->addCommandMapping("rightWingOut", [&]() -> void {
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("rightWingIn", [&]() -> void {
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("awpOut", [&]() -> void {
-		awpStateController->sb(awpOut);
-	});
-
-	pathFollower->addCommandMapping("awpIn", [&]() -> void {
-		awpStateController->sb(awpIn);
-	});
-
-	pathFollower->addCommandMapping("hang", [&]() -> void {
-		hangStateController->sb(hangOut);
-	});
-
-	pathFollower->addCommandMapping("wingsOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("wingsIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("catapult", [&]() -> void {
-		catapultStateController->sb(catapultFire);
-	});
-
-	pathFollower->addCommandMapping("catapultStop", [&]() -> void {
-		catapultStateController->ud();
-	});
-
-	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);
-	pros::Task display(updateDisplay, TASK_PRIORITY_MIN);
+	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT*2, "modeLogicUpdate");
 
 	pros::Task::delay(10);
 }
@@ -518,9 +481,9 @@ void disabled() {
 	competitionController->ud();
 
 	// Create a label
-	lv_obj_t *disabledLabel = lv_label_create(lv_scr_act());
-	lv_obj_align(disabledLabel, LV_ALIGN_CENTER, 0, 0);
-	lv_label_set_text(disabledLabel, "Robot Disabled.");
+	auto disabledLabel = std::shared_ptr<lv_obj_t>(lv_label_create(lv_scr_act()));
+	lv_obj_align(disabledLabel.get(), LV_ALIGN_CENTER, 0, 0);
+	lv_label_set_text(disabledLabel.get(), "Robot Disabled.");
 }
 
 // !SECTION
@@ -531,7 +494,7 @@ void disabled() {
  * Starts when connected to the field
  */
 void competition_initialize() {
-//	Log("Competition Initialize");
+	Log("Competition Initialize");
 }
 
 // !SECTION
@@ -544,21 +507,6 @@ void competition_initialize() {
 void autonomous() {
 
 	Log(string_format("Auton Init: %d", AUTON));
-
-#if AUTON == 0
-	auton->setAuton(far6BallRushMid);
-#elif AUTON == 1
-	auton->setAuton(far5BallAWP);
-#elif AUTON == 2
-	auton->setAuton(safeCloseAWP);
-#elif AUTON == 3
-	auton->setAuton(closeRushMidElim);
-#elif AUTON == 4
-	auton->setAuton(closeRushMid);
-#elif AUTON == 5
-	auton->setAuton(skills);
-#endif // !1
-
 	competitionController->sb(auton);
 }
 
