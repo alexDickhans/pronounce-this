@@ -141,7 +141,7 @@ namespace Pronounce {
 
 			QLength currentDistance = (drivetrain->getDistanceSinceReset()-startDistance);
 
-			Log(string_format("targetDistance: %f, currentDistance: %f", targetDistance.Convert(inch), currentDistance));
+			Log(string_format("targetDistance: %f, currentDistance: %f", targetDistance.Convert(inch), currentDistance.Convert(inch)));
 
 			distancePid->setTarget(targetDistance.getValue());
 

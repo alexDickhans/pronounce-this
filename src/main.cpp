@@ -406,7 +406,7 @@ void tuneTurnPid(void *args) {
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()).c_str());
+		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string() + "\n" + std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
 
 		auto leftDriveTemps = leftDriveMotors.get_temperature_all();
 		auto rightDriveTemps = rightDriveMotors.get_temperature_all();

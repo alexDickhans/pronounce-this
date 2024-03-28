@@ -36,8 +36,8 @@ namespace Pronounce {
 		}
 
 		QLength getDistanceSinceReset() override {
-			leftMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
-			rightMotors.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+			leftMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_ROTATIONS);
+			rightMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_ROTATIONS);
 			auto result = (
 					                ((mean(leftMotors.get_position_all()) * revolution) *
 					                 (this->getMaxSpeed() / this->maxMotorSpeed))

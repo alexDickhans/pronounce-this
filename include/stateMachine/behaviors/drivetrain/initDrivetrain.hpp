@@ -41,7 +41,7 @@ namespace Pronounce {
 	ProfileConstraints pushingProfileConstraints = {50_in / second, 140_in / second / second, 0.0};
 
 	auto pathFollower = std::make_shared<PathPlanner::PathFollower>(std::make_shared<PathPlanner::AbstractMotionProfile>(), drivetrain,
-	                                                                movingTurnPid, distancePid, 7000.0 / 72.0,
+	                                                                movingTurnPid, distancePid, drivetrainFeedforward,
 	                                                                [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); });
 
 	void initDrivetrain() {

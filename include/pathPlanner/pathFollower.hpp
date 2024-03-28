@@ -25,7 +25,7 @@ namespace PathPlanner {
 		std::shared_ptr<AbstractMotionProfile> motionProfile;
 		Pronounce::AbstractTankDrivetrain& drivetrain;
 		Pronounce::PID turnPID, distancePID;
-		double feedforwardMultiplier;
+		std::function<double(QVelocity, QAcceleration)> feedforward;
 		QLength startDistance;
 		QTime startTime;
 		std::function<Angle()> angleFunction;
@@ -35,14 +35,15 @@ namespace PathPlanner {
 		int commandsIndex = 0;
 
 		pros::Mutex movingMutex;
+		std::pair<QVelocity, QVelocity> lastDriveVelocity;
 	public:
 		PathFollower(const std::shared_ptr<AbstractMotionProfile> &motionProfile,
 		             Pronounce::AbstractTankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
-		             const Pronounce::PID &distancePid, double feedforwardMultiplier,
+		             const Pronounce::PID &distancePid, std::function<double(QVelocity, QAcceleration)> feedforward,
 		             const std::function<Angle()> &angleFunction) : motionProfile(motionProfile),
 		                                                            drivetrain(drivetrain), turnPID(turnPid),
 		                                                            distancePID(distancePid),
-		                                                            feedforwardMultiplier(feedforwardMultiplier),
+		                                                            feedforward(std::move(feedforward)),
 		                                                            angleFunction(angleFunction) {}
 
 
@@ -60,6 +61,7 @@ namespace PathPlanner {
 			movingMutex.lock();
 			startTime = pros::millis() * 1_ms;
 			startDistance = drivetrain.getDistanceSinceReset();
+			lastDriveVelocity = {0.0, 0.0};
 			distancePID.reset();
 			turnPID.reset();
 			commandsIndex = 0;
@@ -69,6 +71,7 @@ namespace PathPlanner {
 			QTime time = pros::millis() * 1_ms - startTime;
 
 			auto target = motionProfile->update(time - startTime);
+			auto futureTarget = motionProfile->update(time - startTime + 10_ms);
 
 			double index = target.targetT;
 
@@ -80,8 +83,10 @@ namespace PathPlanner {
 			}
 
 			std::pair<QVelocity, QVelocity> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
+			std::pair<QVelocity, QVelocity> futureDriveSpeeds = this->getChassisSpeeds(futureTarget.targetSpeed, futureTarget.targetCurvature);
+			std::pair<QAcceleration, QAcceleration> driveAccel = {(futureDriveSpeeds.first - driveSpeeds.first)/10_ms, (futureDriveSpeeds.second - driveSpeeds.second)/10_ms};
 
-			std::pair<double, double> driveVoltages = {driveSpeeds.first.Convert(inch/second) * feedforwardMultiplier, driveSpeeds.second.Convert(inch/second) * feedforwardMultiplier};
+			std::pair<double, double> driveVoltages = {feedforward(driveSpeeds.first, driveAccel.first), feedforward(driveSpeeds.second, driveAccel.second)};
 			distancePID.setTarget(target.targetDistance.getValue());
 
 			double distanceOutput = distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre));
