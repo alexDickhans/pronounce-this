@@ -486,22 +486,6 @@
                 "user_files": [],
                 "version": "1.0.0"
             },
-            "liblog": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/liblog@2.0.2",
-                "metadata": {
-                    "origin": "local"
-                },
-                "name": "liblog",
-                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
-                "supported_kernels": "^4.0.6",
-                "system_files": [
-                    "include/Logger/logger.hpp",
-                    "firmware/liblog.a"
-                ],
-                "target": "v5",
-                "user_files": [],
-                "version": "2.0.2"
-            },
             "liblvgl": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/liblvgl@8.3.6",
                 "metadata": {
@@ -705,6 +689,7 @@
         "upload_options": {
             "description": "VEX Team 2654P Code",
             "slot": 1
-        }
+        },
+        "use_early_access": false
     }
 }

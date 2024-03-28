@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <utility>
 
 namespace Pronounce {
 	/**
@@ -34,7 +35,7 @@ namespace Pronounce {
 		 * 
 		 * @param defaultBehavior 
 		 */
-		StateController(std::string name, std::shared_ptr<Behavior> defaultBehavior) : Behavior(name) {
+		StateController(std::string name, std::shared_ptr<Behavior> defaultBehavior) : Behavior(std::move(name)) {
 			this->defaultBehavior = defaultBehavior;
 		}
 
@@ -43,13 +44,13 @@ namespace Pronounce {
 		 * 
 		 */
 		void initialize() override {
-			Logger::log(this->getName(), "Initialize");
+			Log_Desc(Behavior::getName() + ":" + this->getName(), "Initialize");
 			startTime = currentTime();
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->initialize();
 				} catch(...) {
-					Logger::log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
+					Log_Desc(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					this->useDefaultBehavior();
 					defaultBehavior->initialize();
 				}
@@ -64,7 +65,7 @@ namespace Pronounce {
 		 * 
 		 */
 		void update() {
-			Logger::log(this->getName(), "Update");
+			Log_Desc(Behavior::getName() + ":" + this->getName(), "Update");
 
 			// If currentBehavior exists run it or transition
 			if (currentBehavior != nullptr) {
@@ -72,7 +73,7 @@ namespace Pronounce {
 					try {
 						currentBehavior->exit();
 					} catch (std::exception &e) {
-						Logger::log(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
+						Log_Desc(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					}
 
 					currentBehavior = nullptr;
@@ -84,8 +85,7 @@ namespace Pronounce {
 					try {
 						currentBehavior->update();
 					} catch (std::exception &e) {
-
-						Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to update. what: " + e.what() + ", returning to default state");
+						Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to update. what: " + e.what() + ", returning to default state");
 						this->useDefaultBehavior();
 					}
 				}
@@ -126,7 +126,7 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				currentBehavior = nullptr;
 			}
@@ -150,7 +150,7 @@ namespace Pronounce {
 		 * @param behavior 
 		 */
 		void setCurrentBehavior(const std::shared_ptr<Behavior>& behavior) {
-			Logger::log(this->getName(), "INFO: transitioning to behavior (" + behavior->getName() + ")");
+			Log_Desc(this->getName(), "INFO: transitioning to behavior (" + behavior->getName() + ")");
 			// If the defaultBehavior and current behavior are equal then switch to default behavior
 			if (defaultBehavior == behavior) {
 				this->useDefaultBehavior();
@@ -160,13 +160,13 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				try {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
 				startTime = currentTime();
@@ -178,21 +178,21 @@ namespace Pronounce {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
 				startTime = currentTime();
 			}
 		}
 
-		StateController sb(std::shared_ptr<Behavior> behavior) {
+		StateController* sb(std::shared_ptr<Behavior> behavior) {
 			this->setCurrentBehavior(behavior);
-			return *this;
+			return this;
 		}
 
-		StateController ud() {
+		StateController* ud() {
 			this->useDefaultBehavior();
-			return *this;
+			return this;
 		}
 
 		StateController* operator()(std::shared_ptr<Behavior> behavior) {
@@ -210,13 +210,13 @@ namespace Pronounce {
 		 * 
 		 */
 		void useDefaultBehavior() {
-			Logger::log(this->getName(), "INFO: transitioning to default (" + this->defaultBehavior->getName() + ")");
+			Log_Desc(this->getName(), "INFO: transitioning to default (" + this->defaultBehavior->getName() + ")");
 			// If we are currently running the current behavior transition
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					Logger::log(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed on exit. what: " + e.what() + ", returning to default state");
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed on exit. what: " + e.what() + ", returning to default state");
 				}
 
 				currentBehavior = nullptr;

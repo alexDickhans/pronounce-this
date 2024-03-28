@@ -23,19 +23,20 @@ namespace PathPlanner {
 		QVelocity startSpeed = 0.0;
 		QVelocity endSpeed = 0.0;
 
-		static std::vector<MaxSpeedPoint>
+		std::vector<MaxSpeedPoint>
 		limitSpeed(const std::vector<MaxSpeedPoint> &unlimitedSpeed, QVelocity startSpeed) {
 			std::vector<MaxSpeedPoint> result = unlimitedSpeed;
 			result.at(0).velocity = startSpeed;
 
 			for (auto item = result.begin() + 1; item < result.end(); item++) {
-				QLength deltaDistance = item->distance - (item - 1)->distance;
+				QLength deltaDistance = Qabs(item->distance - (item - 1)->distance);
 				QVelocity endVelocity = std::min(
 						Qsqrt((Qsq((item - 1)->velocity) + 2 * (item - 1)->accel * deltaDistance)), item->velocity);
+				item->velocity = endVelocity;
 				(item - 1)->accel = (Qsq(endVelocity) - Qsq((item - 1)->velocity)) / (2 * deltaDistance);
 			}
 
-			return unlimitedSpeed;
+			return result;
 		}
 
 	protected:
@@ -52,7 +53,9 @@ namespace PathPlanner {
 
 				if (!maxSpeedArray.empty()) {
 					maxSpeedArray.at(maxSpeedArray.size() - 1).velocity =
-							min(maxSpeedArray.at(maxSpeedArray.size() - 1).velocity, segment.getMaxSpeedMultiplier(trackWidth, 0.0) * segment.getProfileConstraints().maxVelocity);
+							min(maxSpeedArray.at(maxSpeedArray.size() - 1).velocity,
+							    segment.getMaxSpeedMultiplier(trackWidth, 0.0) *
+							    segment.getProfileConstraints().maxVelocity);
 				}
 
 				for (int i = 1; i <= granularity; i++) {
@@ -67,9 +70,10 @@ namespace PathPlanner {
 			}
 
 			// Do left and right passes
-			auto leftPassMin = PathPlanner::SmoothSplineProfile::limitSpeed(maxSpeedArray, startSpeed);
 			std::reverse(maxSpeedArray.begin(), maxSpeedArray.end());
 			auto rightPassMin = PathPlanner::SmoothSplineProfile::limitSpeed(maxSpeedArray, endSpeed);
+			std::reverse(maxSpeedArray.begin(), maxSpeedArray.end());
+			auto leftPassMin = PathPlanner::SmoothSplineProfile::limitSpeed(maxSpeedArray, startSpeed);
 			std::reverse(rightPassMin.begin(), rightPassMin.end());
 
 			for (int i = 0; i < maxSpeedArray.size(); i++) {
@@ -85,12 +89,18 @@ namespace PathPlanner {
 				// add stuff to current time
 				QLength deltaDistance = maxSpeedArray.at(i).distance - maxSpeedArray.at(i - 1).distance;
 				QAcceleration a =
-						(Qsq(maxSpeedArray.at(i).velocity) - Qsq(maxSpeedArray.at(i).velocity)) / (2 * deltaDistance);
+						(Qsq(maxSpeedArray.at(i).velocity) - Qsq(maxSpeedArray.at(i-1).velocity)) / (2 * deltaDistance);
 
-				duration += (maxSpeedArray.at(i).velocity - maxSpeedArray.at(i - 1).velocity) / a;
+				if (abs(a.getValue()) > 0.0001) {
+					duration += (maxSpeedArray.at(i).velocity - maxSpeedArray.at(i - 1).velocity) / a;
+				} else {
+					duration += deltaDistance / maxSpeedArray.at(i).velocity;
+				}
 
 				timeToVelocityInterpolator.add(duration.getValue(), maxSpeedArray.at(i).velocity.getValue());
 			}
+
+			printf("%s", timeToVelocityInterpolator.to_string().c_str());
 		}
 
 		[[nodiscard]] std::pair<size_t, double> getTAtDistance(QLength distance) const {
@@ -151,14 +161,16 @@ namespace PathPlanner {
 				              bezierSegment.emplace_back(SmoothBezierSegment(paths[0], paths[1], paths[2], paths[3],
 				                                                             segment["inverted"].bool_value(),
 				                                                             segment["stopEnd"].bool_value(),
-				                                                             {constraints["velocity"].number_value(),
-				                                                              constraints["accel"].number_value(),
+				                                                             {constraints["velocity"].number_value() * inch/second,
+				                                                              constraints["accel"].number_value() * inch/second/second,
 				                                                              0.0}));
 			              });
 
 			auto noCommands = build(bezierSegment);
 
 			noCommands->processCommands(parsed_path["commands"]);
+
+			std::cout << "build" << noCommands->getDuration().Convert(second) << std::endl;
 
 			return noCommands;
 		}

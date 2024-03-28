@@ -53,7 +53,7 @@ namespace PathPlanner {
 			QTime sum = 0.0;
 
 			for (const auto &item: motionProfiles) {
-				sum += item->getDuration();
+				sum += isnan(item->getDuration().getValue()) ? 0.0 : item->getDuration().getValue();
 			}
 
 			return sum;

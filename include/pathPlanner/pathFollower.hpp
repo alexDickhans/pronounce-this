@@ -40,7 +40,7 @@ namespace PathPlanner {
 		PathFollower(const std::shared_ptr<AbstractMotionProfile> &motionProfile,
 		             Pronounce::AbstractTankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
 		             const Pronounce::PID &distancePid, std::function<double(QVelocity, QAcceleration)> feedforward,
-		             const std::function<Angle()> &angleFunction) : motionProfile(motionProfile),
+		             const std::function<Angle()> &angleFunction) : Pronounce::Behavior("PathFollower"), motionProfile(motionProfile),
 		                                                            drivetrain(drivetrain), turnPID(turnPid),
 		                                                            distancePID(distancePid),
 		                                                            feedforward(std::move(feedforward)),
@@ -65,6 +65,7 @@ namespace PathPlanner {
 			distancePID.reset();
 			turnPID.reset();
 			commandsIndex = 0;
+			Log("Init");
 		}
 
 		void update() override {
