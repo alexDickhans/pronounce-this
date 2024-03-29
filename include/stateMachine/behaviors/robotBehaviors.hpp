@@ -7,8 +7,3 @@
 
 #include "intake/intake.hpp"
 #include "intake/initIntake.hpp"
-
-#include "wings/wings.hpp"
-#include "wings/initWings.hpp"
-
-#include "catapult/initCatapult.hpp"

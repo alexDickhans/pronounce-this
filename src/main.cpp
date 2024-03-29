@@ -61,7 +61,6 @@ void far5BallRushMid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
 
 	intakeExtensionStateController->sb(deploySequence);
-	rightWingStateController->sb(std::make_shared<Wait>(rightWingOut, 200_ms));
 
 	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
 
@@ -87,13 +86,10 @@ void far5BallRushMid(void *args) {
 
 	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
 
-	leftWingStateController->ud();
 	turnTo(120_deg, 300_ms);
-	leftWingStateController->sb(leftWingOut);
 	drivetrain.tankSteerVoltage(12000, 12000);
 	pros::Task::delay(800);
 	drivetrain.tankSteerVoltage(0.0, 0.0);
-	leftWingStateController->ud();
 	move(-9_in, speedProfileConstraints, 0.0, 90_deg);
 	turnTo(25_deg, 200_ms);
 	intakeStateController->sb(intakeIntaking);
@@ -116,8 +112,6 @@ void far6BallRushMid(void *args) {
 	turnTo(180_deg, 550_ms);
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeEject);
-	leftWingStateController->sb(leftWingOut);
-	rightWingStateController->sb(rightWingOut);
 	move(35_in, speedProfileConstraints, 0.0, 180_deg);
 	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
 	turnTo(0_deg, 3_s);
@@ -151,18 +145,11 @@ void skills(void *args) {
 	auton->resetTriballs();
 	pros::Task::delay(500);
 
-	// Wait until the catapult triballs shot has increased to 44 triballs
-	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
-		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-		pros::Task::delay(10);
-	}
-
 	pros::Task::delay(200);
 
 	pathFollower->changePath(skills_2_json);
 	drivetrainStateController->sb(pathFollower).wait();
 
-	rightWingStateController->sb(rightWingIn);
 	turnTo(180_deg, 300_ms);
 
 	pathFollower->changePath(skills_3_json);
@@ -215,7 +202,7 @@ void skills(void *args) {
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, odometry, turningPid, 0_deg,
 			                                     drivetrainMutex));
 
-	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
+	QLength wallDistance = 0.0;
 
 	pathFollower->changePath(pushingProfileConstraints, {{
 			                                                     PathPlanner::BezierSegment(
@@ -244,7 +231,6 @@ void skills(void *args) {
 	pathFollower->changePath(skills_9_json);
 	drivetrainStateController->sb(pathFollower).wait();
 
-	rightWingStateController->ud();
 
 	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
 
@@ -252,8 +238,6 @@ void skills(void *args) {
 	drivetrainStateController->sb(pathFollower).wait();
 
 	pros::Task::delay(500);
-
-	hangStateController->ud();
 }
 
 void safeCloseAWP(void *args) {
@@ -265,24 +249,26 @@ void safeCloseAWP(void *args) {
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
-
+	printf("nextMove\n");
 	pathFollower->changePath(safe_close_awp_json);
 	drivetrainStateController->sb(pathFollower).wait();
+	printf("nextMove1\n");
 
 	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
 
+	printf("nextMove2\n");
 	turnTo(45_deg, 300_ms);
 
+	printf("nextMove3\n");
 	pathFollower->changePath(safe_close_awp_2_json);
 	drivetrainStateController->sb(pathFollower).wait();
+	printf("nextMove4\n");
 
 	pros::Task::delay(15000);
 }
 
 void closeRushMid(void *args) {
 	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
-
-	leftWingStateController->sb(std::make_shared<Wait>(leftWingOut, 300_ms));
 
 	intakeExtensionStateController->sb(deploySequence);
 
@@ -435,9 +421,7 @@ void initialize() {
 	// Initialize functions
 	initHardware();
 	initIntake();
-	initWings();
 	initBehaviors();
-	initCatapult();
 
 	pathFollower->addCommandMapping("intake", [&]() -> void {
 		intakeStateController->sb(intakeIntaking);
@@ -453,52 +437,6 @@ void initialize() {
 
 	pathFollower->addCommandMapping("outtake", [&]() -> void {
 		intakeStateController->sb(intakeEject);
-	});
-
-	pathFollower->addCommandMapping("leftWingOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-	});
-
-	pathFollower->addCommandMapping("leftWingIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-	});
-
-	pathFollower->addCommandMapping("rightWingOut", [&]() -> void {
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("rightWingIn", [&]() -> void {
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("awpOut", [&]() -> void {
-		awpStateController->sb(awpOut);
-	});
-
-	pathFollower->addCommandMapping("awpIn", [&]() -> void {
-		awpStateController->sb(awpIn);
-	});
-
-	pathFollower->addCommandMapping("hang", [&]() -> void {
-		hangStateController->sb(hangOut);
-	});
-
-	pathFollower->addCommandMapping("wingsOut", [&]() -> void {
-		leftWingStateController->sb(leftWingOut);
-		rightWingStateController->sb(rightWingOut);
-	});
-
-	pathFollower->addCommandMapping("wingsIn", [&]() -> void {
-		leftWingStateController->sb(leftWingIn);
-		rightWingStateController->sb(rightWingIn);
-	});
-
-	pathFollower->addCommandMapping("catapult", [&]() -> void {
-		catapultStateController->sb(catapultFire);
-	});
-
-	pathFollower->addCommandMapping("catapultStop", [&]() -> void {
-		catapultStateController->ud();
 	});
 
 	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX);
@@ -556,8 +494,6 @@ void autonomous() {
 	auton->setAuton(closeRushMidElim);
 #elif AUTON == 4
 	auton->setAuton(closeRushMid);
-#elif AUTON == 5
-	auton->setAuton(skills);
 #endif // !1
 
 	competitionController->sb(auton);
@@ -571,17 +507,6 @@ void autonomous() {
  * Runs during operator/teleop control
  */
 void opcontrol() {
-
-	// Causes the programming skills code to only run during skills
-#if AUTON == 5
-	robotMutex.take(TIMEOUT_MAX);
-	auton->setAuton(skills);
-	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
-		return master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
-	}));
-	robotMutex.give();
-	competitionController->wait();
-#endif
 
 	robotMutex.take(TIMEOUT_MAX);
 	competitionController->sb(teleop);

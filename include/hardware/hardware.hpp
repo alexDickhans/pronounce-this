@@ -63,9 +63,7 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors,
 	                          600.0 * (revolution / minute));
 
-	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, false);
-
-	pros::Motor_Group catapultMotors({7, -4});
+	pros::Motor intakeMotor(6, pros::E_MOTOR_GEARSET_18, true);
 
 	pros::ADIDigitalOut leftSolenoid('A', false);
 	pros::ADIDigitalOut rightSolenoid('B', false);
@@ -74,16 +72,9 @@ namespace Pronounce {
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 	// Inertial Measurement Unit
-	pros::Imu imu(3);
-	IMU imuOrientation(3);
-
-	pros::Distance distanceSensor(10);
-	pros::Distance hopperDistanceSensor(5);
-	pros::Distance catapultDistance(6);
+	Orientation imuOrientation(0.0);
 
 	pros::Mutex odometryMutex;
-
-	PT::TelemetryRadio telemetryRadio(2, new PT::PassThroughEncoding());
 
 	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
 
@@ -111,45 +102,6 @@ namespace Pronounce {
 		pros::Task::delay(50);
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
-
-		if (isSkills) {
-			Log("Skills");
-			if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			    pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake plugged in");
-				master->getController()->rumble(". . . . ");
-			}
-		} else {
-			Log("Competition");
-			if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			           pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult plugged in");
-				master->getController()->rumble("........");
-			}
-		}
-
-		if (pros::c::registry_get_plugged_type(imu._port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
-			imu.reset();
-			Log("Imu: calibrate");
-
-			while (imu.is_calibrating())
-				pros::Task::delay(50);
-
-			Log("Imu: done calibrating");
-			master->getController()->rumble(".");
-		}
 
 		Log("Hardware Init Done");
 	}
