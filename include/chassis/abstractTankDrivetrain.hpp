@@ -1,6 +1,5 @@
 #pragma once
 
-#include "abstractDrivetrain.hpp"
 #include "utils/utils.hpp"
 #include "units/units.hpp"
 #include <iostream>
@@ -16,7 +15,7 @@ namespace Pronounce {
 	 * 
 	 * @authors Alex Dickhans(ad101-lab)
 	 */
-	class AbstractTankDrivetrain : public AbstractDrivetrain {
+	class AbstractTankDrivetrain {
 	private:
 		/**
 		 * @brief The distance between the two drive sides
@@ -48,10 +47,17 @@ namespace Pronounce {
 
 		/**
 		 * @brief Get the current speed of the robot
+		 *
+		 * @return QVelocity The current speed of the robot
+		 */
+		virtual QVelocity getVelocity() { return 0.0; }
+
+		/**
+		 * @brief Get the current speed of the robot
 		 * 
 		 * @return QVelocity The current speed of the robot
 		 */
-		virtual QVelocity getSpeed() { return 0.0; }
+		[[deprecated("Use getVelocityInstead")]] virtual QVelocity getSpeed() { return getVelocity(); }
 
 		/**
 		 * @brief Get the Track Width distance 

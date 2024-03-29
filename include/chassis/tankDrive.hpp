@@ -1,13 +1,12 @@
 #pragma once
 
 #include "api.h"
-#include "hardwareDrivetrain.hpp"
 #include "abstractTankDrivetrain.hpp"
 #include "pros/motor_group.hpp"
 #include "Logger/logger.hpp"
 
 namespace Pronounce {
-	class TankDrivetrain : public AbstractTankDrivetrain, public HardwareDrivetrain {
+	class TankDrivetrain : public AbstractTankDrivetrain {
 	private:
 		pros::AbstractMotor& leftMotors;
 		pros::AbstractMotor& rightMotors;
@@ -17,7 +16,7 @@ namespace Pronounce {
 		TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
 		               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed);
 
-		QVelocity getSpeed() final {
+		QVelocity getVelocity() final {
 			return ((mean(leftMotors.get_actual_velocity_all()) + mean(rightMotors.get_actual_velocity_all())) /
 			        2.0) / 600.0 * this->getMaxSpeed();
 		}
@@ -29,7 +28,7 @@ namespace Pronounce {
 			Log("LeftVoltage: " + std::to_string(leftVoltage) + " RightVoltage: " + std::to_string(rightVoltage));
 		}
 
-		void reset() {
+		void reset() override {
 			Log("Reset Drivetrain Position");
 			this->leftMotors.tare_position_all();
 			this->rightMotors.tare_position_all();
