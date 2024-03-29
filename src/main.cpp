@@ -74,7 +74,6 @@ void far5BallRushMid(void *args) {
 	intakeStateController->sb(intakeIntaking);
 
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(mid_6_ball_1_json));
-	Log("PathFollower");
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	turnTo(-2_deg, 550_ms);
@@ -274,7 +273,6 @@ void safeCloseAWP(void *args) {
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
-	std::cout << "build" << std::endl;
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_json));
 	drivetrainStateController->sb(pathFollower)->wait();
 
@@ -455,7 +453,7 @@ void initialize() {
 #elif AUTON == 4
 		auton->setAuton(closeRushMid);
 #elif AUTON == 5
-		auton->setAuton(skills);
+//		auton->setAuton(skills);
 #endif // !1
 
 	// Initialize functions
@@ -526,7 +524,7 @@ void opcontrol() {
 	// Causes the programming skills code to only run during skills
 #if AUTON == 5
 	robotMutex.take(TIMEOUT_MAX);
-	auton->setAuton(skills);
+//	auton->setAuton(skills);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
 		return master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));

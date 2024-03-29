@@ -24,9 +24,9 @@ namespace PathPlanner {
 			QLength totalDistance = 0.0;
 			double totalT = 0.0;
 
-			for (int i = 0; i < motionProfiles.size()-1; i++) {
+			for (int i = 0; i < motionProfiles.size(); i++) {
 				QTime currentDuration = motionProfiles.at(i)->getDuration();
-				if (totalTime + currentDuration >= t) {
+				if (totalTime + currentDuration >= t || motionProfiles.size()-1 == i) {
 					auto profiledPoint = motionProfiles.at(i)->update(t - totalTime);
 
 					profiledPoint.targetDistance += totalDistance;

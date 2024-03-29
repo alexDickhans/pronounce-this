@@ -18,10 +18,10 @@ namespace Pronounce {
 
 	void initWinch() {
 		winch.set_zero_position_all(0.0);
-		winchCSequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_L2);}));
+		winchCSequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R2);}));
 		winchCSequence->addState(winchStateController, winchC);
 
-		winchASequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+		winchASequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_L2);}));
 		winchASequence->addState(winchStateController, winchA);
 	}
 }

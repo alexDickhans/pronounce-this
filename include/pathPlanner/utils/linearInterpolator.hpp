@@ -3,6 +3,8 @@
 #include <cmath>
 #include <vector>
 #include "../../units/units.hpp"
+#include <string>
+#include <iostream>
 
 // TODO: test code
 // TODO: Check implemntation
@@ -55,6 +57,7 @@ namespace PathPlanner {
 		 * @return double The value at that key
 		 */
 		[[nodiscard]] double get(double key) const {
+
 			if (values.empty()) {
 				return 0.0;
 			} else if (values.size() == 1) {
@@ -62,12 +65,12 @@ namespace PathPlanner {
 			}
 
 			if (key <= values.at(1).first || values.size() < 2) {
-				return values.at(0).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
+				return values.at(1).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * (key - values.at(1).first);
 			}
 
 			for (int i = 2; i < values.size(); i++) {
 				if (key <= values.at(i).first || i == values.size()-1) {
-					return values.at(i-1).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
+					return values.at(i).second + ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * (key - values.at(i).first);
 				}
 			}
 
@@ -84,18 +87,18 @@ namespace PathPlanner {
 
 			if (key <= values.at(1).first || values.size() < 2) {
 				double x = std::min((key - values.at(0).first), values.at(1).first - values.at(0).first);
-				return 0.5 * values.at(1).second + ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * x * x;
+				return x * values.at(0).second + 0.5 * ((values.at(1).second - values.at(0).second)/(values.at(1).first - values.at(0).first)) * x * x;
 			}
 
 			double total = 0.5 * (values.at(1).first - values.at(0).first) * (values.at(1).second - values.at(0).second);
 
 			for (int i = 2; i < values.size(); i++) {
 				if (key <= values.at(i).first || i == values.size()-1) {
-					double x = std::min((key - values.at(i-1).first), values.at(i).first - values.at(i-1).first);
+					double x = (key - values.at(i-1).first);
 					return total + x * values.at(i-1).second + 0.5 * ((values.at(i).second - values.at(i-1).second)/(values.at(i).first - values.at(i-1).first)) * x * x;
 				}
 
-				total += 0.5 * (values.at(i).first - values.at(i-1).first) * (values.at(i).second - values.at(i-1).second);
+				total = total + 0.5 * (values.at(i).first - values.at(i-1).first) * (values.at(i).second + values.at(i-1).second);
 			}
 
 			return total;
@@ -109,7 +112,7 @@ namespace PathPlanner {
 			std::string buf;
 
 			for (const auto &valuePair: values) {
-				buf += string_format("%f: %f", valuePair.first, valuePair.second);
+				buf += string_format("%f: %f\n", valuePair.first, valuePair.second);
 			}
 
 			return buf;

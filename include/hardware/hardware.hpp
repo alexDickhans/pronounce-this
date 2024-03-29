@@ -45,9 +45,9 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(Constants::trackWidth, 76.57632093_in / second, leftDriveMotors, rightDriveMotors,
 	                          600.0 * (revolution / minute));
 
-	pros::MotorGroup catapultMotors({1, -10});
+	pros::MotorGroup catapultMotors({-1, 10});
 
-	pros::MotorGroup winch({2}, pros::v5::MotorGears::red);
+	pros::MotorGroup winch({-2}, pros::v5::MotorGears::red);
 
 	pros::adi::DigitalOut frontLeftSolenoid('G', false);
 	pros::adi::DigitalOut frontRightSolenoid('F', false);
@@ -59,9 +59,8 @@ namespace Pronounce {
 	pros::Imu imu(14);
 	IMU imuOrientation(14);
 
-	pros::Distance distanceSensor(10);
 	pros::Distance hopperDistanceSensor(16);
-	pros::Distance catapultDistance(6);
+	pros::Distance catapultDistance(8);
 
 	ThreeWheelOdom threeWheelOdom(new OdomWheel(), new OdomWheel(), new OdomWheel(), &imuOrientation);
 

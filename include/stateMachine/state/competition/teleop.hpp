@@ -35,7 +35,7 @@ namespace Pronounce {
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_L2, [&]() -> void {
 				if (controller1->get_digital(E_CONTROLLER_DIGITAL_Y)) {
-					winchStateExtensionController->sb(winchCSequence);
+					winchStateExtensionController->sb(winchASequence);
 				} else {
 					frontLeftWingStateController->sb(std::make_shared<Until>(frontLeftWingOut, [=, this]() -> bool {
 						return !controller1->get_digital(E_CONTROLLER_DIGITAL_L2);
@@ -57,7 +57,7 @@ namespace Pronounce {
 
 			controller1->onPressed(E_CONTROLLER_DIGITAL_R2, [&]() -> void {
 				if (controller1->get_digital(E_CONTROLLER_DIGITAL_Y)) {
-					winchStateExtensionController->sb(winchASequence);
+					winchStateExtensionController->sb(winchCSequence);
 				} else {
 					intakeStateController->sb(std::make_shared<Until>(intakeEject, [&]() -> bool {
 						return !controller1->get_digital(E_CONTROLLER_DIGITAL_R2);
@@ -86,6 +86,10 @@ namespace Pronounce {
 		void exit() override {
 			Log("Exit");
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
+			backLeftWingStateController->ud();
+			backRightWingStateController->ud();
+			frontLeftWingStateController->ud();
+			frontRightWingStateController->ud();
 			drivetrainStateController->ud();
 			controller1->clearCallbacks();
 			controller2->clearCallbacks();

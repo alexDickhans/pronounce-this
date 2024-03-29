@@ -99,8 +99,6 @@ namespace PathPlanner {
 
 				timeToVelocityInterpolator.add(duration.getValue(), maxSpeedArray.at(i).velocity.getValue());
 			}
-
-			printf("%s", timeToVelocityInterpolator.to_string().c_str());
 		}
 
 		[[nodiscard]] std::pair<size_t, double> getTAtDistance(QLength distance) const {
@@ -170,7 +168,9 @@ namespace PathPlanner {
 
 			noCommands->processCommands(parsed_path["commands"]);
 
-			std::cout << "build" << noCommands->getDuration().Convert(second) << std::endl;
+			for (const auto &item: noCommands->getCommands()) {
+				std::cout << "build" << item.first << " " << item.second << std::endl;
+			}
 
 			return noCommands;
 		}
