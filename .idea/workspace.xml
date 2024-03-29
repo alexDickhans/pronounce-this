@@ -21,8 +21,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ac552432-c8f5-46ed-8eb6-39dee3aca9e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/teleop.hpp" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/behaviors/intake/initIntake.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/stateMachine/state/competition/enabled.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+>>>>>>> parent of cdf7061 (States stolen)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,8 +199,12 @@
       <workItem from="1708960187577" duration="1256000" />
       <workItem from="1708973569350" duration="29341000" />
       <workItem from="1709224710572" duration="235000" />
+<<<<<<< HEAD
       <workItem from="1709225050529" duration="23768000" />
       <workItem from="1709493866801" duration="4523000" />
+=======
+      <workItem from="1709225050529" duration="22938000" />
+>>>>>>> parent of cdf7061 (States stolen)
     </task>
     <servers />
   </component>
