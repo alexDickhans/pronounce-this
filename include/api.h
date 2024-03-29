@@ -63,7 +63,6 @@
 #include "pros/vision.h"
 
 #ifdef __cplusplus
-#include "hardwareAbstractions/aivision/aiVision.hpp"
 #include "pros/adi.hpp"
 #include "pros/colors.hpp"
 #include "pros/device.hpp"
