@@ -50,6 +50,7 @@ namespace PathPlanner {
 			ddy = dy.getDerivative();
 
 			length = 0.0;
+			distanceToT.add(0, 0);
 
 			for (int t = 0.0; t <= granularity; t += 1) {
 				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
@@ -63,6 +64,7 @@ namespace PathPlanner {
 		}
 
 		[[nodiscard]] double getTByLength(QLength distance) const {
+			Log(std::to_string(distance.getValue()));
 			return distanceToT.get(distance.getValue());
 		}
 

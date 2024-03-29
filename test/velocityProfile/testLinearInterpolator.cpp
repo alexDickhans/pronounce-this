@@ -15,7 +15,7 @@ int main() {
 
 //	std::cout << interpolator.to_string() << std::endl;
 
-	for (int i = 0; i <= 600; i++) {
+	for (int i = -100; i <= 600; i++) {
 
 		std::cout << "Time:" << static_cast<double>(i)/100 << " Velocity:"
 		          << interpolator.getIntegral(static_cast<double>(i)/100) << std::endl;

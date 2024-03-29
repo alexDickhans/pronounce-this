@@ -273,16 +273,21 @@ void safeCloseAWP(void *args) {
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
+	printf("nextMove\n");
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_json));
 	drivetrainStateController->sb(pathFollower)->wait();
+	printf("nextMove\n");
 
 	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
 
+	printf("nextMove\n");
 	turnTo(45_deg, 300_ms);
 
+	printf("nextMove\n");
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_2_json));
 	drivetrainStateController->sb(pathFollower)->wait();
 
+	printf("nextMove\n");
 	pros::Task::delay(15000);
 }
 
@@ -354,7 +359,6 @@ void tuneTurnPid(void *args) {
 
 	while (true) {
 		// Create stuff for exact delay
-		startTime = pros::millis();
 		startTimeMicros = pros::micros();
 
 		Log(string_format("Competition Status: %s",
@@ -363,13 +367,13 @@ void tuneTurnPid(void *args) {
 		                                                                         : pros::competition::is_autonomous()
 		                                                                           ? "Autonomous" : "Driver"));
 
-		robotMutex.take(TIMEOUT_MAX);
 		odometry.update();
 		competitionController->update();
-		robotMutex.give();
+
+		Log("Good");
 
 		// Wait a maximum of 10 milliseconds
-		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
+		pros::delay(10);
 
 		Log(string_format("Frame time: %s", std::to_string(pros::micros() - startTimeMicros).c_str()));
 	}
@@ -409,22 +413,7 @@ void tuneTurnPid(void *args) {
 
 	while (true) {
 		// Odometry
-		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string() + "\n" + std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
-
-		auto leftDriveTemps = leftDriveMotors.get_temperature_all();
-		auto rightDriveTemps = rightDriveMotors.get_temperature_all();
-
-		// Drivetrain
-		for (int i = 0; i < 4; i++) {
-			lv_table_set_cell_value(drivetrainTable.get(), i, 0,
-			                        (std::to_string(leftDriveTemps[i]) + " C").c_str());
-		}
-
-		for (int i = 0; i < 4; i++) {
-			lv_table_set_cell_value(drivetrainTable.get(), i, 1,
-			                        (std::to_string(rightDriveTemps[i]) + " C").c_str());
-		}
-
+		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string()).c_str());
 
 		pros::Task::delay(50);
 	}

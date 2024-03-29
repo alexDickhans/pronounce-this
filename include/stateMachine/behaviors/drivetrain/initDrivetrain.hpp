@@ -13,6 +13,7 @@
 #include "hardware/hardware.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 #include "chassis/tankDrive.hpp"
+#include "voltage.hpp"
 
 namespace Pronounce {
 
@@ -32,7 +33,7 @@ namespace Pronounce {
 	// Drivetrain states for driving around the field and shooting at the goal
 	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", odometry, master, drivetrain, 0.01, 61_in / second);
 
-	auto drivetrainStopped = std::make_shared<JoystickDrivetrain>("DrivetrainStopped", odometry, master, drivetrain, 0.02, 0.0);
+	auto drivetrainStopped = std::make_shared<VoltageDrivetrain>(0, 0, drivetrain);
 
 	auto drivetrainStateController = std::make_shared<StateController>("DrivetrainStateController", drivetrainStopped);
 

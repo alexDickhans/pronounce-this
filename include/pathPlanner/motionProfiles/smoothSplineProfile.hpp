@@ -102,6 +102,8 @@ namespace PathPlanner {
 		}
 
 		[[nodiscard]] std::pair<size_t, double> getTAtDistance(QLength distance) const {
+
+//			return {0, bezierSegment.at(0).getTByLength(distance)};
 			QLength distanceRemaining = distance;
 
 			for (int i = 0; i < bezierSegment.size(); i++) {
@@ -168,10 +170,6 @@ namespace PathPlanner {
 
 			noCommands->processCommands(parsed_path["commands"]);
 
-			for (const auto &item: noCommands->getCommands()) {
-				std::cout << "build" << item.first << " " << item.second << std::endl;
-			}
-
 			return noCommands;
 		}
 
@@ -181,11 +179,10 @@ namespace PathPlanner {
 
 			MotionProfilePoint point;
 
-			auto [index, targetT] = getTAtDistance(point.targetDistance);
-
 			double invertedMultiplier = this->bezierSegment.at(0).isReversed() ? -1 : 1;
 
 			point.targetDistance = timeToVelocityInterpolator.getIntegral(t.getValue()) * invertedMultiplier;
+			auto [index, targetT] = getTAtDistance(point.targetDistance);
 			point.targetT = static_cast<double>(index) + targetT;
 			point.targetSpeed = timeToVelocityInterpolator.get(t.getValue()) * invertedMultiplier;
 			auto targetPoint = bezierSegment.at(index).evaluate(targetT);

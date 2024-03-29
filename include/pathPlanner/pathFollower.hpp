@@ -70,9 +70,11 @@ namespace PathPlanner {
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
-
+			Log("update1");
 			auto target = motionProfile->update(time);
+			Log("update2");
 			auto futureTarget = motionProfile->update(time + 10_ms);
+			Log("update3");
 
 			double index = target.targetT;
 
@@ -84,6 +86,7 @@ namespace PathPlanner {
 			}
 
 			std::pair<QVelocity, QVelocity> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
+
 			std::pair<QVelocity, QVelocity> futureDriveSpeeds = this->getChassisSpeeds(futureTarget.targetSpeed, futureTarget.targetCurvature);
 			std::pair<QAcceleration, QAcceleration> driveAccel = {(futureDriveSpeeds.first - driveSpeeds.first)/10_ms, (futureDriveSpeeds.second - driveSpeeds.second)/10_ms};
 
@@ -106,7 +109,7 @@ namespace PathPlanner {
 		}
 
 		bool isDone() override {
-			return pros::millis() * 1_ms - startTime > this->motionProfile->getDuration();
+			return (pros::millis() * 1_ms - startTime) > this->motionProfile->getDuration();
 		}
 
 		std::pair<QVelocity, QVelocity> getChassisSpeeds(QVelocity speed, QCurvature curvature) {

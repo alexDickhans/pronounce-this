@@ -18,7 +18,7 @@ namespace PathPlanner {
 		                                                                                                profileConstraints(
 				                                                                                                profileConstraints) {}
 
-		const Pronounce::ProfileConstraints &getProfileConstraints() const {
+		[[nodiscard]] const Pronounce::ProfileConstraints &getProfileConstraints() const {
 			return profileConstraints;
 		}
 
