@@ -29,7 +29,7 @@ namespace Pronounce {
 
 	pros::Mutex robotMutex;
 
-	bool isSkills = AUTON == 5;
+	constexpr bool isSkills = AUTON == 5;
 
 #ifndef SIM
 	RobotJoystick *master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
@@ -66,6 +66,21 @@ namespace Pronounce {
 
 	OdomFuser odometry(threeWheelOdom);
 
+	std::string checkPorts(const std::unordered_map<uint16_t, pros::DeviceType>& devices, std::string startString = "") {
+
+		for (const auto &device: devices) {
+			if (pros::c::registry_get_plugged_type(device.first-1) != static_cast<int>(device.second)) {
+				if (startString.empty()) {
+					startString.append(std::to_string(device.first));
+				} else {
+					startString.append(string_format(", %u", device.first));
+				}
+			}
+		}
+
+		return startString;
+	}
+
 	void initHardware() {
 		Log("Hardware Init");
 		leftDriveMotors.set_gearing_all(pros::MotorGears::blue);
@@ -85,37 +100,25 @@ namespace Pronounce {
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
 
+		std::string portsReport = checkPorts(Constants::bothDevices);
 		if (isSkills) {
 			Log("Skills");
-
-			if (pros::c::registry_get_plugged_type(catapultMotors.get_port_all().at(0) - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			    pros::c::registry_get_plugged_type(catapultMotors.get_port_all().at(1) - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(intakeMotors.get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake plugged in");
-				master->getController()->rumble(". . . . ");
-			}
+			portsReport = checkPorts(Constants::skillsDevices, portsReport);
 		} else {
 			Log("Match");
-
-			if (pros::c::registry_get_plugged_type(intakeMotors.get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(catapultMotors.get_port_all().at(0) - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			           pros::c::registry_get_plugged_type(catapultMotors.get_port_all().at(1) - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult plugged in");
-				master->getController()->rumble("........");
-			}
+			portsReport = checkPorts(Constants::matchDevices, portsReport);
+		}
+		if (portsReport.empty()) {
+			master->getController()->set_text(0, 0, "All good");
+		} else {
+			master->getController()->set_text(0, 0, portsReport.c_str());
+			pros::Task::delay(50);
+			master->getController()->rumble("-.-.-.-.");
 		}
 
-		if (imu.is_installed() && isSkills) {
+		Log(string_format("Ports missing: %s", portsReport.c_str()));
+
+		if ((imu.is_installed() && pros::competition::is_disabled()) || isSkills) {
 			imu.reset();
 			Log("Imu: calibrate");
 
@@ -123,7 +126,6 @@ namespace Pronounce {
 				pros::Task::delay(50);
 
 			Log("Imu: done calibrating");
-			master->getController()->rumble(".");
 		} else {
 			Log("ERROR Imu: Not installed")
 		}
