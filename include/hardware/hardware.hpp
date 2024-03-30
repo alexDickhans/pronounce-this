@@ -115,7 +115,7 @@ namespace Pronounce {
 			}
 		}
 
-		if (pros::c::registry_get_plugged_type(imu.get_port() - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU && isSkills) {
+		if (imu.is_installed() && isSkills) {
 			imu.reset();
 			Log("Imu: calibrate");
 
@@ -124,6 +124,8 @@ namespace Pronounce {
 
 			Log("Imu: done calibrating");
 			master->getController()->rumble(".");
+		} else {
+			Log("ERROR Imu: Not installed")
 		}
 
 		Log("Hardware Init Done");
