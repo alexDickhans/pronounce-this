@@ -57,7 +57,7 @@ namespace Pronounce {
 	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit
 	pros::Imu imu(14);
-	IMU imuOrientation(14);
+	IMU imuOrientation(imu);
 
 	pros::Distance hopperDistanceSensor(16);
 	pros::Distance catapultDistance(8);
