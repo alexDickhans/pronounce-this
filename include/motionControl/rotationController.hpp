@@ -13,7 +13,7 @@ namespace Pronounce
 	private:
 		pros::Mutex& drivetrainMutex;
 		PID rotationPID;
-		AbstractTankDrivetrain& drivetrain;
+		TankDrivetrain& drivetrain;
 		ContinuousOdometry& odometry;
 		Angle target;
 
@@ -22,7 +22,7 @@ namespace Pronounce
 		double idleSpeed = 0.0;
 
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, TankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTarget(target.Convert(radian));
 			this->idleSpeed = idleSpeed;
 			this->target = target;
@@ -33,11 +33,10 @@ namespace Pronounce
 			rotationPID.reset();
 			rotationPID.setTarget(target.Convert(radian));
 
-			beforeBrakeMode = leftDriveMotors.get_brake_mode();
+			beforeBrakeMode = drivetrain.getBrakeMode();
 
 			drivetrain.tankSteerVoltage(0, 0);
-			leftDriveMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
-			rightDriveMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.setBrakeMode(pros::MotorBrake::coast);
 		}
 
 		void update() {
@@ -47,8 +46,7 @@ namespace Pronounce
 		}
 
 		void exit() {
-			leftDriveMotors.set_brake_mode_all(beforeBrakeMode);
-			rightDriveMotors.set_brake_mode_all(beforeBrakeMode);
+			drivetrain.setBrakeMode(beforeBrakeMode);
 
 			leftDriveMotors.tare_position();
 			rightDriveMotors.tare_position();
@@ -60,11 +58,7 @@ namespace Pronounce
 			return false; // rotationPID.getError() < (1_deg).Convert(radian) && rotationPID.getDerivitive() < 0.00005;
 		}
 
-		~RotationController();
+		~RotationController() = default;
 	};
-
-	RotationController::~RotationController()
-	{
-	}
 	
 } // namespace Pronounce
