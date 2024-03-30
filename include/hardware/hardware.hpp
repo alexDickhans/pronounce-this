@@ -42,8 +42,8 @@ namespace Pronounce {
 	pros::MotorGroup leftDriveMotors({-18, -19, -20}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	pros::MotorGroup rightDriveMotors({11, 12, 13}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 
-	TankDrivetrain drivetrain(Constants::trackWidth, 76.57632093_in / second, leftDriveMotors, rightDriveMotors,
-	                          600.0 * (revolution / minute));
+	TankDrivetrain drivetrain(Constants::trackWidth, Constants::maxSpeed, leftDriveMotors, rightDriveMotors,
+	                          Constants::driveInputRpm);
 
 	pros::MotorGroup catapultMotors({-1, 10});
 
