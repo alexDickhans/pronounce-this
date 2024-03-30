@@ -4,7 +4,6 @@
 #include "stateMachine/behavior.hpp"
 #include "utils/utils.hpp"
 #include <cmath>
-#include "utils/runningAverage.hpp"
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"

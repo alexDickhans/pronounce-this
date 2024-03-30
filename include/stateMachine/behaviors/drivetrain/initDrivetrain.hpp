@@ -6,7 +6,6 @@
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
 #include "odometry/continuousOdometry/continuousOdometry.hpp"
-#include "utils/runningAverage.hpp"
 #include "odometry/odomFuser.hpp"
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 #include "motionControl/rotationController.hpp"

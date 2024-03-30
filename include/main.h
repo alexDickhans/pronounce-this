@@ -57,7 +57,6 @@
 // Utils
 #include "utils/point.hpp"
 #include "utils/pose2d.hpp"
-#include "utils/runningAverage.hpp"
 #include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
 #include "utils/vector.hpp"

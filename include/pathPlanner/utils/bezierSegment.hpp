@@ -75,8 +75,8 @@ namespace PathPlanner {
 		[[nodiscard]] QCurvature getMaxCurvature(int granularity = 20) const {
 			QCurvature maxCurvature = 0.0;
 
-			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
-				QCurvature curvature = this->getCurvature(t).getValue();
+			for (size_t i = 0; i <= granularity; i++) {
+				QCurvature curvature = this->getCurvature(static_cast<double>(i)/granularity).getValue();
 				maxCurvature = std::max(abs(curvature.getValue()), maxCurvature.getValue());
 			}
 
