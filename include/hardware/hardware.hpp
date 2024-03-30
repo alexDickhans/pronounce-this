@@ -45,16 +45,16 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(Constants::trackWidth, Constants::maxSpeed, leftDriveMotors, rightDriveMotors,
 	                          Constants::driveInputRpm);
 
-	pros::MotorGroup catapultMotors({-1, 10});
+	pros::MotorGroup catapultMotors({-1, 10}, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
-	pros::MotorGroup winch({-2}, pros::v5::MotorGears::red);
+	pros::MotorGroup winch({-2}, pros::v5::MotorGears::red, pros::MotorEncoderUnits::rotations);
 
 	pros::adi::DigitalOut frontLeftSolenoid('G', false);
 	pros::adi::DigitalOut frontRightSolenoid('F', false);
 	pros::adi::DigitalOut backLeftSolenoid('D', false);
 	pros::adi::DigitalOut backRightSolenoid('E', false);
 
-	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue);
+	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit
 	pros::Imu imu(14);
 	IMU imuOrientation(14);
@@ -75,7 +75,7 @@ namespace Pronounce {
 
 		drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
-		intakeMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+		intakeMotors.set_brake_mode_all(pros::MotorBrake::coast);
 
 		threeWheelOdom.setLeftOffset(10_in / 1.5);
 		threeWheelOdom.setRightOffset(10.0_in / 1.5);
