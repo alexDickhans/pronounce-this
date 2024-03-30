@@ -103,8 +103,7 @@ namespace PathPlanner {
 
 		[[nodiscard]] std::pair<size_t, double> getTAtDistance(QLength distance) const {
 
-//			return {0, bezierSegment.at(0).getTByLength(distance)};
-			QLength distanceRemaining = distance;
+			QLength distanceRemaining = Qabs(distance);
 
 			for (int i = 0; i < bezierSegment.size(); i++) {
 				auto segmentLength = Qabs(bezierSegment.at(i).getDistance());

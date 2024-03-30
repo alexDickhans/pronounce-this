@@ -106,14 +106,17 @@ namespace Pronounce {
 			return currentBehavior == nullptr;
 		}
 
-		void waitUntilDone() {
-			while(!this->isDone()) {
+		void waitUntilDone(uint32_t timeout = 15000) {
+			auto timeoutStartTime = pros::millis();
+			while(!this->isDone() && pros::millis() - timeoutStartTime <= timeout) {
 				pros::Task::delay(10);
+				Log("Waiting good");
 			}
+			Log("Waiting done");
 		}
 
-		void wait() {
-			waitUntilDone();
+		void wait(uint32_t timeout = 15000) {
+			waitUntilDone(timeout);
 		}
 
 		/**

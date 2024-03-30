@@ -50,7 +50,14 @@ namespace PathPlanner {
 		void setMotionProfile(const std::shared_ptr<AbstractMotionProfile> &motionProfile) {
 			movingMutex.lock();
 			PathFollower::motionProfile = motionProfile;
-			movingMutex.give();
+			commands.clear();
+			for (const auto &command: motionProfile->getCommands()) {
+				if (commandMap.count(command.second) > 0) {
+					Log(string_format("%f, %s", command.first, command.second.c_str()));
+					commands.emplace_back(command.first, commandMap[command.second]);
+				}
+			}
+			movingMutex.unlock();
 		}
 
 		void addCommandMapping(const std::string& name, std::function<void()> function) {
@@ -70,20 +77,22 @@ namespace PathPlanner {
 
 		void update() override {
 			QTime time = pros::millis() * 1_ms - startTime;
-			Log("update1");
 			auto target = motionProfile->update(time);
-			Log("update2");
 			auto futureTarget = motionProfile->update(time + 10_ms);
-			Log("update3");
 
 			double index = target.targetT;
+			Log(std::to_string(index));
 
-			if (commands.size() > commandsIndex) {
-				if (commands.at(commandsIndex).first < index) {
-					commands.at(commandsIndex).second();
-					commandsIndex ++;
-				}
+			for(; commands.size() > commandsIndex && commands.at(commandsIndex).first <= index; commandsIndex++) {
+				commands.at(commandsIndex).second();
+				Log(std::to_string(commands.at(commandsIndex).first));
 			}
+
+//			if (commands.size() > commandsIndex) {
+//				if (commands.at(commandsIndex).first < index) {
+//					commandsIndex ++;
+//				}
+//			}
 
 			std::pair<QVelocity, QVelocity> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
 

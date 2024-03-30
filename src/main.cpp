@@ -275,7 +275,7 @@ void safeCloseAWP(void *args) {
 	intakeStateController->sb(intakeIntaking);
 	printf("nextMove\n");
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_json));
-	drivetrainStateController->sb(pathFollower)->wait();
+	drivetrainStateController->sb(pathFollower)->wait(2000);
 	printf("nextMove\n");
 
 	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
@@ -517,6 +517,8 @@ void autonomous() {
 
 	Log(string_format("Auton Init: %d", AUTON));
 	competitionController->sb(auton);
+
+	pros::Task::delay(60000);
 }
 
 // !SECTION
