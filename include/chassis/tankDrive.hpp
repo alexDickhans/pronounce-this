@@ -18,7 +18,7 @@ namespace Pronounce {
 
 		QVelocity getVelocity() final {
 			return ((mean(leftMotors.get_actual_velocity_all()) + mean(rightMotors.get_actual_velocity_all())) /
-			        2.0) / 600.0 * this->getMaxSpeed();
+			        2.0) / maxMotorSpeed.Convert(revolution/minute) * this->getMaxSpeed();
 		}
 
 		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) override {
