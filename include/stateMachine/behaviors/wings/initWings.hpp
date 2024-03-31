@@ -14,10 +14,10 @@ namespace Pronounce {
 	auto backRightWingIn = std::make_shared<Wing>("WingIn", backRightSolenoid, false);
 	auto backRightWingOut = std::make_shared<Wing>("WingOut", backRightSolenoid, true);
 
-	auto frontLeftWingStateController = std::make_shared<StateController>("WingsStateController", frontLeftWingIn);
-	auto frontRightWingStateController = std::make_shared<StateController>("WingsStateController", frontRightWingIn);
-	auto backLeftWingStateController = std::make_shared<StateController>("HangReleaseStateController", backLeftWingIn);
-	auto backRightWingStateController = std::make_shared<StateController>("HangReleaseStateController", backRightWingIn);
+	auto frontLeftWingStateController = std::make_shared<StateController>("FrontLeftWing", frontLeftWingIn);
+	auto frontRightWingStateController = std::make_shared<StateController>("FrontRightWin", frontRightWingIn);
+	auto backLeftWingStateController = std::make_shared<StateController>("BackLeftWing", backLeftWingIn);
+	auto backRightWingStateController = std::make_shared<StateController>("BackRightWing", backRightWingIn);
 
 	void initWings() {
 		Log("Wings Init");

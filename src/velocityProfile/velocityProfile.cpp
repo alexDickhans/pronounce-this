@@ -1,4 +1,4 @@
-#include "velocityProfile.hpp"
+#include "velocityProfile/velocityProfile.hpp"
 
 namespace Pronounce {
 

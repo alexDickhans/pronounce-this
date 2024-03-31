@@ -47,6 +47,10 @@ class IMU : public Orientation {
 			}
 		}
 
+		void setRotation(Angle rotation) {
+			imu.set_rotation(rotation.Convert(degree));
+		}
+
 		~IMU() {}
 	};
 } // namespace Pronounce

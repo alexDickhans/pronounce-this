@@ -17,7 +17,7 @@ int main() {
 			                                       100_in / second /
 			                                       second, 0.0},
 			                                      0_in / second,
-			                                      1_in / second);
+			                                      50_in / second);
 
 	QTime frameTime = 10_ms;
 

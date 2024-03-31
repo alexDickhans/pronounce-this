@@ -58,6 +58,7 @@ namespace Pronounce
 		return sum/array.size();
 	}
 
+#ifndef SIM
 	double getDistanceSensorMedian(pros::Distance &distance, int samples) {
 		double array[samples];
 
@@ -70,6 +71,7 @@ namespace Pronounce
 
 		return findMedian(array, samples);
 	}
+#endif
 
 	unsigned int factorial(const unsigned int& x) {
 		if (x < 2)

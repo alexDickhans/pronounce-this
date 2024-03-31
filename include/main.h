@@ -21,29 +21,18 @@
 #include "chassis/tankDrive.hpp"
 
 // FeedbackControllers
-#include "feedbackControllers/bangBang.hpp"
 #include "feedbackControllers/pid.hpp"
 #include "feedbackControllers/feedbackController.hpp"
-#include "feedbackControllers/flywheelPID.hpp"
 
 // Motion control
 #include "motionControl/rotationController.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 
 // Orientation
-#include "odometry/orientation/avgOrientation.hpp"
 #include "odometry/orientation/imu.hpp"
 #include "odometry/orientation/orientation.hpp"
 
-// Continuous Odometry
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
-#include "odometry/continuousOdometry/threeWheelOdom.hpp"
-
 #include "pathPlanner/pathPlanner.hpp"
-
-// Position
-#include "position/motorOdom.hpp"
-#include "position/odomWheel.hpp"
 
 // State Machine
 #include "stateMachine/stateMachine.hpp"

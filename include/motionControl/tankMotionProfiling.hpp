@@ -7,7 +7,6 @@
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "stateMachine/behavior.hpp"
 #include "time/robotTime.hpp"
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
 
 namespace Pronounce {
 	class TankMotionProfiling : public Behavior {
@@ -19,7 +18,7 @@ namespace Pronounce {
 
 		QTime startTime = 0.0;
 
-		ContinuousOdometry* odometry;
+		std::function<Angle()> angleFunction;
 
 		Angle targetAngle = 0.0;
 
@@ -40,13 +39,13 @@ namespace Pronounce {
 				std::string name,
 				TankDrivetrain* drivetrain,
 				VelocityProfile* velocityProfile,
-				ContinuousOdometry* odometry,
+				std::function<Angle()> angleFunction,
 				FeedbackController* distancePid,
 				pros::Mutex& drivetrainMutex) :
 					Behavior(name),
 					drivetrain(drivetrain),
 					velocityProfile(velocityProfile),
-					odometry(odometry),
+					angleFunction(angleFunction),
 					drivetrainMutex(drivetrainMutex),
 					distancePid(distancePid) {
 
@@ -57,7 +56,7 @@ namespace Pronounce {
 				TankDrivetrain* drivetrain,
 				ProfileConstraints profileConstraints,
 				QLength distance,
-				ContinuousOdometry* odometry,
+				std::function<Angle()> angleFunction,
 				FeedbackController* distancePid,
 				pros::Mutex& drivetrainMutex,
 				QCurvature curvature,
@@ -66,7 +65,7 @@ namespace Pronounce {
 				QVelocity endSpeed = 0.0) :
 					Behavior(std::move(name)),
 					drivetrain(drivetrain),
-					odometry(odometry),
+					angleFunction(angleFunction),
 					drivetrainMutex(drivetrainMutex),
 					distancePid(distancePid),
 					feedforwardFunction(std::move(feedforwardFunction)) {
@@ -81,7 +80,7 @@ namespace Pronounce {
 				TankDrivetrain* drivetrain,
 				ProfileConstraints profileConstraints,
 				QLength distance,
-				ContinuousOdometry* odometry,
+				std::function<Angle()> angleFunction,
 				PID* distancePid,
 				pros::Mutex& drivetrainMutex,
 				QCurvature curvature,
@@ -92,7 +91,7 @@ namespace Pronounce {
 				QVelocity endSpeed = 0.0) :
 					Behavior(std::move(name)),
 					drivetrain(drivetrain),
-					odometry(odometry),
+					angleFunction(angleFunction),
 					drivetrainMutex(drivetrainMutex),
 					targetAngle(targetAngle),
 					turnPid(turnPid),
@@ -162,7 +161,7 @@ namespace Pronounce {
 
 				turnPid->setTarget(targetAngleWithOffset.getValue());
 				
-				turnPower = turnPid->update(odometry->getAngle().getValue());
+				turnPower = turnPid->update(angleFunction().Convert(radian));
 
 				leftVoltage += turnPower;
 				rightVoltage -= turnPower;

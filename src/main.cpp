@@ -26,7 +26,7 @@ ASSET(close_mid_rush_elim_json);
 ASSET(close_rush_mid_2_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
-	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain, odometry, turningPid, angle,
+	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain, [&]() -> Angle {return imuOrientation.getAngle(); }, turningPid, angle,
 	                                                          drivetrainMutex);
 
 	drivetrainStateController->sb(angleRotation);
@@ -40,7 +40,7 @@ void turnTo(Angle angle, QTime waitTimeMS) {
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QVelocity initialSpeed = 0.0,
           QVelocity endSpeed = 0.0) {
 	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
+			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, [&]() -> Angle {return imuOrientation.getAngle(); },
 			                                      &distancePid,
 			                                      drivetrainMutex, curvature, drivetrainFeedforward, initialSpeed, endSpeed))->wait();
 }
@@ -51,7 +51,7 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 	Log("Done2");
 
 	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, &odometry,
+			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, [&]() -> Angle {return imuOrientation.getAngle(); },
 			                                      &distancePid,
 			                                      drivetrainMutex, curvature, drivetrainFeedforward, startAngle, &movingTurnPid, initialSpeed,
 			                                      endSpeed))->wait();
@@ -63,7 +63,7 @@ void far5BallRushMid(void *args) {
 
 	Log("5 ball start");
 
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 80.7_deg));
+	imuOrientation.setRotation(80.7_deg);
 
 	intakeExtensionStateController->sb(deploySequence);
 	frontRightWingStateController->sb(std::make_shared<Wait>(frontRightWingOut, 200_ms));
@@ -265,34 +265,24 @@ void far5BallAWP(void *args) {
 //}
 
 void safeCloseAWP(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 45_deg));
+	imuOrientation.setRotation(135_deg);
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(-10_in, defaultProfileConstraints, 0.0);
+	move(10_in, defaultProfileConstraints, 0.0);
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
 	printf("nextMove\n");
 	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_json));
-	drivetrainStateController->sb(pathFollower)->wait(2000);
-	printf("nextMove\n");
-
-	move(-8_in, defaultProfileConstraints, 0.0, 35_deg);
-
-	printf("nextMove\n");
-	turnTo(45_deg, 300_ms);
-
-	printf("nextMove\n");
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_2_json));
-	drivetrainStateController->sb(pathFollower)->wait();
+	drivetrainStateController->sb(pathFollower);
 
 	printf("nextMove\n");
 	pros::Task::delay(15000);
 }
 
 void closeRushMid(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, -75.7_deg));
+	imuOrientation.setRotation(-75.7_deg);
 
 	frontLeftWingStateController->sb(std::make_shared<Wait>(frontLeftWingOut, 300_ms));
 
@@ -336,8 +326,8 @@ void closeRushMidElim(void *args) {
 }
 
 void tuneTurnPid(void *args) {
-	threeWheelOdom.reset(Pose2D(0_in, 0_in, 0.0_deg));
-	while (1) {
+	imuOrientation.setRotation(0.0_deg);
+	for (int i = 0; i < 5; ++i) {
 		turnTo(180_deg, 2_s);
 		turnTo(0.0_deg, 2_s);
 	}
@@ -369,7 +359,7 @@ void tuneTurnPid(void *args) {
 		                                                                           ? "Autonomous" : "Driver"));
 
 		robotMutex.lock();
-		odometry.update();
+		imuOrientation.update();
 		competitionController->update();
 		robotMutex.unlock();
 
@@ -415,8 +405,9 @@ void tuneTurnPid(void *args) {
 	// Flywheels
 
 	while (true) {
+		Log("Start");
 		// Odometry
-		lv_label_set_text(odomLabel.get(), (odometry.getPosition().to_string() + "\n" + std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
+		lv_label_set_text(odomLabel.get(), (std::to_string(imuOrientation.getAngle().Convert(degree)) + "\n" + std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
 
 		auto leftDriveTemps = leftDriveMotors.get_temperature_all();
 		auto rightDriveTemps = rightDriveMotors.get_temperature_all();
@@ -431,7 +422,7 @@ void tuneTurnPid(void *args) {
 			lv_table_set_cell_value(drivetrainTable.get(), i, 1,
 			                        (std::to_string(rightDriveTemps[i]) + " C").c_str());
 		}
-
+		Log("End");
 
 		pros::Task::delay(50);
 	}

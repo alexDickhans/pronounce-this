@@ -110,9 +110,7 @@ namespace Pronounce {
 			auto timeoutStartTime = pros::millis();
 			while(!this->isDone() && pros::millis() - timeoutStartTime <= timeout) {
 				pros::Task::delay(10);
-				Log("Waiting good");
 			}
-			Log("Waiting done");
 		}
 
 		void wait(uint32_t timeout = 15000) {

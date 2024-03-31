@@ -14,7 +14,7 @@ namespace Pronounce {
 	auto winchASequence = std::make_shared<Sequence>("WinchSequence");
 
 	auto winchStateController = std::make_shared<StateController>("Winch", winchStow);
-	auto winchStateExtensionController = std::make_shared<StateController>("Winch", winchStow);
+	auto winchStateExtensionController = std::make_shared<StateController>("WinchExtension", std::make_shared<Behavior>());
 
 	void initWinch() {
 		winch.set_zero_position_all(0.0);

@@ -9,7 +9,7 @@ namespace Pronounce {
 		pros::AbstractMotor& motor;
 		double target;
 	public:
-		Winch(pros::AbstractMotor &motor, double target) : motor(motor), target(target) {}
+		Winch(pros::AbstractMotor &motor, double target) : motor(motor), target(target), Behavior("Winch" + std::to_string(target)) {}
 
 		void initialize() override {
 			motor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);

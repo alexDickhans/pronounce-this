@@ -10,7 +10,6 @@
 #include "feedbackControllers/feedbackController.hpp"
 #include "api.h"
 #include <cmath>
-#include "motionProfiles/simpleSplineProfile.hpp"
 #include "motionProfiles/abstractMotionProfile.hpp"
 #include "utils/utils.hpp"
 #include "json/asset.hpp"
@@ -85,14 +84,7 @@ namespace PathPlanner {
 
 			for(; commands.size() > commandsIndex && commands.at(commandsIndex).first <= index; commandsIndex++) {
 				commands.at(commandsIndex).second();
-				Log(std::to_string(commands.at(commandsIndex).first));
 			}
-
-//			if (commands.size() > commandsIndex) {
-//				if (commands.at(commandsIndex).first < index) {
-//					commandsIndex ++;
-//				}
-//			}
 
 			std::pair<QVelocity, QVelocity> driveSpeeds = this->getChassisSpeeds(target.targetSpeed, target.targetCurvature);
 
@@ -113,6 +105,7 @@ namespace PathPlanner {
 		}
 
 		void exit() override {
+			Log("exit");
 			drivetrain.tankSteerVoltage(0.0, 0.0);
 			movingMutex.unlock();
 		}

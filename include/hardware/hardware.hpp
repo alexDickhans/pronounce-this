@@ -2,24 +2,19 @@
 
 #include "api.h"
 #include "odometry/orientation/imu.hpp"
-#include "odometry/orientation/avgOrientation.hpp"
-#include "position/motorOdom.hpp"
-#include "odometry/continuousOdometry/threeWheelOdom.hpp"
-#include "odometry/odomFuser.hpp"
 #include "pros/rtos.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "pros/apix.h"
 #include <map>
 #include "auton.h"
 #include "units/units.hpp"
-#include "odometry/orientation/gpsOrientation.hpp"
 #include "constants.hpp"
 #include "pros/motor_group.hpp"
 
 #ifndef SIM
 
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
 #else
 #include "hardwareAbstractions/joystick/simJoystick.hpp"
@@ -62,10 +57,6 @@ namespace Pronounce {
 	pros::Distance hopperDistanceSensor(16);
 	pros::Distance catapultDistance(8);
 
-	ThreeWheelOdom threeWheelOdom(new OdomWheel(), new OdomWheel(), new OdomWheel(), &imuOrientation);
-
-	OdomFuser odometry(threeWheelOdom);
-
 	std::string checkPorts(const std::unordered_map<uint16_t, pros::DeviceType>& devices, std::string startString = "") {
 
 		for (const auto &device: devices) {
@@ -92,14 +83,6 @@ namespace Pronounce {
 
 		intakeMotors.set_brake_mode_all(pros::MotorBrake::coast);
 
-		threeWheelOdom.setLeftOffset(10_in / 1.5);
-		threeWheelOdom.setRightOffset(10.0_in / 1.5);
-		threeWheelOdom.setBackOffset(0.0_in);
-
-		pros::Task::delay(50);
-
-		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
-
 		std::string portsReport = checkPorts(Constants::bothDevices);
 		if (isSkills) {
 			Log("Skills");
@@ -108,6 +91,7 @@ namespace Pronounce {
 			Log("Match");
 			portsReport = checkPorts(Constants::matchDevices, portsReport);
 		}
+
 		if (portsReport.empty()) {
 			master->getController()->set_text(0, 0, "All good");
 		} else {
@@ -132,4 +116,4 @@ namespace Pronounce {
 
 		Log("Hardware Init Done");
 	}
-} // namespace Pronoucne
+} // namespace Pronounce

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
 #include "stateMachine/behavior.hpp"
 #include "utils/utils.hpp"
 #include <cmath>
@@ -15,12 +14,6 @@ namespace Pronounce {
 		double deadband = 0.02;
 		QVelocity maxDriveSpeed;
 
-		/**
-		 * @brief Used for field oriented and targeting control
-		 *
-		 */
-		ContinuousOdometry& odometry;
-
 		AbstractJoystick* controller;
 
 		AbstractTankDrivetrain& drivetrain;
@@ -33,7 +26,7 @@ namespace Pronounce {
 
 	public:
 
-		JoystickDrivetrain(std::string name, ContinuousOdometry& odometry, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, QVelocity maxSpeed) : Behavior(name), odometry(odometry), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, AbstractJoystick* controller, AbstractTankDrivetrain& drivetrain, double deadband, QVelocity maxSpeed) : Behavior(name), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->maxDriveSpeed = maxSpeed;
 			this->arcade = false;

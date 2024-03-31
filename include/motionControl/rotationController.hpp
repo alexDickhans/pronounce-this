@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "chassis/abstractTankDrivetrain.hpp"
 #include "feedbackControllers/pid.hpp"
 #include "stateMachine/behavior.hpp"
@@ -14,7 +16,7 @@ namespace Pronounce
 		pros::Mutex& drivetrainMutex;
 		PID rotationPID;
 		TankDrivetrain& drivetrain;
-		ContinuousOdometry& odometry;
+		std::function<Angle()> angleFunction;
 		Angle target;
 
 		pros::MotorBrake beforeBrakeMode;
@@ -22,7 +24,7 @@ namespace Pronounce
 		double idleSpeed = 0.0;
 
 	public:
-		RotationController(std::string name, TankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name), drivetrainMutex(drivetrainMutex) {
 			rotationPID.setTarget(target.Convert(radian));
 			this->idleSpeed = idleSpeed;
 			this->target = target;
@@ -40,7 +42,7 @@ namespace Pronounce
 		}
 
 		void update() {
-			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
+			double output = rotationPID.update(angleFunction().Convert(radian));
 
 			drivetrain.tankSteerVoltage(output * 12000 + idleSpeed, -output * 12000 + idleSpeed);
 		}
@@ -55,7 +57,7 @@ namespace Pronounce
 		}
 
 		bool isDone() {
-			return false; // rotationPID.getError() < (1_deg).Convert(radian) && rotationPID.getDerivitive() < 0.00005;
+			return false;
 		}
 
 		~RotationController() = default;

@@ -5,8 +5,6 @@
 #include "stateMachine/wait.hpp"
 #include "stateMachine/stateController.hpp"
 #include "stateMachine/behavior.hpp"
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
-#include "odometry/odomFuser.hpp"
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
 #include "motionControl/rotationController.hpp"
 #include "hardware/hardware.hpp"
@@ -30,7 +28,7 @@ namespace Pronounce {
 	PID distancePid(1.5e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
-	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", odometry, master, drivetrain, 0.01, 61_in / second);
+	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", master, drivetrain, 0.01, 61_in / second);
 
 	auto drivetrainStopped = std::make_shared<VoltageDrivetrain>(0, 0, drivetrain);
 
@@ -42,7 +40,7 @@ namespace Pronounce {
 
 	auto pathFollower = std::make_shared<PathPlanner::PathFollower>(std::make_shared<PathPlanner::AbstractMotionProfile>(), drivetrain,
 	                                                                movingTurnPid, distancePid, drivetrainFeedforward,
-	                                                                [ObjectPtr = &odometry] { return ObjectPtr->getAngle(); });
+	                                                                [ObjectPtr = &imuOrientation] { return ObjectPtr->getAngle(); });
 
 	void initDrivetrain() {
 		Log("Drivetrain Init");
