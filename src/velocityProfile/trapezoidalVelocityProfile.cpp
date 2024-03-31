@@ -63,8 +63,8 @@ void Pronounce::TrapezoidalVelocityProfile::calculate() {
 		ts = ls / cruiseSpeed + ta;
 		td = ts + td;
 	} else {
-		QAcceleration aa2 = signnum_c((this->getEndSpeed() - this->getInitialSpeed()).getValue()) * profileConstraints.maxAcceleration;
-		ta = (cruiseSpeed - this->getInitialSpeed()) / aa2;
+		QAcceleration aa2 = profileConstraints.maxAcceleration;
+		ta = Qabs((this->getEndSpeed() - this->getInitialSpeed())) / aa2;
 		la = 0.5 * Qsq(ta) * aa2 + this->getInitialSpeed() * ta;
 		if (abs(la.getValue()) > abs(this->getDistance().getValue())) {
 			ta = 2 * this->getDistance() / (this->getInitialSpeed() + this->getEndSpeed());
@@ -73,8 +73,8 @@ void Pronounce::TrapezoidalVelocityProfile::calculate() {
 			td = ta;
 		} else {
 			ta = (sqrt(2.0) *
-					Qsqrt(2 * aa * this->getDistance() + Qsq(this->getInitialSpeed()) + Qsq(this->getEndSpeed())) - 2 * this->getInitialSpeed())/
-					(2 * aa);
+					Qsqrt(2 * Qabs(aa) * Qabs(this->getDistance()) + Qsq(this->getInitialSpeed()) + Qsq(this->getEndSpeed())) - 2 * this->getInitialSpeed())/
+					(2 * Qabs(aa));
 			ts = ta;
 			td = 2.0 * ta + ((this->getInitialSpeed() - this->getEndSpeed())/aa);
 			cruiseSpeed = this->getInitialSpeed() + ta * aa;
