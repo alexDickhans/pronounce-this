@@ -41,7 +41,7 @@ namespace PathPlanner {
 			this->y = y;
 		}
 
-		explicit Point(Json jsonObject) {
+		Point(Json jsonObject) {
 			this->x = jsonObject["x"].number_value();
 			this->y = jsonObject["y"].number_value();
 		}
@@ -178,5 +178,7 @@ namespace PathPlanner {
         std::string to_string() {
             return "X: " + std::to_string(x.Convert(inch)) + ", Y: " + std::to_string(y.Convert(inch));
         }
+
+		~Point() = default;
     };
 } // namespace Pronounce

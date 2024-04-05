@@ -53,41 +53,6 @@ namespace Pronounce {
         }
 
 		/**
-		 * @brief this - point
-		 * 
-		 * @param point The subtration value
-		 * @return Point The result
-		 */
-        Point positionRelativeTo(Point point) {
-            Point result = Point(point.getX() - this->getX(), point.getY() - this->getY());
-            return result;
-        }
-
-		/**
-		 * @brief Linear interpolation between two points
-		 * 
-		 * @param point1 The first point
-		 * @param point2 The second point
-		 * @param t The fraction to interpolate between the two points
-		 * @return Point The result of the linear interpolation
-		 */
-		static Point lerpPoint(Point point1, Point point2, double t) {
-			Point result = Point(map(t, 0, 1, point1.getX().getValue(), point2.getX().getValue()), map(t, 0, 1, point1.getY().getValue(), point2.getY().getValue()));
-			return result;
-		}
-
-		/**
-		 * @brief Linear interpolation between two points
-		 * 
-		 * @param point2 The second point
-		 * @param t The fraction to interpolate between the two points
-		 * @return Point The result of the linear interpolation
-		 */
-		Point lerpPoint(Point point2, double t) {
-			return lerpPoint(*this, point2, t);
-		}
-
-		/**
 		 * @brief Get the x value
 		 * 
 		 * @return QLength The current x value
@@ -124,26 +89,6 @@ namespace Pronounce {
         }
 
 		/**
-		 * @brief Set the point with an equals operator 
-		 * 
-		 * @param point The new point
-		 */
-        void operator=(Point point) {
-            this->setX(point.getX());
-            this->setY(point.getY());
-        }
-
-		/**
-		 * @brief Set the point with an equals operator 
-		 * 
-		 * @param point The new point
-		 */
-		void operator=(Point* point) {
-            this->setX(point->getX());
-            this->setY(point->getY());
-        }
-
-		/**
 		 * @brief Add points
 		 * 
 		 * @param point The point to add
@@ -152,35 +97,6 @@ namespace Pronounce {
             this->setX(this->getX() + point.getX());
             this->setY(this->getY() + point.getY());
         }
-
-		/**
-		 * @brief Add values using +=
-		 * 
-		 * @param point The point to add
-		 */
-        void operator+=(Point point) {
-            this->setX(this->getX() + point.getX());
-            this->setY(this->getY() + point.getY());
-        }
-
-		/**
-		 * @brief Add values using +=
-		 * 
-		 * @param point The point to add
-		 */
-		void operator+=(Point* point) {
-            this->setX(this->getX() + point->getX());
-            this->setY(this->getY() + point->getY());
-        }
-
-		/**
-		 * @brief Add values using +
-		 * 
-		 * @param point The point to add
-		 */
-		Point operator+(Point b) {
-			return Point(this->getX() + b.getX(), this->getY() + b.getY());
-		}
 
 		/**
 		 * @brief Create a formatted string to use for debugging

@@ -2,26 +2,19 @@
 
 #include "api.h"
 #include "odometry/orientation/imu.hpp"
-#include "odometry/orientation/avgOrientation.hpp"
-#include "position/motorOdom.hpp"
-#include "odometry/continuousOdometry/threeWheelOdom.hpp"
-#include "odometry/interruptOdometry/gpsOdometry.hpp"
-#include "odometry/odomFuser.hpp"
 #include "pros/rtos.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "pros/apix.h"
 #include <map>
-#include "telemetryRadio/telemetryManager.hpp"
 #include "auton.h"
-#include "locolib/locolib.hpp"
 #include "units/units.hpp"
-#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
-#include "odometry/orientation/gpsOrientation.hpp"
+#include "constants.hpp"
+#include "pros/motor_group.hpp"
 
 #ifndef SIM
 
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
 #else
 #include "hardwareAbstractions/joystick/simJoystick.hpp"
@@ -29,118 +22,86 @@
 
 namespace Pronounce {
 
-	Logger* logger = nullptr;
-
 	pros::Mutex robotMutex;
 
-	bool isSkills = AUTON == 5;
+    #define IS_SKILLS (AUTON == 5)
 
-#ifndef SIM
-	RobotJoystick *master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
-#else
-	AbstractJoystick* master = new SimJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
-#endif // !SIM
+	pros::Controller masterController(pros::E_CONTROLLER_MASTER);
+	RobotJoystick master = RobotJoystick(masterController);
 
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(19, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive2(18, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive3(17, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive4(16, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive1(8, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive2(12, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive3(13, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive4(14, pros::E_MOTOR_GEAR_600, false);
+	pros::MotorGroup leftDriveMotors({-18, -19, -20}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+	pros::MotorGroup rightDriveMotors({11, 12, 13}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 
-	pros::Motor_Group leftDriveMotors({leftDrive1, leftDrive2, leftDrive3, leftDrive4});
-	pros::Motor_Group rightDriveMotors({rightDrive1, rightDrive2, rightDrive3, rightDrive4});
-//	pros::Gps gps(10, -(5.25_in).Convert(metre), -(4.1_in).Convert(metre));
-//	GpsOrientation gpsOrientation(gps, 90_deg);
+	TankDrivetrain drivetrain(Constants::trackWidth, Constants::maxSpeed, leftDriveMotors, rightDriveMotors,
+	                          Constants::driveInputRpm);
 
-	MotorOdom leftDrive1Odom(std::make_shared<pros::Motor>(leftDrive2), 1.625_in);
-	MotorOdom rightDrive1Odom(std::make_shared<pros::Motor>(rightDrive2), 1.625_in);
+	pros::MotorGroup catapultMotors({-1, 10}, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
-	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors,
-	                          600.0 * (revolution / minute));
+	pros::MotorGroup winch({-2}, pros::v5::MotorGears::red, pros::MotorEncoderUnits::rotations);
 
-	pros::Motor intakeMotor(20, pros::E_MOTOR_GEARSET_18, false);
+	pros::adi::DigitalOut frontLeftSolenoid('G', false);
+	pros::adi::DigitalOut frontRightSolenoid('F', false);
+	pros::adi::DigitalOut backLeftSolenoid('D', false);
+	pros::adi::DigitalOut backRightSolenoid('E', false);
 
-	pros::Motor_Group catapultMotors({7, -4});
-
-	pros::ADIDigitalOut leftSolenoid('A', false);
-	pros::ADIDigitalOut rightSolenoid('B', false);
-	pros::ADIDigitalOut hangSolenoid('C', false);
-	pros::ADIDigitalOut AWPSolenoid('F', false);
-
-	pros::Motor_Group intakeMotors({intakeMotor});
+	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit
-	pros::Imu imu(3);
-	IMU imuOrientation(3);
+	pros::Imu imu(14);
+	IMU imuOrientation(imu);
 
-	pros::Distance distanceSensor(10);
-	pros::Distance hopperDistanceSensor(5);
-	pros::Distance catapultDistance(6);
+	pros::Distance hopperDistanceSensor(16);
+	pros::Distance catapultDistance(8);
 
-	pros::Mutex odometryMutex;
+	std::string checkPorts(const std::unordered_map<uint16_t, pros::DeviceType>& devices, std::string startString = "") {
 
-	PT::TelemetryRadio telemetryRadio(2, new PT::PassThroughEncoding());
-
-	ThreeWheelOdom threeWheelOdom(&leftDrive1Odom, &rightDrive1Odom, new OdomWheel(), &imuOrientation);
-
-	OdomFuser odometry(threeWheelOdom);
-
-	void initHardware() {
-		Log("Hardware Init");
-
-		leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-		rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
-		intakeMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
-		double turningFactor = 450.0 / 600.0;
-		double tuningFactor = 1.0;
-		leftDrive1Odom.setRadius(3.25_in / 2.0);
-		leftDrive1Odom.setTuningFactor(turningFactor);
-		rightDrive1Odom.setRadius(3.25_in / 2.0);
-		rightDrive1Odom.setTuningFactor(turningFactor);
-
-		threeWheelOdom.setLeftOffset(10_in / 1.5);
-		threeWheelOdom.setRightOffset(10.0_in / 1.5);
-		threeWheelOdom.setBackOffset(0.0_in);
-
-		pros::Task::delay(50);
-
-		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
-
-		if (isSkills) {
-			Log("Skills");
-			if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			    pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake plugged in");
-				master->getController()->rumble(". . . . ");
-			}
-		} else {
-			Log("Competition");
-			if (pros::c::registry_get_plugged_type(intakeMotor.get_port() - 1) !=
-			    pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Intake not plugged in");
-				master->getController()->rumble(".-.-.-.-");
-			} else if (pros::c::registry_get_plugged_type(catapultMotors.at(0).get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR ||
-			           pros::c::registry_get_plugged_type(catapultMotors.at(1).get_port() - 1) ==
-			           pros::c::v5_device_e_t::E_DEVICE_MOTOR) {
-				Log("Catapult plugged in");
-				master->getController()->rumble("........");
+		for (const auto &device: devices) {
+			if (pros::c::registry_get_plugged_type(device.first-1) != static_cast<int>(device.second)) {
+				if (startString.empty()) {
+					startString.append(std::to_string(device.first));
+				} else {
+					startString.append(string_format(", %u", device.first));
+				}
 			}
 		}
 
-		if (pros::c::registry_get_plugged_type(imu._port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+		return startString;
+	}
+
+	void initHardware() {
+		Log("Hardware Init");
+		leftDriveMotors.set_gearing_all(pros::MotorGears::blue);
+		rightDriveMotors.set_gearing_all(pros::MotorGears::blue);
+		leftDriveMotors.set_zero_position_all(0.0);
+		rightDriveMotors.set_zero_position_all(0.0);
+
+		winch.set_brake_mode_all(pros::MotorBrake::brake);
+
+		drivetrain.setBrakeMode(pros::MotorBrake::coast);
+
+		intakeMotors.set_brake_mode_all(pros::MotorBrake::coast);
+
+		std::string portsReport = checkPorts(Constants::bothDevices);
+		if (IS_SKILLS) {
+			Log("Skills");
+			portsReport = checkPorts(Constants::skillsDevices, portsReport);
+		} else {
+			Log("Match");
+			portsReport = checkPorts(Constants::matchDevices, portsReport);
+		}
+
+		if (portsReport.empty()) {
+			master.getController().set_text(0, 0, "All good");
+		} else {
+			master.getController().set_text(0, 0, portsReport.c_str());
+			pros::Task::delay(50);
+			master.getController().rumble("-.-.-.-.");
+		}
+
+		Log(string_format("Ports missing: %s", portsReport.c_str()));
+
+		if (imu.is_installed() && (pros::competition::is_disabled() || IS_SKILLS)) {
 			imu.reset();
 			Log("Imu: calibrate");
 
@@ -148,9 +109,10 @@ namespace Pronounce {
 				pros::Task::delay(50);
 
 			Log("Imu: done calibrating");
-			master->getController()->rumble(".");
+		} else {
+			Log("ERROR Imu: Not installed")
 		}
 
 		Log("Hardware Init Done");
 	}
-} // namespace Pronoucne
+} // namespace Pronounce

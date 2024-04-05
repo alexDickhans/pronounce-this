@@ -12,12 +12,12 @@
 
 int main() {
 	Pronounce::TrapezoidalVelocityProfile velocityProfile =
-			Pronounce::TrapezoidalVelocityProfile(30_in,
+			Pronounce::TrapezoidalVelocityProfile(-3_in,
 			                                      {70_in / second,
 			                                       100_in / second /
 			                                       second, 0.0},
 			                                      0_in / second,
-			                                      1_in / second);
+			                                      -30_in / second);
 
 	QTime frameTime = 10_ms;
 

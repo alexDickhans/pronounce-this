@@ -4,21 +4,25 @@
       "name": "linux-gcc-x64",
       "includePath": [
         "${workspaceFolder}/**",
-        "/home/alex/Documents/pronounce-this/include"
+        "/home/alex/Documents/pronounce-this/include",
+        "/Users/alex/CLionProjects/pronounce-this/include"
       ],
       "defines": [],
-      "compilerPath": "/home/alex/.config/Code/User/globalStorage/sigbots.pros/install/pros-toolchain-linux/bin/arm-none-eabi-g++",
-      "cStandard": "${default}",
-      "cppStandard": "${default}",
+      "compilerPath": "/Users/alex/wpilib/2024/vscode/code-portable-data/user-data/User/globalStorage/sigbots.pros/install/pros-toolchain-macos/bin/arm-none-eabi-g++",
+      "cStandard": "gnu11",
+      "cppStandard": "gnu++20",
       "intelliSenseMode": "gcc-arm",
-      "compileCommands": "/home/alex/Documents/pronounce-this/compile_commands.json",
+      "compileCommands": "/Users/alex/CLionProjects/pronounce-this/compile_commands.json",
       "browse": {
         "path": [
-          "/home/alex/Documents/pronounce-this"
+          "/Users/alex/CLionProjects/pronounce-this"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": ""
-      }
+      },
+      "macFrameworkPath": [
+        "/System/Library/Frameworks"
+      ]
     }
   ],
   "version": 4

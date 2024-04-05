@@ -8,19 +8,15 @@ namespace Pronounce {
 
 		Log("Init");
 		stateControllers.addBehavior(drivetrainStateController);
-		stateControllers.addBehavior(leftWingStateController);
-		stateControllers.addBehavior(rightWingStateController);
-		stateControllers.addBehavior(hangStateController);
-		stateControllers.addBehavior(awpStateController);
-
-		if (isSkills) {
-			Log("Init Catapult");
-			stateControllers.addBehavior(catapultStateController);
-		} else {
-			Log("Init Intake");
-			stateControllers.addBehavior(intakeExtensionStateController);
-			stateControllers.addBehavior(intakeStateController);
-		}
+		stateControllers.addBehavior(frontLeftWingStateController);
+		stateControllers.addBehavior(frontRightWingStateController);
+		stateControllers.addBehavior(backLeftWingStateController);
+		stateControllers.addBehavior(backRightWingStateController);
+		stateControllers.addBehavior(winchStateController);
+		stateControllers.addBehavior(winchStateExtensionController);
+		stateControllers.addBehavior(catapultStateController);
+		stateControllers.addBehavior(intakeExtensionStateController);
+		stateControllers.addBehavior(intakeStateController);
 	}
 
 	class Enabled : public Behavior {
@@ -43,7 +39,7 @@ namespace Pronounce {
 
 		void update() override {
 			Log("Update");
-			if (hopperDistanceSensor.get() * 1_mm < 8_in &&
+			if (hopperDistanceSensor.get() * 1_mm < 160_mm &&
 			    intakeStateController->getName().find(intakeEject->getName()) == -1) {
 				Log("Triball detected");
 				intakeStateController->sb(intakeHold);

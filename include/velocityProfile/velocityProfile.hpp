@@ -4,7 +4,7 @@
 
 namespace Pronounce {
 	struct ProfileConstraints {
-		QSpeed maxVelocity;
+		QVelocity maxVelocity;
 		QAcceleration maxAcceleration;
 		QJerk maxJerk;
 	};
@@ -15,37 +15,34 @@ namespace Pronounce {
 
 		ProfileConstraints profileConstraints;
 
-		QSpeed initialSpeed = 0.0;
-		QSpeed endSpeed = 0.0;
+		QVelocity initialSpeed = 0.0, endSpeed = 0.0;
 	public:
 		VelocityProfile();
 
 		VelocityProfile(QLength distance, ProfileConstraints profileConstraints);
 
-		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed);
+		VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initialSpeed, QVelocity endSpeed);
 
-		[[nodiscard]] const QSpeed &getInitialSpeed() const;
-		void setInitialSpeed(const QSpeed &initialSpeed);
-		[[nodiscard]] const QSpeed &getEndSpeed() const;
-		void setEndSpeed(const QSpeed &endSpeed);
+		[[nodiscard]] const QVelocity &getInitialSpeed() const;
+		void setInitialSpeed(const QVelocity &initialSpeed);
+		[[nodiscard]] const QVelocity &getEndSpeed() const;
+		void setEndSpeed(const QVelocity &endSpeed);
 
 		virtual QTime getDuration() { return 0.0; }
 
 		virtual QLength getDistanceByTime(QTime) { return 0.0; }
 
-		virtual QSpeed getVelocityByTime(QTime time) { return 0.0; }
+		virtual QVelocity getVelocityByTime(QTime time) { return 0.0; }
 
 		virtual QAcceleration getAccelerationByTime(QTime time) { return 0.0; }
 
-		virtual QJerk getJerkByTime(QTime time) { return 0.0; }
-
-		const QLength &getDistance() const;
+		[[nodiscard]] const QLength &getDistance() const;
 		virtual void setDistance(const QLength &distance);
-		const ProfileConstraints &getProfileConstraints() const;
+		[[nodiscard]] const ProfileConstraints &getProfileConstraints() const;
 		virtual void setProfileConstraints(const ProfileConstraints &profileConstraints);
 
 		virtual void calculate() {}
 
-		~VelocityProfile() {}
+		~VelocityProfile() = default;
 	};
 } // namespace Pronounce

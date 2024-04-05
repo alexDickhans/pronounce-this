@@ -41,13 +41,13 @@ public:
 	}
 
 	// Returns the value of the quantity in multiples of the specified unit
-	constexpr double Convert(const RQuantity& rhs) const
+	[[nodiscard]] constexpr double Convert(const RQuantity& rhs) const
 	{
 		return value / rhs.value;
 	}
 
 	// returns the raw value of the quantity (should not be used)
-	constexpr double getValue() const
+	[[nodiscard]] constexpr double getValue() const
 	{
 		return value;
 	}
@@ -59,6 +59,9 @@ public:
 #define QUANTITY_TYPE(_Mdim, _Ldim, _Tdim, _Adim, name) \
     typedef RQuantity<std::ratio<_Mdim>, std::ratio<_Ldim>, std::ratio<_Tdim>, std::ratio<_Adim>> name;
 
+#define LEGACY_TYPEDEF(old_name, new_name) \
+    using old_name [[deprecated("use " #new_name " instead")]] = new_name
+
 // Replacement of "double" type
 QUANTITY_TYPE(0, 0, 0, 0, Number);
 
@@ -68,7 +71,8 @@ QUANTITY_TYPE(0, 1, 0, 0, QLength);
 QUANTITY_TYPE(0, 2, 0, 0, QArea);
 QUANTITY_TYPE(0, 3, 0, 0, QVolume);
 QUANTITY_TYPE(0, 0, 1, 0, QTime);
-QUANTITY_TYPE(0, 1, -1, 0, QSpeed);
+QUANTITY_TYPE(0, 1, -1, 0, QVelocity);
+LEGACY_TYPEDEF(QSpeed, QVelocity);
 QUANTITY_TYPE(0, 1, -2, 0, QAcceleration);
 QUANTITY_TYPE(0, 1, -3, 0, QJerk);
 QUANTITY_TYPE(0, 0, -1, 0, QFrequency);
@@ -77,6 +81,7 @@ QUANTITY_TYPE(1, -1, -2, 0, QPressure);
 QUANTITY_TYPE(0, -1, 0, 1, QCurvature);
 QUANTITY_TYPE(0, 1, 0, -1, QRadius);
 QUANTITY_TYPE(0, 0, -1, 1, QAngularVelocity);
+//QUANTITY_TYPE()
 
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);
@@ -262,17 +267,17 @@ constexpr QLength operator"" _ft(unsigned long long int  x) { return static_cast
 constexpr QLength operator"" _in(unsigned long long int  x) { return static_cast<double>(x) * inch; }
 
 // literals for speed units
-constexpr QSpeed operator"" _mps(long double x) { return QSpeed(x); };
-constexpr QSpeed operator"" _inchs(long double x) { return static_cast<double>(x) * inch / second; };
-constexpr QSpeed operator"" _inchs(unsigned long long int x) { return static_cast<double>(x) * inch / second; };
-constexpr QSpeed operator"" _miph(long double x) { return static_cast<double>(x) * mile / hour; };
-constexpr QSpeed operator"" _kmph(long double x) { return static_cast<double>(x) * kilometre / hour; };
-constexpr QSpeed operator"" _mps(unsigned long long int x) { return QSpeed(static_cast<long double>(x)); };
-constexpr QSpeed operator"" _miph(unsigned long long int x)
+constexpr QVelocity operator"" _mps(long double x) { return x; };
+constexpr QVelocity operator"" _inchs(long double x) { return static_cast<double>(x) * inch / second; };
+constexpr QVelocity operator"" _inchs(unsigned long long int x) { return static_cast<double>(x) * inch / second; };
+constexpr QVelocity operator"" _miph(long double x) { return static_cast<double>(x) * mile / hour; };
+constexpr QVelocity operator"" _kmph(long double x) { return static_cast<double>(x) * kilometre / hour; };
+constexpr QVelocity operator"" _mps(unsigned long long int x) { return {static_cast<long double>(x)}; };
+constexpr QVelocity operator"" _miph(unsigned long long int x)
 {
 	return static_cast<double>(x) * mile / hour;
 };
-constexpr QSpeed operator"" _kmph(unsigned long long int x)
+constexpr QVelocity operator"" _kmph(unsigned long long int x)
 {
 	return static_cast<double>(x) * kilometre / hour;
 };
@@ -378,8 +383,6 @@ constexpr QCurvature operator"" _degin(unsigned long long int x) { return static
 // Conversion macro, which utilizes the string literals
 #define ConvertTo(_x, _y) (_x).Convert(1.0_##_y)
 
-
-
 // Typesafe mathematical operations:
 // ---------------------------------
 template <typename M, typename L, typename T, typename A>
@@ -397,7 +400,7 @@ constexpr RQuantity<M, L, T, A>
 Qabs(const RQuantity<M, L, T, A>& num)
 {
 	return RQuantity<M, L, T, A>
-			(abs(num.getValue()));
+			(fabs(num.getValue()));
 }
 
 // Typesafe mathematical operations:
@@ -409,7 +412,7 @@ constexpr RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L,
 {
 	return RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
 		std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
-		(pow(num.getValue(), 2));
+		(num * num);
 }
 
 // Typesafe trigonometric operations

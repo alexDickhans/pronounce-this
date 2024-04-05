@@ -7,10 +7,10 @@
 #include "intake.hpp"
 
 namespace Pronounce {
-    auto intakeStopped = std::make_shared<Intake>("IntakeStopped", intakeMotors, 0.0, false);
-	auto intakeIntaking = std::make_shared<Intake>("IntakeIntaking", intakeMotors, 1.0, false);
-	auto intakeHold = std::make_shared<Intake>("IntakeHold", intakeMotors, 0.55, false);
-	auto intakeEject = std::make_shared<Intake>("IntakeEject", intakeMotors, -1.0, false);
+    auto intakeStopped = std::make_shared<Intake>("IntakeStopped", intakeMotors, 0.0);
+	auto intakeIntaking = std::make_shared<Intake>("IntakeIntaking", intakeMotors, 1.0);
+	auto intakeHold = std::make_shared<Intake>("IntakeHold", intakeMotors, 0.55);
+	auto intakeEject = std::make_shared<Intake>("IntakeEject", intakeMotors, -1.0);
 
     auto intakeStateController = std::make_shared<StateController>("IntakeStateController", intakeStopped);
 	auto intakeExtensionStateController = std::make_shared<StateController>("IntakeStateExtensionController", std::make_shared<Behavior>());
@@ -21,8 +21,6 @@ namespace Pronounce {
 
     void initIntake() {
 	    Log("Intake Init");
-		intakeSequence->addState(intakeStateController, std::make_shared<Until>(intakeIntaking, [=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
-		intakeSequence->addState(intakeStateController, intakeHold);
 
 		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeHold, 170_ms));
 		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeEject, 500_ms));

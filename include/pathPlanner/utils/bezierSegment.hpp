@@ -1,12 +1,12 @@
 #pragma once
 
 #include "polynomialExpression.hpp"
-#include "vector.hpp"
 #include "linearInterpolator.hpp"
+#include "velocityProfile/velocityProfile.hpp"
 
 namespace PathPlanner {
 	class BezierSegment {
-	private:
+	protected:
 		PolynomialExpression x, y, dx, dy, ddx, ddy;
 
 		Point a;
@@ -16,17 +16,20 @@ namespace PathPlanner {
 
 		QLength length;
 		LinearInterpolator distanceToT;
+		Pronounce::ProfileConstraints profileConstraints;
 
 		bool reversed;
+		bool stopEnd;
 
 	public:
-		BezierSegment(Point a, Point b, Point c, Point d, bool reversed = false, int granularity = 100) {
+		BezierSegment(Point a, Point b, Point c, Point d, bool reversed, bool stopEnd, const Pronounce::ProfileConstraints &profileConstraints, int granularity = 100) : profileConstraints(profileConstraints) {
 			this->a = a;
 			this->b = b;
 			this->c = c;
 			this->d = d;
 
 			this->reversed = reversed;
+			this->stopEnd = stopEnd;
 
 			x = PolynomialExpression({
 				a.getX().getValue(),
@@ -48,6 +51,7 @@ namespace PathPlanner {
 			ddy = dy.getDerivative();
 
 			length = 0.0;
+			distanceToT.add(0, 0);
 
 			for (int t = 0.0; t <= granularity; t += 1) {
 				length += sqrt(pow(dx.evaluate((double)t/(double) granularity), 2) + pow(dy.evaluate((double)t/(double) granularity), 2)) / (double) granularity;
@@ -55,38 +59,39 @@ namespace PathPlanner {
 			}
 		}
 
-		QLength getDistance() {
-			return length.getValue() * (reversed ? -1.0 : 1.0);
+
+		[[nodiscard]] virtual QLength getDistance() const {
+			return length.getValue();
 		}
 
-		double getTByLength(QLength distance) {
+		[[nodiscard]] double getTByLength(QLength distance) const {
 			return distanceToT.get(distance.getValue());
 		}
 
-		QCurvature getCurvature(double t) {
-			return -(dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
+		[[nodiscard]] QCurvature getCurvature(double t) const {
+			return (reversed ? 1.0 : -1.0) * (dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(sqrt(pow(dx.evaluate(t), 2) + pow(dy.evaluate(t), 2)), 3);
 		}
 
-		QCurvature getMaxCurvature(int granularity = 20) {
+		[[nodiscard]] QCurvature getMaxCurvature(int granularity = 20) const {
 			QCurvature maxCurvature = 0.0;
 
-			for (double t = 0; t < 1.0; t += 1.0/(double) granularity) {
-				QCurvature curvature = this->getCurvature(t).getValue();
+			for (size_t i = 0; i <= granularity; i++) {
+				QCurvature curvature = this->getCurvature(static_cast<double>(i)/granularity).getValue();
 				maxCurvature = std::max(abs(curvature.getValue()), maxCurvature.getValue());
 			}
 
 			return maxCurvature;
 		}
 
-		Angle getAngle(double t) {
+		[[nodiscard]] Angle getAngle(double t) const {
 			return -atan2(dy.evaluate(t), dx.evaluate(t)) * radian + 90_deg;
 		}
 
-		Point evaluate(double t) {
+		[[nodiscard]] Point evaluate(double t) const {
 			return {x.evaluate(t), y.evaluate(t)};
 		}
 
-		double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) {
+		[[nodiscard]] double getMaxSpeedMultiplier(QLength trackWidth, int granularity = 100) const {
 			QCurvature maxCurvature = this->getMaxCurvature(granularity);
 
 			if (maxCurvature.getValue() == 0.0)
@@ -95,24 +100,47 @@ namespace PathPlanner {
 			return 1.0/(1.0 + abs(maxCurvature.getValue() * 0.5) * trackWidth.getValue());
 		}
 
-		Point getA() {
+		[[nodiscard]] double getMaxSpeedMultiplier(QLength trackWidth, double t) const {
+			QCurvature curvature = this->getCurvature(t);
+
+			if (curvature.getValue() == 0.0)
+				return 1.0;
+
+			return 1.0/(1.0 + abs(curvature.getValue() * 0.5) * trackWidth.getValue());
+		}
+
+		[[nodiscard]] const Point &getA() const {
 			return a;
 		}
 
-		Point getB() {
+		[[nodiscard]] const Point &getB() const {
 			return b;
 		}
 
-		Point getC() {
+		[[nodiscard]] const Point &getC() const {
 			return c;
 		}
 
-		Point getD() {
+		[[nodiscard]] const Point &getD() const {
 			return d;
 		}
 
-		bool getReversed() const {
+		[[nodiscard]] bool isReversed() const {
 			return reversed;
 		}
+
+		[[nodiscard]] const Pronounce::ProfileConstraints &getProfileConstraints() const {
+			return profileConstraints;
+		}
+
+		void setProfileConstraints(const Pronounce::ProfileConstraints &profileConstraints) {
+			this->profileConstraints = profileConstraints;
+		}
+
+		[[nodiscard]] bool isStopEnd() const {
+			return stopEnd;
+		}
+
+		~BezierSegment() = default;
 	};
 }

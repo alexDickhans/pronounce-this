@@ -6,7 +6,10 @@
 #include <cmath>
 #include <algorithm>
 #include "pros/distance.hpp"
+
+#ifndef SIM
 #include "pros/rtos.hpp"
+#endif
 //#include <bits/stdc++.h>
 //#include "api.h"
 
@@ -14,19 +17,7 @@
 // TODO: add comments
 
 namespace Pronounce {
-	/**
-	 * @brief Simple linear interpolation
-	 *
-	 * @param a The start value
-	 * @param b The end value
-	 * @param t
-	 * @return double The interpolated value
-	 */
-	double lerp(double a, double b, double t);
-
-	double toRadians(double degrees);
-	double toDegrees(double radians);
-	double angleDifference(double angle1, double angle2);
+	double angleDifference(double angle1, double angle2, size_t maxLoops = 1000);
 
 	/**
 	 * @brief Returns the sign of a number
@@ -47,12 +38,16 @@ namespace Pronounce {
 	 * @return double Mapped value
 	 */
 	double map(double value, double start1, double stop1, double start2, double stop2);
-	
+
+#ifndef SIM
 	double findMedian(double arr[], int size);
+#endif
+
+	double mean(std::vector<double> array);
+
+	double mean(std::vector<int32_t> array);
 
 	double getDistanceSensorMedian(pros::Distance &distance, int samples);
-
-	unsigned int factorial(const unsigned int& x);
 
 #ifdef SIM
 	double clamp(double value, double min, double max) {

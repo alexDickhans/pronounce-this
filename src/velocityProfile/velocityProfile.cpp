@@ -1,4 +1,4 @@
-#include "velocityProfile.hpp"
+#include "velocityProfile/velocityProfile.hpp"
 
 namespace Pronounce {
 
@@ -8,18 +8,18 @@ namespace Pronounce {
 
 	VelocityProfile::VelocityProfile(QLength distance, ProfileConstraints profileConstraints)  : distance(distance), profileConstraints(profileConstraints) {}
 
-	VelocityProfile::VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QSpeed initialSpeed, QSpeed endSpeed)  : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {}
+	VelocityProfile::VelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initialSpeed, QVelocity endSpeed)  : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {}
 
-	const QSpeed &VelocityProfile::getInitialSpeed() const {
+	const QVelocity &VelocityProfile::getInitialSpeed() const {
 		return initialSpeed;
 	}
-	void VelocityProfile::setInitialSpeed(const QSpeed &initialSpeed) {
+	void VelocityProfile::setInitialSpeed(const QVelocity &initialSpeed) {
 		VelocityProfile::initialSpeed = initialSpeed;
 	}
-	const QSpeed &VelocityProfile::getEndSpeed() const {
+	const QVelocity &VelocityProfile::getEndSpeed() const {
 		return endSpeed;
 	}
-	void VelocityProfile::setEndSpeed(const QSpeed &endSpeed) {
+	void VelocityProfile::setEndSpeed(const QVelocity &endSpeed) {
 		VelocityProfile::endSpeed = endSpeed;
 	}
 	const QLength &VelocityProfile::getDistance() const {

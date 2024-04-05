@@ -19,7 +19,7 @@ namespace PathPlanner {
 			this->coefficients = coefficients;
 		}
 
-		PolynomialExpression getDerivative() {
+		[[nodiscard]] PolynomialExpression getDerivative() const {
 			if (coefficients.size() <= 1) {
 				return PolynomialExpression({0.0});
 			} else {
@@ -31,7 +31,7 @@ namespace PathPlanner {
 			}
 		}
 
-		double evaluate(double x) {
+		double evaluate(double x) const {
 			double result = 0.0;
 
 			for (int i = 0; i < coefficients.size(); i++) {
@@ -41,7 +41,7 @@ namespace PathPlanner {
 			return result;
 		}
 
-		PolynomialExpression& operator=(const PolynomialExpression& polynomialExpression) = default;
+		~PolynomialExpression() = default;
 	};
 
 } // Pronounce

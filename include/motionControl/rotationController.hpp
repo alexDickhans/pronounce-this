@@ -1,6 +1,8 @@
 #pragma once
 
-#include "chassis/abstractTankDrivetrain.hpp"
+#include <utility>
+
+#include "chassis/tankDrive.hpp"
 #include "feedbackControllers/pid.hpp"
 #include "stateMachine/behavior.hpp"
 #include "stateMachine/behaviors/drivetrain/initDrivetrain.hpp"
@@ -11,18 +13,17 @@ namespace Pronounce
 {
 	class RotationController : public Behavior {
 	private:
-		pros::Mutex& drivetrainMutex;
 		PID rotationPID;
-		AbstractTankDrivetrain& drivetrain;
-		ContinuousOdometry& odometry;
+		TankDrivetrain& drivetrain;
+		std::function<Angle()> angleFunction;
 		Angle target;
 
-		pros::motor_brake_mode_e_t beforeBrakeMode;
+		pros::MotorBrake beforeBrakeMode;
 
 		double idleSpeed = 0.0;
 
 	public:
-		RotationController(std::string name, AbstractTankDrivetrain& drivetrain, ContinuousOdometry& odometry, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), odometry(odometry), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name) {
 			rotationPID.setTarget(target.Convert(radian));
 			this->idleSpeed = idleSpeed;
 			this->target = target;
@@ -33,23 +34,20 @@ namespace Pronounce
 			rotationPID.reset();
 			rotationPID.setTarget(target.Convert(radian));
 
-			beforeBrakeMode = leftDriveMotors.get_brake_modes().at(0);
+			beforeBrakeMode = drivetrain.getBrakeMode();
 
 			drivetrain.tankSteerVoltage(0, 0);
-			leftDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-			rightDriveMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+			drivetrain.setBrakeMode(pros::MotorBrake::coast);
 		}
 
 		void update() {
-			double output = rotationPID.update(odometry.getPose().getAngle().Convert(radian));
+			double output = rotationPID.update(angleFunction().Convert(radian));
 
 			drivetrain.tankSteerVoltage(output * 12000 + idleSpeed, -output * 12000 + idleSpeed);
 		}
 
 		void exit() {
-			drivetrain.skidSteerVelocity(0.0, 0.0);
-			leftDriveMotors.set_brake_modes(beforeBrakeMode);
-			rightDriveMotors.set_brake_modes(beforeBrakeMode);
+			drivetrain.setBrakeMode(beforeBrakeMode);
 
 			leftDriveMotors.tare_position();
 			rightDriveMotors.tare_position();
@@ -58,14 +56,10 @@ namespace Pronounce
 		}
 
 		bool isDone() {
-			return false; // rotationPID.getError() < (1_deg).Convert(radian) && rotationPID.getDerivitive() < 0.00005;
+			return false;
 		}
 
-		~RotationController();
+		~RotationController() = default;
 	};
-
-	RotationController::~RotationController()
-	{
-	}
 	
 } // namespace Pronounce

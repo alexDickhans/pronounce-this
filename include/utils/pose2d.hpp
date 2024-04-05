@@ -4,7 +4,7 @@
 #include <string>
 #include "units/units.hpp"
 #include <iostream>
-#include "utils/vector.hpp"
+#include "logger/logger.hpp"
 
 namespace Pronounce {
     /**
@@ -14,6 +14,7 @@ namespace Pronounce {
      */
     class Pose2D : public Point {
     private:
+
 		/**
 		 * @brief Angle of the pose
 		 * 
@@ -58,6 +59,8 @@ namespace Pronounce {
 		 */
         Pose2D(QLength x, QLength y, Angle angle) : Point(x, y), angle(angle) {}
 
+		Pose2D(Point x, Angle angle) : Point(x.getX(), x.getY()), angle(angle) {}
+
 		/**
 		 * @brief Get a formatted string of the object
 		 * 
@@ -68,7 +71,7 @@ namespace Pronounce {
         }
 
 		void log(std::string poseName) {
-            std::cout << poseName << ";X: " << this->getX().Convert(inch) << ",Y: " << this->getY().Convert(inch) << ",T: " << this->angle.Convert(degree) << std::endl;
+			Log(string_format("%s;X: %f,Y: %f,T: %f", poseName.c_str(), this->getY().getValue(), this->getY().getValue(), this->getAngle().getValue()));
         }
 
         /**
@@ -123,12 +126,6 @@ namespace Pronounce {
 		 */
 		Pose2D operator+(Point b) {
 			return Pose2D(this->getX() + b.getX(), this->getY() + b.getY(), this->getAngle());
-		}
-
-		Pose2D operator-(Pose2D x) {
-			Vector currentPose(Point(x.getX() - this->getX(), x.getY() - this->getY()));
-			currentPose.rotate(-x.getAngle());
-			return Pose2D(currentPose.getCartesian().getX(), currentPose.getCartesian().getY(), angleDifference((x.getAngle() - this->getAngle()).getValue(), 0));
 		}
 
         ~Pose2D();

@@ -1,6 +1,7 @@
 #include "pose2d.hpp"
 
 namespace Pronounce {
+
     Pose2D::Pose2D() : Point() {
         this->angle = 0.0;
     }

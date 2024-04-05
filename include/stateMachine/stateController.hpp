@@ -1,11 +1,11 @@
 #pragma once
 
 #include "behavior.hpp"
-#include "time/time.hpp"
-#include "time/robotTime.hpp"
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <utility>
+#include "api.h"
 
 namespace Pronounce {
 	/**
@@ -34,7 +34,7 @@ namespace Pronounce {
 		 * 
 		 * @param defaultBehavior 
 		 */
-		StateController(std::string name, std::shared_ptr<Behavior> defaultBehavior) : Behavior(name) {
+		StateController(std::string name, std::shared_ptr<Behavior> defaultBehavior) : Behavior(std::move(name)) {
 			this->defaultBehavior = defaultBehavior;
 		}
 
@@ -43,13 +43,15 @@ namespace Pronounce {
 		 * 
 		 */
 		void initialize() override {
-			startTime = currentTime();
+			Log_Desc(Behavior::getName() + ":" + this->getName(), "Initialize");
+			startTime = pros::millis() * 1_ms;
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->initialize();
 				} catch(...) {
-					std::cerr << "ERROR: In " << this->getName() << " \"" << currentBehavior->getName() << "\" failed to initialize, returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					this->useDefaultBehavior();
+					defaultBehavior->initialize();
 				}
 			}
 			else {
@@ -62,7 +64,7 @@ namespace Pronounce {
 		 * 
 		 */
 		void update() {
-			std::cout << this->toString() << std::endl;
+			Log_Desc(Behavior::getName() + ":" + this->getName(), "Update");
 
 			// If currentBehavior exists run it or transition
 			if (currentBehavior != nullptr) {
@@ -70,19 +72,19 @@ namespace Pronounce {
 					try {
 						currentBehavior->exit();
 					} catch (std::exception &e) {
-						std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+						Log_Desc(this->getName(), "ERROR " + currentBehavior->getName() + "\" failed to initialize, returning to default state");
 					}
 
 					currentBehavior = nullptr;
 					defaultBehavior->initialize();
 					defaultBehavior->update();
-					startTime = currentTime();
+					startTime = pros::millis() * 1_ms;
 				}
 				else {
 					try {
 						currentBehavior->update();
 					} catch (std::exception &e) {
-						std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to update. what: " << e.what() << ", returning to default state" << std::endl;
+						Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to update. what: " + e.what() + ", returning to default state");
 						this->useDefaultBehavior();
 					}
 				}
@@ -103,14 +105,15 @@ namespace Pronounce {
 			return currentBehavior == nullptr;
 		}
 
-		void waitUntilDone() {
-			while(!this->isDone()) {
+		void waitUntilDone(uint32_t timeout = 15000) {
+			auto timeoutStartTime = pros::millis();
+			while(!this->isDone() && pros::millis() - timeoutStartTime <= timeout) {
 				pros::Task::delay(10);
 			}
 		}
 
-		void wait() {
-			waitUntilDone();
+		void wait(uint32_t timeout = 15000) {
+			waitUntilDone(timeout);
 		}
 
 		/**
@@ -123,7 +126,7 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				currentBehavior = nullptr;
 			}
@@ -146,7 +149,8 @@ namespace Pronounce {
 		 * 
 		 * @param behavior 
 		 */
-		void setCurrentBehavior(std::shared_ptr<Behavior> behavior) {
+		void setCurrentBehavior(const std::shared_ptr<Behavior>& behavior) {
+			Log_Desc(this->getName(), "INFO: transitioning to behavior (" + behavior->getName() + ")");
 			// If the defaultBehavior and current behavior are equal then switch to default behavior
 			if (defaultBehavior == behavior) {
 				this->useDefaultBehavior();
@@ -156,16 +160,16 @@ namespace Pronounce {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to exit. what: " + e.what() + ", returning to default state");
 				}
 				try {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
 			// Transition from default behavior if it doesn't
 			else {
@@ -174,21 +178,21 @@ namespace Pronounce {
 					currentBehavior = behavior;
 					currentBehavior->initialize();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to initialize. what: " << e.what() << ", returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
 		}
 
-		StateController sb(std::shared_ptr<Behavior> behavior) {
+		StateController* sb(std::shared_ptr<Behavior> behavior) {
 			this->setCurrentBehavior(behavior);
-			return *this;
+			return this;
 		}
 
-		StateController ud() {
+		StateController* ud() {
 			this->useDefaultBehavior();
-			return *this;
+			return this;
 		}
 
 		StateController* operator()(std::shared_ptr<Behavior> behavior) {
@@ -206,19 +210,19 @@ namespace Pronounce {
 		 * 
 		 */
 		void useDefaultBehavior() {
+			Log_Desc(this->getName(), "INFO: transitioning to default (" + this->defaultBehavior->getName() + ")");
 			// If we are currently running the current behavior transition
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->exit();
 				} catch (std::exception &e) {
-					std::cerr << "ERROR: In " << this->getName() << ", \"" << currentBehavior->getName() << "\" failed to exit. what: " << e.what() << ", returning to default state" << std::endl;
+					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed on exit. what: " + e.what() + ", returning to default state");
 				}
 
 				currentBehavior = nullptr;
 				defaultBehavior->initialize();
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
-			// If not no transition needed.
 		}
 
 		std::shared_ptr<Behavior> getCurrentBehavior() {
@@ -230,7 +234,7 @@ namespace Pronounce {
 		}
 
 		QTime getDuration() {
-			return currentTime() - startTime;
+			return pros::millis() * 1_ms - startTime;
 		}
 
 		std::string getName() override {

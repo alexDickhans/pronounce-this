@@ -15,6 +15,16 @@ namespace Pronounce {
 		 * 
 		 */
 		Angle angle;
+
+	protected:
+		/**
+		 * @brief Set the Angle object
+		 *
+		 * @param angle New angle
+		 */
+		void setAngle(Angle angle) {
+			this->angle = angle;
+		}
 	public:
 		Orientation(Angle angle) : angle(angle) { }
 
@@ -23,15 +33,6 @@ namespace Pronounce {
 		 * 
 		 */
 		virtual void update() {}
-
-		/**
-		 * @brief Set the Angle object
-		 * 
-		 * @param angle New angle
-		 */
-		void setAngle(Angle angle) {
-			this->angle = angle;
-		}
 
 		/**
 		 * @brief Get the Angle object

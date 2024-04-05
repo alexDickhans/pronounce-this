@@ -5,7 +5,7 @@
 
 #include "api.h"
 
-
+#include "logger/logger.hpp"
 /**
  * You should add more #includes here
  */
@@ -18,43 +18,24 @@
 #include "auton.h"
 
 // Chassis
-#include "chassis/abstractDrivetrain.hpp"
-#include "chassis/hardwareDrivetrain.hpp"
 #include "chassis/tankDrive.hpp"
 
 // FeedbackControllers
-#include "feedbackControllers/bangBang.hpp"
 #include "feedbackControllers/pid.hpp"
 #include "feedbackControllers/feedbackController.hpp"
-#include "feedbackControllers/flywheelPID.hpp"
 
 // Motion control
 #include "motionControl/rotationController.hpp"
 #include "motionControl/tankMotionProfiling.hpp"
 
 // Orientation
-#include "odometry/orientation/avgOrientation.hpp"
 #include "odometry/orientation/imu.hpp"
 #include "odometry/orientation/orientation.hpp"
 
-// Continuous Odometry
-#include "odometry/continuousOdometry/continuousOdometry.hpp"
-#include "odometry/continuousOdometry/threeWheelOdom.hpp"
-#include "odometry/continuousOdometry/particleFilterOdometry.hpp"
-
-// Interrupt Odom
-#include "odometry/interruptOdometry/gpsOdometry.hpp"
-#include "odometry/interruptOdometry/interruptOdometry.hpp"
-
 #include "pathPlanner/pathPlanner.hpp"
-
-// Position
-#include "position/motorOdom.hpp"
-#include "position/odomWheel.hpp"
 
 // State Machine
 #include "stateMachine/stateMachine.hpp"
-
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 #include "hardwareAbstractions/joystick/robotJoystick.hpp"
@@ -65,21 +46,14 @@
 // Utils
 #include "utils/point.hpp"
 #include "utils/pose2d.hpp"
-#include "utils/runningAverage.hpp"
-#include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
-#include "utils/vector.hpp"
-#include "utils/polynomialExpression.hpp"
-
-#include "telemetryRadio/telemetryManager.hpp"
 
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
 #include "stateMachine/state/competition/auton.hpp"
 
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
-using namespace Pronounce;
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,6 +66,8 @@ void opcontrol(void);
 #ifdef __cplusplus
 }
 #endif
+
+using namespace Pronounce;
 
 #ifdef __cplusplus
 //#include <iostream>

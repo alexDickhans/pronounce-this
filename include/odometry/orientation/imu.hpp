@@ -12,27 +12,23 @@ namespace Pronounce {
 	 *
 	 * @authors Alex Dickhans (alexDickhans)
 	 */
-class IMU : public Orientation, public pros::Imu {
+class IMU : public Orientation {
 	private:
 		/**
 		 * @brief Reference to the imu
 		 *
 		 */
+		 pros::Imu& imu;
 	public:
-		/**
-		 * @brief Construct a new IMU object with a reference to the imu
-		 *
-		 * @param imu
-		 */
-		IMU(const std::uint8_t port) : pros::Imu(port), Orientation(0.0) {}
+		IMU(pros::Imu &imu) : Orientation(0.0), imu(imu) {}
 
 		/**
 		 * @brief Update the imu
 		 *
 		 */
 		void update() {
-			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
-				Angle imuAngle = this->get_rotation() * 1_deg;
+			if (imu.is_installed()) {
+				Angle imuAngle = (isfinite(imu.get_rotation()) ? imu.get_rotation() : 0.0) * 1_deg;
 				// std::cout << imuAngle.getValue() << std::endl;
 
 				this->setAngle(imuAngle);
@@ -45,10 +41,14 @@ class IMU : public Orientation, public pros::Imu {
 		 */
 		void reset() override {
 			// if this is broken change the imu api to make _port public
-			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
+			if (imu.is_installed()) {
 				this->reset();
 				this->setAngle(0.0);
 			}
+		}
+
+		void setRotation(Angle rotation) {
+			imu.set_rotation(rotation.Convert(degree));
 		}
 
 		~IMU() {}
