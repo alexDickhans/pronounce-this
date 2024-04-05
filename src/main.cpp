@@ -400,7 +400,6 @@ void tuneTurnPid(void *args) {
 	// Flywheels
 
 	while (true) {
-		Log("Start");
 		// Odometry
 		lv_label_set_text(odomLabel.get(), (std::to_string(imuOrientation.getAngle().Convert(degree)) + "\n" +
 		                                    std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
@@ -418,7 +417,6 @@ void tuneTurnPid(void *args) {
 			lv_table_set_cell_value(drivetrainTable.get(), i, 1,
 			                        (std::to_string(rightDriveTemps[i]) + " C").c_str());
 		}
-		Log("End");
 
 		pros::Task::delay(50);
 	}
