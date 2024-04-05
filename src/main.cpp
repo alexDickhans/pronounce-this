@@ -9,18 +9,18 @@ ASSET(mid_6_ball_1_json);
 ASSET(mid_6_ball_2_json);
 ASSET(mid_6_ball_awp_json);
 SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
-//SMOOTH_SPLINE_PATH_ASSET(skills_1);
-//SMOOTH_SPLINE_PATH_ASSET(skills_2);
-//SMOOTH_SPLINE_PATH_ASSET(skills_3);
-//SMOOTH_SPLINE_PATH_ASSET(skills_4);
-//SMOOTH_SPLINE_PATH_ASSET(skills_5);
-//SMOOTH_SPLINE_PATH_ASSET(skills_6);
-//SMOOTH_SPLINE_PATH_ASSET(skills_6_5);
-//SMOOTH_SPLINE_PATH_ASSET(skills_7);
-//SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
-//SMOOTH_SPLINE_PATH_ASSET(skills_8);
-//SMOOTH_SPLINE_PATH_ASSET(skills_9);
-//SMOOTH_SPLINE_PATH_ASSET(skills_10);
+SMOOTH_SPLINE_PATH_ASSET(skills_1);
+SMOOTH_SPLINE_PATH_ASSET(skills_2);
+SMOOTH_SPLINE_PATH_ASSET(skills_3);
+SMOOTH_SPLINE_PATH_ASSET(skills_4);
+SMOOTH_SPLINE_PATH_ASSET(skills_5);
+SMOOTH_SPLINE_PATH_ASSET(skills_6);
+SMOOTH_SPLINE_PATH_ASSET(skills_6_5);
+SMOOTH_SPLINE_PATH_ASSET(skills_7);
+SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
+SMOOTH_SPLINE_PATH_ASSET(skills_8);
+SMOOTH_SPLINE_PATH_ASSET(skills_9);
+SMOOTH_SPLINE_PATH_ASSET(skills_10);
 ASSET(close_mid_rush_elim_json);
 ASSET(close_rush_mid_2_json);
 
@@ -141,126 +141,126 @@ void far5BallAWP(void *args) {
 	drivetrain.tankSteerVoltage(3000, 2000);
 	pros::Task::delay(5000);
 }
-//
-//void skills(void *args) {
-//
-//	threeWheelOdom.reset(Pose2D(0_in, 0_in, 135_deg));
-//
-//	pathFollower->setMotionProfile(skills_1);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	drivetrainStateController->sb(
-//			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, odometry, turningPid,
-//			                                     21.1_deg,
-//			                                     drivetrainMutex, -800.0));
-//	auton->resetTriballs();
-//	pros::Task::delay(500);
-//
-//	// Wait until the catapult triballs shot has increased to 44 triballs
-//	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
-//		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
-//		pros::Task::delay(10);
-//	}
-//
-//	pros::Task::delay(200);
-//
-//	pathFollower->setMotionProfile(skills_2);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	frontRightWingStateController->sb(frontRightWingIn);
-//	turnTo(180_deg, 300_ms);
-//
-//	pathFollower->setMotionProfile(skills_3);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
-////
-////	drivetrainStateController(pathFollower.changePath(skills_4_json))->wait();
-////
-////	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
-//
-//	pathFollower->setMotionProfile(skills_4);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
-//
-//	turnTo(-160_deg, 200_ms);
-//
-//	pathFollower->setMotionProfile(skills_5);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-5_in, speedProfileConstraints, 0.0);
-//
-//	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-//
-//	pathFollower->setMotionProfile(skills_6);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-3_in, speedProfileConstraints, 0.0);
-//
-//	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-//
-//	pathFollower->setMotionProfile(skills_6_5);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-3_in, speedProfileConstraints, 0.0);
-//
-//	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-//
-//	pathFollower->setMotionProfile(skills_7);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-3_in, speedProfileConstraints, 0.0);
-//
-//	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
-//
-//	pathFollower->setMotionProfile(skills_7_5);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	drivetrainStateController->sb(
-//			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, odometry, turningPid, 0_deg,
-//			                                     drivetrainMutex));
-//
-//	QLength wallDistance = getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
-//
-//	pathFollower->setMotionProfile(
-//			PathPlanner::SmoothSplineProfile::build(
-//					{PathPlanner::SmoothBezierSegment(PathPlanner::Point(
-//							                                  wallDistance, 76_in),
-//					                                  PathPlanner::Point(
-//							                                  wallDistance.getValue() * 0.74,
-//							                                  68_in),
-//					                                  PathPlanner::Point(
-//							                                  19_in, 55_in),
-//					                                  PathPlanner::Point(
-//							                                  20_in, 20_in), true, true,
-//					                                  pushingProfileConstraints)}));
-//
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	pathFollower->setMotionProfile(skills_8);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
-//
-//	pathFollower->setMotionProfile(skills_9);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
-//
-//	pathFollower->setMotionProfile(skills_9);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	frontRightWingStateController->ud();
-//
-//	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
-//
-//	pathFollower->setMotionProfile(skills_10);
-//	drivetrainStateController->sb(pathFollower)->wait();
-//
-//	pros::Task::delay(500);
-//
-//	backLeftWingStateController->ud();
-//}
+
+void skills(void *args) {
+
+	imuOrientation.setRotation(135_deg);
+
+	pathFollower->setMotionProfile(skills_1);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	drivetrainStateController->sb(
+			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
+			                                     21.1_deg, -800.0));
+	auton->resetTriballs();
+	pros::Task::delay(500);
+
+	// Wait until the catapult triballs shot has increased to 44 triballs
+	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
+		// Wait 0.01s (10 ms * (second / 1000ms) = 0.01s / 100Hz)
+		pros::Task::delay(10);
+	}
+
+	pros::Task::delay(200);
+
+	pathFollower->setMotionProfile(skills_2);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	frontRightWingStateController->sb(frontRightWingIn);
+	turnTo(180_deg, 300_ms);
+
+	pathFollower->setMotionProfile(skills_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
+
+	pathFollower->setMotionProfile(skills_4);
+
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+
+	pathFollower->setMotionProfile(skills_4);
+	drivetrainStateController->sb(pathFollower)->wait();
+	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
+
+	turnTo(-160_deg, 200_ms);
+
+	pathFollower->setMotionProfile(skills_5);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-5_in, speedProfileConstraints, 0.0);
+
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	pathFollower->setMotionProfile(skills_6);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-3_in, speedProfileConstraints, 0.0);
+
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	pathFollower->setMotionProfile(skills_6_5);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-3_in, speedProfileConstraints, 0.0);
+
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	pathFollower->setMotionProfile(skills_7);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-3_in, speedProfileConstraints, 0.0);
+
+	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+
+	pathFollower->setMotionProfile(skills_7_5);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	drivetrainStateController->sb(
+			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg));
+
+	QLength wallDistance = 0.0;// getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
+
+	pathFollower->setMotionProfile(
+			PathPlanner::SmoothSplineProfile::build(
+					{PathPlanner::BezierSegment(PathPlanner::Point(
+							                                  wallDistance, 76_in),
+					                                  PathPlanner::Point(
+							                                  wallDistance.getValue() * 0.74,
+							                                  68_in),
+					                                  PathPlanner::Point(
+							                                  19_in, 55_in),
+					                                  PathPlanner::Point(
+							                                  20_in, 20_in), true, true,
+					                                  pushingProfileConstraints)}));
+
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	pathFollower->setMotionProfile(skills_8);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
+
+	pathFollower->setMotionProfile(skills_9);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
+
+	pathFollower->setMotionProfile(skills_9);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	frontRightWingStateController->ud();
+
+	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
+
+	pathFollower->setMotionProfile(skills_10);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	pros::Task::delay(500);
+
+	backLeftWingStateController->ud();
+}
 
 void safeCloseAWP(void *args) {
 	imuOrientation.setRotation(135_deg);
