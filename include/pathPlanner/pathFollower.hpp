@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
-#include "chassis/abstractTankDrivetrain.hpp"
+#include "chassis/tankDrive.hpp"
 #include "feedbackControllers/pid.hpp"
 #include "feedbackControllers/feedbackController.hpp"
 #include "api.h"
@@ -22,7 +22,7 @@ namespace PathPlanner {
 	class PathFollower : public Pronounce::Behavior {
 	private:
 		std::shared_ptr<AbstractMotionProfile> motionProfile;
-		Pronounce::AbstractTankDrivetrain& drivetrain;
+		Pronounce::TankDrivetrain& drivetrain;
 		Pronounce::PID turnPID, distancePID;
 		std::function<double(QVelocity, QAcceleration)> feedforward;
 		QLength startDistance;
@@ -34,7 +34,7 @@ namespace PathPlanner {
 		int commandsIndex = 0;
 	public:
 		PathFollower(const std::shared_ptr<AbstractMotionProfile> &motionProfile,
-		             Pronounce::AbstractTankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
+		             Pronounce::TankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
 		             const Pronounce::PID &distancePid, std::function<double(QVelocity, QAcceleration)> feedforward,
 		             const std::function<Angle()> &angleFunction) : Pronounce::Behavior("PathFollower"), motionProfile(motionProfile),
 		                                                            drivetrain(drivetrain), turnPID(turnPid),

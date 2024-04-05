@@ -4,7 +4,7 @@
 #include "utils/utils.hpp"
 #include <cmath>
 #include <utility>
-#include "chassis/abstractTankDrivetrain.hpp"
+#include "chassis/tankDrive.hpp"
 #include "hardware/hardware.hpp"
 #include "hardwareAbstractions/joystick/joystick.hpp"
 
@@ -17,7 +17,7 @@ namespace Pronounce {
 
 		AbstractJoystick& controller;
 
-		AbstractTankDrivetrain& drivetrain;
+		TankDrivetrain& drivetrain;
 
 		bool arcade;
 
@@ -27,7 +27,7 @@ namespace Pronounce {
 
 	public:
 
-		JoystickDrivetrain(std::string name, AbstractJoystick& controller, AbstractTankDrivetrain& drivetrain, double deadband, QVelocity maxSpeed) : Behavior(std::move(name)), controller(controller), drivetrain(drivetrain) {
+		JoystickDrivetrain(std::string name, AbstractJoystick& controller, TankDrivetrain& drivetrain, double deadband, QVelocity maxSpeed) : Behavior(std::move(name)), controller(controller), drivetrain(drivetrain) {
 			this->deadband = deadband;
 			this->maxDriveSpeed = maxSpeed;
 			this->arcade = false;

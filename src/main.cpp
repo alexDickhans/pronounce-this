@@ -27,8 +27,7 @@ ASSET(close_rush_mid_2_json);
 void turnTo(Angle angle, QTime waitTimeMS) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
 	                                                          [&]() -> Angle { return imuOrientation.getAngle(); },
-	                                                          turningPid, angle,
-	                                                          drivetrainMutex);
+	                                                          turningPid, angle);
 
 	drivetrainStateController->sb(angleRotation);
 

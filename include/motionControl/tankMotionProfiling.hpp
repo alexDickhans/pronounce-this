@@ -4,7 +4,7 @@
 
 #include "velocityProfile/velocityProfile.hpp"
 #include "velocityProfile/sinusoidalVelocityProfile.hpp"
-#include "chassis/abstractTankDrivetrain.hpp"
+#include "chassis/tankDrive.hpp"
 #include "stateMachine/behavior.hpp"
 
 namespace Pronounce {

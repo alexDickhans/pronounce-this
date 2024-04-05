@@ -6,9 +6,9 @@ namespace Pronounce {
 	class VoltageDrivetrain : public Behavior {
 	private:
 		int32_t leftVoltage, rightVoltage;
-		AbstractTankDrivetrain& drivetrain;
+		TankDrivetrain& drivetrain;
 	public:
-		VoltageDrivetrain(int32_t leftVoltage, int32_t rightVoltage, AbstractTankDrivetrain &drivetrain) : leftVoltage(
+		VoltageDrivetrain(int32_t leftVoltage, int32_t rightVoltage, TankDrivetrain &drivetrain) : leftVoltage(
 				leftVoltage), rightVoltage(rightVoltage), drivetrain(drivetrain) {}
 
 		void initialize() override {

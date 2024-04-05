@@ -1,7 +1,6 @@
 #pragma once
 
 #include "api.h"
-#include "abstractTankDrivetrain.hpp"
 #include "pros/motor_group.hpp"
 #include "logger/logger.hpp"
 
@@ -30,25 +29,25 @@ namespace Pronounce {
 		TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
 		               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed);
 
-		QVelocity getVelocity() final {
+		QVelocity getVelocity() {
 			return ((mean(leftMotors.get_actual_velocity_all()) + mean(rightMotors.get_actual_velocity_all())) /
 			        2.0) / maxMotorSpeed.Convert(revolution/minute) * this->getMaxSpeed();
 		}
 
-		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) override {
+		void tankSteerVoltage(int32_t leftVoltage, int32_t rightVoltage) {
 			this->leftMotors.move_voltage(leftVoltage);
 			this->rightMotors.move_voltage(rightVoltage);
 
-			Log("LeftVoltage: " + std::to_string(leftVoltage) + " RightVoltage: " + std::to_string(rightVoltage));
+			Log(string_format("LeftVoltage: %d, RightVoltage: %d", leftVoltage, rightVoltage));
 		}
 
-		void reset() override {
+		void reset() {
 			Log("Reset Drivetrain Position");
 			this->leftMotors.tare_position_all();
 			this->rightMotors.tare_position_all();
 		}
 
-		QLength getDistanceSinceReset() override {
+		QLength getDistanceSinceReset() {
 			leftMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_ROTATIONS);
 			rightMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_ROTATIONS);
 			auto result = (
