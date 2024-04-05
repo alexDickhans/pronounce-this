@@ -27,7 +27,7 @@ namespace Pronounce {
 		 * @brief The output power
 		 * 
 		 */
-		double power;
+		double power{0.0};
 
 		/**
 		 * @brief The maximum power
@@ -39,7 +39,7 @@ namespace Pronounce {
 		 * @brief Default constructor
 		 * 
 		 */
-		FeedbackController(/* args */) {}
+		FeedbackController(/* args */) = default;
 		
 		/**
 		 * @brief Update the feedback controller and 

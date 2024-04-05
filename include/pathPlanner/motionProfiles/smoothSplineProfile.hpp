@@ -2,7 +2,7 @@
 
 #include "abstractMotionProfile.hpp"
 #include "combinedMotionProfile.hpp"
-#include "pathPlanner/utils/smoothBezierSegment.hpp"
+#include "pathPlanner/utils/bezierSegment.hpp"
 
 namespace PathPlanner {
 
@@ -14,7 +14,7 @@ namespace PathPlanner {
 
 	class SmoothSplineProfile : public AbstractMotionProfile {
 	private:
-		std::vector<SmoothBezierSegment> bezierSegment;
+		std::vector<BezierSegment> bezierSegment;
 
 		LinearInterpolator timeToVelocityInterpolator;
 
@@ -23,7 +23,7 @@ namespace PathPlanner {
 		QVelocity startSpeed = 0.0;
 		QVelocity endSpeed = 0.0;
 
-		std::vector<MaxSpeedPoint>
+		static std::vector<MaxSpeedPoint>
 		limitSpeed(const std::vector<MaxSpeedPoint> &unlimitedSpeed, QVelocity startSpeed) {
 			std::vector<MaxSpeedPoint> result = unlimitedSpeed;
 			result.at(0).velocity = startSpeed;
@@ -54,13 +54,13 @@ namespace PathPlanner {
 				if (!maxSpeedArray.empty()) {
 					maxSpeedArray.at(maxSpeedArray.size() - 1).velocity =
 							min(maxSpeedArray.at(maxSpeedArray.size() - 1).velocity,
-							    segment.getMaxSpeedMultiplier(trackWidth, 0.0) *
+							    segment.getMaxSpeedMultiplier(Constants::trackWidth, 0.0) *
 							    segment.getProfileConstraints().maxVelocity);
 				}
 
 				for (int i = 1; i <= granularity; i++) {
 					maxSpeedArray.emplace_back(totalDistance + (i * intervalDistance),
-					                           segment.getMaxSpeedMultiplier(trackWidth, segment.getTByLength(
+					                           segment.getMaxSpeedMultiplier(Constants::trackWidth, segment.getTByLength(
 							                           i * intervalDistance)) *
 					                           segment.getProfileConstraints().maxVelocity,
 					                           segment.getProfileConstraints().maxAcceleration);
@@ -72,9 +72,9 @@ namespace PathPlanner {
 			// Do left and right passes
 			std::reverse(maxSpeedArray.begin(), maxSpeedArray.end());
 			auto rightPassMin = PathPlanner::SmoothSplineProfile::limitSpeed(maxSpeedArray, endSpeed);
+			std::reverse(rightPassMin.begin(), rightPassMin.end());
 			std::reverse(maxSpeedArray.begin(), maxSpeedArray.end());
 			auto leftPassMin = PathPlanner::SmoothSplineProfile::limitSpeed(maxSpeedArray, startSpeed);
-			std::reverse(rightPassMin.begin(), rightPassMin.end());
 
 			for (int i = 0; i < maxSpeedArray.size(); i++) {
 				maxSpeedArray.at(i).velocity = std::min(leftPassMin.at(i).velocity, rightPassMin.at(i).velocity);
@@ -118,19 +118,19 @@ namespace PathPlanner {
 
 	public:
 
-		explicit SmoothSplineProfile(const std::vector<SmoothBezierSegment> &bezierSegment)
+		explicit SmoothSplineProfile(const std::vector<BezierSegment> &bezierSegment)
 				: AbstractMotionProfile(), bezierSegment(bezierSegment) {
 			this->calculate();
 		}
 
-		static std::shared_ptr<CombinedMotionProfile> build(const std::vector<SmoothBezierSegment> &bezierSegment) {
+		static std::shared_ptr<CombinedMotionProfile> build(const std::vector<BezierSegment> &bezierSegment) {
 			auto motionProfile = std::make_shared<CombinedMotionProfile>();
 
 			if (bezierSegment.empty()) {
 				return motionProfile;
 			}
 
-			std::vector<SmoothBezierSegment> currentSplines = {bezierSegment.at(0)};
+			std::vector<BezierSegment> currentSplines = {bezierSegment.at(0)};
 
 			for (int i = 1; i < bezierSegment.size(); i++) {
 				if (bezierSegment.at(i - 1).isStopEnd() ||
@@ -149,7 +149,7 @@ namespace PathPlanner {
 
 		static std::shared_ptr<CombinedMotionProfile> build(asset path) {
 			Json parsed_path = open_asset_as_json(path);
-			std::vector<SmoothBezierSegment> bezierSegment;
+			std::vector<BezierSegment> bezierSegment;
 
 			auto jsonPathSegments = parsed_path["segments"];
 
@@ -157,7 +157,7 @@ namespace PathPlanner {
 			              [&](const auto &segment) {
 				              auto constraints = segment["constraints"];
 				              auto paths = segment["paths"];
-				              bezierSegment.emplace_back(SmoothBezierSegment(paths[0], paths[1], paths[2], paths[3],
+				              bezierSegment.emplace_back(BezierSegment(paths[0], paths[1], paths[2], paths[3],
 				                                                             segment["inverted"].bool_value(),
 				                                                             segment["stopEnd"].bool_value(),
 				                                                             {constraints["velocity"].number_value() * inch/second,

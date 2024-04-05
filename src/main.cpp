@@ -8,8 +8,7 @@ ASSET(close_mid_rush_json);
 ASSET(mid_6_ball_1_json);
 ASSET(mid_6_ball_2_json);
 ASSET(mid_6_ball_awp_json);
-ASSET(safe_close_awp_json);
-ASSET(safe_close_awp_2_json);
+SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
 //SMOOTH_SPLINE_PATH_ASSET(skills_1);
 //SMOOTH_SPLINE_PATH_ASSET(skills_2);
 //SMOOTH_SPLINE_PATH_ASSET(skills_3);
@@ -26,7 +25,9 @@ ASSET(close_mid_rush_elim_json);
 ASSET(close_rush_mid_2_json);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
-	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain, [&]() -> Angle {return imuOrientation.getAngle(); }, turningPid, angle,
+	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
+	                                                          [&]() -> Angle { return imuOrientation.getAngle(); },
+	                                                          turningPid, angle,
 	                                                          drivetrainMutex);
 
 	drivetrainStateController->sb(angleRotation);
@@ -40,23 +41,21 @@ void turnTo(Angle angle, QTime waitTimeMS) {
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, QVelocity initialSpeed = 0.0,
           QVelocity endSpeed = 0.0) {
 	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, [&]() -> Angle {return imuOrientation.getAngle(); },
-			                                      &distancePid,
-			                                      drivetrainMutex, curvature, drivetrainFeedforward, initialSpeed, endSpeed))->wait();
+			std::make_shared<TankMotionProfiling>("moveDistance", drivetrain, profileConstraints, distance,
+			                                      [&]() -> Angle { return imuOrientation.getAngle(); },
+			                                      &distancePid, curvature, drivetrainFeedforward, initialSpeed,
+			                                      endSpeed))->wait();
 }
 
 void move(QLength distance, ProfileConstraints profileConstraints, QCurvature curvature, Angle startAngle,
           QVelocity initialSpeed = 0.0, QVelocity endSpeed = 0.0) {
 
-	Log("Done2");
-
 	drivetrainStateController->sb(
-			std::make_shared<TankMotionProfiling>("moveDistance", &drivetrain, profileConstraints, distance, [&]() -> Angle {return imuOrientation.getAngle(); },
-			                                      &distancePid,
-			                                      drivetrainMutex, curvature, drivetrainFeedforward, startAngle, &movingTurnPid, initialSpeed,
+			std::make_shared<TankMotionProfiling>("moveDistance", drivetrain, profileConstraints, distance,
+			                                      [&]() -> Angle { return imuOrientation.getAngle(); },
+			                                      &distancePid, curvature, drivetrainFeedforward, startAngle,
+			                                      &movingTurnPid, initialSpeed,
 			                                      endSpeed))->wait();
-
-	Log("Done2");
 }
 
 void far5BallRushMid(void *args) {
@@ -273,11 +272,11 @@ void safeCloseAWP(void *args) {
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
-	printf("nextMove\n");
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(safe_close_awp_json));
-	drivetrainStateController->sb(pathFollower);
+	Log("NextMove");
+	pathFollower->setMotionProfile(safe_close_awp);
+	drivetrainStateController->sb(pathFollower)->wait();
 
-	printf("nextMove\n");
+	Log("NextMove");
 	pros::Task::delay(15000);
 }
 
@@ -407,7 +406,8 @@ void tuneTurnPid(void *args) {
 	while (true) {
 		Log("Start");
 		// Odometry
-		lv_label_set_text(odomLabel.get(), (std::to_string(imuOrientation.getAngle().Convert(degree)) + "\n" + std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
+		lv_label_set_text(odomLabel.get(), (std::to_string(imuOrientation.getAngle().Convert(degree)) + "\n" +
+		                                    std::to_string(drivetrain.getDistanceSinceReset().Convert(inch))).c_str());
 
 		auto leftDriveTemps = leftDriveMotors.get_temperature_all();
 		auto rightDriveTemps = rightDriveMotors.get_temperature_all();
@@ -445,11 +445,11 @@ void initialize() {
 #elif AUTON == 1
 	auton->setAuton(far5BallAWP);
 #elif AUTON == 2
-		auton->setAuton(safeCloseAWP);
+	auton->setAuton(safeCloseAWP);
 #elif AUTON == 3
-		auton->setAuton(closeRushMidElim);
+	auton->setAuton(closeRushMidElim);
 #elif AUTON == 4
-		auton->setAuton(closeRushMid);
+	auton->setAuton(closeRushMid);
 #elif AUTON == 5
 //		auton->setAuton(skills);
 #endif // !1
@@ -464,7 +464,7 @@ void initialize() {
 	initAutonomousMappings();
 	initWinch();
 
-	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT*2, "modeLogicUpdate");
+	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT * 2, "modeLogicUpdate");
 
 	pros::Task::delay(10);
 }
@@ -526,7 +526,7 @@ void opcontrol() {
 	robotMutex.take(TIMEOUT_MAX);
 //	auton->setAuton(skills);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
-		return master->get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
+		return master.get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));
 	robotMutex.give();
 	competitionController->wait();

@@ -8,6 +8,7 @@ namespace Pronounce {
 
 	auto winchStow = std::make_shared<Winch>(winch, 0.0);
 	auto winchUp = std::make_shared<Winch>(winch, 0.7);
+	auto winchUpWait = std::make_shared<Wait>(winchUp, 1.0_s);
 	auto winchA = std::make_shared<Winch>(winch, 2.5);
 	auto winchC = std::make_shared<Winch>(winch, 3.5);
 	auto winchCSequence = std::make_shared<Sequence>("WinchSequence");
@@ -18,10 +19,12 @@ namespace Pronounce {
 
 	void initWinch() {
 		winch.set_zero_position_all(0.0);
-		winchCSequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R2);}));
+		winchCSequence->addState(winchStateController, winchUpWait);
+		winchCSequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master.get_digital(E_CONTROLLER_DIGITAL_R2);}));
 		winchCSequence->addState(winchStateController, winchC);
 
-		winchASequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_L2);}));
+		winchASequence->addState(winchStateController, winchUpWait);
+		winchASequence->addState(winchStateController, std::make_shared<Until>(winchUp, [&]() -> bool {return !master.get_digital(E_CONTROLLER_DIGITAL_L2);}));
 		winchASequence->addState(winchStateController, winchA);
 	}
 }

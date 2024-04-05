@@ -13,7 +13,6 @@ namespace Pronounce
 {
 	class RotationController : public Behavior {
 	private:
-		pros::Mutex& drivetrainMutex;
 		PID rotationPID;
 		TankDrivetrain& drivetrain;
 		std::function<Angle()> angleFunction;
@@ -24,7 +23,7 @@ namespace Pronounce
 		double idleSpeed = 0.0;
 
 	public:
-		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, pros::Mutex& drivetrainMutex, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name), drivetrainMutex(drivetrainMutex) {
+		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name) {
 			rotationPID.setTarget(target.Convert(radian));
 			this->idleSpeed = idleSpeed;
 			this->target = target;

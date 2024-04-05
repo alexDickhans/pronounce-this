@@ -3,14 +3,28 @@
 #include "api.h"
 #include "abstractTankDrivetrain.hpp"
 #include "pros/motor_group.hpp"
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace Pronounce {
-	class TankDrivetrain : public AbstractTankDrivetrain {
+	class TankDrivetrain {
 	private:
 		pros::AbstractMotor& leftMotors;
 		pros::AbstractMotor& rightMotors;
 		QAngularVelocity maxMotorSpeed = 0.0;
+
+		/**
+		 * @brief The distance between the two drive sides
+		 *
+		 * @details Used for driveCurvature and other math things
+		 *
+		 */
+		QLength trackWidth;
+
+		/**
+		 * @brief Max speed of the drivetrain
+		 *
+		 */
+		QVelocity maxSpeed;
 	public:
 
 		TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
@@ -57,13 +71,37 @@ namespace Pronounce {
 			return leftMotors.get_brake_mode();
 		}
 
+		const QVelocity &getMaxSpeed() const;
+
+		void setMaxSpeed(const QVelocity &maxSpeed);
+
+		const QLength &getTrackWidth() const;
+
+		void setTrackWidth(const QLength &trackWidth);
+
 		~TankDrivetrain() = default;
 	};
 
 	TankDrivetrain::TankDrivetrain(const QLength &trackWidth, const QVelocity &maxSpeed, pros::AbstractMotor &leftMotors,
 	                               pros::AbstractMotor &rightMotors, const QAngularVelocity &maxMotorSpeed)
-			: AbstractTankDrivetrain(trackWidth, maxSpeed), leftMotors(leftMotors), rightMotors(rightMotors),
+			: trackWidth(trackWidth), maxSpeed(maxSpeed), leftMotors(leftMotors), rightMotors(rightMotors),
 			  maxMotorSpeed(maxMotorSpeed) {}
+
+	const QVelocity &TankDrivetrain::getMaxSpeed() const {
+		return maxSpeed;
+	}
+
+	void TankDrivetrain::setMaxSpeed(const QVelocity &maxSpeed) {
+		TankDrivetrain::maxSpeed = maxSpeed;
+	}
+
+	const QLength &TankDrivetrain::getTrackWidth() const {
+		return trackWidth;
+	}
+
+	void TankDrivetrain::setTrackWidth(const QLength &trackWidth) {
+		TankDrivetrain::trackWidth = trackWidth;
+	}
 } // namespace Pronounce
 
 

@@ -17,8 +17,6 @@ namespace Pronounce {
 		QVelocity getVelocityByTime(QTime time) override;
 		QAcceleration getAccelerationByTime(QTime time) override;
 
-		[[deprecated("Jerk doesn't work with trapezoidal mp")]] QJerk getJerkByTime(QTime time) override;
-
 		void calculate() override;
 	};
 }

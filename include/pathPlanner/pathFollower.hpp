@@ -32,9 +32,6 @@ namespace PathPlanner {
 		std::vector<std::pair<double, std::function<void()>>> commands;
 		std::unordered_map<std::string, std::function<void()>> commandMap;
 		int commandsIndex = 0;
-
-		pros::Mutex movingMutex;
-		std::pair<QVelocity, QVelocity> lastDriveVelocity;
 	public:
 		PathFollower(const std::shared_ptr<AbstractMotionProfile> &motionProfile,
 		             Pronounce::AbstractTankDrivetrain &drivetrain, const Pronounce::PID &turnPid,
@@ -47,7 +44,6 @@ namespace PathPlanner {
 
 
 		void setMotionProfile(const std::shared_ptr<AbstractMotionProfile> &motionProfile) {
-			movingMutex.lock();
 			PathFollower::motionProfile = motionProfile;
 			commands.clear();
 			for (const auto &command: motionProfile->getCommands()) {
@@ -56,7 +52,6 @@ namespace PathPlanner {
 					commands.emplace_back(command.first, commandMap[command.second]);
 				}
 			}
-			movingMutex.unlock();
 		}
 
 		void addCommandMapping(const std::string& name, std::function<void()> function) {
@@ -64,10 +59,8 @@ namespace PathPlanner {
 		}
 
 		void initialize() override {
-			movingMutex.lock();
 			startTime = pros::millis() * 1_ms;
 			startDistance = drivetrain.getDistanceSinceReset();
-			lastDriveVelocity = {0.0, 0.0};
 			distancePID.reset();
 			turnPID.reset();
 			commandsIndex = 0;
@@ -107,7 +100,6 @@ namespace PathPlanner {
 		void exit() override {
 			Log("exit");
 			drivetrain.tankSteerVoltage(0.0, 0.0);
-			movingMutex.unlock();
 		}
 
 		bool isDone() override {

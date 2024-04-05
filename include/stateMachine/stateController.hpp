@@ -1,12 +1,11 @@
 #pragma once
 
 #include "behavior.hpp"
-#include "time/time.hpp"
-#include "time/robotTime.hpp"
 #include <string>
 #include <unordered_map>
 #include <iostream>
 #include <utility>
+#include "api.h"
 
 namespace Pronounce {
 	/**
@@ -45,7 +44,7 @@ namespace Pronounce {
 		 */
 		void initialize() override {
 			Log_Desc(Behavior::getName() + ":" + this->getName(), "Initialize");
-			startTime = currentTime();
+			startTime = pros::millis() * 1_ms;
 			if (currentBehavior != nullptr) {
 				try {
 					currentBehavior->initialize();
@@ -79,7 +78,7 @@ namespace Pronounce {
 					currentBehavior = nullptr;
 					defaultBehavior->initialize();
 					defaultBehavior->update();
-					startTime = currentTime();
+					startTime = pros::millis() * 1_ms;
 				}
 				else {
 					try {
@@ -170,7 +169,7 @@ namespace Pronounce {
 					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
 			// Transition from default behavior if it doesn't
 			else {
@@ -182,7 +181,7 @@ namespace Pronounce {
 					Log_Desc(this->getName(), "ERROR: In " + this->getName() + ", \"" + currentBehavior->getName() + "\" failed to initialize. what: " + e.what() + ", returning to default state");
 					this->useDefaultBehavior();
 				}
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
 		}
 
@@ -222,7 +221,7 @@ namespace Pronounce {
 
 				currentBehavior = nullptr;
 				defaultBehavior->initialize();
-				startTime = currentTime();
+				startTime = pros::millis() * 1_ms;
 			}
 		}
 
@@ -235,7 +234,7 @@ namespace Pronounce {
 		}
 
 		QTime getDuration() {
-			return currentTime() - startTime;
+			return pros::millis() * 1_ms - startTime;
 		}
 
 		std::string getName() override {

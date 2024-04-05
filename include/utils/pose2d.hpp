@@ -4,8 +4,7 @@
 #include <string>
 #include "units/units.hpp"
 #include <iostream>
-#include "utils/vector.hpp"
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace Pronounce {
     /**
@@ -127,12 +126,6 @@ namespace Pronounce {
 		 */
 		Pose2D operator+(Point b) {
 			return Pose2D(this->getX() + b.getX(), this->getY() + b.getY(), this->getAngle());
-		}
-
-		Pose2D operator-(Pose2D x) {
-			Vector currentPose(Point(x.getX() - this->getX(), x.getY() - this->getY()));
-			currentPose.rotate(-x.getAngle());
-			return Pose2D(currentPose.getCartesian().getX(), currentPose.getCartesian().getY(), angleDifference((x.getAngle() - this->getAngle()).getValue(), 0));
 		}
 
         ~Pose2D();

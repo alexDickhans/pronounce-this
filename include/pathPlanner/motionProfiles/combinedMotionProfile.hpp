@@ -7,6 +7,7 @@ namespace PathPlanner {
 	class CombinedMotionProfile : public AbstractMotionProfile {
 	private:
 		std::vector<std::shared_ptr<AbstractMotionProfile>> motionProfiles;
+		QTime duration;
 	public:
 		explicit CombinedMotionProfile(const std::vector<std::shared_ptr<AbstractMotionProfile>> &motionProfile)
 				: AbstractMotionProfile(), motionProfiles(motionProfile) {}
@@ -15,6 +16,11 @@ namespace PathPlanner {
 
 		void addMotionProfile(const std::shared_ptr<AbstractMotionProfile> &profile) {
 			motionProfiles.emplace_back(profile);
+			duration = 0.0;
+
+			for (const auto &item : motionProfiles) {
+				duration += isfinite(item->getDuration().getValue()) && item->getDuration().getValue() > 0.0 ? item->getDuration().getValue() : 0.0;
+			}
 		}
 
 		[[nodiscard]] MotionProfilePoint update(const QTime time) const override {
@@ -24,10 +30,10 @@ namespace PathPlanner {
 			QLength totalDistance = 0.0;
 			double totalT = 0.0;
 
-			for (int i = 0; i < motionProfiles.size(); i++) {
-				QTime currentDuration = motionProfiles.at(i)->getDuration();
-				if (totalTime + currentDuration >= t || motionProfiles.size()-1 == i) {
-					auto profiledPoint = motionProfiles.at(i)->update(t - totalTime);
+			for (const auto &profile: motionProfiles) {
+				QTime currentDuration = profile->getDuration();
+				if (totalTime + currentDuration >= t) {
+					auto profiledPoint = profile->update(t - totalTime);
 
 					profiledPoint.targetDistance += totalDistance;
 					profiledPoint.targetT += totalT;
@@ -36,7 +42,7 @@ namespace PathPlanner {
 				}
 
 				totalTime += currentDuration;
-				auto profiledPoint = motionProfiles.at(i)->update(totalTime);
+				auto profiledPoint = profile->update(totalTime);
 				totalDistance += profiledPoint.targetDistance;
 				totalT += profiledPoint.targetT;
 			}
@@ -50,13 +56,7 @@ namespace PathPlanner {
 		}
 
 		[[nodiscard]] QTime getDuration() const override {
-			QTime sum = 0.0;
-
-			for (const auto &item: motionProfiles) {
-				sum += isnan(item->getDuration().getValue()) ? 0.0 : item->getDuration().getValue();
-			}
-
-			return sum;
+			return duration;
 		}
 	};
 }

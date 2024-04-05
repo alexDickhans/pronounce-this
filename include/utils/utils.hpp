@@ -17,17 +17,7 @@
 // TODO: add comments
 
 namespace Pronounce {
-	/**
-	 * @brief Simple linear interpolation
-	 *
-	 * @param a The start value
-	 * @param b The end value
-	 * @param t
-	 * @return double The interpolated value
-	 */
-	double lerp(double a, double b, double t);
-
-	double angleDifference(double angle1, double angle2);
+	double angleDifference(double angle1, double angle2, size_t maxLoops = 1000);
 
 	/**
 	 * @brief Returns the sign of a number
@@ -58,8 +48,6 @@ namespace Pronounce {
 	double mean(std::vector<int32_t> array);
 
 	double getDistanceSensorMedian(pros::Distance &distance, int samples);
-
-	unsigned int factorial(const unsigned int& x);
 
 #ifdef SIM
 	double clamp(double value, double min, double max) {

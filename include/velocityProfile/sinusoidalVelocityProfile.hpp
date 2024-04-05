@@ -2,12 +2,12 @@
 
 #include "velocityProfile.hpp"
 #include "units/units.hpp"
-#include "utils/linearInterpolator.hpp"
+#include "utils/utils.hpp"
 #include <cmath>
 #include <iostream>
 
 namespace Pronounce {
-	class SinusoidalVelocityProfile : public VelocityProfile {
+	class [[deprecated("Use trap mp")]] SinusoidalVelocityProfile : public VelocityProfile {
 	private:
 		QTime Tt = 3.0_s;
 

@@ -17,8 +17,7 @@
 namespace Pronounce {
 	auto disabled = std::make_shared<Disabled>();
 	auto auton = std::make_shared<Auton>([](void *) -> void { printf("Auton"); });
-	auto teleop = std::make_shared<Teleop>(new Pronounce::RobotJoystick(static_cast<controller_id_e_t>(0)), new Pronounce::RobotJoystick(
-			static_cast<controller_id_e_t>(1)));
+	auto teleop = std::make_shared<Teleop>(master);
 
 	auto competitionController = std::make_shared<StateController>("CompetitionController", disabled);
 } // namespace Pronounce

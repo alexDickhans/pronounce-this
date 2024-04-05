@@ -412,7 +412,7 @@ constexpr RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L,
 {
 	return RQuantity<std::ratio_divide<M, std::ratio<1, 2>>, std::ratio_divide<L, std::ratio<1, 2>>,
 		std::ratio_divide<T, std::ratio<1, 2>>, std::ratio_divide<A, std::ratio<1, 2>>>
-		(pow(num.getValue(), 2));
+		(num * num);
 }
 
 // Typesafe trigonometric operations

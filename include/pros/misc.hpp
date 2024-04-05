@@ -399,7 +399,6 @@ class Controller {
 	 */
 	std::int32_t clear(void);
 
-	private:
 	controller_id_e_t _id;
 	///@}
 };

@@ -178,5 +178,7 @@ namespace PathPlanner {
         std::string to_string() {
             return "X: " + std::to_string(x.Convert(inch)) + ", Y: " + std::to_string(y.Convert(inch));
         }
+
+		~Point() = default;
     };
 } // namespace Pronounce

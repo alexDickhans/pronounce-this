@@ -46,16 +46,13 @@
 // Utils
 #include "utils/point.hpp"
 #include "utils/pose2d.hpp"
-#include "utils/splinePoint.hpp"
 #include "utils/utils.hpp"
-#include "utils/vector.hpp"
-#include "utils/polynomialExpression.hpp"
 
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
 #include "stateMachine/state/competition/auton.hpp"
 
-#include "Logger/logger.hpp"
+#include "logger/logger.hpp"
 
 
 #ifdef __cplusplus

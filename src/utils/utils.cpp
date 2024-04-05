@@ -5,11 +5,6 @@ namespace Pronounce
 	double lerp(double a, double b, double t) {
 		return a + t * (b - a);
 	}
-    double signum_c(double x) {
-        if (x > 0.0) return 1.0;
-        if (x < 0.0) return -1.0;
-        return x;
-    }
 
 	double signnum_c(double x) {
         if (x > 0.0) return 1.0;
@@ -17,9 +12,13 @@ namespace Pronounce
         return x;
     }
 
-    double angleDifference(double angle1, double angle2) {
+    double angleDifference(double angle1, double angle2, size_t maxLoops) {
         double difference = angle1 - angle2;
-        while (abs(difference) > M_PI) difference += M_PI * 2.0 * -signum_c(difference);
+		size_t loopCount = 0;
+        while (fabs(difference) > M_PI) {
+			difference += M_PI * 2.0 * -signnum_c(difference);
+			loopCount ++;
+		}
         return difference;
     }
 

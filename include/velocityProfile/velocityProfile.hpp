@@ -36,15 +36,13 @@ namespace Pronounce {
 
 		virtual QAcceleration getAccelerationByTime(QTime time) { return 0.0; }
 
-		virtual QJerk getJerkByTime(QTime time) { return 0.0; }
-
-		const QLength &getDistance() const;
+		[[nodiscard]] const QLength &getDistance() const;
 		virtual void setDistance(const QLength &distance);
-		const ProfileConstraints &getProfileConstraints() const;
+		[[nodiscard]] const ProfileConstraints &getProfileConstraints() const;
 		virtual void setProfileConstraints(const ProfileConstraints &profileConstraints);
 
 		virtual void calculate() {}
 
-		~VelocityProfile() {}
+		~VelocityProfile() = default;
 	};
 } // namespace Pronounce

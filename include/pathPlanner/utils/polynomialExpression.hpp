@@ -41,7 +41,7 @@ namespace PathPlanner {
 			return result;
 		}
 
-		PolynomialExpression& operator=(const PolynomialExpression& polynomialExpression) = default;
+		~PolynomialExpression() = default;
 	};
 
 } // Pronounce

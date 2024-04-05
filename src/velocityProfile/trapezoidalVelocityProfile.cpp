@@ -43,10 +43,6 @@ QAcceleration Pronounce::TrapezoidalVelocityProfile::getAccelerationByTime(QTime
 	return 0.0;
 }
 
-QJerk Pronounce::TrapezoidalVelocityProfile::getJerkByTime(QTime time) {
-	return std::numeric_limits<double>::quiet_NaN();
-}
-
 void Pronounce::TrapezoidalVelocityProfile::calculate() {
 	ProfileConstraints profileConstraints = this->getProfileConstraints();
 	cruiseSpeed = signnum_c(this->getDistance().getValue()) * profileConstraints.maxVelocity;

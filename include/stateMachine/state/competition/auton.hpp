@@ -96,12 +96,10 @@ namespace Pronounce {
 			drivetrainStateController->useDefaultBehavior();
 			Enabled::initialize();
 
-			drivetrain.setBrakeMode(pros::MotorBrake::hold);
-
 			if (task.get_state() == 2)
 				task.remove();
 
-			task = pros::Task(auton, nullptr, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT, "User auton");
+			task = pros::Task(auton, nullptr, TASK_PRIORITY_MAX-1, TASK_STACK_DEPTH_DEFAULT, "User auton");
 		}
 
 		void update() override {

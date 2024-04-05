@@ -1,8 +1,8 @@
 #pragma once
 
 #include "polynomialExpression.hpp"
-#include "vector.hpp"
 #include "linearInterpolator.hpp"
+#include "velocityProfile/velocityProfile.hpp"
 
 namespace PathPlanner {
 	class BezierSegment {
@@ -16,12 +16,13 @@ namespace PathPlanner {
 
 		QLength length;
 		LinearInterpolator distanceToT;
+		Pronounce::ProfileConstraints profileConstraints;
 
 		bool reversed;
 		bool stopEnd;
 
 	public:
-		BezierSegment(Point a, Point b, Point c, Point d, bool reversed, bool stopEnd, int granularity = 100) {
+		BezierSegment(Point a, Point b, Point c, Point d, bool reversed, bool stopEnd, const Pronounce::ProfileConstraints &profileConstraints, int granularity = 100) : profileConstraints(profileConstraints) {
 			this->a = a;
 			this->b = b;
 			this->c = c;
@@ -60,16 +61,15 @@ namespace PathPlanner {
 
 
 		[[nodiscard]] virtual QLength getDistance() const {
-			return length.getValue() * (reversed ? -1.0 : 1.0);
+			return length.getValue();
 		}
 
 		[[nodiscard]] double getTByLength(QLength distance) const {
-			Log(std::to_string(distance.getValue()));
 			return distanceToT.get(distance.getValue());
 		}
 
 		[[nodiscard]] QCurvature getCurvature(double t) const {
-			return (reversed ? 1.0 : -1.0) * (dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(Vector(Point(dx.evaluate(t), dy.evaluate(t))).getMagnitude().getValue(), 3);
+			return (reversed ? 1.0 : -1.0) * (dx.evaluate(t)*ddy.evaluate(t) - ddx.evaluate(t)*dy.evaluate(t))/pow(sqrt(pow(dx.evaluate(t), 2) + pow(dy.evaluate(t), 2)), 3);
 		}
 
 		[[nodiscard]] QCurvature getMaxCurvature(int granularity = 20) const {
@@ -129,12 +129,18 @@ namespace PathPlanner {
 			return reversed;
 		}
 
-		[[deprecated("Use isReversed instead")]] [[nodiscard]] bool getReversed() const {
-			return reversed;
+		[[nodiscard]] const Pronounce::ProfileConstraints &getProfileConstraints() const {
+			return profileConstraints;
+		}
+
+		void setProfileConstraints(const Pronounce::ProfileConstraints &profileConstraints) {
+			this->profileConstraints = profileConstraints;
 		}
 
 		[[nodiscard]] bool isStopEnd() const {
 			return stopEnd;
 		}
+
+		~BezierSegment() = default;
 	};
 }

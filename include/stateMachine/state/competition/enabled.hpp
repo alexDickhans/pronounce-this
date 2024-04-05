@@ -14,15 +14,9 @@ namespace Pronounce {
 		stateControllers.addBehavior(backRightWingStateController);
 		stateControllers.addBehavior(winchStateController);
 		stateControllers.addBehavior(winchStateExtensionController);
-
-		if (isSkills) {
-			Log("Init Catapult");
-			stateControllers.addBehavior(catapultStateController);
-		} else {
-			Log("Init Intake");
-			stateControllers.addBehavior(intakeExtensionStateController);
-			stateControllers.addBehavior(intakeStateController);
-		}
+		stateControllers.addBehavior(catapultStateController);
+		stateControllers.addBehavior(intakeExtensionStateController);
+		stateControllers.addBehavior(intakeStateController);
 	}
 
 	class Enabled : public Behavior {

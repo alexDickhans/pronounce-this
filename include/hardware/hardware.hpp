@@ -24,13 +24,10 @@ namespace Pronounce {
 
 	pros::Mutex robotMutex;
 
-	constexpr bool isSkills = AUTON == 5;
+    #define IS_SKILLS (AUTON == 5)
 
-#ifndef SIM
-	RobotJoystick *master = new RobotJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
-#else
-	AbstractJoystick* master = new SimJoystick(controller_id_e_t::E_CONTROLLER_MASTER);
-#endif // !SIM
+	pros::Controller masterController(pros::E_CONTROLLER_MASTER);
+	RobotJoystick master = RobotJoystick(masterController);
 
 	pros::Mutex drivetrainMutex;
 
@@ -79,12 +76,14 @@ namespace Pronounce {
 		leftDriveMotors.set_zero_position_all(0.0);
 		rightDriveMotors.set_zero_position_all(0.0);
 
+		winch.set_brake_mode_all(pros::MotorBrake::brake);
+
 		drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
 		intakeMotors.set_brake_mode_all(pros::MotorBrake::coast);
 
 		std::string portsReport = checkPorts(Constants::bothDevices);
-		if (isSkills) {
+		if (IS_SKILLS) {
 			Log("Skills");
 			portsReport = checkPorts(Constants::skillsDevices, portsReport);
 		} else {
@@ -93,16 +92,16 @@ namespace Pronounce {
 		}
 
 		if (portsReport.empty()) {
-			master->getController()->set_text(0, 0, "All good");
+			master.getController().set_text(0, 0, "All good");
 		} else {
-			master->getController()->set_text(0, 0, portsReport.c_str());
+			master.getController().set_text(0, 0, portsReport.c_str());
 			pros::Task::delay(50);
-			master->getController()->rumble("-.-.-.-.");
+			master.getController().rumble("-.-.-.-.");
 		}
 
 		Log(string_format("Ports missing: %s", portsReport.c_str()));
 
-		if ((imu.is_installed() && pros::competition::is_disabled()) || isSkills) {
+		if (imu.is_installed() && (pros::competition::is_disabled() || IS_SKILLS)) {
 			imu.reset();
 			Log("Imu: calibrate");
 

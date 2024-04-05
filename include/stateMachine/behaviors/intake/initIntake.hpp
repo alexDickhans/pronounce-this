@@ -21,8 +21,6 @@ namespace Pronounce {
 
     void initIntake() {
 	    Log("Intake Init");
-		intakeSequence->addState(intakeStateController, std::make_shared<Until>(intakeIntaking, [=]() -> bool {return !master->get_digital(E_CONTROLLER_DIGITAL_R1);}));
-		intakeSequence->addState(intakeStateController, intakeHold);
 
 		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeHold, 170_ms));
 		outtakeSequence->addState(intakeStateController, std::make_shared<Wait>(intakeEject, 500_ms));
