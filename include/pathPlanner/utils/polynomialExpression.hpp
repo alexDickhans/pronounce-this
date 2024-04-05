@@ -19,7 +19,7 @@ namespace PathPlanner {
 			this->coefficients = coefficients;
 		}
 
-		PolynomialExpression getDerivative() {
+		[[nodiscard]] PolynomialExpression getDerivative() const {
 			if (coefficients.size() <= 1) {
 				return PolynomialExpression({0.0});
 			} else {
