@@ -445,7 +445,7 @@ void initialize() {
 #elif AUTON == 4
 	auton->setAuton(closeRushMid);
 #elif AUTON == 5
-//		auton->setAuton(skills);
+	auton->setAuton(skills);
 #endif // !1
 
 	// Initialize functions
