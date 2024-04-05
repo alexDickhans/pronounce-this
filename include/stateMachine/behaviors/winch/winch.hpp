@@ -13,6 +13,7 @@ namespace Pronounce {
 
 		void initialize() override {
 			motor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
+			motor.set_brake_mode_all(pros::MotorBrake::hold);
 			motor.move_absolute(target, 600);
 		}
 
@@ -20,6 +21,7 @@ namespace Pronounce {
 		}
 
 		void exit() override {
+			motor.set_brake_mode_all(pros::MotorBrake::coast);
 			motor.move_voltage(0);
 		}
 
