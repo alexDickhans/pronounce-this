@@ -271,11 +271,8 @@ void safeCloseAWP(void *args) {
 
 	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeIntaking);
-	Log("NextMove");
 	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
-
-	Log("NextMove");
 	pros::Task::delay(15000);
 }
 
@@ -361,7 +358,7 @@ void tuneTurnPid(void *args) {
 		competitionController->update();
 		robotMutex.unlock();
 
-		Log("Good");
+		Log("Loop done");
 
 		// Wait a maximum of 10 milliseconds
 		pros::delay(std::min(10 - (pros::millis() - startTime), (long unsigned int) 10));
