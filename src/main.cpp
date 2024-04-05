@@ -518,7 +518,7 @@ void opcontrol() {
 	// Causes the programming skills code to only run during skills
 #if AUTON == 5
 	robotMutex.take(TIMEOUT_MAX);
-//	auton->setAuton(skills);
+	auton->setAuton(skills);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
 		return master.get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));
