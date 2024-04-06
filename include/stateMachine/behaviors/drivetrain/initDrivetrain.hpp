@@ -22,7 +22,7 @@ namespace Pronounce {
 		return signnum_c(velocity.getValue()) * kS + velocity.Convert(inch/second) * kV + acceleration.Convert(inch/second/second) * kA;
 	}
 
-	PID turningPid(2.0, 0.01, 22.0, 0.0, 0.0, false);
+	PID turningPid(2.0, 0.00, 0.0, 0.0, 0.0, false);
 	PID movingTurnPid(2.4e4, 0.0, 2.64e5, 0.0, 0.0, true);
 
 	PID distancePid(1.5e5, 0.0, 0e5);

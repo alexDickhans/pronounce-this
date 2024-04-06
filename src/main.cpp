@@ -4,10 +4,10 @@
 std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
-ASSET(close_mid_rush_json);
-ASSET(mid_6_ball_1_json);
-ASSET(mid_6_ball_2_json);
-ASSET(mid_6_ball_awp_json);
+SMOOTH_SPLINE_PATH_ASSET(close_mid_rush);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_1);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_2);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_awp);
 SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
 SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SMOOTH_SPLINE_PATH_ASSET(skills_2);
@@ -21,8 +21,8 @@ SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
 SMOOTH_SPLINE_PATH_ASSET(skills_8);
 SMOOTH_SPLINE_PATH_ASSET(skills_9);
 SMOOTH_SPLINE_PATH_ASSET(skills_10);
-ASSET(close_mid_rush_elim_json);
-ASSET(close_rush_mid_2_json);
+SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
+SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
 
 void turnTo(Angle angle, QTime waitTimeMS) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
@@ -182,7 +182,7 @@ void skills(void *args) {
 
 	pathFollower->setMotionProfile(skills_4);
 	drivetrainStateController->sb(pathFollower)->wait();
-	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
+	move(-10_in, speedProfileConstraints, 0.0, -75_deg);
 
 	turnTo(-160_deg, 200_ms);
 

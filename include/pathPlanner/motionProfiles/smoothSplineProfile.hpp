@@ -43,7 +43,7 @@ namespace PathPlanner {
 		void calculate(QLength gran = 1_in) {
 			QLength totalDistance = 0.0;
 
-			std::vector<MaxSpeedPoint> maxSpeedArray;
+			std::vector<MaxSpeedPoint> maxSpeedArray;//({{0.0, 0.0, 0.0}});
 
 			for (const auto &segment: bezierSegment) {
 				QLength distance = segment.getDistance();
@@ -181,13 +181,15 @@ namespace PathPlanner {
 			double invertedMultiplier = this->bezierSegment.at(0).isReversed() ? -1 : 1;
 
 			point.targetDistance = timeToVelocityInterpolator.getIntegral(t.getValue()) * invertedMultiplier;
-			auto [index, targetT] = getTAtDistance(point.targetDistance);
+			auto [index, targetT] = getTAtDistance(Qabs(point.targetDistance));
 			point.targetT = static_cast<double>(index) + targetT;
 			point.targetSpeed = timeToVelocityInterpolator.get(t.getValue()) * invertedMultiplier;
 			auto targetPoint = bezierSegment.at(index).evaluate(targetT);
 			point.targetPose = Pronounce::Pose2D(targetPoint.getX(), targetPoint.getY(),
 			                                     bezierSegment.at(index).getAngle(targetT));
 			point.targetCurvature = bezierSegment.at(index).getCurvature(targetT);
+
+			Log(string_format("Time: %f, Distance: %f, Speed: %f, Angle: %f, Curvature: %f, Index: %d, T: %f", time.Convert(second), point.targetDistance.Convert(inch), point.targetSpeed.Convert(inch/second), point.targetPose.getAngle().Convert(degree), point.targetCurvature.Convert(degree/inch), index, targetT));
 
 			return point;
 		}
