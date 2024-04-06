@@ -172,7 +172,8 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, -70_deg);
+	move(15_in, speedProfileConstraints, 0.0, 110_deg);
+	turnTo(-80_deg, 500_ms);
 
 	pathFollower->setMotionProfile(skills_4);
 
@@ -220,7 +221,7 @@ void skills(void *args) {
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg));
 
-	QLength wallDistance = 0.0;// getDistanceSensorMedian(distanceSensor, 3) * 1_mm;
+	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3) * 1_mm;
 
 	pathFollower->setMotionProfile(
 			PathPlanner::SmoothSplineProfile::build(
@@ -518,7 +519,7 @@ void opcontrol() {
 	// Causes the programming skills code to only run during skills
 #if AUTON == 5
 	robotMutex.lock();
-	auton->setAuton(tuneTurnPid);
+	auton->setAuton(skills);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
 		return master.get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));

@@ -53,6 +53,7 @@ namespace Pronounce {
 
 	pros::Distance hopperDistanceSensor(16);
 	pros::Distance catapultDistance(8);
+	pros::Distance wallDistanceSensor(7);
 
 	std::string checkPorts(const std::unordered_map<uint16_t, pros::DeviceType>& devices, std::string startString = "") {
 
