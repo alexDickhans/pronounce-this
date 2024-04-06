@@ -4,10 +4,10 @@
 std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
-ASSET(close_mid_rush_json);
-ASSET(mid_6_ball_1_json);
-ASSET(mid_6_ball_2_json);
-ASSET(mid_6_ball_awp_json);
+SMOOTH_SPLINE_PATH_ASSET(close_mid_rush);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_1);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_2);
+SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_awp);
 SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
 SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SMOOTH_SPLINE_PATH_ASSET(skills_2);
@@ -21,13 +21,13 @@ SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
 SMOOTH_SPLINE_PATH_ASSET(skills_8);
 SMOOTH_SPLINE_PATH_ASSET(skills_9);
 SMOOTH_SPLINE_PATH_ASSET(skills_10);
-ASSET(close_mid_rush_elim_json);
-ASSET(close_rush_mid_2_json);
+SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
+SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
 
-void turnTo(Angle angle, QTime waitTimeMS) {
+void turnTo(Angle angle, QTime waitTimeMS, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
 	                                                          [&]() -> Angle { return imuOrientation.getAngle(); },
-	                                                          turningPid, angle);
+	                                                          turningPid, angle, idleSpeed);
 
 	drivetrainStateController->sb(angleRotation);
 
@@ -153,7 +153,7 @@ void skills(void *args) {
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
 			                                     21.1_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(500);
+	pros::Task::delay(1000);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
@@ -182,7 +182,7 @@ void skills(void *args) {
 
 	pathFollower->setMotionProfile(skills_4);
 	drivetrainStateController->sb(pathFollower)->wait();
-	move(-5_in, speedProfileConstraints, 0.0, -75_deg);
+	move(-10_in, speedProfileConstraints, 0.0, -75_deg);
 
 	turnTo(-160_deg, 200_ms);
 
@@ -517,18 +517,18 @@ void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
 #if AUTON == 5
-	robotMutex.take(TIMEOUT_MAX);
-	auton->setAuton(skills);
+	robotMutex.lock();
+	auton->setAuton(tuneTurnPid);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {
 		return master.get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));
-	robotMutex.give();
-	competitionController->wait();
+	robotMutex.unlock();
+	competitionController->wait(60000);
 #endif
 
-	robotMutex.take(TIMEOUT_MAX);
+	robotMutex.lock();
 	competitionController->sb(teleop);
-	robotMutex.give();
+	robotMutex.unlock();
 }
 
 // !SECTION

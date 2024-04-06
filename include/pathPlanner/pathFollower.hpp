@@ -68,7 +68,7 @@ namespace PathPlanner {
 		}
 
 		void update() override {
-			QTime time = pros::millis() * 1_ms - startTime;
+			QTime time = (pros::millis() * 1_ms) - startTime;
 			auto target = motionProfile->update(time);
 			auto futureTarget = motionProfile->update(time + 10_ms);
 

@@ -9,7 +9,7 @@ namespace Pronounce {
 		TankDrivetrain& drivetrain;
 	public:
 		VoltageDrivetrain(int32_t leftVoltage, int32_t rightVoltage, TankDrivetrain &drivetrain) : leftVoltage(
-				leftVoltage), rightVoltage(rightVoltage), drivetrain(drivetrain) {}
+				leftVoltage), rightVoltage(rightVoltage), drivetrain(drivetrain), Behavior("VoltageDrivetrain") {}
 
 		void initialize() override {
 			drivetrain.tankSteerVoltage(leftVoltage, rightVoltage);
