@@ -11,11 +11,7 @@ namespace Pronounce {
 			intakeStateController->sb(intakeIntaking);
 		});
 
-		pathFollower->addCommandMapping("intakeHold", [&]() -> void {
-			intakeStateController->sb(intakeHold);
-		});
-
-		pathFollower->addCommandMapping("intakeStopped", [&]() -> void {
+		pathFollower->addCommandMapping("intakeStop", [&]() -> void {
 			intakeStateController->ud();
 		});
 

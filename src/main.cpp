@@ -6,6 +6,10 @@ std::shared_ptr<lv_obj_t> tabview;
 // SECTION Auton
 SMOOTH_SPLINE_PATH_ASSET(close_mid_rush);
 SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
+SMOOTH_SPLINE_PATH_ASSET(far_6_1);
+SMOOTH_SPLINE_PATH_ASSET(far_6_2);
+SMOOTH_SPLINE_PATH_ASSET(far_6_3);
+SMOOTH_SPLINE_PATH_ASSET(far_6_4);
 SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SMOOTH_SPLINE_PATH_ASSET(skills_2);
 SMOOTH_SPLINE_PATH_ASSET(skills_3);
@@ -55,7 +59,39 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 }
 
 void far6Ball(void* args) {
-	imuOrientation.setRotation(135_deg);
+	imuOrientation.setRotation(135_deg);// TODO: change
+
+	move(35_in, speedProfileConstraints, 0.0, 135_deg);
+
+	pathFollower->setMotionProfile(far_6_1);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	turnTo(180_deg, 0.4_s);
+	intakeStateController->sb(intakeIntaking);
+	move(5_in, speedProfileConstraints, 0.0, 180_deg);
+
+	pathFollower->setMotionProfile(far_6_2);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	backRightWingStateController->ud();
+	move(15_in, speedProfileConstraints, 0.0, 90_deg);
+	turnTo(270_deg, 0.6_s);
+
+	frontLeftWingStateController->sb(frontLeftWingOut);
+
+	move(-15_in, defaultProfileConstraints, 0.0, 250_deg);
+
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	move(-15_in, defaultProfileConstraints, 0.0, 250_deg);
+
+	frontLeftWingStateController->ud();
+
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+	pathFollower->setMotionProfile(far_6_4);
+	drivetrainStateController->sb(pathFollower)->wait();
 }
 
 void skills(void *args) {
