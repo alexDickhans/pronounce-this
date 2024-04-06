@@ -154,6 +154,7 @@ void skills(void *args) {
 			                                     21.1_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(1000);
+	backLeftWingStateController->sb(backLeftWingOut);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
@@ -167,25 +168,27 @@ void skills(void *args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	frontRightWingStateController->sb(frontRightWingIn);
-	turnTo(180_deg, 300_ms);
+	frontLeftWingStateController->sb(frontLeftWingIn);
+
+	turnTo(90_deg, 300_ms, 6000);
+
+	turnTo(0.0, 500_ms);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	move(15_in, speedProfileConstraints, 0.0, 110_deg);
-	turnTo(-80_deg, 500_ms);
 
 	pathFollower->setMotionProfile(skills_4);
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, -75_deg);
+	move(15_in, speedProfileConstraints, 0.0, 110_deg);
+	backRightWingStateController->ud();
+	backLeftWingStateController->ud();
 
 	pathFollower->setMotionProfile(skills_4);
 	drivetrainStateController->sb(pathFollower)->wait();
-	move(-10_in, speedProfileConstraints, 0.0, -75_deg);
-
-	turnTo(-160_deg, 200_ms);
 
 	pathFollower->setMotionProfile(skills_5);
 	drivetrainStateController->sb(pathFollower)->wait();
