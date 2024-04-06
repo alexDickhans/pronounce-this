@@ -43,8 +43,8 @@ namespace Pronounce {
 
 	pros::adi::DigitalOut frontLeftSolenoid('G', false);
 	pros::adi::DigitalOut frontRightSolenoid('F', false);
-	pros::adi::DigitalOut backLeftSolenoid('D', false);
-	pros::adi::DigitalOut backRightSolenoid('E', false);
+	pros::adi::DigitalOut backLeftSolenoid('E', false);
+	pros::adi::DigitalOut backRightSolenoid('D', false);
 
 	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit
@@ -53,6 +53,7 @@ namespace Pronounce {
 
 	pros::Distance hopperDistanceSensor(16);
 	pros::Distance catapultDistance(8);
+	pros::Distance wallDistanceSensor(7);
 
 	std::string checkPorts(const std::unordered_map<uint16_t, pros::DeviceType>& devices, std::string startString = "") {
 

@@ -74,6 +74,14 @@ namespace Pronounce {
 			backLeftWingStateController->sb(backLeftWingIn);
 			backRightWingStateController->sb(backRightWingIn);
 		});
+
+		pathFollower->addCommandMapping("hangOut", [&]() -> void {
+			winchStateController->sb(winchUp);
+		});
+
+		pathFollower->addCommandMapping("hangIn", [&]() -> void {
+			winchStateController->sb(winchC);
+		});
 	}
 
 	class Auton : public Enabled {
