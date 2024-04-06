@@ -32,7 +32,7 @@ class IMU : public Orientation, public pros::Imu {
 		 */
 		void update() {
 			if (pros::c::registry_get_plugged_type(_port - 1) == pros::c::v5_device_e_t::E_DEVICE_IMU) {
-				Angle imuAngle = this->get_rotation() * 1_deg;
+				Angle imuAngle = isfinite(this->get_rotation()) ? this->get_rotation() : 0.0 * 1_deg;
 				// std::cout << imuAngle.getValue() << std::endl;
 
 				this->setAngle(imuAngle);

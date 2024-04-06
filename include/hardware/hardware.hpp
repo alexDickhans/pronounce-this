@@ -72,7 +72,8 @@ namespace Pronounce {
 
 	pros::Motor_Group intakeMotors({intakeMotor});
 	// Inertial Measurement Unit
-	Orientation imuOrientation(0.0);
+	pros::Imu imu(10);
+	IMU imuOrientation(10);
 
 	pros::Mutex odometryMutex;
 
@@ -102,6 +103,8 @@ namespace Pronounce {
 		pros::Task::delay(50);
 
 		threeWheelOdom.reset(Pose2D(0.0_in, 0.0_in, 0.0_deg));
+
+		imu.reset(true);
 
 		Log("Hardware Init Done");
 	}
