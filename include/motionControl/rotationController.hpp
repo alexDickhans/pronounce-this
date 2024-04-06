@@ -43,7 +43,7 @@ namespace Pronounce
 		void update() {
 			double output = rotationPID.update(angleFunction().Convert(radian));
 
-			drivetrain.tankSteerVoltage(output * 12000 + idleSpeed, -output * 12000 + idleSpeed);
+			drivetrain.tankSteerVoltage(output + idleSpeed, -output + idleSpeed);
 		}
 
 		void exit() {

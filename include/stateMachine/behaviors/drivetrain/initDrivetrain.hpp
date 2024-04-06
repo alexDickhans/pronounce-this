@@ -22,10 +22,10 @@ namespace Pronounce {
 		return signnum_c(velocity.getValue()) * kS + velocity.Convert(inch/second) * kV + acceleration.Convert(inch/second/second) * kA;
 	}
 
-	PID turningPid(2.0, 0.00, 0.0, 0.0, 0.0, false);
+	PID turningPid(2.2e4, 0.00, 2.0e5, 0.0, 0.0, false);
 	PID movingTurnPid(2.4e4, 0.0, 2.64e5, 0.0, 0.0, true);
 
-	PID distancePid(1.5e5, 0.0, 0e5);
+	PID distancePid(1.2e5, 0.0, 0e5);
 
 	// Drivetrain states for driving around the field and shooting at the goal
 	auto normalJoystick = std::make_shared<JoystickDrivetrain>("NormalJoystick", master, drivetrain, 0.01, 61_in / second);
