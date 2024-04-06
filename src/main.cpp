@@ -24,10 +24,10 @@ SMOOTH_SPLINE_PATH_ASSET(skills_10);
 SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
 SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
 
-void turnTo(Angle angle, QTime waitTimeMS) {
+void turnTo(Angle angle, QTime waitTimeMS, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
 	                                                          [&]() -> Angle { return imuOrientation.getAngle(); },
-	                                                          turningPid, angle);
+	                                                          turningPid, angle, idleSpeed);
 
 	drivetrainStateController->sb(angleRotation);
 
@@ -153,7 +153,7 @@ void skills(void *args) {
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
 			                                     21.1_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(500);
+	pros::Task::delay(1000);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
