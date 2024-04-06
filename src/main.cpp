@@ -59,32 +59,34 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 }
 
 void far6Ball(void* args) {
-	imuOrientation.setRotation(135_deg);// TODO: change
+	imuOrientation.setRotation(-120.5_deg);
 
-	move(35_in, speedProfileConstraints, 0.0, 135_deg);
+	intakeStateController->sb(intakeIntaking);
+
+	move(53_in, speedProfileConstraints, 0.0, -120.5_deg);
 
 	pathFollower->setMotionProfile(far_6_1);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(180_deg, 0.4_s);
+	turnTo(-180_deg, 0.4_s);
 	intakeStateController->sb(intakeIntaking);
-	move(5_in, speedProfileConstraints, 0.0, 180_deg);
+	move(5_in, speedProfileConstraints, 0.0, -180_deg);
 
 	pathFollower->setMotionProfile(far_6_2);
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	backRightWingStateController->ud();
-	move(15_in, speedProfileConstraints, 0.0, 90_deg);
-	turnTo(270_deg, 0.6_s);
+	move(15_in, speedProfileConstraints, 0.0, -250_deg);
+	turnTo(-430_deg, 0.6_s);
 
 	frontLeftWingStateController->sb(frontLeftWingOut);
 
-	move(-15_in, defaultProfileConstraints, 0.0, 250_deg);
+	intakeStateController->sb(intakeEject);
 
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-15_in, defaultProfileConstraints, 0.0, 250_deg);
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
 
 	frontLeftWingStateController->ud();
 
@@ -389,7 +391,7 @@ void initialize() {
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
 
 #if AUTON == 0
-	auton->setAuton(far6BallRushMid);
+	auton->setAuton(far6Ball);
 #elif AUTON == 1
 	auton->setAuton(far5BallAWP);
 #elif AUTON == 2
