@@ -5,10 +5,11 @@ std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
 SMOOTH_SPLINE_PATH_ASSET(close_mid_rush);
-SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_1);
-SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_2);
-SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_awp);
 SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
+SMOOTH_SPLINE_PATH_ASSET(far_6_1);
+SMOOTH_SPLINE_PATH_ASSET(far_6_2);
+SMOOTH_SPLINE_PATH_ASSET(far_6_3);
+SMOOTH_SPLINE_PATH_ASSET(far_6_4);
 SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SMOOTH_SPLINE_PATH_ASSET(skills_2);
 SMOOTH_SPLINE_PATH_ASSET(skills_3);
@@ -57,89 +58,42 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 			                                      endSpeed))->wait();
 }
 
-void far5BallRushMid(void *args) {
-
-	Log("5 ball start");
-
-	imuOrientation.setRotation(80.7_deg);
-
-	intakeExtensionStateController->sb(deploySequence);
-	frontRightWingStateController->sb(std::make_shared<Wait>(frontRightWingOut, 200_ms));
-
-	move(50_in, speedProfileConstraints, 0.0, 80.7_deg);
-
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
-
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(mid_6_ball_1_json));
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	turnTo(-2_deg, 550_ms);
+void far6Ball(void* args) {
+	imuOrientation.setRotation(-120.5_deg);
 
 	intakeStateController->sb(intakeIntaking);
 
-	move(19_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
-	move(-16_in, speedProfileConstraints, 0.0, 2_deg, 0.0, 0.0);
+	move(53_in, speedProfileConstraints, 0.0, -120.5_deg);
 
-	intakeStateController->sb(intakeHold);
-//	move(-4_in, speedProfileConstraints, 0.0, 2_deg);
-	turnTo(170_deg, 700_ms);
-
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(mid_6_ball_2_json));
+	pathFollower->setMotionProfile(far_6_1);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-12_in, speedProfileConstraints, 0.0, 110_deg);
+	turnTo(-180_deg, 0.4_s);
+	intakeStateController->sb(intakeIntaking);
+	move(5_in, speedProfileConstraints, 0.0, -180_deg);
 
-	frontLeftWingStateController->ud();
-	turnTo(120_deg, 300_ms);
+	pathFollower->setMotionProfile(far_6_2);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	backRightWingStateController->ud();
+	move(15_in, speedProfileConstraints, 0.0, -250_deg);
+	turnTo(-430_deg, 0.6_s);
+
 	frontLeftWingStateController->sb(frontLeftWingOut);
-	drivetrain.tankSteerVoltage(12000, 12000);
-	pros::Task::delay(800);
-	drivetrain.tankSteerVoltage(0.0, 0.0);
-	frontLeftWingStateController->ud();
-	move(-9_in, speedProfileConstraints, 0.0, 90_deg);
-	turnTo(25_deg, 200_ms);
-	intakeStateController->sb(intakeIntaking);
-	move(48_in, speedProfileConstraints, 0.0, 25_deg);
 
-	turnTo(150_deg, 550_ms);
-	intakeExtensionStateController->sb(outtakeSequence);
-	move(38_in, speedProfileConstraints, 0.0, 150_deg);
-}
-
-void far6BallRushMid(void *args) {
-	Log("6 ball");
-
-	far5BallRushMid(args);
-
-	turnTo(3_deg, 550_ms);
-
-	intakeStateController->sb(intakeIntaking);
-
-	move(23_in, defaultProfileConstraints, 0.0, 3_deg);
-
-	turnTo(180_deg, 550_ms);
-	intakeExtensionStateController->ud();
 	intakeStateController->sb(intakeEject);
-	frontLeftWingStateController->sb(frontLeftWingOut);
-	frontRightWingStateController->sb(frontRightWingOut);
-	move(35_in, speedProfileConstraints, 0.0, 180_deg);
-	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
-	turnTo(0_deg, 3_s);
-}
 
-void far5BallAWP(void *args) {
-	far5BallRushMid(args);
-
-	move(-5_in, speedProfileConstraints, 0.0, 0_deg);
-
-	turnTo(-90_deg, 600_ms);
-
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(mid_6_ball_awp_json));
+	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	drivetrain.tankSteerVoltage(3000, 2000);
-	pros::Task::delay(5000);
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
+
+	frontLeftWingStateController->ud();
+
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+	pathFollower->setMotionProfile(far_6_4);
+	drivetrainStateController->sb(pathFollower)->wait();
 }
 
 void skills(void *args) {
@@ -151,10 +105,11 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     21.1_deg, -800.0));
+			                                     20.7_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(1000);
+	pros::Task::delay(100);
 	backLeftWingStateController->sb(backLeftWingOut);
+	pros::Task::delay(900);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
@@ -172,51 +127,47 @@ void skills(void *args) {
 
 	turnTo(90_deg, 300_ms, 6000);
 
-	turnTo(0.0, 500_ms);
+	turnTo(0.0, 600_ms);
 
-	pathFollower->setMotionProfile(skills_3);
-	drivetrainStateController->sb(pathFollower)->wait();
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
 
-	move(15_in, speedProfileConstraints, 0.0, 110_deg);
+	move(20_in, speedProfileConstraints, 0.0, 110_deg);
 
-	pathFollower->setMotionProfile(skills_4);
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
 
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	move(15_in, speedProfileConstraints, 0.0, 110_deg);
+	move(20_in, speedProfileConstraints, 0.0, 110_deg);
 	backRightWingStateController->ud();
 	backLeftWingStateController->ud();
 
-	pathFollower->setMotionProfile(skills_4);
-	drivetrainStateController->sb(pathFollower)->wait();
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
 
 	pathFollower->setMotionProfile(skills_5);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-5_in, speedProfileConstraints, 0.0);
+	move(-8_in, speedProfileConstraints, 0.0);
 
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_6);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-3_in, speedProfileConstraints, 0.0);
+	move(-8_in, speedProfileConstraints, 0.0);
 
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_6_5);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-3_in, speedProfileConstraints, 0.0);
+	move(-8_in, speedProfileConstraints, 0.0);
 
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_7);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-3_in, speedProfileConstraints, 0.0);
+	move(-8_in, speedProfileConstraints, 0.0);
 
-	move(8_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_7_5);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -226,13 +177,15 @@ void skills(void *args) {
 
 	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3) * 1_mm;
 
+	turnTo(385_deg, 300_ms);
+
 	pathFollower->setMotionProfile(
 			PathPlanner::SmoothSplineProfile::build(
 					{PathPlanner::BezierSegment(PathPlanner::Point(
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
-							                                  wallDistance.getValue() * 0.74,
-							                                  68_in),
+							                                  wallDistance.getValue() * 0.60,
+							                                  70_in),
 					                                  PathPlanner::Point(
 							                                  19_in, 55_in),
 					                                  PathPlanner::Point(
@@ -241,22 +194,22 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
+	turnTo(490_deg, 0.4_s);
+
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, 70_deg);
+	move(15_in, speedProfileConstraints, 0.0, 610_deg);
 
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
+	move(15_in, speedProfileConstraints, 0.0, 610_deg);
 
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	frontRightWingStateController->ud();
-
-	move(-15_in, speedProfileConstraints, 0.0, 80_deg);
+	backLeftWingStateController->ud();
 
 	pathFollower->setMotionProfile(skills_10);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -439,7 +392,7 @@ void initialize() {
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
 
 #if AUTON == 0
-	auton->setAuton(far6BallRushMid);
+	auton->setAuton(far6Ball);
 #elif AUTON == 1
 	auton->setAuton(far5BallAWP);
 #elif AUTON == 2
