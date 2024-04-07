@@ -87,7 +87,7 @@ namespace PathPlanner {
 			std::pair<double, double> driveVoltages = {feedforward(driveSpeeds.first, driveAccel.first), feedforward(driveSpeeds.second, driveAccel.second)};
 			distancePID.setTarget(target.targetDistance.getValue());
 
-			double distanceOutput = std::clamp(distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre)), -12000.0, 12000.0);
+			double distanceOutput = std::clamp(distancePID.update((drivetrain.getDistanceSinceReset() - startDistance).Convert(metre)), -8000.0, 8000.0);
 			driveVoltages = {driveVoltages.first + distanceOutput, driveVoltages.second + distanceOutput};
 
 			turnPID.setTarget((target.targetPose.getAngle() + ((driveSpeeds.first + driveSpeeds.second).getValue() > 0.0 ? 0.0 : 180_deg)).Convert(radian));
