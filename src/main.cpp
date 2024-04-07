@@ -105,10 +105,11 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     21.1_deg, -800.0));
+			                                     21.8_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(1000);
+	pros::Task::delay(100);
 	backLeftWingStateController->sb(backLeftWingOut);
+	pros::Task::delay(900);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
