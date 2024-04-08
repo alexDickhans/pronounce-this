@@ -118,12 +118,12 @@ namespace PathPlanner {
 
 	public:
 
-		explicit SmoothSplineProfile(const std::vector<BezierSegment> &bezierSegment)
+		explicit SmoothSplineProfile(const std::vector<BezierSegment> &bezierSegment, QVelocity startSpeed, QVelocity endSpeed)
 				: AbstractMotionProfile(), bezierSegment(bezierSegment) {
 			this->calculate();
 		}
 
-		static std::shared_ptr<CombinedMotionProfile> build(const std::vector<BezierSegment> &bezierSegment) {
+		static std::shared_ptr<CombinedMotionProfile> build(const std::vector<BezierSegment> &bezierSegment, QVelocity startSpeed = 0.0, QVelocity endSpeed = 0.0) {
 			auto motionProfile = std::make_shared<CombinedMotionProfile>();
 
 			if (bezierSegment.empty()) {
@@ -135,14 +135,17 @@ namespace PathPlanner {
 			for (int i = 1; i < bezierSegment.size(); i++) {
 				if (bezierSegment.at(i - 1).isStopEnd() ||
 				    bezierSegment.at(i - 1).isReversed() != bezierSegment.at(i).isReversed()) {
-					motionProfile->addMotionProfile(std::make_shared<SmoothSplineProfile>(currentSplines));
+					if (motionProfile->getSize() > 1)
+						motionProfile->addMotionProfile(std::make_shared<SmoothSplineProfile>(currentSplines, 0.0, 0.0));
+					else
+						motionProfile->addMotionProfile(std::make_shared<SmoothSplineProfile>(currentSplines, startSpeed, 0.0));
 					currentSplines.clear();
 				}
 
 				currentSplines.emplace_back(bezierSegment.at(i));
 			}
 
-			motionProfile->addMotionProfile(std::make_shared<SmoothSplineProfile>(currentSplines));
+			motionProfile->addMotionProfile(std::make_shared<SmoothSplineProfile>(currentSplines, 0.0, endSpeed));
 
 			return motionProfile;
 		}

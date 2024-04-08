@@ -1,1 +1,110 @@
-{"segments":[{"inverted":true,"stopEnd":false,"paths":[{"x":2.68,"y":1.441},{"x":2.753,"y":0.992},{"x":2.778,"y":0.492},{"x":3.001,"y":0.475}],"constraints":{"velocity":71,"accel":140}},{"inverted":true,"stopEnd":false,"paths":[{"x":2.999,"y":0.476},{"x":3.35,"y":0.44},{"x":3.383,"y":0.986},{"x":3.408,"y":1.548}],"constraints":{"velocity":60,"accel":148}},{"inverted":true,"stopEnd":false,"paths":[{"x":3.41,"y":1.548},{"x":3.502,"y":3.356},{"x":3.137,"y":3.663},{"x":2.14,"y":3.471}],"constraints":{"velocity":47,"accel":185}}],"commands":[{"t":0.0,"name":"backRightWingOut"},{"t":0.0,"name":"frontWingsIn"},{"t":0.91,"name":"backLeftWingOut"},{"t":1.33,"name":"backLeftWingIn"},{"t":2.13,"name":"backLeftWingOut"},{"t":2.56,"name":"backLeftWingIn"}]}
+{
+  "startSpeed": 0.0,
+  "endSpeed": -72.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.68,
+          "y": 1.441
+        },
+        {
+          "x": 2.753,
+          "y": 0.992
+        },
+        {
+          "x": 2.778,
+          "y": 0.492
+        },
+        {
+          "x": 3.001,
+          "y": 0.475
+        }
+      ],
+      "constraints": {
+        "velocity": 71,
+        "accel": 140
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.999,
+          "y": 0.476
+        },
+        {
+          "x": 3.281,
+          "y": 0.45
+        },
+        {
+          "x": 3.34,
+          "y": 0.986
+        },
+        {
+          "x": 3.408,
+          "y": 1.548
+        }
+      ],
+      "constraints": {
+        "velocity": 60,
+        "accel": 148
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.41,
+          "y": 1.548
+        },
+        {
+          "x": 3.56,
+          "y": 3.356
+        },
+        {
+          "x": 3.161,
+          "y": 3.633
+        },
+        {
+          "x": 2.286,
+          "y": 3.468
+        }
+      ],
+      "constraints": {
+        "velocity": 47,
+        "accel": 185
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.0,
+      "name": "backRightWingOut"
+    },
+    {
+      "t": 0.0,
+      "name": "frontWingsIn"
+    },
+    {
+      "t": 0.84,
+      "name": "backLeftWingOut"
+    },
+    {
+      "t": 1.22,
+      "name": "backLeftWingIn"
+    },
+    {
+      "t": 2.13,
+      "name": "backLeftWingOut"
+    },
+    {
+      "t": 2.56,
+      "name": "backLeftWingIn"
+    }
+  ]
+}

@@ -47,7 +47,7 @@ namespace Pronounce {
 
 	double mean(std::vector<int32_t> array);
 
-	double getDistanceSensorMedian(pros::Distance &distance, int samples);
+	double getDistanceSensorMedian(pros::Distance &distance, int samples, double defaultResult);
 
 #ifdef SIM
 	double clamp(double value, double min, double max) {

@@ -13,14 +13,12 @@ SMOOTH_SPLINE_PATH_ASSET(far_6_4);
 SMOOTH_SPLINE_PATH_ASSET(skills_1);
 SMOOTH_SPLINE_PATH_ASSET(skills_2);
 SMOOTH_SPLINE_PATH_ASSET(skills_3);
-SMOOTH_SPLINE_PATH_ASSET(skills_4);
 SMOOTH_SPLINE_PATH_ASSET(skills_5);
 SMOOTH_SPLINE_PATH_ASSET(skills_6);
 SMOOTH_SPLINE_PATH_ASSET(skills_6_5);
 SMOOTH_SPLINE_PATH_ASSET(skills_7);
 SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
 SMOOTH_SPLINE_PATH_ASSET(skills_8);
-SMOOTH_SPLINE_PATH_ASSET(skills_9);
 SMOOTH_SPLINE_PATH_ASSET(skills_10);
 SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
 SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
@@ -127,19 +125,20 @@ void skills(void *args) {
 
 	turnTo(90_deg, 300_ms, 6000);
 
-	turnTo(0.0, 600_ms);
+	turnTo(-15.0_deg, 600_ms);
 
-	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
+	pathFollower->setMotionProfile(skills_3);
+	drivetrainStateController->sb(pathFollower)->wait();
 
 	move(20_in, speedProfileConstraints, 0.0, 110_deg);
 
-	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.0_s))->wait();
 
 	move(20_in, speedProfileConstraints, 0.0, 110_deg);
 	backRightWingStateController->ud();
 	backLeftWingStateController->ud();
 
-	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.5_s))->wait();
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.0_s))->wait();
 
 	pathFollower->setMotionProfile(skills_5);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -165,9 +164,9 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_7);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-8_in, speedProfileConstraints, 0.0);
+	move(-13_in, speedProfileConstraints, 0.0);
 
-	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(18_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_7_5);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -175,41 +174,35 @@ void skills(void *args) {
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg));
 
-	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3) * 1_mm;
-
-	turnTo(385_deg, 300_ms);
+	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm;
 
 	pathFollower->setMotionProfile(
 			PathPlanner::SmoothSplineProfile::build(
 					{PathPlanner::BezierSegment(PathPlanner::Point(
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
-							                                  wallDistance.getValue() * 0.60,
+							                                  wallDistance.getValue() * 0.70,
 							                                  70_in),
 					                                  PathPlanner::Point(
 							                                  19_in, 55_in),
 					                                  PathPlanner::Point(
-							                                  20_in, 20_in), true, true,
+							                                  20_in, 30_in), true, true,
 					                                  pushingProfileConstraints)}));
-
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(490_deg, 0.4_s);
+	turningPid.setTurnPid(true);
+	movingTurnPid.setTurnPid(true);
+
+	turnTo(135_deg, 0.4_s);
 
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(15_in, speedProfileConstraints, 0.0, 610_deg);
-
-	pathFollower->setMotionProfile(skills_9);
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	move(15_in, speedProfileConstraints, 0.0, 610_deg);
-
-	pathFollower->setMotionProfile(skills_9);
-	drivetrainStateController->sb(pathFollower)->wait();
+	move(20_in, speedProfileConstraints, 0.0, 610_deg);
 
 	backLeftWingStateController->ud();
+
+	drivetrainStateController->sb(std::make_shared<Wait>(std::make_shared<VoltageDrivetrain>(-12000, -12000, drivetrain), 1.0_s))->wait();
 
 	pathFollower->setMotionProfile(skills_10);
 	drivetrainStateController->sb(pathFollower)->wait();

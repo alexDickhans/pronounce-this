@@ -58,17 +58,27 @@ namespace Pronounce
 	}
 
 #ifndef SIM
-	double getDistanceSensorMedian(pros::Distance &distance, int samples) {
+	double getDistanceSensorMedian(pros::Distance &distance, int samples, double defaultResult) {
 		double array[samples];
 
 		array[0] = distance.get();
 
+		bool hasFix = false;
+
 		for (int i = 1; i < samples; i++) {
 			pros::Task::delay(20);
-			array[i] = distance.get();
+			double currentDistance = distance.get();
+			if (finite(currentDistance)) {
+				hasFix = true;
+				array[i] = currentDistance;
+			}
 		}
 
-		return findMedian(array, samples);
+		if (hasFix) {
+			return findMedian(array, samples);
+		} else {
+			return defaultResult;
+		}
 	}
 #endif
 
