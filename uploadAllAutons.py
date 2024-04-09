@@ -17,24 +17,35 @@ autons = [
     "SKILLS"]
 
 offset = 1
+def getFilePath():
+    return os.path.dirname(__file__)
 
 if len(sys.argv) > 1:
     i = int(sys.argv[1])
-    f = open("include/auton.h", "w")
+    f = open(getFilePath() + "/include/auton.h", "w")
     f.write("#define AUTON " + str(i) + "\n")
     f.close()
+    command = f"pros mu --project {getFilePath().replace(' ', '\\ ')} --slot " + str(i+offset) + " --name \"" + autons[i] + "\""
+    print (command)
 
-    time.sleep(1)
+    result = os.system(command)
 
-    print ("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
+    if result != 0:
+        os._exit(2)
 
-    os.system("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
 else:
     for i in range(len(autons)):
-        f = open("include/auton.h", "w")
+        f = open(getFilePath() + "/include/auton.h", "w")
         f.write("#define AUTON " + str(i) + "\n")
         f.close()
 
-        print ("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
+        command = f"pros mu --project {getFilePath().replace(" ", "\\ ")} --slot " + str(i+offset) + " --name \"" + autons[i] + "\""
+        print(command)
 
-        os.system("pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\"")
+        result = os.system(command)
+
+        if result != 0:
+            os._exit(2)
+
+    os._exit(0)
+
