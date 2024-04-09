@@ -23,6 +23,10 @@ namespace PathPlanner {
 			}
 		}
 
+		size_t getSize() {
+			return motionProfiles.size();
+		}
+
 		[[nodiscard]] MotionProfilePoint update(const QTime time) const override {
 			QTime t = std::min(time, this->getDuration());
 

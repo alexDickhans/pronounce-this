@@ -1,1 +1,72 @@
-{"segments":[{"inverted":false,"stopEnd":false,"paths":[{"x":2.628,"y":3.332},{"x":2.914,"y":3.331},{"x":2.835,"y":2.338},{"x":2.448,"y":2.29}],"constraints":{"velocity":41,"accel":161}},{"inverted":false,"stopEnd":false,"paths":[{"x":2.448,"y":2.293},{"x":2.155,"y":2.238},{"x":1.962,"y":2.768},{"x":1.952,"y":3.274}],"constraints":{"velocity":33,"accel":161}}],"commands":[{"t":0.5,"name":"frontRightWingOut"},{"t":0.63,"name":"frontLeftWingOut"},{"t":1.04,"name":"frontLeftWingIn"}]}
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.628,
+          "y": 3.332
+        },
+        {
+          "x": 2.914,
+          "y": 3.331
+        },
+        {
+          "x": 2.835,
+          "y": 2.338
+        },
+        {
+          "x": 2.448,
+          "y": 2.29
+        }
+      ],
+      "constraints": {
+        "velocity": 41,
+        "accel": 161
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.448,
+          "y": 2.293
+        },
+        {
+          "x": 2.155,
+          "y": 2.238
+        },
+        {
+          "x": 1.992,
+          "y": 2.761
+        },
+        {
+          "x": 1.982,
+          "y": 3.267
+        }
+      ],
+      "constraints": {
+        "velocity": 33,
+        "accel": 161
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.5,
+      "name": "frontRightWingOut"
+    },
+    {
+      "t": 0.63,
+      "name": "frontLeftWingOut"
+    },
+    {
+      "t": 1.15,
+      "name": "frontLeftWingIn"
+    }
+  ]
+}
