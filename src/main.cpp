@@ -94,6 +94,10 @@ void far6Ball(void* args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 }
 
+void far6BallAWP(void* args) {
+	far6Ball(args);
+}
+
 void skills(void *args) {
 
 	imuOrientation.setRotation(135_deg);
@@ -123,9 +127,7 @@ void skills(void *args) {
 	frontRightWingStateController->sb(frontRightWingIn);
 	frontLeftWingStateController->sb(frontLeftWingIn);
 
-	turnTo(90_deg, 300_ms, 6000);
-
-	turnTo(-15.0_deg, 600_ms);
+	turnTo(-15.0_deg, 300_ms);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -387,7 +389,7 @@ void initialize() {
 #if AUTON == 0
 	auton->setAuton(far6Ball);
 #elif AUTON == 1
-	auton->setAuton(far5BallAWP);
+	auton->setAuton(far6BallAWP);
 #elif AUTON == 2
 	auton->setAuton(safeCloseAWP);
 #elif AUTON == 3
