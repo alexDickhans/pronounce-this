@@ -64,6 +64,17 @@ namespace Pronounce {
 				}));
 			});
 
+			controller1.onPressed(E_CONTROLLER_DIGITAL_Y, [&]() -> void {
+					if (controller1.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
+						winchStateController->sb(winchUp);
+					}
+			});
+
+			controller1.onPressed(E_CONTROLLER_DIGITAL_RIGHT, [&]() -> void {
+				if (controller1.get_digital(E_CONTROLLER_DIGITAL_Y)) {
+					winchStateController->sb(winchUp);
+				}
+			});
 
 			Enabled::initialize();
 		}
