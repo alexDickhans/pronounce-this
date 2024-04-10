@@ -23,10 +23,10 @@ SMOOTH_SPLINE_PATH_ASSET(skills_10);
 SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
 SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
 
-void turnTo(Angle angle, QTime waitTimeMS, double idleSpeed = 0.0) {
+void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer = none, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
 	                                                          [&]() -> Angle { return imuOrientation.getAngle(); },
-	                                                          turningPid, angle, idleSpeed);
+	                                                          turningPid, angle, idleSpeed, rotationOptimizer);
 
 	drivetrainStateController->sb(angleRotation);
 
@@ -94,6 +94,10 @@ void far6Ball(void* args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 }
 
+void far6BallAWP(void* args) {
+	far6Ball(args);
+}
+
 void skills(void *args) {
 
 	imuOrientation.setRotation(135_deg);
@@ -123,9 +127,9 @@ void skills(void *args) {
 	frontRightWingStateController->sb(frontRightWingIn);
 	frontLeftWingStateController->sb(frontLeftWingIn);
 
-	turnTo(90_deg, 300_ms, 6000);
+	turnTo(-15.0_deg, 300_ms);
 
-	turnTo(-15.0_deg, 600_ms);
+	catapultStateController->sb(catapultHoldHigh);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -172,7 +176,7 @@ void skills(void *args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	drivetrainStateController->sb(
-			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg));
+			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg, 0.0, closest));
 
 	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm;
 
@@ -193,7 +197,7 @@ void skills(void *args) {
 	turningPid.setTurnPid(true);
 	movingTurnPid.setTurnPid(true);
 
-	turnTo(135_deg, 0.4_s);
+	turnTo(135_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -387,7 +391,7 @@ void initialize() {
 #if AUTON == 0
 	auton->setAuton(far6Ball);
 #elif AUTON == 1
-	auton->setAuton(far5BallAWP);
+	auton->setAuton(far6BallAWP);
 #elif AUTON == 2
 	auton->setAuton(safeCloseAWP);
 #elif AUTON == 3

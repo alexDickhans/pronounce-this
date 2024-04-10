@@ -9,8 +9,14 @@
 #include "pros/rtos.hpp"
 #include "hardware/hardware.hpp"
 
-namespace Pronounce
-{
+namespace Pronounce {
+	enum RotationOptimizer {
+		none,
+		closest,
+		clockwise,
+		counterclockwise
+	};
+
 	class RotationController : public Behavior {
 	private:
 		PID rotationPID;
@@ -22,14 +28,41 @@ namespace Pronounce
 
 		double idleSpeed = 0.0;
 
+		RotationOptimizer rotationOptimizer;
+
 	public:
-		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, double idleSpeed = 0.0) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name) {
+		RotationController(std::string name, TankDrivetrain& drivetrain, std::function<Angle()> angleFunction, PID rotationPID, Angle target, double idleSpeed = 0.0, RotationOptimizer rotationOptimizer = RotationOptimizer::none) : drivetrain(drivetrain), rotationPID(rotationPID), angleFunction(std::move(angleFunction)), Behavior(name), rotationOptimizer(rotationOptimizer) {
 			rotationPID.setTarget(target.Convert(radian));
 			this->idleSpeed = idleSpeed;
 			this->target = target;
 		}
 
 		void initialize() {
+
+			Angle currentPosition = angleFunction();
+
+			switch (rotationOptimizer) {
+				case closest:
+					target = currentPosition + angleDifference(target.getValue(), currentPosition.getValue()) * 1_rad;
+					break;
+				case clockwise:
+					target = angleDifference(target.getValue(), currentPosition.getValue()) * 1_rad;
+					if (target.Convert(radian) < 0.0) {
+						target += 360_deg;
+					}
+					target += currentPosition;
+					break;
+				case counterclockwise:
+					target = angleDifference(target.getValue(), currentPosition.getValue()) * 1_rad;
+					if (target.Convert(radian) > 0.0) {
+						target -= 360_deg;
+					}
+					target += currentPosition;
+					break;
+				case none:
+				default:
+					break;
+			}
 
 			rotationPID.reset();
 			rotationPID.setTarget(target.Convert(radian));

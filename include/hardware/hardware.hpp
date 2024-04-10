@@ -93,7 +93,14 @@ namespace Pronounce {
 		}
 
 		if (portsReport.empty()) {
-			master.getController().set_text(0, 0, "All good");
+			Log(std::to_string(pros::battery::get_capacity()))
+			if (pros::battery::get_capacity() < 50.0) {
+				master.getController().rumble("........");
+				pros::Task::delay(50);
+				master.getController().set_text(0, 0, string_format("Battery at: %.2f", pros::battery::get_capacity()));
+			} else {
+				master.getController().set_text(0, 0, "All good");
+			}
 		} else {
 			master.getController().set_text(0, 0, portsReport.c_str());
 			pros::Task::delay(50);
