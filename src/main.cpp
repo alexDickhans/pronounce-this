@@ -217,17 +217,12 @@ void skills(void *args) {
 }
 
 void safeCloseAWP(void *args) {
-	imuOrientation.setRotation(135_deg);
+	imuOrientation.setRotation(-135_deg);
 
-	intakeExtensionStateController->sb(deploySequence);
-
-	move(10_in, defaultProfileConstraints, 0.0);
-
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
 	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
-	pros::Task::delay(15000);
+
+	turnTo(185_deg, 15_s, closest, -4000);
 }
 
 void closeRushMid(void *args) {

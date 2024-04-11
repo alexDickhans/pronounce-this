@@ -1,1 +1,102 @@
-{"segments":[{"inverted":true,"stopEnd":false,"paths":[{"x":3.147,"y":0.398},{"x":3.319,"y":0.54},{"x":3.375,"y":0.684},{"x":3.266,"y":0.864}],"constraints":{"velocity":35,"accel":120}}],"commands":[{"t":0.0,"name":"backLeftWingOut"},{"t":0.4,"name":"backLeftWingIn"}]}
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.242,
+          "y": 0.569
+        },
+        {
+          "x": 3.149,
+          "y": 0.452
+        },
+        {
+          "x": 2.952,
+          "y": 0.35
+        },
+        {
+          "x": 2.763,
+          "y": 0.322
+        }
+      ],
+      "constraints": {
+        "velocity": 30,
+        "accel": 120
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.76,
+          "y": 0.325
+        },
+        {
+          "x": 3.293,
+          "y": 0.399
+        },
+        {
+          "x": 3.344,
+          "y": 0.778
+        },
+        {
+          "x": 3.321,
+          "y": 1.081
+        }
+      ],
+      "constraints": {
+        "velocity": 30,
+        "accel": 120
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.319,
+          "y": 1.082
+        },
+        {
+          "x": 3.307,
+          "y": 1.32
+        },
+        {
+          "x": 3.277,
+          "y": 1.535
+        },
+        {
+          "x": 3.272,
+          "y": 1.704
+        }
+      ],
+      "constraints": {
+        "velocity": 30,
+        "accel": 120
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.0,
+      "name": "outtake"
+    },
+    {
+      "t": 0.86,
+      "name": "backLeftWingOut"
+    },
+    {
+      "t": 1.3,
+      "name": "backLeftWingIn"
+    },
+    {
+      "t": 2.7,
+      "name": "backRightWingOut"
+    }
+  ]
+}
