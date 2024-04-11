@@ -25,7 +25,7 @@
       ],
       "constraints": {
         "velocity": 61,
-        "accel": 163
+        "accel": 190
       }
     },
     {
@@ -50,8 +50,8 @@
         }
       ],
       "constraints": {
-        "velocity": 50,
-        "accel": 163
+        "velocity": 56,
+        "accel": 190
       }
     },
     {
@@ -76,8 +76,8 @@
         }
       ],
       "constraints": {
-        "velocity": 45,
-        "accel": 163
+        "velocity": 51,
+        "accel": 190
       }
     },
     {
@@ -102,8 +102,8 @@
         }
       ],
       "constraints": {
-        "velocity": 42,
-        "accel": 163
+        "velocity": 46,
+        "accel": 190
       }
     },
     {
@@ -129,7 +129,7 @@
       ],
       "constraints": {
         "velocity": 74,
-        "accel": 200
+        "accel": 190
       }
     }
   ],
