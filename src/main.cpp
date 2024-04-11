@@ -127,7 +127,7 @@ void skills(void *args) {
 	frontRightWingStateController->sb(frontRightWingIn);
 	frontLeftWingStateController->sb(frontLeftWingIn);
 
-	turnTo(-15.0_deg, 300_ms);
+	turnTo(-15.0_deg, 600_ms, clockwise);
 
 	catapultStateController->sb(catapultHoldHigh);
 
@@ -188,16 +188,16 @@ void skills(void *args) {
 							                                  wallDistance.getValue() * 0.70,
 							                                  70_in),
 					                                  PathPlanner::Point(
-							                                  19_in, 55_in),
+							                                  19_in, 52_in),
 					                                  PathPlanner::Point(
-							                                  20_in, 30_in), true, true,
+							                                  20_in, 32_in), true, true,
 					                                  pushingProfileConstraints)}));
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	turningPid.setTurnPid(true);
 	movingTurnPid.setTurnPid(true);
 
-	turnTo(135_deg, 0.4_s, closest);
+	turnTo(125_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -222,7 +222,7 @@ void safeCloseAWP(void *args) {
 	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(185_deg, 15_s, closest, -4000);
+	pros::Task::delay(15000);
 }
 
 void closeRushMid(void *args) {

@@ -24,8 +24,8 @@
         }
       ],
       "constraints": {
-        "velocity": 30,
-        "accel": 120
+        "velocity": 76,
+        "accel": 154
       }
     },
     {
@@ -37,47 +37,47 @@
           "y": 0.325
         },
         {
-          "x": 3.293,
-          "y": 0.399
+          "x": 3.153,
+          "y": 0.388
         },
         {
-          "x": 3.344,
-          "y": 0.778
+          "x": 3.326,
+          "y": 0.748
         },
         {
-          "x": 3.321,
-          "y": 1.081
+          "x": 2.975,
+          "y": 0.929
         }
       ],
       "constraints": {
-        "velocity": 30,
-        "accel": 120
+        "velocity": 76,
+        "accel": 154
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stopEnd": false,
       "paths": [
         {
-          "x": 3.319,
-          "y": 1.082
+          "x": 3.064,
+          "y": 0.91
         },
         {
-          "x": 3.307,
-          "y": 1.32
+          "x": 3.384,
+          "y": 0.944
         },
         {
-          "x": 3.277,
-          "y": 1.535
+          "x": 3.445,
+          "y": 1.229
         },
         {
-          "x": 3.272,
-          "y": 1.704
+          "x": 3.442,
+          "y": 1.464
         }
       ],
       "constraints": {
-        "velocity": 30,
-        "accel": 120
+        "velocity": 76,
+        "accel": 154
       }
     }
   ],
@@ -95,8 +95,8 @@
       "name": "backLeftWingIn"
     },
     {
-      "t": 2.7,
-      "name": "backRightWingOut"
+      "t": 2.04,
+      "name": "frontLeftWingOut"
     }
   ]
 }
