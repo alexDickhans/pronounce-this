@@ -36,7 +36,7 @@ namespace Pronounce {
 
 	ProfileConstraints speedProfileConstraints = {76_in / second, 300_in / second / second, 0.0};
 	ProfileConstraints defaultProfileConstraints = {70_in / second, 140_in / second / second, 0.0};
-	ProfileConstraints pushingProfileConstraints = {50_in / second, 100_in / second / second, 0.0};
+	ProfileConstraints pushingProfileConstraints = {70_in / second, 160_in / second / second, 0.0};
 
 	auto pathFollower = std::make_shared<PathPlanner::PathFollower>(std::make_shared<PathPlanner::AbstractMotionProfile>(), drivetrain,
 	                                                                movingTurnPid, distancePid, drivetrainFeedforward,
