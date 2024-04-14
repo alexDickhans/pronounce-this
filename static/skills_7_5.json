@@ -63,10 +63,6 @@
     {
       "t": 0.0,
       "name": "frontRightWingIn"
-    },
-    {
-      "t": 2.0,
-      "name": "frontRightWingOut"
     }
   ]
 }

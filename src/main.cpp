@@ -59,9 +59,11 @@ void move(QLength distance, ProfileConstraints profileConstraints, QCurvature cu
 void far6Ball(void* args) {
 	imuOrientation.setRotation(-120.5_deg);
 
-	intakeStateController->sb(intakeIntaking);
+	intakeExtensionStateController->sb(deploySequence);
 
-	move(53_in, speedProfileConstraints, 0.0, -120.5_deg);
+	move(51_in, speedProfileConstraints, 0.0, -120.5_deg);
+
+	intakeExtensionStateController->ud();
 
 	pathFollower->setMotionProfile(far_6_1);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -176,15 +178,15 @@ void skills(void *args) {
 
 	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm;
 
-	turnTo(45_deg, 0.2_s, closest);
+	turnTo(55_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(
 			PathPlanner::SmoothSplineProfile::build(
 					{PathPlanner::BezierSegment(PathPlanner::Point(
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
-							                                  wallDistance - 10_in,
-							                                  60_in),
+							                                  wallDistance - 14_in,
+							                                  66_in),
 					                                  PathPlanner::Point(
 							                                  15_in, 52_in),
 					                                  PathPlanner::Point(
@@ -224,6 +226,16 @@ void safeCloseAWP(void *args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	pros::Task::delay(15000);
+}
+
+void safeCloseAWPDelay(void *args) {
+	imuOrientation.setRotation(-135_deg);
+
+	pros::Task::delay(11000);
+
+	pathFollower->setMotionProfile(safe_close_awp);
+	drivetrainStateController->sb(pathFollower)->wait();
+
 }
 
 void closeRushMid(void *args) {
@@ -389,7 +401,7 @@ void initialize() {
 #elif AUTON == 1
 	auton->setAuton(far6BallAWP);
 #elif AUTON == 2
-	auton->setAuton(safeCloseAWP);
+	auton->setAuton(safeCloseAWPDelay);
 #elif AUTON == 3
 	auton->setAuton(closeRushMidElim);
 #elif AUTON == 4
