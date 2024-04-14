@@ -107,10 +107,5 @@
       }
     }
   ],
-  "commands": [
-    {
-      "t": 1.86,
-      "name": "frontLeftWingIn"
-    }
-  ]
+  "commands": []
 }

@@ -135,10 +135,6 @@
   ],
   "commands": [
     {
-      "t": 1.03,
-      "name": "frontLeftWingIn"
-    },
-    {
       "t": 2.52,
       "name": "frontLeftWingOut"
     }
