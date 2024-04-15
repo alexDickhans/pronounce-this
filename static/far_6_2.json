@@ -1,1 +1,42 @@
-{"segments":[{"inverted":true,"stopEnd":false,"paths":[{"x":3.349,"y":2.118},{"x":3.534,"y":2.985},{"x":3.202,"y":3.455},{"x":2.197,"y":3.214}],"constraints":{"velocity":76,"accel":200}}],"commands":[{"t":0.18,"name":"backRightWingOut"},{"t":0.36,"name":"backLeftWingOut"},{"t":0.6,"name":"backLeftWingIn"}]}
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.349,
+          "y": 2.118
+        },
+        {
+          "x": 3.534,
+          "y": 2.985
+        },
+        {
+          "x": 3.202,
+          "y": 3.455
+        },
+        {
+          "x": 2.197,
+          "y": 3.214
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 200
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.41,
+      "name": "frontLeftWingOut"
+    },
+    {
+      "t": 0.81,
+      "name": "frontLeftWingIn"
+    }
+  ]
+}

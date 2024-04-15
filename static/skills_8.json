@@ -3,7 +3,7 @@
   "endSpeed": -72.0,
   "segments": [
     {
-      "inverted": true,
+      "inverted": false,
       "stopEnd": false,
       "paths": [
         {
@@ -29,7 +29,7 @@
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stopEnd": false,
       "paths": [
         {
@@ -55,7 +55,7 @@
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stopEnd": false,
       "paths": [
         {

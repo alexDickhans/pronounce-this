@@ -4,24 +4,24 @@
 std::shared_ptr<lv_obj_t> tabview;
 
 // SECTION Auton
-SMOOTH_SPLINE_PATH_ASSET(close_mid_rush);
-SMOOTH_SPLINE_PATH_ASSET(safe_close_awp);
-SMOOTH_SPLINE_PATH_ASSET(far_6_1);
-SMOOTH_SPLINE_PATH_ASSET(far_6_2);
-SMOOTH_SPLINE_PATH_ASSET(far_6_3);
-SMOOTH_SPLINE_PATH_ASSET(far_6_4);
-SMOOTH_SPLINE_PATH_ASSET(skills_1);
-SMOOTH_SPLINE_PATH_ASSET(skills_2);
-SMOOTH_SPLINE_PATH_ASSET(skills_3);
-SMOOTH_SPLINE_PATH_ASSET(skills_5);
-SMOOTH_SPLINE_PATH_ASSET(skills_6);
-SMOOTH_SPLINE_PATH_ASSET(skills_6_5);
-SMOOTH_SPLINE_PATH_ASSET(skills_7);
-SMOOTH_SPLINE_PATH_ASSET(skills_7_5);
-SMOOTH_SPLINE_PATH_ASSET(skills_8);
-SMOOTH_SPLINE_PATH_ASSET(skills_9);
-SMOOTH_SPLINE_PATH_ASSET(close_mid_rush_elim);
-SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_2);
+SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_awp)
+SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_triball)
+SMOOTH_SPLINE_PATH_ASSET(close_rush_mid_no_triball)
+SMOOTH_SPLINE_PATH_ASSET(safe_close_awp)
+SMOOTH_SPLINE_PATH_ASSET(far_6_1)
+SMOOTH_SPLINE_PATH_ASSET(far_6_2)
+SMOOTH_SPLINE_PATH_ASSET(far_6_3)
+SMOOTH_SPLINE_PATH_ASSET(far_6_4)
+SMOOTH_SPLINE_PATH_ASSET(skills_1)
+SMOOTH_SPLINE_PATH_ASSET(skills_2)
+SMOOTH_SPLINE_PATH_ASSET(skills_3)
+SMOOTH_SPLINE_PATH_ASSET(skills_5)
+SMOOTH_SPLINE_PATH_ASSET(skills_6)
+SMOOTH_SPLINE_PATH_ASSET(skills_6_5)
+SMOOTH_SPLINE_PATH_ASSET(skills_7)
+SMOOTH_SPLINE_PATH_ASSET(skills_7_5)
+SMOOTH_SPLINE_PATH_ASSET(skills_8)
+SMOOTH_SPLINE_PATH_ASSET(skills_9)
 
 void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer = none, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
@@ -30,7 +30,7 @@ void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer =
 
 	drivetrainStateController->sb(angleRotation);
 
-	pros::Task::delay(waitTimeMS.Convert(millisecond));
+	pros::Task::delay(static_cast<uint32_t>(waitTimeMS.Convert(millisecond)));
 
 	drivetrainStateController->ud();
 	pros::Task::delay(10);
@@ -129,22 +129,24 @@ void skills(void *args) {
 	frontRightWingStateController->sb(frontRightWingIn);
 	frontLeftWingStateController->sb(frontLeftWingIn);
 
-	turnTo(-15.0_deg, 600_ms, clockwise);
+	turnTo(180.0_deg, 600_ms, clockwise);
 
 	catapultStateController->sb(catapultHoldHigh);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(20_in, speedProfileConstraints, 0.0, 100_deg);
+	move(20_in, speedProfileConstraints, 0.0, -80_deg);
 
-	turnTo(115_deg, 1.0_s, closest, -12000);
+	turnTo(-70_deg, 1.0_s, closest, -12000);
 
-	move(20_in, speedProfileConstraints, 0.0, 100_deg);
+	move(20_in, speedProfileConstraints, 0.0, -80_deg);
 	backRightWingStateController->ud();
 	backLeftWingStateController->ud();
 
-	turnTo(115_deg, 1.0_s, closest, -12000);
+	turnTo(-70_deg, 1.0_s, closest, -12000);
+
+	turnTo(-170_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(skills_5);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -194,22 +196,22 @@ void skills(void *args) {
 					                                  pushingProfileConstraints)}));
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(125_deg, 0.4_s, closest);
+	turnTo(-55_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(20_in, speedProfileConstraints, 0.0, -100_deg);
+	move(20_in, speedProfileConstraints, 0.0, 90_deg);
 
-	turnTo(-115_deg, 1.0_s, closest, -12000);
+	turnTo(80_deg, 1.0_s, closest, -12000);
 
 	winchStateController->sb(winchUp);
 
-	move(20_in, speedProfileConstraints, 0.0, -100_deg);
+	move(20_in, speedProfileConstraints, 0.0, 90_deg);
 
 	backLeftWingStateController->ud();
 
-	turnTo(-115_deg, 1.0_s, closest, -12000);
+	turnTo(80_deg, 1.0_s, closest, -12000);
 
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -238,7 +240,7 @@ void safeCloseAWPDelay(void *args) {
 
 }
 
-void closeRushMid(void *args) {
+void closeRushMidAwp(void *args) {
 	imuOrientation.setRotation(-75.7_deg);
 
 	frontLeftWingStateController->sb(std::make_shared<Wait>(frontLeftWingOut, 300_ms));
@@ -247,48 +249,38 @@ void closeRushMid(void *args) {
 
 	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-	intakeExtensionStateController->ud();
-	intakeStateController->sb(intakeIntaking);
-
-	move(-13_in, speedProfileConstraints, 0.0, -75.7_deg);
-
-	turnTo(104.3_deg, 600_ms);
-
-	intakeStateController->sb(intakeEject);
-
-	turnTo(104.3_deg, 200_ms);
-
-	turnTo(-35.3_deg, 600_ms);
-
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(close_mid_rush_json));
+	pathFollower->setMotionProfile(close_rush_mid_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-10_in, speedProfileConstraints, 0.0, 56_deg);
-
-	intakeStateController->sb(intakeEject);
-
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(close_rush_mid_2_json));
-	drivetrainStateController->sb(pathFollower)->wait();
+	pros::Task::delay(15000);
 }
 
 void closeRushMidElim(void *args) {
-	closeRushMid(args);
+	imuOrientation.setRotation(-75.7_deg);
 
-	turnTo(-180_deg, 800_ms);
+	frontLeftWingStateController->sb(std::make_shared<Wait>(frontLeftWingOut, 300_ms));
 
-	intakeStateController->sb(intakeIntaking);
+	intakeExtensionStateController->sb(deploySequence);
 
-	pathFollower->setMotionProfile(PathPlanner::SmoothSplineProfile::build(close_mid_rush_elim_json));
-	drivetrainStateController->sb(pathFollower)->wait();
-}
+	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-void tuneTurnPid(void *args) {
-	imuOrientation.setRotation(0.0_deg);
-	for (int i = 0; i < 5; ++i) {
-		turnTo(180_deg, 2_s);
-		turnTo(0.0_deg, 2_s);
+	move(-10_in, speedProfileConstraints, 0.0, -75.7_deg);
+
+	if (hopperDistanceSensor.get() * 1_mm < 160_mm) {
+		// Has triball in the intake
+		pathFollower->setMotionProfile(close_rush_mid_triball);
+		turnTo(50_deg, 0.5_s);
+		drivetrainStateController->sb(pathFollower)->wait();
+	} else {
+		// Doesn't have a triball in the intake
+		pathFollower->setMotionProfile(close_rush_mid_no_triball);
+		turnTo(0_deg, 0.4_s);
+		drivetrainStateController->sb(pathFollower)->wait();
 	}
+
+	pros::Task::delay(15000);
 }
+
 // !SECTION
 
 // SECTION INIT
@@ -401,14 +393,17 @@ void initialize() {
 #elif AUTON == 1
 	auton->setAuton(far6BallAWP);
 #elif AUTON == 2
-	auton->setAuton(safeCloseAWPDelay);
+	auton->setAuton(safeCloseAWP);
 #elif AUTON == 3
-	auton->setAuton(closeRushMidElim);
+	auton->setAuton(safeCloseAWPDelay);
 #elif AUTON == 4
-	auton->setAuton(closeRushMid);
+	auton->setAuton(closeRushMidElim);
 #elif AUTON == 5
+	auton->setAuton(closeRushMidAwp);
+#elif AUTON == 6
 	auton->setAuton(skills);
 #endif // !1
+
 
 	// Initialize functions
 	initHardware();

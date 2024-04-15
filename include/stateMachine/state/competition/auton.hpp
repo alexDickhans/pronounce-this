@@ -83,15 +83,18 @@ namespace Pronounce {
 	class Auton : public Enabled {
 	private:
 		pros::task_fn_t auton;
+		void* args;
 		pros::Task task;
 	public:
-		Auton(pros::task_fn_t auton) : task([=]() -> void { return; }), Enabled("Auton") {
+		Auton(pros::task_fn_t auton, void* args = nullptr) : task([=]() -> void { return; }), Enabled("Auton") {
 			this->auton = auton;
+			this->args = args;
 		}
 
-		void setAuton(pros::task_fn_t auton) {
+		void setAuton(pros::task_fn_t auton, void* args = nullptr) {
 			Log("Set auton");
 			this->auton = auton;
+			this->args = args;
 		}
 
 		void initialize() override {
@@ -103,7 +106,7 @@ namespace Pronounce {
 			if (task.get_state() == 2)
 				task.remove();
 
-			task = pros::Task(auton, nullptr, TASK_PRIORITY_MAX-1, TASK_STACK_DEPTH_DEFAULT, "User auton");
+			task = pros::Task(auton, args, TASK_PRIORITY_MAX-1, TASK_STACK_DEPTH_DEFAULT, "User auton");
 		}
 
 		void update() override {
