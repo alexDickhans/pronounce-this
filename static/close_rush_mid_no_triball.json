@@ -1,0 +1,137 @@
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.176,
+          "y": 1.251
+        },
+        {
+          "x": 2.125,
+          "y": 1.418
+        },
+        {
+          "x": 2.061,
+          "y": 1.699
+        },
+        {
+          "x": 1.924,
+          "y": 1.702
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 140
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 1.924,
+          "y": 1.702
+        },
+        {
+          "x": 2.339,
+          "y": 1.575
+        },
+        {
+          "x": 2.492,
+          "y": 0.932
+        },
+        {
+          "x": 3.501,
+          "y": 0.897
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 140
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.501,
+          "y": 0.897
+        },
+        {
+          "x": 2.991,
+          "y": 0.794
+        },
+        {
+          "x": 3.024,
+          "y": 0.329
+        },
+        {
+          "x": 2.727,
+          "y": 0.276
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 140
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.727,
+          "y": 0.276
+        },
+        {
+          "x": 3.258,
+          "y": 0.39
+        },
+        {
+          "x": 3.269,
+          "y": 0.757
+        },
+        {
+          "x": 2.933,
+          "y": 0.881
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 140
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.933,
+          "y": 0.881
+        },
+        {
+          "x": 3.314,
+          "y": 1.001
+        },
+        {
+          "x": 3.387,
+          "y": 1.249
+        },
+        {
+          "x": 3.387,
+          "y": 1.671
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 140
+      }
+    }
+  ],
+  "commands": []
+}
