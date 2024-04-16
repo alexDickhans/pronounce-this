@@ -12,6 +12,7 @@ autons = [
     "FAR 6 MID ELIM",
     "FAR 5 MID AWP",
     "CLOSE SAFE AWP",
+    "CLOSE SAFE AWP DELAY",
     "CLOSE RUSH ELIM",
     "CLOSE RUSH AWP",
     "SKILLS"]

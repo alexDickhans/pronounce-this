@@ -79,7 +79,6 @@ void far6Ball(void* args) {
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	backRightWingStateController->ud();
-	move(15_in, speedProfileConstraints, 0.0, -250_deg);
 	turnTo(-45_deg, 0.6_s, counterclockwise);
 
 	frontLeftWingStateController->sb(frontLeftWingOut);
@@ -88,16 +87,12 @@ void far6Ball(void* args) {
 
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
-
-	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
-
-//	frontLeftWingStateController->ud();
-
 }
 
 void far6BallElim(void* args) {
 	far6Ball(args);
 
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 	pathFollower->setMotionProfile(far_6_4);
@@ -150,13 +145,13 @@ void skills(void *args) {
 
 	move(20_in, speedProfileConstraints, 0.0, -80_deg);
 
-	turnTo(-70_deg, 1.0_s, closest, -12000);
+	turnTo(-70_deg, 1.0_s, closest, 12000);
 
 	move(20_in, speedProfileConstraints, 0.0, -80_deg);
 	backRightWingStateController->ud();
 	backLeftWingStateController->ud();
 
-	turnTo(-70_deg, 1.0_s, closest, -12000);
+	turnTo(-70_deg, 1.0_s, closest, 12000);
 
 	turnTo(-170_deg, 0.4_s, closest);
 
@@ -215,7 +210,7 @@ void skills(void *args) {
 
 	move(20_in, speedProfileConstraints, 0.0, 90_deg);
 
-	turnTo(80_deg, 1.0_s, closest, -12000);
+	turnTo(80_deg, 1.0_s, closest, 12000);
 
 	winchStateController->sb(winchUp);
 
@@ -223,7 +218,7 @@ void skills(void *args) {
 
 	backLeftWingStateController->ud();
 
-	turnTo(80_deg, 1.0_s, closest, -12000);
+	turnTo(80_deg, 1.0_s, closest, 12000);
 
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -401,7 +396,7 @@ void initialize() {
 	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
 
 #if AUTON == 0
-	auton->setAuton(far6Ball);
+	auton->setAuton(far6BallElim);
 #elif AUTON == 1
 	auton->setAuton(far6BallAWP);
 #elif AUTON == 2
@@ -485,7 +480,7 @@ void autonomous() {
 void opcontrol() {
 
 	// Causes the programming skills code to only run during skills
-#if AUTON == 5
+#if AUTON == 6
 	robotMutex.lock();
 	auton->setAuton(skills);
 	competitionController->sb(std::make_shared<Until>(auton, [=]() -> auto {

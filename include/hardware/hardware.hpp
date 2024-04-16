@@ -24,7 +24,7 @@ namespace Pronounce {
 
 	pros::Mutex robotMutex;
 
-    #define IS_SKILLS (AUTON == 5)
+    #define IS_SKILLS (AUTON == 6)
 
 	pros::Controller masterController(pros::E_CONTROLLER_MASTER);
 	RobotJoystick master = RobotJoystick(masterController);
