@@ -61,7 +61,7 @@ void far6Ball(void* args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(51_in, speedProfileConstraints, 0.0, -120.5_deg);
+	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
 
 	intakeExtensionStateController->ud();
 
@@ -70,7 +70,7 @@ void far6Ball(void* args) {
 
 	turnTo(-180_deg, 0.4_s);
 	intakeStateController->sb(intakeIntaking);
-	move(5_in, speedProfileConstraints, 0.0, -180_deg);
+	move(7_in, speedProfileConstraints, 0.0, -180_deg);
 
 	pathFollower->setMotionProfile(far_6_2);
 	drivetrainStateController->sb(pathFollower)->wait();
