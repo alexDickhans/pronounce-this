@@ -12,6 +12,7 @@ SMOOTH_SPLINE_PATH_ASSET(far_6_1)
 SMOOTH_SPLINE_PATH_ASSET(far_6_2)
 SMOOTH_SPLINE_PATH_ASSET(far_6_3)
 SMOOTH_SPLINE_PATH_ASSET(far_6_4)
+SMOOTH_SPLINE_PATH_ASSET(far_6_5)
 SMOOTH_SPLINE_PATH_ASSET(skills_1)
 SMOOTH_SPLINE_PATH_ASSET(skills_2)
 SMOOTH_SPLINE_PATH_ASSET(skills_3)
@@ -104,7 +105,10 @@ void far6BallElim(void* args) {
 }
 
 void far6BallAWP(void* args) {
+	far6Ball(args);
 	pathFollower->setMotionProfile(far_6_4);
+	drivetrainStateController->sb(pathFollower)->wait();
+	pathFollower->setMotionProfile(far_6_5);
 	drivetrainStateController->sb(pathFollower)->wait();
 }
 
