@@ -9,7 +9,7 @@
 namespace Pronounce {
     auto intakeStopped = std::make_shared<Intake>("IntakeStopped", intakeMotors, 0.0);
 	auto intakeIntaking = std::make_shared<Intake>("IntakeIntaking", intakeMotors, 1.0);
-	auto intakeHold = std::make_shared<Intake>("IntakeHold", intakeMotors, 0.55);
+	auto intakeHold = std::make_shared<Intake>("IntakeHold", intakeMotors, 0.65);
 	auto intakeEject = std::make_shared<Intake>("IntakeEject", intakeMotors, -1.0);
 
     auto intakeStateController = std::make_shared<StateController>("IntakeStateController", intakeStopped);

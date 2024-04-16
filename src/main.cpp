@@ -63,6 +63,8 @@ void far6Ball(void* args) {
 
 	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
 
+	pros::Task::delay(200);
+
 	intakeExtensionStateController->ud();
 
 	pathFollower->setMotionProfile(far_6_1);
@@ -77,7 +79,7 @@ void far6Ball(void* args) {
 
 	backRightWingStateController->ud();
 	move(15_in, speedProfileConstraints, 0.0, -250_deg);
-	turnTo(-430_deg, 0.6_s);
+	turnTo(-45_deg, 0.6_s, counterclockwise);
 
 	frontLeftWingStateController->sb(frontLeftWingOut);
 
@@ -88,7 +90,12 @@ void far6Ball(void* args) {
 
 	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
 
-	frontLeftWingStateController->ud();
+//	frontLeftWingStateController->ud();
+
+}
+
+void far6BallElim(void* args) {
+	far6Ball(args);
 
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -97,7 +104,8 @@ void far6Ball(void* args) {
 }
 
 void far6BallAWP(void* args) {
-	far6Ball(args);
+	pathFollower->setMotionProfile(far_6_4);
+	drivetrainStateController->sb(pathFollower)->wait();
 }
 
 void skills(void *args) {
