@@ -7,42 +7,16 @@
       "stopEnd": false,
       "paths": [
         {
-          "x": 0.626,
-          "y": 0.209
+          "x": 0.567,
+          "y": 0.291
         },
         {
-          "x": 0.408,
-          "y": 0.328
+          "x": 0.161,
+          "y": 0.674
         },
         {
-          "x": 0.379,
-          "y": 0.541
-        },
-        {
-          "x": 0.285,
-          "y": 0.935
-        }
-      ],
-      "constraints": {
-        "velocity": 71,
-        "accel": 195
-      }
-    },
-    {
-      "inverted": false,
-      "stopEnd": false,
-      "paths": [
-        {
-          "x": 0.286,
-          "y": 0.936
-        },
-        {
-          "x": 0.195,
-          "y": 1.416
-        },
-        {
-          "x": 0.138,
-          "y": 1.749
+          "x": 0.125,
+          "y": 1.644
         },
         {
           "x": 0.114,
@@ -63,8 +37,8 @@
           "y": 2.346
         },
         {
-          "x": 0.097,
-          "y": 2.879
+          "x": 0.113,
+          "y": 2.932
         },
         {
           "x": 0.575,
@@ -84,23 +58,7 @@
   "commands": [
     {
       "t": 0.0,
-      "name": "backLeftWingOut"
-    },
-    {
-      "t": 0.0,
-      "name": "backRightWingOut"
-    },
-    {
-      "t": 0.28,
-      "name": "backRightWingIn"
-    },
-    {
-      "t": 2.0,
-      "name": "backRightWingOut"
-    },
-    {
-      "t": 2.4,
-      "name": "backRightWingIn"
+      "name": "frontRightWingOut"
     }
   ]
 }

@@ -43,8 +43,6 @@ namespace Pronounce {
 
 	pros::adi::DigitalOut frontLeftSolenoid('G', false);
 	pros::adi::DigitalOut frontRightSolenoid('F', false);
-	pros::adi::DigitalOut backLeftSolenoid('E', false);
-	pros::adi::DigitalOut backRightSolenoid('D', false);
 
 	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit

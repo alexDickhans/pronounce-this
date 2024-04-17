@@ -78,7 +78,6 @@ void far6Ball(void* args) {
 	pathFollower->setMotionProfile(far_6_2);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	backRightWingStateController->ud();
 	turnTo(-45_deg, 0.6_s, counterclockwise);
 
 	frontLeftWingStateController->sb(frontLeftWingOut);
@@ -119,7 +118,6 @@ void skills(void *args) {
 			                                     21.0_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(100);
-	backLeftWingStateController->sb(backLeftWingOut);
 	pros::Task::delay(900);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
@@ -133,25 +131,24 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_2);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	frontRightWingStateController->sb(frontRightWingIn);
-	frontLeftWingStateController->sb(frontLeftWingIn);
+	frontRightWingStateController->ud();
 
-	turnTo(180.0_deg, 600_ms, clockwise);
-
-	catapultStateController->sb(catapultHoldHigh);
+	turnTo(180.0_deg, 400_ms, clockwise);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(20_in, speedProfileConstraints, 0.0, -80_deg);
+	move(-20_in, speedProfileConstraints, 0.0, -80_deg);
 
 	turnTo(-70_deg, 1.0_s, closest, 12000);
 
-	move(20_in, speedProfileConstraints, 0.0, -80_deg);
-	backRightWingStateController->ud();
-	backLeftWingStateController->ud();
+	move(-20_in, speedProfileConstraints, 0.0, -80_deg);
+	frontRightWingStateController->ud();
+	frontLeftWingStateController->ud();
 
 	turnTo(-70_deg, 1.0_s, closest, 12000);
+
+	move(-8_in, speedProfileConstraints, 0.0, -80_deg);
 
 	turnTo(-170_deg, 0.4_s, closest);
 
@@ -177,7 +174,7 @@ void skills(void *args) {
 
 	move(-13_in, speedProfileConstraints, 0.0);
 
-	move(18_in, speedProfileConstraints, 0.0, 0.0_deg);
+	move(18_in, speedProfileConstraints, 0.0, 0.0_deg, 0.0, 70_in/second);
 
 	pathFollower->setMotionProfile(skills_7_5);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -185,7 +182,7 @@ void skills(void *args) {
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg, 0.0, closest));
 
-	QLength wallDistance = getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm;
+	QLength wallDistance = std::clamp(getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm, 30_in, 70_in);
 
 	turnTo(55_deg, 0.4_s, closest);
 
@@ -199,33 +196,29 @@ void skills(void *args) {
 					                                  PathPlanner::Point(
 							                                  15_in, 52_in),
 					                                  PathPlanner::Point(
-							                                  16_in, 32_in), true, true,
+							                                  20_in, 32_in), true, true,
 					                                  pushingProfileConstraints)}));
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(-55_deg, 0.4_s, closest);
+	turnTo(-45_deg, 0.4_s, closest);
 
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(20_in, speedProfileConstraints, 0.0, 90_deg);
+	move(-20_in, speedProfileConstraints, 0.0, 90_deg);
 
-	turnTo(80_deg, 1.0_s, closest, 12000);
+	turnTo(75_deg, 1.0_s, closest, 12000);
 
 	winchStateController->sb(winchUp);
 
-	move(20_in, speedProfileConstraints, 0.0, 90_deg);
+	move(-20_in, speedProfileConstraints, 0.0, 90_deg);
 
-	backLeftWingStateController->ud();
-
-	turnTo(80_deg, 1.0_s, closest, 12000);
+	turnTo(75_deg, 1.0_s, closest, 12000);
 
 	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	pros::Task::delay(3000);
-
-	backLeftWingStateController->ud();
 }
 
 void safeCloseAWP(void *args) {
