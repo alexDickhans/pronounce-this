@@ -24,7 +24,7 @@ namespace Pronounce {
 
 	pros::Mutex robotMutex;
 
-    #define IS_SKILLS (AUTON == 5)
+    #define IS_SKILLS (AUTON == 6)
 
 	pros::Controller masterController(pros::E_CONTROLLER_MASTER);
 	RobotJoystick master = RobotJoystick(masterController);
@@ -43,8 +43,6 @@ namespace Pronounce {
 
 	pros::adi::DigitalOut frontLeftSolenoid('G', false);
 	pros::adi::DigitalOut frontRightSolenoid('F', false);
-	pros::adi::DigitalOut backLeftSolenoid('E', false);
-	pros::adi::DigitalOut backRightSolenoid('D', false);
 
 	pros::MotorGroup intakeMotors({17}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 	// Inertial Measurement Unit

@@ -10,8 +10,6 @@ namespace Pronounce {
 		stateControllers.addBehavior(drivetrainStateController);
 		stateControllers.addBehavior(frontLeftWingStateController);
 		stateControllers.addBehavior(frontRightWingStateController);
-		stateControllers.addBehavior(backLeftWingStateController);
-		stateControllers.addBehavior(backRightWingStateController);
 		stateControllers.addBehavior(winchStateController);
 		stateControllers.addBehavior(winchStateExtensionController);
 		stateControllers.addBehavior(catapultStateController);
@@ -48,7 +46,7 @@ namespace Pronounce {
 			// See if the distance sensor detects a new object within 1 inch of the sensor
 			if (catapultDistance.get() * 1_mm <
 			    0.75_in // see if an object is detected by the distance sensor on the catapult
-			    && lastDistance > 0.75_in && pros::millis() * 1_ms - lastCount >
+			    && lastDistance > 1.5_in && pros::millis() * 1_ms - lastCount >
 			                                 0.25_s) { // If the last distance sensor reading was greater than an inch indicates that the
 				// triball is moving closer to the sensor, meaning that there is a new triball
 
