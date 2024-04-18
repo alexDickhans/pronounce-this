@@ -192,9 +192,9 @@ void skills(void *args) {
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
 							                                  0.95 * wallDistance - 14_in,
-							                                  66_in),
+							                                  68_in),
 					                                  PathPlanner::Point(
-							                                  15_in, 52_in),
+							                                  15_in, 60_in),
 					                                  PathPlanner::Point(
 							                                  20_in, 32_in), true, true,
 					                                  pushingProfileConstraints)}));
