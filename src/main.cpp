@@ -172,7 +172,7 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_7);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-13_in, speedProfileConstraints, 0.0);
+	move(-10_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	move(18_in, speedProfileConstraints, 0.0, 0.0_deg, 0.0, 70_in/second);
 
@@ -182,7 +182,7 @@ void skills(void *args) {
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid, 0_deg, 0.0, closest));
 
-	QLength wallDistance = std::clamp(getDistanceSensorMedian(wallDistanceSensor, 3, (70_in).Convert(millimetre)) * 1_mm, 30_in, 70_in);
+	QLength wallDistance = std::clamp(getDistanceSensorMedian(wallDistanceSensor, 3, (80_in).Convert(millimetre)) * 1_mm, 30_in, 80_in);
 
 	turnTo(55_deg, 0.4_s, closest);
 
@@ -191,13 +191,14 @@ void skills(void *args) {
 					{PathPlanner::BezierSegment(PathPlanner::Point(
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
-							                                  wallDistance - 14_in,
+							                                  0.95 * wallDistance - 14_in,
 							                                  66_in),
 					                                  PathPlanner::Point(
 							                                  15_in, 52_in),
 					                                  PathPlanner::Point(
 							                                  20_in, 32_in), true, true,
 					                                  pushingProfileConstraints)}));
+
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	turnTo(-45_deg, 0.4_s, closest);
@@ -209,14 +210,15 @@ void skills(void *args) {
 
 	turnTo(75_deg, 1.0_s, closest, 12000);
 
-	winchStateController->sb(winchUp);
-
 	move(-20_in, speedProfileConstraints, 0.0, 90_deg);
 
+	pathFollower->setMotionProfile(skills_9);
+	
 	turnTo(75_deg, 1.0_s, closest, 12000);
 
-	pathFollower->setMotionProfile(skills_9);
 	drivetrainStateController->sb(pathFollower)->wait();
+
+	winchStateController->sb(winchC);
 
 	pros::Task::delay(3000);
 }

@@ -27,58 +27,6 @@
         "velocity": 76,
         "accel": 200
       }
-    },
-    {
-      "inverted": false,
-      "stopEnd": false,
-      "paths": [
-        {
-          "x": 0.999,
-          "y": 3.488
-        },
-        {
-          "x": 0.996,
-          "y": 3.23
-        },
-        {
-          "x": 0.336,
-          "y": 3.167
-        },
-        {
-          "x": 0.323,
-          "y": 2.623
-        }
-      ],
-      "constraints": {
-        "velocity": 76,
-        "accel": 140
-      }
-    },
-    {
-      "inverted": false,
-      "stopEnd": false,
-      "paths": [
-        {
-          "x": 0.323,
-          "y": 2.621
-        },
-        {
-          "x": 0.311,
-          "y": 2.314
-        },
-        {
-          "x": 0.387,
-          "y": 2.262
-        },
-        {
-          "x": 0.388,
-          "y": 1.883
-        }
-      ],
-      "constraints": {
-        "velocity": 76,
-        "accel": 140
-      }
     }
   ],
   "commands": [
@@ -87,8 +35,8 @@
       "name": "hangOut"
     },
     {
-      "t": 1.91,
-      "name": "hangIn"
+      "t": 0.0,
+      "name": "frontWingsIn"
     }
   ]
 }
