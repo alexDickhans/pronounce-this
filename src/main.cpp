@@ -23,6 +23,7 @@ SMOOTH_SPLINE_PATH_ASSET(skills_7)
 SMOOTH_SPLINE_PATH_ASSET(skills_7_5)
 SMOOTH_SPLINE_PATH_ASSET(skills_8)
 SMOOTH_SPLINE_PATH_ASSET(skills_9)
+SMOOTH_SPLINE_PATH_ASSET(skills_9_5)
 
 void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer = none, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
@@ -117,8 +118,7 @@ void skills(void *args) {
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
 			                                     21.0_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(100);
-	pros::Task::delay(900);
+	pros::Task::delay(1000);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
@@ -192,9 +192,9 @@ void skills(void *args) {
 							                                  wallDistance, 76_in),
 					                                  PathPlanner::Point(
 							                                  0.95 * wallDistance - 14_in,
-							                                  66_in),
+							                                  68_in),
 					                                  PathPlanner::Point(
-							                                  15_in, 52_in),
+							                                  15_in, 60_in),
 					                                  PathPlanner::Point(
 							                                  20_in, 32_in), true, true,
 					                                  pushingProfileConstraints)}));
@@ -215,6 +215,10 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_9);
 	
 	turnTo(75_deg, 1.0_s, closest, 12000);
+
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	pathFollower->setMotionProfile(skills_9_5);
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
@@ -249,12 +253,12 @@ void closeRushMidAwp(void *args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(44_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	pathFollower->setMotionProfile(close_rush_mid_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	pros::Task::delay(15000);
+	turnTo(0_deg, 15_s, closest);
 }
 
 void closeRushMidElim(void *args) {
@@ -264,9 +268,9 @@ void closeRushMidElim(void *args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(44_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-	move(-10_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(-8_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	if (hopperDistanceSensor.get() * 1_mm < 160_mm) {
 		// Has triball in the intake
@@ -280,7 +284,7 @@ void closeRushMidElim(void *args) {
 		drivetrainStateController->sb(pathFollower)->wait();
 	}
 
-	pros::Task::delay(15000);
+	turnTo(0_deg, 15_s, closest);
 }
 
 // !SECTION
@@ -388,8 +392,6 @@ void initialize() {
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), LV_DIR_TOP, 50));
 
-	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
-
 #if AUTON == 0
 	auton->setAuton(far6BallElim);
 #elif AUTON == 1
@@ -406,7 +408,6 @@ void initialize() {
 	auton->setAuton(skills);
 #endif // !1
 
-
 	// Initialize functions
 	initHardware();
 	initIntake();
@@ -417,6 +418,7 @@ void initialize() {
 	initAutonomousMappings();
 	initWinch();
 
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
 	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT * 2, "modeLogicUpdate");
 
 	pros::Task::delay(10);
@@ -437,6 +439,10 @@ void disabled() {
 	auto disabledLabel = std::shared_ptr<lv_obj_t>(lv_label_create(lv_scr_act()));
 	lv_obj_align(disabledLabel.get(), LV_ALIGN_CENTER, 0, 0);
 	lv_label_set_text(disabledLabel.get(), "Robot Disabled.");
+
+	while (1) {
+		pros::Task::delay(50);
+	}
 }
 
 // !SECTION
@@ -485,9 +491,9 @@ void opcontrol() {
 	competitionController->wait(60000);
 #endif
 
-	robotMutex.lock();
 	competitionController->sb(teleop);
-	robotMutex.unlock();
+
+	pros::Task::delay(120000);
 }
 
 // !SECTION
