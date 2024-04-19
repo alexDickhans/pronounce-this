@@ -23,6 +23,7 @@ SMOOTH_SPLINE_PATH_ASSET(skills_7)
 SMOOTH_SPLINE_PATH_ASSET(skills_7_5)
 SMOOTH_SPLINE_PATH_ASSET(skills_8)
 SMOOTH_SPLINE_PATH_ASSET(skills_9)
+SMOOTH_SPLINE_PATH_ASSET(skills_9_5)
 
 void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer = none, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
@@ -117,8 +118,7 @@ void skills(void *args) {
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
 			                                     21.0_deg, -800.0));
 	auton->resetTriballs();
-	pros::Task::delay(100);
-	pros::Task::delay(900);
+	pros::Task::delay(1000);
 
 	// Wait until the catapult triballs shot has increased to 44 triballs
 	while (auton->getTriballCount() < 44 && catapultStateController->getDuration() < 2.0_s) {
@@ -218,6 +218,10 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
+	pathFollower->setMotionProfile(skills_9_5);
+
+	drivetrainStateController->sb(pathFollower)->wait();
+
 	winchStateController->sb(winchC);
 
 	pros::Task::delay(3000);
@@ -249,12 +253,12 @@ void closeRushMidAwp(void *args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(44_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	pathFollower->setMotionProfile(close_rush_mid_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	pros::Task::delay(15000);
+	turnTo(0_deg, 15_s, closest);
 }
 
 void closeRushMidElim(void *args) {
@@ -264,9 +268,9 @@ void closeRushMidElim(void *args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(41_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(44_in, speedProfileConstraints, 0.0, -75.7_deg);
 
-	move(-10_in, speedProfileConstraints, 0.0, -75.7_deg);
+	move(-8_in, speedProfileConstraints, 0.0, -75.7_deg);
 
 	if (hopperDistanceSensor.get() * 1_mm < 160_mm) {
 		// Has triball in the intake
@@ -280,7 +284,7 @@ void closeRushMidElim(void *args) {
 		drivetrainStateController->sb(pathFollower)->wait();
 	}
 
-	pros::Task::delay(15000);
+	turnTo(0_deg, 15_s, closest);
 }
 
 // !SECTION
@@ -485,9 +489,9 @@ void opcontrol() {
 	competitionController->wait(60000);
 #endif
 
-	robotMutex.lock();
 	competitionController->sb(teleop);
-	robotMutex.unlock();
+
+	pros::Task::delay(120000);
 }
 
 // !SECTION
