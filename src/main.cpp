@@ -392,8 +392,6 @@ void initialize() {
 	lv_init();
 	tabview = std::shared_ptr<lv_obj_t>(lv_tabview_create(lv_scr_act(), LV_DIR_TOP, 50));
 
-	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
-
 #if AUTON == 0
 	auton->setAuton(far6BallElim);
 #elif AUTON == 1
@@ -410,7 +408,6 @@ void initialize() {
 	auton->setAuton(skills);
 #endif // !1
 
-
 	// Initialize functions
 	initHardware();
 	initIntake();
@@ -421,6 +418,7 @@ void initialize() {
 	initAutonomousMappings();
 	initWinch();
 
+	pros::Task display(updateDisplay, TASK_PRIORITY_MIN + 1, TASK_STACK_DEPTH_DEFAULT, "updateDisplay");
 	pros::Task modeLogicTask(update, TASK_PRIORITY_MAX, TASK_STACK_DEPTH_DEFAULT * 2, "modeLogicUpdate");
 
 	pros::Task::delay(10);
@@ -441,6 +439,10 @@ void disabled() {
 	auto disabledLabel = std::shared_ptr<lv_obj_t>(lv_label_create(lv_scr_act()));
 	lv_obj_align(disabledLabel.get(), LV_ALIGN_CENTER, 0, 0);
 	lv_label_set_text(disabledLabel.get(), "Robot Disabled.");
+
+	while (1) {
+		pros::Task::delay(50);
+	}
 }
 
 // !SECTION
