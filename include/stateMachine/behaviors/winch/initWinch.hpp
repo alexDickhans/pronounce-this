@@ -8,7 +8,7 @@
 namespace Pronounce {
 
 	auto winchStow = std::make_shared<WinchVoltage>(winch, 0);
-	auto winchUp = std::make_shared<Winch>(winch, 0.7);
+	auto winchUp = std::make_shared<Winch>(winch, 1.0);
 	auto winchUpWait = std::make_shared<Wait>(winchUp, 1.0_s);
 	auto winchA = std::make_shared<Winch>(winch, 2.5);
 	auto winchC = std::make_shared<Winch>(winch, 3.5);

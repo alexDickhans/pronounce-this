@@ -33,10 +33,13 @@ namespace Pronounce {
 					frontLeftWingStateController->sb(std::make_shared<Until>(frontLeftWingOut, [=, this]() -> bool {
 						return !controller1.get_digital(E_CONTROLLER_DIGITAL_L2);
 					}));
-					frontRightWingStateController->sb(std::make_shared<Until>(frontRightWingOut, [&]() -> bool {
-						return !controller1.get_digital(E_CONTROLLER_DIGITAL_L2);
-					}));
 				}
+			});
+
+			controller1.onPressed(E_CONTROLLER_DIGITAL_L1, [&]() -> void {
+				frontRightWingStateController->sb(std::make_shared<Until>(frontRightWingOut, [&]() -> bool {
+					return !controller1.get_digital(E_CONTROLLER_DIGITAL_L1);
+				}));
 			});
 
 			controller1.onPressed(E_CONTROLLER_DIGITAL_R2, [&]() -> void {
