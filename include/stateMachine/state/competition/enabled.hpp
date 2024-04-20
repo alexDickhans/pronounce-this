@@ -44,10 +44,10 @@ namespace Pronounce {
 			}
 
 			// See if the distance sensor detects a new object within 1 inch of the sensor
-			if (catapultDistance.get() * 1_mm <
-			    0.75_in // see if an object is detected by the distance sensor on the catapult
+			if (catapultDistance.get() * 1_mm <=
+			    1.5_in // see if an object is detected by the distance sensor on the catapult
 			    && lastDistance > 1.5_in && pros::millis() * 1_ms - lastCount >
-			                                 0.25_s) { // If the last distance sensor reading was greater than an inch indicates that the
+			                                 0.15_s) { // If the last distance sensor reading was greater than an inch indicates that the
 				// triball is moving closer to the sensor, meaning that there is a new triball
 
 				// increase the count of shot triballs
@@ -59,7 +59,7 @@ namespace Pronounce {
 				// Set the catapult to try to shoot the triball until it has left the catapult
 				catapultStateController->sb(
 						std::make_shared<Until>(catapultFire,
-						                        [=]() -> bool { return catapultDistance.get() * 1_mm > 0.75_in; }));
+						                        [=]() -> bool { return catapultDistance.get() * 1_mm > 1.5_in; }));
 			}
 
 			// Store the last distance for the next loop itteration
