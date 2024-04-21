@@ -1,0 +1,220 @@
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 3.261,
+          "y": 2.756
+        },
+        {
+          "x": 2.854,
+          "y": 2.587
+        },
+        {
+          "x": 2.075,
+          "y": 2.121
+        },
+        {
+          "x": 2.07,
+          "y": 2.336
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.07,
+          "y": 2.336
+        },
+        {
+          "x": 2.07,
+          "y": 2.219
+        },
+        {
+          "x": 2.184,
+          "y": 2.134
+        },
+        {
+          "x": 2.27,
+          "y": 2.239
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.27,
+          "y": 2.239
+        },
+        {
+          "x": 2.124,
+          "y": 2.131
+        },
+        {
+          "x": 1.989,
+          "y": 2.048
+        },
+        {
+          "x": 1.848,
+          "y": 1.972
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 1.848,
+          "y": 1.972
+        },
+        {
+          "x": 2.064,
+          "y": 2.176
+        },
+        {
+          "x": 2.159,
+          "y": 2.108
+        },
+        {
+          "x": 2.19,
+          "y": 1.967
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.19,
+          "y": 1.967
+        },
+        {
+          "x": 2.224,
+          "y": 2.211
+        },
+        {
+          "x": 2.427,
+          "y": 2.14
+        },
+        {
+          "x": 2.437,
+          "y": 1.962
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.437,
+          "y": 1.962
+        },
+        {
+          "x": 2.421,
+          "y": 2.189
+        },
+        {
+          "x": 2.123,
+          "y": 2.2
+        },
+        {
+          "x": 2.158,
+          "y": 2.053
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.158,
+          "y": 2.053
+        },
+        {
+          "x": 2.145,
+          "y": 2.37
+        },
+        {
+          "x": 2.129,
+          "y": 2.709
+        },
+        {
+          "x": 2.121,
+          "y": 3.038
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    },
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.121,
+          "y": 3.038
+        },
+        {
+          "x": 2.124,
+          "y": 2.516
+        },
+        {
+          "x": 2.599,
+          "y": 1.966
+        },
+        {
+          "x": 3.339,
+          "y": 2.083
+        }
+      ],
+      "constraints": {
+        "velocity": 69,
+        "accel": 203
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.8,
+      "name": "frontLeftWingOut"
+    }
+  ]
+}

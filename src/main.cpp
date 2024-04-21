@@ -80,8 +80,6 @@ void far6Ball(void* args) {
 
 	turnTo(-45_deg, 0.6_s, counterclockwise);
 
-	frontLeftWingStateController->sb(frontLeftWingOut);
-
 	intakeStateController->sb(intakeEject);
 
 	pathFollower->setMotionProfile(far_6_3);
@@ -96,7 +94,11 @@ void far6BallFlick(void* args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
+	// pathFollower->setMotionProfile(far_6_flick);
+	// drivetrainStateController->sb(pathFollower)->wait();
+
+
+
 }
 
 void far6BallElim(void* args) {
@@ -126,7 +128,7 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     21.3_deg, -800.0));
+			                                     22.9_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(1000);
 
@@ -148,9 +150,9 @@ void skills(void *args) {
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	move(-20_in, speedProfileConstraints, 0.0, -80_deg);
+	// move(-20_in, speedProfileConstraints, 0.0, -80_deg);
 
-	turnTo(-70_deg, 1.0_s, closest, 12000);
+	// turnTo(-70_deg, 1.0_s, closest, 12000);
 
 	move(-20_in, speedProfileConstraints, 0.0, -80_deg);
 

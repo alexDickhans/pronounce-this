@@ -33,10 +33,6 @@
     {
       "t": 0.25,
       "name": "frontLeftWingOut"
-    },
-    {
-      "t": 0.81,
-      "name": "frontLeftWingIn"
     }
   ]
 }
