@@ -1,6 +1,6 @@
 {
   "startSpeed": 0.0,
-  "endSpeed": 0.0,
+  "endSpeed": 72.0,
   "segments": [
     {
       "inverted": true,
@@ -25,7 +25,7 @@
       ],
       "constraints": {
         "velocity": 71,
-        "accel": 167
+        "accel": 195
       }
     },
     {
@@ -51,7 +51,7 @@
       ],
       "constraints": {
         "velocity": 55,
-        "accel": 167
+        "accel": 195
       }
     },
     {
@@ -77,7 +77,7 @@
       ],
       "constraints": {
         "velocity": 44,
-        "accel": 167
+        "accel": 195
       }
     },
     {
@@ -102,8 +102,8 @@
         }
       ],
       "constraints": {
-        "velocity": 51,
-        "accel": 167
+        "velocity": 76,
+        "accel": 195
       }
     }
   ],

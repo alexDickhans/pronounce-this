@@ -1,6 +1,6 @@
 {
   "startSpeed": 0.0,
-  "endSpeed": 12.0,
+  "endSpeed": 0.0,
   "segments": [
     {
       "inverted": true,
@@ -25,7 +25,59 @@
       ],
       "constraints": {
         "velocity": 76,
-        "accel": 200
+        "accel": 190
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 0.999,
+          "y": 3.488
+        },
+        {
+          "x": 0.983,
+          "y": 3.19
+        },
+        {
+          "x": 0.34,
+          "y": 3.173
+        },
+        {
+          "x": 0.34,
+          "y": 2.597
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 190
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 0.34,
+          "y": 2.597
+        },
+        {
+          "x": 0.338,
+          "y": 2.383
+        },
+        {
+          "x": 0.455,
+          "y": 2.153
+        },
+        {
+          "x": 0.45,
+          "y": 1.983
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 190
       }
     }
   ],

@@ -1,18 +1,18 @@
 {
   "startSpeed": 0.0,
-  "endSpeed": -72.0,
+  "endSpeed": 72.0,
   "segments": [
     {
       "inverted": false,
       "stopEnd": false,
       "paths": [
         {
-          "x": 0.567,
-          "y": 0.291
+          "x": 0.697,
+          "y": 0.238
         },
         {
-          "x": 0.161,
-          "y": 0.674
+          "x": 0.291,
+          "y": 0.621
         },
         {
           "x": 0.125,
@@ -24,8 +24,8 @@
         }
       ],
       "constraints": {
-        "velocity": 63,
-        "accel": 195
+        "velocity": 69,
+        "accel": 200
       }
     },
     {
@@ -51,7 +51,7 @@
       ],
       "constraints": {
         "velocity": 63,
-        "accel": 195
+        "accel": 200
       }
     }
   ],

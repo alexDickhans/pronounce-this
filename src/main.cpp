@@ -23,7 +23,6 @@ SMOOTH_SPLINE_PATH_ASSET(skills_7)
 SMOOTH_SPLINE_PATH_ASSET(skills_7_5)
 SMOOTH_SPLINE_PATH_ASSET(skills_8)
 SMOOTH_SPLINE_PATH_ASSET(skills_9)
-SMOOTH_SPLINE_PATH_ASSET(skills_9_5)
 
 void turnTo(Angle angle, QTime waitTimeMS, RotationOptimizer rotationOptimizer = none, double idleSpeed = 0.0) {
 	auto angleRotation = std::make_shared<RotationController>("AngleTurn", drivetrain,
@@ -87,6 +86,17 @@ void far6Ball(void* args) {
 
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+}
+
+void far6BallFlick(void* args) {
+	imuOrientation.setRotation(-120.5_deg);
+
+	intakeExtensionStateController->sb(deploySequence);
+
+	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
 }
 
 void far6BallElim(void* args) {
@@ -116,7 +126,7 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     21.0_deg, -800.0));
+			                                     21.3_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(1000);
 
@@ -133,7 +143,7 @@ void skills(void *args) {
 
 	frontRightWingStateController->ud();
 
-	turnTo(180.0_deg, 400_ms, clockwise);
+	turnTo(170.0_deg, 400_ms, clockwise);
 
 	pathFollower->setMotionProfile(skills_3);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -143,12 +153,13 @@ void skills(void *args) {
 	turnTo(-70_deg, 1.0_s, closest, 12000);
 
 	move(-20_in, speedProfileConstraints, 0.0, -80_deg);
-	frontRightWingStateController->ud();
-	frontLeftWingStateController->ud();
 
 	turnTo(-70_deg, 1.0_s, closest, 12000);
 
 	move(-8_in, speedProfileConstraints, 0.0, -80_deg);
+	
+	frontRightWingStateController->ud();
+	frontLeftWingStateController->ud();
 
 	turnTo(-170_deg, 0.4_s, closest);
 
@@ -184,7 +195,7 @@ void skills(void *args) {
 
 	QLength wallDistance = std::clamp(getDistanceSensorMedian(wallDistanceSensor, 3, (80_in).Convert(millimetre)) * 1_mm, 30_in, 80_in);
 
-	turnTo(55_deg, 0.4_s, closest);
+	turnTo(55_deg, 0.3_s, closest);
 
 	pathFollower->setMotionProfile(
 			PathPlanner::SmoothSplineProfile::build(
@@ -201,8 +212,6 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	turnTo(-45_deg, 0.4_s, closest);
-
 	pathFollower->setMotionProfile(skills_8);
 	drivetrainStateController->sb(pathFollower)->wait();
 
@@ -211,14 +220,10 @@ void skills(void *args) {
 	turnTo(75_deg, 1.0_s, closest, 12000);
 
 	move(-20_in, speedProfileConstraints, 0.0, 90_deg);
-
-	pathFollower->setMotionProfile(skills_9);
 	
 	turnTo(75_deg, 1.0_s, closest, 12000);
 
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	pathFollower->setMotionProfile(skills_9_5);
+	pathFollower->setMotionProfile(skills_9);
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
