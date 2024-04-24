@@ -88,15 +88,15 @@
     },
     {
       "t": 0.86,
-      "name": "frontLeftWingOut"
+      "name": "leftWingOut"
     },
     {
       "t": 1.3,
-      "name": "frontLeftWingIn"
+      "name": "leftWingIn"
     },
     {
       "t": 2.04,
-      "name": "frontLeftWingOut"
+      "name": "leftWingOut"
     }
   ]
 }

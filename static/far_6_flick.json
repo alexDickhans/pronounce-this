@@ -214,7 +214,7 @@
   "commands": [
     {
       "t": 0.8,
-      "name": "frontLeftWingOut"
+      "name": "leftWingOut"
     }
   ]
 }

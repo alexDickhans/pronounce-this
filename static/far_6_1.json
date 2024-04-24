@@ -208,11 +208,11 @@
     },
     {
       "t": 5.01,
-      "name": "frontRightWingOut"
+      "name": "rightWingOut"
     },
     {
       "t": 6.02,
-      "name": "frontRightWingIn"
+      "name": "rightWingIn"
     },
     {
       "t": 6.71,

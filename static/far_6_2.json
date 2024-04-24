@@ -32,11 +32,11 @@
   "commands": [
     {
       "t": 0.25,
-      "name": "frontLeftWingOut"
+      "name": "leftWingOut"
     },
     {
       "t": 0.86,
-      "name": "frontLeftWingIn"
+      "name": "leftWingIn"
     }
   ]
 }

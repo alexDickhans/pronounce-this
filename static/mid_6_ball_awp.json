@@ -1,1 +1,33 @@
-{"segments":[{"inverted":false,"paths":[{"x":1.592,"y":0.969},{"x":1.278,"y":1.072},{"x":1.002,"y":1.426},{"x":0.956,"y":1.652}],"constraints":{"velocity":44,"accel":170}}],"commands":[]}
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 1.592,
+          "y": 0.969
+        },
+        {
+          "x": 1.278,
+          "y": 1.072
+        },
+        {
+          "x": 1.015,
+          "y": 1.425
+        },
+        {
+          "x": 0.803,
+          "y": 1.648
+        }
+      ],
+      "constraints": {
+        "velocity": 44,
+        "accel": 170
+      }
+    }
+  ],
+  "commands": []
+}
