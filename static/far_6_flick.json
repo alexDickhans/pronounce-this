@@ -214,7 +214,31 @@
   "commands": [
     {
       "t": 0.8,
-      "name": "frontLeftWingOut"
+      "name": "leftWingOut"
+    },
+    {
+      "t": 2.2,
+      "name": "intake"
+    },
+    {
+      "t": 3.36,
+      "name": "outtake"
+    },
+    {
+      "t": 4.24,
+      "name": "intake"
+    },
+    {
+      "t": 5.51,
+      "name": "outtake"
+    },
+    {
+      "t": 5.9,
+      "name": "rightWingOut"
+    },
+    {
+      "t": 7.36,
+      "name": "rightWingIn"
     }
   ]
 }

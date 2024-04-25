@@ -8,8 +8,8 @@ namespace Pronounce {
 
 		Log("Init");
 		stateControllers.addBehavior(drivetrainStateController);
-		stateControllers.addBehavior(frontLeftWingStateController);
-		stateControllers.addBehavior(frontRightWingStateController);
+		stateControllers.addBehavior(leftWingStateController);
+		stateControllers.addBehavior(rightWingStateController);
 		stateControllers.addBehavior(winchStateController);
 		stateControllers.addBehavior(winchStateExtensionController);
 		stateControllers.addBehavior(catapultStateController);

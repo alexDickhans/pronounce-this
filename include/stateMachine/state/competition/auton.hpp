@@ -19,30 +19,30 @@ namespace Pronounce {
 			intakeStateController->sb(intakeEject);
 		});
 
-		pathFollower->addCommandMapping("frontLeftWingOut", [&]() -> void {
-			frontLeftWingStateController->sb(frontLeftWingOut);
+		pathFollower->addCommandMapping("leftWingOut", [&]() -> void {
+			leftWingStateController->sb(leftWingOut);
 		});
 
-		pathFollower->addCommandMapping("frontLeftWingIn", [&]() -> void {
-			frontLeftWingStateController->sb(frontLeftWingIn);
+		pathFollower->addCommandMapping("leftWingIn", [&]() -> void {
+			leftWingStateController->sb(leftWingIn);
 		});
 
-		pathFollower->addCommandMapping("frontRightWingOut", [&]() -> void {
-			frontRightWingStateController->sb(frontRightWingOut);
+		pathFollower->addCommandMapping("rightWingOut", [&]() -> void {
+			rightWingStateController->sb(rightWingOut);
 		});
 
-		pathFollower->addCommandMapping("frontRightWingIn", [&]() -> void {
-			frontRightWingStateController->sb(frontRightWingIn);
+		pathFollower->addCommandMapping("rightWingIn", [&]() -> void {
+			rightWingStateController->sb(rightWingIn);
 		});
 
 		pathFollower->addCommandMapping("frontWingsOut", [&]() -> void {
-			frontLeftWingStateController->sb(frontLeftWingOut);
-			frontRightWingStateController->sb(frontRightWingOut);
+			leftWingStateController->sb(leftWingOut);
+			rightWingStateController->sb(rightWingOut);
 		});
 
 		pathFollower->addCommandMapping("frontWingsIn", [&]() -> void {
-			frontLeftWingStateController->sb(frontLeftWingIn);
-			frontRightWingStateController->sb(frontRightWingIn);
+			leftWingStateController->sb(leftWingIn);
+			rightWingStateController->sb(rightWingIn);
 		});
 
 		pathFollower->addCommandMapping("hangOut", [&]() -> void {

@@ -30,14 +30,14 @@ namespace Pronounce {
 				if (controller1.get_digital(E_CONTROLLER_DIGITAL_Y)) {
 					winchStateExtensionController->sb(winchASequence);
 				} else {
-					frontLeftWingStateController->sb(std::make_shared<Until>(frontLeftWingOut, [=, this]() -> bool {
+					leftWingStateController->sb(std::make_shared<Until>(leftWingOut, [=, this]() -> bool {
 						return !controller1.get_digital(E_CONTROLLER_DIGITAL_L2);
 					}));
 				}
 			});
 
 			controller1.onPressed(E_CONTROLLER_DIGITAL_L1, [&]() -> void {
-				frontRightWingStateController->sb(std::make_shared<Until>(frontRightWingOut, [&]() -> bool {
+				rightWingStateController->sb(std::make_shared<Until>(rightWingOut, [&]() -> bool {
 					return !controller1.get_digital(E_CONTROLLER_DIGITAL_L1);
 				}));
 			});
@@ -83,8 +83,8 @@ namespace Pronounce {
 		void exit() override {
 			Log("Exit");
 			drivetrainStateController->setDefaultBehavior(drivetrainStopped);
-			frontLeftWingStateController->ud();
-			frontRightWingStateController->ud();
+			leftWingStateController->ud();
+			rightWingStateController->ud();
 			drivetrainStateController->ud();
 			controller1.clearCallbacks();
 			Enabled::exit();

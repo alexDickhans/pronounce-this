@@ -15,12 +15,12 @@
           "y": 2.961
         },
         {
-          "x": 2.695,
-          "y": 2.356
+          "x": 2.681,
+          "y": 2.442
         },
         {
-          "x": 2.447,
-          "y": 2.309
+          "x": 2.433,
+          "y": 2.395
         }
       ],
       "constraints": {
@@ -33,12 +33,12 @@
       "stopEnd": false,
       "paths": [
         {
-          "x": 2.445,
-          "y": 2.304
+          "x": 2.438,
+          "y": 2.395
         },
         {
-          "x": 2.254,
-          "y": 2.252
+          "x": 2.247,
+          "y": 2.343
         },
         {
           "x": 2.039,
@@ -57,16 +57,16 @@
   ],
   "commands": [
     {
-      "t": 0.36,
-      "name": "frontRightWingOut"
+      "t": 0.354,
+      "name": "leftWingOut"
     },
     {
-      "t": 0.64,
-      "name": "frontLeftWingOut"
+      "t": 0.36,
+      "name": "rightWingOut"
     },
     {
       "t": 1.2,
-      "name": "frontLeftWingIn"
+      "name": "leftWingIn"
     }
   ]
 }
