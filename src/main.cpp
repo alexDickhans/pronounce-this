@@ -259,7 +259,7 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     22.9_deg, -800.0));
+			                                     22.3_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(1000);
 
@@ -356,11 +356,19 @@ void skills(void *args) {
 	
 	turnTo(75_deg, 1.0_s, closest, 12000);
 
+	move(-10_in, speedProfileConstraints, 0.0, 90_deg);
+
+	leftWingStateController->ud();
+	rightWingStateController->ud();
+
+	turnTo(-160_deg, 0.4_s, closest);
+
 	pathFollower->setMotionProfile(skills_9);
 
 	drivetrainStateController->sb(pathFollower)->wait();
 
 	winchStateController->sb(winchC);
+	turnTo(180_deg, 5_s, closest, 6000);
 
 	pros::Task::delay(3000);
 }
@@ -371,7 +379,7 @@ void safeCloseAWP(void *args) {
 	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
 
-	pros::Task::delay(15000);
+	turnTo(0_deg, 15_s, closest);
 }
 
 void safeCloseAWPDelay(void *args) {
@@ -381,6 +389,7 @@ void safeCloseAWPDelay(void *args) {
 
 	pathFollower->setMotionProfile(safe_close_awp);
 	drivetrainStateController->sb(pathFollower)->wait();
+	turnTo(0_deg, 15_s, closest);
 
 }
 
@@ -606,7 +615,7 @@ void autonomous() {
 	Log(string_format("Auton Init: %d", AUTON));
 	competitionController->sb(auton);
 
-	pros::Task::delay(60000);
+	pros::Task::delay(80000);
 }
 
 // !SECTION
@@ -626,7 +635,7 @@ void opcontrol() {
 		return master.get_digital(Pronounce::E_CONTROLLER_DIGITAL_A);
 	}));
 	robotMutex.unlock();
-	competitionController->wait(60000);
+	competitionController->wait(80000);
 #endif
 
 	competitionController->sb(teleop);
