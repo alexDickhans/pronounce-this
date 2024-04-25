@@ -1,0 +1,59 @@
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 1.827,
+          "y": 2.985
+        },
+        {
+          "x": 1.842,
+          "y": 2.807
+        },
+        {
+          "x": 3.1,
+          "y": 2.614
+        },
+        {
+          "x": 2.971,
+          "y": 3.498
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 200
+      }
+    },
+    {
+      "inverted": false,
+      "stopEnd": false,
+      "paths": [
+        {
+          "x": 2.971,
+          "y": 3.498
+        },
+        {
+          "x": 3.216,
+          "y": 3.145
+        },
+        {
+          "x": 3.341,
+          "y": 2.951
+        },
+        {
+          "x": 3.352,
+          "y": 2.55
+        }
+      ],
+      "constraints": {
+        "velocity": 76,
+        "accel": 191
+      }
+    }
+  ],
+  "commands": []
+}

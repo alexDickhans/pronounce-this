@@ -16,6 +16,7 @@ SMOOTH_SPLINE_PATH_ASSET(far_6_5)
 SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_1)
 SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_2)
 SMOOTH_SPLINE_PATH_ASSET(mid_6_ball_awp)
+SMOOTH_SPLINE_PATH_ASSET(safe_6)
 SMOOTH_SPLINE_PATH_ASSET(skills_1)
 SMOOTH_SPLINE_PATH_ASSET(skills_2)
 SMOOTH_SPLINE_PATH_ASSET(skills_3)
@@ -248,6 +249,72 @@ void far5BallAWP(void *args) {
 
 	drivetrain.tankSteerVoltage(3000, 2000);
 	pros::Task::delay(5000);
+}
+
+void safe6Ball(void* args) {
+	imuOrientation.setRotation(180_deg);
+
+	intakeStateController->sb(intakeEject);
+
+	pros::Task::delay(200);
+
+	intakeStateController->sb(intakeIntaking);
+
+	move(10_in, defaultProfileConstraints, 0.0, 180_deg);
+
+	pathFollower->setMotionProfile(far_6_2);
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	turnTo(-45_deg, 0.6_s, counterclockwise);
+
+	leftWingStateController->sb(leftWingOut);
+
+	intakeStateController->sb(intakeEject);
+
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
+
+	pathFollower->setMotionProfile(far_6_3);
+	drivetrainStateController->sb(pathFollower)->wait();
+	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
+
+	leftWingStateController->ud();
+
+	turnTo(-165_deg, 0.6_s);
+
+	intakeStateController->sb(intakeIntaking);
+
+	move(55_in, defaultProfileConstraints, 0.0, -165_deg);
+
+	move(-10_in, defaultProfileConstraints, 0.0, -165_deg);
+
+	turnTo(-15_deg, 0.4_s, closest);
+
+	intakeStateController->sb(intakeEject);
+
+	turnTo(-15_deg, 0.6_s, closest);
+
+	turnTo(-120_deg, 0.6_s);
+
+	intakeStateController->sb(intakeIntaking);
+
+	move(24_in, defaultProfileConstraints, 0.0, -120_deg);
+
+	turnTo(0_deg, 0.6_s);
+
+	intakeStateController->sb(intakeEject);
+	rightWingStateController->sb(leftWingOut);
+
+	move(40_in, speedProfileConstraints, 0.0, 0_deg);
+	rightWingStateController->ud();
+
+	pathFollower->setMotionProfile(safe_6);
+
+	drivetrainStateController->sb(pathFollower)->wait();
+
+	turnTo(180_deg, 15_s, closest);
+
 }
 
 void skills(void *args) {
@@ -542,7 +609,7 @@ void initialize() {
 #if AUTON == 0
 	auton->setAuton(far6BallElim);
 #elif AUTON == 1
-	auton->setAuton(far6BallAWP);
+	auton->setAuton(safe6Ball);
 #elif AUTON == 2
 	auton->setAuton(safeCloseAWP);
 #elif AUTON == 3
