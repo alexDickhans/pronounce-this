@@ -11,7 +11,7 @@ namespace Pronounce {
 	auto winchUp = std::make_shared<Winch>(winch, 1.10);
 	auto winchUpWait = std::make_shared<Wait>(winchUp, 1.0_s);
 	auto winchA = std::make_shared<Winch>(winch, 2.5);
-	auto winchC = std::make_shared<Winch>(winch, 3.7);
+	auto winchC = std::make_shared<Winch>(winch, 3.5);
 	auto winchCSequence = std::make_shared<Sequence>("WinchSequence");
 	auto winchASequence = std::make_shared<Sequence>("WinchSequence");
 
