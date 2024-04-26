@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 55,
+        "velocity": 52,
         "accel": 175
       }
     },
@@ -50,7 +50,7 @@
         }
       ],
       "constraints": {
-        "velocity": 50,
+        "velocity": 52,
         "accel": 175
       }
     }

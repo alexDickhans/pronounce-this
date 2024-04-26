@@ -22,6 +22,7 @@ namespace Pronounce {
 		static uint32_t shotTriballs;
 		QLength lastDistance{0.0};
 		QTime lastCount = 0.0;
+		uint32_t triballCount = 0;
 	public:
 		explicit Enabled() {
 		}
@@ -39,8 +40,10 @@ namespace Pronounce {
 			Log("Update");
 			if (hopperDistanceSensor.get() * 1_mm < 160_mm &&
 			    intakeStateController->getName().find(intakeEject->getName()) == -1) {
+				triballCount += 1;
 				Log("Triball detected");
 				intakeStateController->sb(intakeHold);
+
 			}
 
 			// See if the distance sensor detects a new object within 1 inch of the sensor
@@ -76,6 +79,10 @@ namespace Pronounce {
 		void resetTriballs() {
 			Log("Reset triballs");
 			shotTriballs = 0;
+		}
+
+		uint32_t getIntakeTriballCount() {
+			return triballCount;
 		}
 
 		uint32_t getTriballCount() {

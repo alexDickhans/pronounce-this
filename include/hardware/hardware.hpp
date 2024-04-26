@@ -32,7 +32,7 @@ namespace Pronounce {
 	pros::Mutex drivetrainMutex;
 
 	pros::MotorGroup leftDriveMotors({-18, -19, -20}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
-	pros::MotorGroup rightDriveMotors({11, 12, 13}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+	pros::MotorGroup rightDriveMotors({15, 12, 13}, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 
 	TankDrivetrain drivetrain(Constants::trackWidth, Constants::maxSpeed, leftDriveMotors, rightDriveMotors,
 	                          Constants::driveInputRpm);
