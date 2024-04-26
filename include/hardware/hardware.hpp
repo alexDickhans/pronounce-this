@@ -43,14 +43,14 @@ namespace Pronounce {
 
 	pros::Mutex drivetrainMutex;
 
-	pros::Motor leftDrive1(19, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive2(18, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive3(17, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor leftDrive4(16, pros::E_MOTOR_GEAR_600, true);
-	pros::Motor rightDrive1(8, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive2(12, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive3(13, pros::E_MOTOR_GEAR_600, false);
-	pros::Motor rightDrive4(14, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive1(1, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive2(2, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor leftDrive3(3, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor leftDrive4(4, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive1(18, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive2(10, pros::E_MOTOR_GEAR_600, true);
+	pros::Motor rightDrive3(8, pros::E_MOTOR_GEAR_600, false);
+	pros::Motor rightDrive4(9, pros::E_MOTOR_GEAR_600, true);
 
 	pros::Motor_Group leftDriveMotors({leftDrive1, leftDrive2, leftDrive3, leftDrive4});
 	pros::Motor_Group rightDriveMotors({rightDrive1, rightDrive2, rightDrive3, rightDrive4});
@@ -63,7 +63,7 @@ namespace Pronounce {
 	TankDrivetrain drivetrain(19_in, 76.57632093_in / second, &leftDriveMotors, &rightDriveMotors,
 	                          600.0 * (revolution / minute));
 
-	pros::Motor intakeMotor(6, pros::E_MOTOR_GEARSET_18, true);
+	pros::Motor intakeMotor(5, pros::E_MOTOR_GEARSET_18, false);
 
 	pros::ADIDigitalOut leftSolenoid('A', false);
 	pros::ADIDigitalOut rightSolenoid('B', false);
