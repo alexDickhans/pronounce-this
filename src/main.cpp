@@ -326,7 +326,7 @@ void skills(void *args) {
 
 	drivetrainStateController->sb(
 			std::make_shared<RotationController>("MatchloadRotationController", drivetrain, [&]() -> auto { return imuOrientation.getAngle(); }, turningPid,
-			                                     22.3_deg, -800.0));
+			                                     21.5_deg, -800.0));
 	auton->resetTriballs();
 	pros::Task::delay(1000);
 
@@ -340,6 +340,8 @@ void skills(void *args) {
 
 	pathFollower->setMotionProfile(skills_2);
 	drivetrainStateController->sb(pathFollower)->wait();
+
+	pros::Task::delay(200);
 
 	rightWingStateController->ud();
 
@@ -375,10 +377,6 @@ void skills(void *args) {
 
 	pathFollower->setMotionProfile(skills_6_5);
 	drivetrainStateController->sb(pathFollower)->wait();
-
-	move(-8_in, speedProfileConstraints, 0.0);
-
-	move(12_in, speedProfileConstraints, 0.0, 0.0_deg);
 
 	pathFollower->setMotionProfile(skills_7);
 	drivetrainStateController->sb(pathFollower)->wait();

@@ -10,7 +10,7 @@ namespace Constants {
 		{18, pros::DeviceType::motor},
 		{19, pros::DeviceType::motor},
 		{20, pros::DeviceType::motor},
-		{11, pros::DeviceType::motor},
+		{, pros::DeviceType::motor},
 		{12, pros::DeviceType::motor},
 		{13, pros::DeviceType::motor},
 		{2, pros::DeviceType::motor},
