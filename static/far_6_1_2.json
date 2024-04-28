@@ -1,0 +1,12 @@
+{
+  "startSpeed": 0.0,
+  "endSpeed": 0.0,
+  "segments": [
+  ],
+  "commands": [
+    {
+      "t": 0.48,
+      "name": "intakeStop"
+    }
+  ]
+}

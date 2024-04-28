@@ -66,7 +66,7 @@ void far6Ball(void* args) {
 
 	intakeExtensionStateController->sb(deploySequence);
 
-	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
+	move(55_in, speedProfileConstraints, 0.0, -120.5_deg);
 
 	pros::Task::delay(200);
 
@@ -77,7 +77,7 @@ void far6Ball(void* args) {
 
 	turnTo(-180_deg, 0.4_s);
 	intakeStateController->sb(intakeIntaking);
-	move(7_in, speedProfileConstraints, 0.0, -180_deg);
+	move(5_in, speedProfileConstraints, 0.0, -180_deg);
 
 	pathFollower->setMotionProfile(far_6_2);
 	drivetrainStateController->sb(pathFollower)->wait();
@@ -93,78 +93,15 @@ void far6Ball(void* args) {
 	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
 	pathFollower->setMotionProfile(far_6_3);
 	drivetrainStateController->sb(pathFollower)->wait();
-}
-
-void far6BallFlick(void* args) {
-	imuOrientation.setRotation(-120.5_deg);
-
-	intakeExtensionStateController->sb(deploySequence);
-
-	move(56_in, speedProfileConstraints, 0.0, -120.5_deg);
-
-	pros::Task::delay(200);
-
-	intakeExtensionStateController->ud();
-
-	pathFollower->setMotionProfile(far_6_1);
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	turnTo(-180_deg, 0.4_s);
-	intakeStateController->sb(intakeIntaking);
-	move(7_in, speedProfileConstraints, 0.0, -180_deg);
-
-	pathFollower->setMotionProfile(far_6_2);
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	turnTo(-45_deg, 0.6_s, counterclockwise);
-
-	leftWingStateController->sb(leftWingOut);
-
-	intakeStateController->sb(intakeEject);
-
-	pathFollower->setMotionProfile(far_6_3);
-	drivetrainStateController->sb(pathFollower)->wait();
-	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
-	pathFollower->setMotionProfile(far_6_3);
-	drivetrainStateController->sb(pathFollower)->wait();
-}
-
-void far6BallFlickAWP(void* args) {
-	far6BallFlick(args);
-	pathFollower->setMotionProfile(far_6_4);
-	drivetrainStateController->sb(pathFollower)->wait();
-	pathFollower->setMotionProfile(far_6_5);
-	drivetrainStateController->sb(pathFollower)->wait();
-}
-
-void far6BallFlickElim(void* args) {
-	far6Ball(args);
-
-	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
-	pathFollower->setMotionProfile(far_6_3);
-	drivetrainStateController->sb(pathFollower)->wait();
-	pathFollower->setMotionProfile(far_6_4);
-	drivetrainStateController->sb(pathFollower)->wait();
-	move(40_in, speedProfileConstraints, 0.0, -135_deg);
 }
 
 void far6BallElim(void* args) {
 	far6Ball(args);
 
 	move(-15_in, defaultProfileConstraints, 0.0, -430_deg);
-	pathFollower->setMotionProfile(far_6_3);
-	drivetrainStateController->sb(pathFollower)->wait();
 	pathFollower->setMotionProfile(far_6_4);
 	drivetrainStateController->sb(pathFollower)->wait();
-	move(40_in, speedProfileConstraints, 0.0, -135_deg);
-}
-
-void far6BallAWP(void* args) {
-	far6Ball(args);
-	pathFollower->setMotionProfile(far_6_4);
-	drivetrainStateController->sb(pathFollower)->wait();
-	pathFollower->setMotionProfile(far_6_5);
-	drivetrainStateController->sb(pathFollower)->wait();
+	move(25_in, speedProfileConstraints, 0.0, -135_deg);
 }
 
 void far5BallRushMid(void *args) {
@@ -234,21 +171,6 @@ void far6BallRushMid(void *args) {
 	move(35_in, speedProfileConstraints, 0.0, 180_deg);
 	move(-10_in, speedProfileConstraints, 0.0, 180_deg);
 	turnTo(0_deg, 3_s);
-}
-
-void far5BallAWP(void *args) {
-	far5BallRushMid(args);
-
-	move(-5_in, speedProfileConstraints, 0.0, 0_deg);
-
-	turnTo(-90_deg, 600_ms);
-
-	pathFollower->setMotionProfile(mid_6_ball_awp);
-
-	drivetrainStateController->sb(pathFollower)->wait();
-
-	drivetrain.tankSteerVoltage(3000, 2000);
-	pros::Task::delay(5000);
 }
 
 void safe6Ball(void* args) {
@@ -490,15 +412,13 @@ void initialize() {
 #elif AUTON == 1
 	auton->setAuton(safe6Ball);
 #elif AUTON == 2
-	auton->setAuton(safeCloseAWP);
+	auton->setAuton(far6BallRushMid);
 #elif AUTON == 3
 	auton->setAuton(safeCloseAWPDelay);
 #elif AUTON == 4
 	auton->setAuton(closeRushMidElim);
 #elif AUTON == 5
 	auton->setAuton(closeRushMidAwp);
-#elif AUTON == 6
-	auton->setAuton(skills);
 #endif // !1
 
 	// Initialize functions

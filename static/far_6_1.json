@@ -163,20 +163,20 @@
       "stopEnd": false,
       "paths": [
         {
-          "x": 1.625,
+          "x": 1.545,
           "y": 2.998
         },
         {
-          "x": 1.638,
+          "x": 1.558,
           "y": 2.671
         },
         {
-          "x": 2.632,
-          "y": 2.246
+          "x": 2.709,
+          "y": 2.286
         },
         {
-          "x": 3.533,
-          "y": 2.588
+          "x": 3.61,
+          "y": 2.628
         }
       ],
       "constraints": {
@@ -203,20 +203,24 @@
       "name": "intake"
     },
     {
-      "t": 4.8,
-      "name": "outtake"
-    },
-    {
-      "t": 5.01,
+      "t": 4.676,
       "name": "rightWingOut"
     },
     {
-      "t": 6.02,
+      "t": 4.69,
+      "name": "leftWingOut"
+    },
+    {
+      "t": 4.697,
+      "name": "outtake"
+    },
+    {
+      "t": 5.943,
       "name": "rightWingIn"
     },
     {
-      "t": 6.71,
-      "name": "intakeStop"
+      "t": 5.95,
+      "name": "leftWingIn"
     }
   ]
 }

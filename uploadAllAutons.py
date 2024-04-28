@@ -10,8 +10,8 @@ import time
 
 autons = [
     "FAR 6 MID ELIM",
-    "FAR 5 MID AWP",
-    "CLOSE SAFE AWP",
+    "SAFE 6",
+    "STATES 6",
     "CLOSE SAFE AWP DELAY",
     "CLOSE RUSH ELIM",
     "CLOSE RUSH AWP",
